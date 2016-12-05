@@ -1,0 +1,1 @@
+<?php if (!defined('THINK_PATH')) exit();?>var navs = <?php echo json_encode($nav);?>;
