@@ -13,7 +13,7 @@
 .site-content{width: 899px; min-height: 900px; padding: 20px 0 10px 20px;}
 
 /* 头部 */
-.header{height: 65px; border-bottom: 1px solid #404553;  background-color: #393D49; color: #fff;}
+.header{height: 55px; border-bottom: 1px solid #404553;  background-color: #393D49; color: #fff;}
 .logo{position: absolute; left: 0; top: 18px;}
 .logo img{width: 82px; height: 31px;}
 
@@ -32,7 +32,7 @@
 .layui-layout-admin .header-demo{border-bottom-color: #1AA094; background-color: #fff;}
 .header-demo .logo{left: 40px;}
 .header-demo .layui-nav{top: 0;}
-.header-demo .layui-nav .layui-nav-item{margin: 0 10px; line-height: 70px;}
+.header-demo .layui-nav .layui-nav-item{margin: 0 10px; line-height: 55px;}
 .header-demo .layui-nav .layui-nav-item a{color: #999;}
 .header-demo .layui-nav .layui-this{background-color: #f2f2f2;}
 .header-demo .layui-nav .layui-nav-item a:hover, 
@@ -283,7 +283,7 @@ body .site-demo-nav .layui-nav-item{line-height: 40px}
 }
 .admin-nav-card>.layui-tab-title .layui-this{
 	color: white;
-    background-color: #1AA094;
+    background-color: #544b8f;
 }
 .admin-nav-card>.layui-tab-title .layui-this:after{
 	border-bottom: 0;
@@ -294,10 +294,10 @@ body .site-demo-nav .layui-nav-item{line-height: 40px}
     top: 15px;*/
 }
 .admin-header-user .layui-nav-more{
-	top:33px;
+	top:25px;
 }
 .admin-header-user .layui-nav-mored{
-	top: 26px;
+	top: 20px;
 }
 
 /*table*/
@@ -326,7 +326,7 @@ body .site-demo-nav .layui-nav-item{line-height: 40px}
 	background-color: #5FB878;
 }
 .admin-login-box{
-	width: 185px; height: 70px; position: relative;
+	width: 185px; height: 55px; position: relative;
 }
 
 

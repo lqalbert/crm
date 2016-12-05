@@ -1,6 +1,6 @@
 /** tab.js By Beginner Emain:zheng_jinfan@126.com HomePage:http://www.zhengjinfan.cn */
 layui.config({
-	base: 'js/'
+	base: './Public/js/'
 }).define(['element', 'common'], function(exports) {
 	"use strict";
 

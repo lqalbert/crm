@@ -1,5 +1,5 @@
 layui.config({
-	base: '/Public/js/'
+	base: './Public/js/'
 }).use(['element', 'layer', 'navbar', 'tab'], function() {
 	var element = layui.element()
 	$ = layui.jquery,

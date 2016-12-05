@@ -3,12 +3,10 @@ namespace Home\Controller;
 use Think\Controller;
 class IndexController extends Controller {
     public function index(){
-        $this->display();
+    	$this->display();
     }
 
-    public function navjs(){
-		$menu = C('MENU');
-		$this->assign('nav', $menu);
+    function main(){
     	$this->display();
     }
 }

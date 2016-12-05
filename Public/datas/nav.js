@@ -1,79 +1,142 @@
 var navs = [{
-	"title": "基本元素",
+	"title": "百宝箱",
 	"icon": "fa-cubes",
-	"spread": true,
+	"spread": false,
 	"children": [{
-		"title": "按钮",
+		"title": "我的工作台",
 		"icon": "&#xe641;",
-		"href": "button.html"
+		"href": "#",
 	}, {
-		"title": "表单",
+		"title": "消息盒子",
 		"icon": "&#xe63c;",
-		"href": "form.html"
+		"href": "#"
 	}, {
-		"title": "表格",
+		"title": "系统公告",
 		"icon": "&#xe63c;",
-		"href": "table.html"
+		"href": "#"
 	}, {
-		"title": "导航",
+		"title": "集思信箱",
 		"icon": "&#xe609;",
-		"href": "nav.html"
+		"href": "#"
 	}, {
-		"title": "Tab选项卡",
+		"title": "工作总结",
 		"icon": "&#xe62a;",
-		"href": "tab.html"
+		"href": "#"
 	}, {
-		"title": "辅助性元素",
+		"title": "培训学院",
 		"icon": "&#xe60c;",
-		"href": "auxiliar.html"
+		"href": "#"
+	}, {
+		"title": "素材库",
+		"icon": "&#xe60c;",
+		"href": "#"
+	}, {
+		"title": "系统管理",
+		"icon": "&#xe60c;",
+		"href": "#"
 	}]
 }, {
-	"title": "组件",
+	"title": "CPS模块",
 	"icon": "fa-cogs",
 	"spread": false,
 	"children": [{
-		"title": "Datatable",
+		"title": "短网址URL",
 		"icon": "fa-table",
-		"href": "begtable.html"
-	}, {
-		"title": "Navbar组件",
-		"icon": "fa-navicon",
-		"href": "navbar.html"
+		"href": "#"
 	}]
 }, {
-	"title": "第三方组件",
+	"title": "组织员工",
 	"icon": "&#x1002;",
 	"spread": false,
 	"children": [{
-		"title": "iCheck组件",
+		"title": "组织单位",
 		"icon": "fa-check-square-o",
-		"href": "icheck.html"
+		"href": "#"
+	},{
+		"title": "团队小组",
+		"icon": "fa-check-square-o",
+		"href": "#"
+	},{
+		"title": "员工管理",
+		"icon": "fa-check-square-o",
+		"href": "#"
+	},{
+		"title": "角色管理",
+		"icon": "fa-check-square-o",
+		"href": "#"
+	},{
+		"title": "权限管理",
+		"icon": "fa-check-square-o",
+		"href": "#"
 	}]
 }, {
-	"title": "地址本",
+	"title": "日常工作",
 	"icon": "fa-address-book",
 	"href": "",
-	"spread": true,
+	"spread": false,
 	"children": [{
-		"title": "Github",
+		"title": "客户管理",
 		"icon": "fa-github",
-		"href": "https://www.github.com/"
+		"href": "#"
 	}, {
-		"title": "QQ",
+		"title": "资料接收",
 		"icon": "fa-qq",
-		"href": "http://www.qq.com/"
-	}, {
-		"title": "Fly社区",
-		"icon": "&#xe609;",
-		"href": "http://fly.layui.com/"
-	}, {
-		"title": "新浪微博",
-		"icon": "fa-weibo",
-		"href": "http://weibo.com/"
+		"href": "#"
 	}]
-}, {
-	"title": "这是一级导航",
-	"icon": "fa-stop-circle",
-	"href": "https://www.baidu.com",
-	"spread": false
+},{
+	"title": "统计报表",
+	"icon": "fa-address-book",
+	"href": "",
+	"spread": false,
+	"children": [{
+		"title": "量化报表",
+		"icon": "fa-github",
+		"href": "#"
+	}, {
+		"title": "客户报表",
+		"icon": "fa-qq",
+		"href": "#"
+	}, {
+		"title": "客户统计",
+		"icon": "fa-qq",
+		"href": "#"
+	}, {
+		"title": "业绩报表",
+		"icon": "fa-qq",
+		"href": "#"
+	}, {
+		"title": "续费报表",
+		"icon": "fa-qq",
+		"href": "#"
+	}, {
+		"title": "业绩排名",
+		"icon": "fa-qq",
+		"href": "#"
+	}, {
+		"title": "资料跟踪",
+		"icon": "fa-qq",
+		"href": "#"
+	}]
+},{
+	"title": "业务助手",
+	"icon": "fa-address-book",
+	"href": "",
+	"spread": false,
+	"children": [{
+		"title": "Q群扫描",
+		"icon": "fa-github",
+		"href": "#"
+	}, {
+		"title": "手机预查",
+		"icon": "fa-qq",
+		"href": "#"
+	}, {
+		"title": "异常IP",
+		"icon": "fa-qq",
+		"href": "#"
+	}, {
+		"title": "回收站",
+		"icon": "fa-qq",
+		"href": "#"
+	}]
 }];

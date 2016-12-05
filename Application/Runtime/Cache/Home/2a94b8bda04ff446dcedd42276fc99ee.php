@@ -1,30 +1,25 @@
 <?php if (!defined('THINK_PATH')) exit();?><!DOCTYPE html>
-
 <html>
-
 	<head>
 		<meta charset="utf-8">
-		<title>后台管理模板</title>
+		<title>CRM客户关系管理系统</title>
 		<meta name="renderer" content="webkit">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="format-detection" content="telephone=no">
-
-		<link rel="stylesheet" href="/Public/plugins/layui/css/layui.css" media="all" />
-		<link rel="stylesheet" href="/Public/css/global.css" media="all">
-		<link rel="stylesheet" href="/Public/plugins/font-awesome/css/font-awesome.min.css">
-
+		<link rel="stylesheet" href="/crm/Public/plugins/layui/css/layui.css" media="all" />
+		<link rel="stylesheet" href="/crm/Public/css/global.css" media="all">
+		<link rel="stylesheet" href="/crm/Public/plugins/font-awesome/css/font-awesome.min.css">
 	</head>
-
 	<body>
 		<div class="layui-layout layui-layout-admin">
 			<div class="layui-header header header-demo">
 				<div class="layui-main">
 					<div class="admin-login-box">
-						<a class="logo" style="left: 0;" href="http://beginner.zhengjinfan.cn/demo/beginner_admin/">
-							<span style="font-size: 22px;">BeginnerAdmin</span>
+						<a class="logo" style="left: 0;" href="#">
+							<a style="font-size:22px;line-height:55px;">CRM客户关系管理</a>
 						</a>
 						<div class="admin-side-toggle">
 							<i class="fa fa-bars" aria-hidden="true"></i>
@@ -39,7 +34,7 @@
 						</li>
 						<li class="layui-nav-item">
 							<a href="javascript:;" class="admin-header-user">
-								<img src="/Public/images/0.jpg" />
+								<img src="/crm/Public/images/0.jpg" />
 								<span>beginner</span>
 							</a>
 							<dl class="layui-nav-child">
@@ -65,7 +60,7 @@
 			<div class="layui-side layui-bg-black" id="admin-side">
 				<div class="layui-side-scroll" id="admin-navbar-side" lay-filter="side"></div>
 			</div>
-			<div class="layui-body" style="bottom: 0;border-left: solid 2px #1AA094;" id="admin-body">
+			<div class="layui-body" style="top: 57px;" id="admin-body">
 				<div class="layui-tab admin-nav-card layui-tab-brief" lay-filter="admin-tab">
 					<ul class="layui-tab-title">
 						<li class="layui-this">
@@ -80,21 +75,13 @@
 					</div>
 				</div>
 			</div>
-			<div class="layui-footer footer footer-demo" id="admin-footer">
-				<div class="layui-main">
-					<p>2016 &copy;
-						<a href="#">源创智讯</a>
-					</p>
-				</div>
-			</div>
 			<div class="site-tree-mobile layui-hide">
 				<i class="layui-icon">&#xe602;</i>
 			</div>
 			<div class="site-mobile-shade"></div>
-			<script type="text/javascript" src="/Public/plugins/layui/layui.js"></script>
-			<!-- <script type="text/javascript" src="/Public/datas/nav.js" ></script> -->
-			<script type="text/javascript" src="<?php echo U('Index/navjs');?>" ></script>
-			<script src="/Public/js/index.js"></script>
+			<script type="text/javascript" src="/crm/Public/plugins/layui/layui.js"></script>
+			<script type="text/javascript" src="/crm/Public/datas/nav.js" ></script>
+			<script src="/crm/Public/js/index.js"></script>
 		</div>
 	</body>
 
