@@ -1,0 +1,210 @@
+<extend name="Common:base" />
+<block name="head"></block>
+<block name="body">
+	<div id="app" class="container">
+		<div class="wrapp" v-show="show">
+			<!-- seach form -->
+			<el-row>
+				<el-col :span="24">
+					<el-form :inline="true"   >
+					  <el-form-item><el-input  placeholder="查询字段一"></el-input>
+					  </el-form-item><el-form-item>
+					    <el-select  placeholder="查询字段二">
+					      <el-option label="区域一" value="区域一"></el-option>
+					      <el-option label="区域二" value="区域二"></el-option>
+					    </el-select>
+					  </el-form-item><el-form-item>
+					    <el-button  >清空</el-button>
+					    <el-button type="primary" >查询</el-button> 
+			        	<el-button  @click="advancedSearch=true">高级查询</el-button> 
+					  </el-form-item>
+					</el-form>
+				</el-col>
+			</el-row>
+			<!-- / search form -->
+
+			<!-- datatables  -->
+			<el-row>
+				<el-col :span="24">
+					<el-table :data="datalist" border stripe height  v-loading.body="loading" element-loading-text="拼命加载中">
+					    <el-table-column type="selection"  width="50" >
+					    </el-table-column>
+					    <el-table-column type="index"  label="序号"  width="70"  >
+					    </el-table-column>
+					    <el-table-column prop="img" label="头像" width="140">
+					    </el-table-column>
+					    <el-table-column prop="id"  label="员工ID" width="100">
+					    </el-table-column>
+					    <el-table-column prop="account" label="登录账号" width="100">
+					    </el-table-column>
+						<el-table-column prop="realname" label="员工姓名" width="100">
+					    </el-table-column>
+					    <el-table-column prop="status" label="是否有效" width="100">
+					    </el-table-column>
+					    <el-table-column prop="faccount" label="演示账号" width="150">
+					    </el-table-column>
+					    <el-table-column prop="department" label="所属组织" width="100">
+					    </el-table-column>
+					    <el-table-column prop="employeetype" label="员工类型" width="100">
+					    </el-table-column>
+					    <el-table-column prop="ishow" label="是否公示" width="100">
+					    </el-table-column>
+					    <el-table-column prop="telphone" label="固话" width="100">
+					    </el-table-column>
+					    <el-table-column prop="mobilephone" label="手机" width="100">
+					    </el-table-column>
+					    <el-table-column prop="qq" label="QQ号" width="100">
+					    </el-table-column>
+					    <el-table-column prop="qqname" label="QQ昵称" width="180">
+					    </el-table-column>
+					    <el-table-column prop="qqq" label="业务Q群" width="190">
+					    </el-table-column>
+					    <el-table-column prop="qqqq" label="业务业务Q群名" width="190">
+					    </el-table-column>
+					    <el-table-column prop="area" label="地区" width="150">
+					    </el-table-column>
+					    <el-table-column prop="sex"  label="性别" width="50">
+					    </el-table-column>
+					    <el-table-column prop="lastlogin" label="最后登录时间" width="150">
+					    </el-table-column>
+					    <el-table-column prop="weixin"  label="微信号" width="150">
+					    </el-table-column>
+					    <el-table-column prop="weixinname"  label="微信昵称" width="150">
+					    </el-table-column>
+					    
+					    
+
+					    <el-table-column inline-template :context="_self"  fixed="right"  label="操作" width="100">
+					      <span>
+					        <el-button @click="handleClick($index, row)" type="text" size="small">查看</el-button>
+					        <el-button @click="handleClick($index, row)" type="text" size="small">编辑</el-button>
+					      </span>
+					    </el-table-column>
+
+				    </el-table>
+				</el-col>
+			</el-row>
+			<!-- / datatables  -->
+			
+			<!-- toolbar -->
+				<el-row type="type"  justify="space-between" align="middle"  class="row-bg">
+				  <el-col :span="12">
+				  <div class="grid-content bg-purple">
+				  	<el-button-group>
+					    <el-button type="primary" size="small" @click="dialogAddEmployee = true">添加员工</el-button>
+					    <el-button type="primary" size="small">修改一般信息</el-button>
+					    <el-button type="primary" size="small">修改核心信息</el-button>
+
+						<el-button type="primary" size="small" @click="dialogEditID = true">修改身份信息</el-button>
+						<el-button type="primary" size="small">修改账号密码</el-button>
+						<el-button type="primary" size="small" @click="dialogEditConfirm = true">确认身份</el-button>
+						<el-button type="primary" size="small">微调权限</el-button>
+						<el-button type="primary" size="small">终止员工</el-button>
+						<el-button type="primary" size="small">开演示号</el-button>
+
+				    </el-button-group>
+				    <span>小号的按钮 是不是好看一点？</span>
+				  </div>
+				  </el-col>
+				  <el-col :span="12">
+				  <div class="grid-content bg-purple-light pull-right">
+
+				    <!-- page -->
+				    <include file="Common:_pagination" />
+				    <!-- / page -->
+				    
+				  </div></el-col>
+				</el-row>
+			<!-- / toolbar -->
+
+		</div>
+
+		<!-- 高级查询 -->
+		<include file="_search" />
+		<!-- / 高级查询 -->
+
+		<!-- 添加 -->
+		<include file="_add" />
+		<!-- / 添加 -->
+
+		<!-- 修改身份信息 -->
+		<include file="_editID" />
+		<!-- / 修改身份信息 -->
+
+		<!-- 确认身份 -->
+		<include file="_editConfirm" />
+		<!-- / 确认身份 -->
+
+	</div>
+</block>
+<block name="scripts">
+	<script>
+		var Main = {
+			el: '#app',
+			data:{
+				// 界面
+				show:true,
+				loading: false,
+
+				formLabelWidth: '140px',
+
+				//数据
+				datalist:[
+				{
+					img:"暂无头像",
+					id:"123",
+					account:"张真人",
+					realname:"张三丰",
+					status:"是",
+					faccount:"zhang_for",
+					department:"武当",
+					employeetype:"掌门",
+					ishow:"是",
+					telphone:"1234567",
+					mobilephone:"7654321",
+					qq:"0000000",
+					qqname:"武当－掌门",
+					qqq:"武当招生部",
+					qqqq:"武当招生部2",
+					area:"湖北省－十堰市",
+					sex:"男",
+					lastlogin:"1888-01-01 0:0:0",
+					weixin:"",
+					weixinname:"",
+
+				}
+					
+
+				],
+
+				// 分页
+				currentPage: 1,
+				total: 100,
+
+				//高级查询
+				advancedSearch:false,
+
+				//添加 对话框
+				dialogAddEmployee: false,
+
+				//修改身份信息
+				dialogEditID: false,
+
+				// 确认身份
+				dialogEditConfirm: false
+			},
+			methods:{
+				handleClick:function(index, row){
+					this.dialogEditID = true;
+				},
+				handleCurrentChange:function(page){
+
+				},
+			},
+			updated:function(){
+
+			}
+		}
+		var vm = new Vue(Main);
+	</script>
+</block>

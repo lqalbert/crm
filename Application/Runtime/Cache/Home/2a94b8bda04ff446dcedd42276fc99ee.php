@@ -9,9 +9,9 @@
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="format-detection" content="telephone=no">
-		<link rel="stylesheet" href="/crm/Public/plugins/layui/css/layui.css" media="all" />
-		<link rel="stylesheet" href="/crm/Public/css/global.css" media="all">
-		<link rel="stylesheet" href="/crm/Public/plugins/font-awesome/css/font-awesome.min.css">
+		<link rel="stylesheet" href="/Public/plugins/layui/css/layui.css" media="all" />
+		<link rel="stylesheet" href="/Public/css/global.css" media="all">
+		<link rel="stylesheet" href="/Public/plugins/font-awesome/css/font-awesome.min.css">
 	</head>
 	<body>
 		<div class="layui-layout layui-layout-admin">
@@ -34,7 +34,7 @@
 						</li>
 						<li class="layui-nav-item">
 							<a href="javascript:;" class="admin-header-user">
-								<img src="/crm/Public/images/0.jpg" />
+								<img src="/Public/images/0.jpg" />
 								<span>beginner</span>
 							</a>
 							<dl class="layui-nav-child">
@@ -79,9 +79,10 @@
 				<i class="layui-icon">&#xe602;</i>
 			</div>
 			<div class="site-mobile-shade"></div>
-			<script type="text/javascript" src="/crm/Public/plugins/layui/layui.js"></script>
-			<script type="text/javascript" src="/crm/Public/datas/nav.js" ></script>
-			<script src="/crm/Public/js/index.js"></script>
+			<script type="text/javascript" src="/Public/plugins/layui/layui.js"></script>
+			<!-- <script type="text/javascript" src="/Public/datas/nav.js" ></script> -->
+			<script type="text/javascript" src="<?php echo U('Nav/index');?>" ></script>
+			<script src="/Public/js/index.js"></script>
 		</div>
 	</body>
 

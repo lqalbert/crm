@@ -1,0 +1,56 @@
+<el-dialog title="添加小组" v-model="dialogAddGroup">
+<!-- <el-form :model="form"> -->
+<el-form >
+  <el-row>
+    <el-col :span="12">
+      <el-form-item label="名称" :label-width="formLabelWidth">
+        <el-input  auto-complete="off"></el-input>
+      </el-form-item>
+    </el-col>
+    <el-col :span="12">
+      <el-form-item label="组织类型" :label-width="formLabelWidth">
+        <el-select  placeholder="请选择">
+          <el-option label="测试数据" value="区域一"></el-option>
+        </el-select>
+      </el-form-item>
+    </el-col>
+  </el-row>
+   <el-row>
+    <el-col :span="12">
+      <el-form-item label="上级组织" :label-width="formLabelWidth">
+        <el-select  placeholder="请选择">
+          <el-option label="测试数据" value="区域一"></el-option>
+        </el-select>
+      </el-form-item>
+    </el-col>
+    <el-col :span="12">
+        <el-form-item label="联系人" :label-width="formLabelWidth">
+          <el-input  auto-complete="off"></el-input>
+        </el-form-item>
+    </el-col>
+   </el-row>
+    <el-row>
+      <el-col :span="12">
+        <el-form-item label="电话" :label-width="formLabelWidth">
+          <el-input  auto-complete="off"></el-input>
+        </el-form-item>
+      </el-col>
+      <el-col :span="12">
+        <!-- <el-form-item label="QQ昵称" :label-width="formLabelWidth">
+          <el-input  auto-complete="off"></el-input>
+        </el-form-item> -->
+      </el-col>
+    </el-row>
+
+    <el-form-item label="备注" :label-width="formLabelWidth">
+      <el-input
+        type="textarea"
+        :autosize="{ minRows: 2, maxRows: 4}"
+        placeholder="请输入内容">
+      </el-form-item>
+  </el-form>
+  <div slot="footer" class="dialog-footer">
+    <el-button @click="dialogAddGroup = false">取 消</el-button>
+    <el-button type="primary" @click="dialogAddGroup = false">确 定</el-button>
+  </div>
+</el-dialog>

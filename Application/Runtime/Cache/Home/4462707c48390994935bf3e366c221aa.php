@@ -4,8 +4,8 @@
 	<head>
 		<meta charset="UTF-8">
 		<title></title>
-		<link rel="stylesheet" href="/crm/Public/plugins/layui/css/layui.css" media="all" />
-		<link rel="stylesheet" href="/crm/Public/css/main.css" />
+		<link rel="stylesheet" href="/Public/plugins/layui/css/layui.css" media="all" />
+		<link rel="stylesheet" href="/Public/css/main.css" />
 	</head>
 
 	<body>

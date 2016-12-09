@@ -1,0 +1,199 @@
+<el-dialog title="录入客户/修改客户" v-model="dialogAddCustomer">
+<!-- <el-form :model="form"> -->
+<el-form >
+  <el-row>
+    <el-col :span="12">
+      <el-form-item label="客户姓名" :label-width="formLabelWidth">
+        <el-input  auto-complete="off"></el-input>
+      </el-form-item>
+    </el-col>
+    <el-col :span="12">
+      <el-form-item label="客户类型" :label-width="formLabelWidth">
+        <el-select  placeholder="请选择活动区域">
+          <el-option label="A.准客户" value="区域一"></el-option>
+          <el-option label="B.意向客户" value="区域一"></el-option>
+          <el-option label="C.一般客户" value="区域一"></el-option>
+          <el-option label="D.未有意向客户" value="区域一"></el-option>
+          <el-option label="E.本地化客户" value="区域一"></el-option>
+          <el-option label="N.无效客户" value="区域一"></el-option>
+          <el-option label="F.黑名单（同行）" value="区域一"></el-option>
+        </el-select>
+      </el-form-item>
+    </el-col>
+  </el-row>
+   <el-row>
+    <el-col :span="12">
+      <el-form-item label="手机" :label-width="formLabelWidth">
+        <el-input  auto-complete="off"></el-input>
+      </el-form-item>
+    </el-col>
+    <el-col :span="12">
+      <!-- <el-form-item label="跟类型" :label-width="formLabelWidth">
+        <el-select v-model="form.region" placeholder="请选择活动区域">
+          <el-option label="区域一" value="shanghai"></el-option>
+          <el-option label="区域二" value="beijing"></el-option>
+        </el-select>
+      </el-form-item> -->
+    </el-col>
+   </el-row>
+    <el-row>
+      <el-col :span="12">
+        <el-form-item label="QQ号" :label-width="formLabelWidth">
+          <el-input  auto-complete="off"></el-input>
+        </el-form-item>
+      </el-col>
+      <el-col :span="12">
+        <el-form-item label="QQ昵称" :label-width="formLabelWidth">
+          <el-input  auto-complete="off"></el-input>
+        </el-form-item>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="12">
+        <el-form-item label="微信号" :label-width="formLabelWidth">
+          <el-input  auto-complete="off"></el-input>
+        </el-form-item>
+      </el-col>
+      <el-col :span="12">
+        <el-form-item label="微信昵称" :label-width="formLabelWidth">
+          <el-input  auto-complete="off"></el-input>
+        </el-form-item>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="12">
+        <el-form-item label="微信状态" :label-width="formLabelWidth">
+          <el-radio class="radio"  label="1">未录入</el-radio>
+          <el-radio class="radio"  label="2">已录入</el-radio>
+          <el-radio class="radio"  label="3">不存在</el-radio>
+        </el-form-item>
+      </el-col>
+      <el-col :span="12">
+        <el-form-item label="性别" :label-width="formLabelWidth">
+          <el-radio class="radio"  label="1">男</el-radio>
+          <el-radio class="radio"  label="2">女</el-radio>
+        </el-form-item>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="12">
+        <el-form-item label="省份" :label-width="formLabelWidth">
+          <el-select  placeholder="请选择">
+            <el-option label="北京"     value="区域一"></el-option>
+            <el-option label="四川省"   value="区域一"></el-option>
+            <el-option label="测试数据" value="区域一"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+      <el-col :span="12">
+        <el-form-item label="城市" :label-width="formLabelWidth">
+          <el-select  placeholder="请选择">
+            <el-option label="成都市"   value="区域一"></el-option>
+            <el-option label="广州"     value="区域一"></el-option>
+            <el-option label="测试数据" value="区域一"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="12">
+        <el-form-item label="股龄" :label-width="formLabelWidth">
+          <el-input  auto-complete="off"></el-input>
+        </el-form-item>
+      </el-col>
+      <el-col :span="12">
+        <el-form-item label="近期收益" :label-width="formLabelWidth">
+          <el-select  placeholder="请选择">
+            <el-option label="测试数据" value="区域一"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="12">
+        <el-form-item label="投资风格" :label-width="formLabelWidth">
+          <el-input  auto-complete="off"></el-input>
+        </el-form-item>
+      </el-col>
+      <el-col :span="12">
+        <el-form-item label="资金量" :label-width="formLabelWidth">
+          <el-select  placeholder="请选择">
+            <el-option label="测试数据" value="区域一"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="12">
+        <el-form-item label="看盘精力" :label-width="formLabelWidth">
+          <el-select  placeholder="请选择">
+            <el-option label="测试数据" value="区域一"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+      <el-col :span="12">
+        <el-form-item label="投资问题" :label-width="formLabelWidth">
+          <el-select  placeholder="请选择">
+            <el-option label="测试数据" value="区域一"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+    </el-row>
+
+    <el-row>
+      <el-col :span="12">
+        <el-form-item label="盈利模式" :label-width="formLabelWidth">
+          <el-select  placeholder="请选择">
+            <el-option label="测试数据" value="区域一"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+      <el-col :span="12">
+        <el-form-item label="态度" :label-width="formLabelWidth">
+          <el-select  placeholder="请选择">
+            <el-option label="测试数据" value="区域一"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+    </el-row>
+
+    <el-row>
+      <el-col :span="12">
+        <el-form-item label="职业" :label-width="formLabelWidth">
+          <el-select  placeholder="请选择">
+            <el-option label="测试数据" value="区域一"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+      <el-col :span="12">
+        <el-form-item label="软件意向" :label-width="formLabelWidth">
+          <el-select  placeholder="请选择">
+            <el-option label="测试数据" value="区域一"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="12">
+        <el-form-item label="来源渠道/平台" :label-width="formLabelWidth">
+          <el-select  placeholder="请选择">
+            <el-option label="测试数据" value="区域一"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+      <el-col :span="12">
+        
+      </el-col>
+    </el-row>
+    <el-form-item label="备注" :label-width="formLabelWidth">
+      <el-input
+        type="textarea"
+        :autosize="{ minRows: 2, maxRows: 4}"
+        placeholder="请输入内容">
+      </el-form-item>
+  </el-form>
+  <div slot="footer" class="dialog-footer">
+    <el-button @click="dialogAddCustomer = false">取 消</el-button>
+    <el-button type="primary" @click="dialogAddCustomer = false">确 定</el-button>
+  </div>
+</el-dialog>

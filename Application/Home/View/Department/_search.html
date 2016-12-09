@@ -1,0 +1,116 @@
+<el-dialog title="高级查询" v-model="advancedSearch">
+<!-- <el-form :model="form"> -->
+<el-form >
+  <el-row>
+    <el-col :span="12">
+      <el-form-item label="单位名" :label-width="formLabelWidth">
+        <el-input  auto-complete="off"></el-input>
+      </el-form-item>
+    </el-col>
+    <el-col :span="12">
+      <el-form-item label="类型" :label-width="formLabelWidth">
+        <el-select  placeholder="请选择活动区域">
+          <el-option label="测试数据" value="片区"></el-option>
+          <el-option label="推广" value="推广"></el-option>
+          <el-option label="网销" value="网销"></el-option>
+          <el-option label="体验" value="体验"></el-option>
+        </el-select>
+      </el-form-item>
+    </el-col>
+  </el-row>
+   <el-row>
+    <el-col :span="12">
+      <el-form-item label="上级组织" :label-width="formLabelWidth">
+        <el-select  placeholder="">
+          <el-option label="测试数据" value="片区"></el-option>
+          <el-option label="推广" value="推广"></el-option>
+          <el-option label="网销" value="网销"></el-option>
+          <el-option label="体验" value="体验"></el-option>
+        </el-select>
+      </el-form-item>
+    </el-col>
+    <el-col :span="12">
+      <el-form-item label="片区" :label-width="formLabelWidth">
+        <el-select  placeholder="">
+          <el-option label="测试数据" value="片区"></el-option>
+          <el-option label="推广" value="推广"></el-option>
+          <el-option label="网销" value="网销"></el-option>
+          <el-option label="体验" value="体验"></el-option>
+        </el-select>
+      </el-form-item>
+    </el-col>
+   </el-row>
+    <el-row>
+      <el-col :span="12">
+        <el-form-item label="拓展一" :label-width="formLabelWidth">
+          <el-select  placeholder="">
+            <el-option label="测试数据" value="片区"></el-option>
+            <el-option label="推广" value="推广"></el-option>
+            <el-option label="网销" value="网销"></el-option>
+            <el-option label="体验" value="体验"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+      <el-col :span="12">
+        <el-form-item label="拓展二" :label-width="formLabelWidth">
+          <el-select  placeholder="">
+            <el-option label="测试数据" value="片区"></el-option>
+            <el-option label="推广" value="推广"></el-option>
+            <el-option label="网销" value="网销"></el-option>
+            <el-option label="体验" value="体验"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="12">
+        <el-form-item label="体验" :label-width="formLabelWidth">
+          <el-select  placeholder="">
+            <el-option label="测试数据" value="片区"></el-option>
+            <el-option label="推广" value="推广"></el-option>
+            <el-option label="网销" value="网销"></el-option>
+            <el-option label="体验" value="体验"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+      <el-col :span="12">
+        <el-form-item label="财务编号" :label-width="formLabelWidth">
+          <el-input  auto-complete="off"></el-input>
+        </el-form-item>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="12">
+        <el-form-item label="公示" :label-width="formLabelWidth">
+          <el-radio class="radio"  label="1">未录入</el-radio>
+          <el-radio class="radio"  label="2">已录入</el-radio>
+          <el-radio class="radio"  label="3">不存在</el-radio>
+        </el-form-item>
+      </el-col>
+      <el-col :span="12">
+        <el-form-item label="联系人" :label-width="formLabelWidth">
+          <el-input  auto-complete="off"></el-input>
+        </el-form-item>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="12">
+        <el-form-item label="固定电话" :label-width="formLabelWidth">
+          <el-input  auto-complete="off"></el-input>
+        </el-form-item>
+      </el-col>
+      <el-col :span="12">
+       
+      </el-col>
+    </el-row>
+
+
+
+
+
+  </el-form>
+  <div slot="footer" class="dialog-footer">
+    <el-button @click="advancedSearch = false">取 消</el-button>
+    <el-button type="primary" @click="advancedSearch = false">确 定</el-button>
+  </div>
+</el-dialog>

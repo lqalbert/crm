@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="UTF-8">
+	<title>后台管理 原型示例</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link rel="stylesheet" href="__PUBLIC__/plugins/layui/css/layui.css" media="all" />
+ 	<!-- <link rel="stylesheet" href="__PUBLIC__/css/global.css" media="all"> -->
+	<!--<link rel="stylesheet" href="__PUBLIC__/plugins/font-awesome/css/font-awesome.min.css"> -->
+
+	<link rel="stylesheet" href="__PUBLIC__/css/element-ui--index.css">
+
+	<style>
+		.pull-left {
+			float: left;
+		}
+		.pull-right {
+			float: right;
+		}
+		.container {
+			padding: 10px;
+		}
+		.container > .wrapp > .el-row {
+			margin-bottom: 20px;
+		}
+		.el-form--inline .el-form-item {
+			margin-bottom: 0px;
+		}
+		
+	</style>
+	<block name="head"></block>
+</head>
+<body>
+	<div style="margin:10px;">
+		<div class="el-alert el-alert--warning" ><i class="el-alert__icon el-icon-information"></i><div class="el-alert__content"><span class="el-alert__title">此页面仅作为需求讨论的参考与演示，不具有对应的功能，也不代表最终项目的功能。</span><!----><i class="el-alert__closebtn el-icon-close"></i></div></div>
+	</div>
+	
+	<block name="body"></block>
+	<!-- <script type="text/javascript" src="__PUBLIC__/plugins/layui/layui.js"></script> -->
+	<script src="__PUBLIC__/js/vue.js"></script>
+	<script src="__PUBLIC__/js/element-ui--index.js"></script>
+	<script src="__PUBLIC__/js/vue-resource.min.js"></script>
+	<block name="scripts"></block>
+</body>
+</html>

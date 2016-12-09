@@ -1,0 +1,52 @@
+<el-dialog title="录入跟踪" v-model="dialogFormVisible">
+  <el-form :model="form">
+  <el-row>
+  	<el-col :span="12">
+  		<el-form-item label="客户姓名" :label-width="formLabelWidth">
+	      <el-input v-model="form.name" auto-complete="off"></el-input>
+	    </el-form-item>
+  	</el-col>
+  	<el-col :span="12">
+  		<el-form-item label="客户类型" :label-width="formLabelWidth">
+  		  <el-select v-model="form.region" placeholder="请选择活动区域">
+  		    <el-option label="区域一" value="区域一"></el-option>
+  		    <el-option label="区域二" value="beijing"></el-option>
+  		  </el-select>
+  		</el-form-item>
+  	</el-col>
+  </el-row>
+   <el-row>
+   	<el-col :span="12">
+   		<el-form-item label="计划下次跟踪时间" :label-width="formLabelWidth">
+		    <el-date-picker
+		      v-model="form.name"
+		      type="date"
+		      placeholder="选择日期"
+		      >
+		    </el-date-picker>
+    	</el-form-item>
+   	</el-col>
+   	<el-col :span="12">
+   		<el-form-item label="跟类型" :label-width="formLabelWidth">
+	      <el-select v-model="form.region" placeholder="请选择活动区域">
+	        <el-option label="区域一" value="shanghai"></el-option>
+	        <el-option label="区域二" value="beijing"></el-option>
+	      </el-select>
+	    </el-form-item>
+   	</el-col>
+   </el-row>
+    <el-form-item label="跟踪内容" :label-width="formLabelWidth">
+      
+      <el-input
+		  type="textarea"
+		  :autosize="{ minRows: 2, maxRows: 4}"
+		  placeholder="请输入内容"
+		  v-model="form.name">
+		</el-input>
+    </el-form-item>
+  </el-form>
+  <div slot="footer" class="dialog-footer">
+    <el-button @click="dialogFormVisible = false">取 消</el-button>
+    <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+  </div>
+</el-dialog>
