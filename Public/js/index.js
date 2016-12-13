@@ -18,6 +18,18 @@ layui.config({
 		});
 	}).resize();
 
+    //可关闭选项卡
+	element.on('nav(user)', function(data) {
+		var $a = data.children('a');
+		if($a.data('tab') !== undefined && $a.data('tab')) {
+			tab.tabAdd({
+				title: $a.children('cite').text(),
+				icon: $a.children('i').text(),
+				href: $a.data('url')
+			});
+		}
+	});
+
 	//设置navbar
 	navbar.set({
 		elem: '#admin-navbar-side',

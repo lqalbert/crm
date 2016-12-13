@@ -9,9 +9,9 @@
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="format-detection" content="telephone=no">
-		<link rel="stylesheet" href="/Public/plugins/layui/css/layui.css" media="all" />
-		<link rel="stylesheet" href="/Public/css/global.css" media="all">
-		<link rel="stylesheet" href="/Public/plugins/font-awesome/css/font-awesome.min.css">
+		<link rel="stylesheet" href="/crm/Public/plugins/layui/css/layui.css" media="all" />
+		<link rel="stylesheet" href="/crm/Public/css/global.css" media="all">
+		<link rel="stylesheet" href="/crm/Public/plugins/font-awesome/css/font-awesome.min.css">
 	</head>
 	<body>
 		<div class="layui-layout layui-layout-admin">
@@ -25,7 +25,7 @@
 							<i class="fa fa-bars" aria-hidden="true"></i>
 						</div>
 					</div>
-					<ul class="layui-nav admin-header-item">
+					<ul class="layui-nav admin-header-item" lay-filter="user">
 						<li class="layui-nav-item">
 							<a href="javascript:;">清除缓存</a>
 						</li>
@@ -34,25 +34,20 @@
 						</li>
 						<li class="layui-nav-item">
 							<a href="javascript:;" class="admin-header-user">
-								<img src="/Public/images/0.jpg" />
-								<span>beginner</span>
+								<img src="/crm/Public/images/0.jpg" />
+								<span>riign_chengdu</span>
 							</a>
 							<dl class="layui-nav-child">
 								<dd>
-									<a href="javascript:;"><i class="fa fa-user-circle" aria-hidden="true"></i> 个人信息</a>
+									<a data-tab="true" data-url='javascript:;'><i class="layui-icon">&#xe629;</i> <cite>个人信息</cite></a>
 								</dd>
 								<dd>
-									<a href="javascript:;"><i class="fa fa-gear" aria-hidden="true"></i> 设置</a>
+									<a data-tab="true" data-url='javascript:;'><i class="layui-icon">&#xe620;</i> <cite>设置</cite></a>
 								</dd>
 								<dd>
 									<a href="login.html"><i class="fa fa-sign-out" aria-hidden="true"></i> 注销</a>
 								</dd>
 							</dl>
-						</li>
-					</ul>
-					<ul class="layui-nav admin-header-item-mobile">
-						<li class="layui-nav-item">
-							<a href="login.html"><i class="fa fa-sign-out" aria-hidden="true"></i> 注销</a>
 						</li>
 					</ul>
 				</div>
@@ -64,8 +59,8 @@
 				<div class="layui-tab admin-nav-card layui-tab-brief" lay-filter="admin-tab">
 					<ul class="layui-tab-title">
 						<li class="layui-this">
-							<i class="fa fa-dashboard" aria-hidden="true"></i>
-							<cite>控制面板</cite>
+							<i class="layui-icon" aria-hidden="true">&#xe656;</i>
+							<cite>我的工作台</cite>
 						</li>
 					</ul>
 					<div class="layui-tab-content" style="min-height: 150px; padding: 5px 0 0 0;">
@@ -79,10 +74,10 @@
 				<i class="layui-icon">&#xe602;</i>
 			</div>
 			<div class="site-mobile-shade"></div>
-			<script type="text/javascript" src="/Public/plugins/layui/layui.js"></script>
-			<!-- <script type="text/javascript" src="/Public/datas/nav.js" ></script> -->
+			<script type="text/javascript" src="/crm/Public/plugins/layui/layui.js"></script>
+			<!-- <script type="text/javascript" src="/crm/Public/datas/nav.js" ></script> -->
 			<script type="text/javascript" src="<?php echo U('Nav/index');?>" ></script>
-			<script src="/Public/js/index.js"></script>
+			<script src="/crm/Public/js/index.js"></script>
 		</div>
 	</body>
 
