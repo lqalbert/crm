@@ -3,6 +3,7 @@ return array(
   'MENU' => array (
   array (
     'title' => '百宝箱',
+
     'icon' => '&#xe6f6;',
     'spread' => false,
     'children' => 
@@ -46,6 +47,43 @@ return array(
         'title' => '系统管理',
         'icon' => '&nbsp;&#xe613;',
         'href' => 'javascript:;',
+        'icon' => '&#xe641;',
+        'href' => '/index.php/Home/Index/main.html',
+      ),
+      array (
+        'title' => '消息盒子',
+        'icon' => '&#xe63c;',
+        'href' => '/index.php/Home/Index/msg.html',
+      ),
+      array (
+        'title' => '系统公告',
+        'icon' => '&#xe63c;',
+        'href' => '#',
+      ),
+      array (
+        'title' => '集思信箱',
+        'icon' => '&#xe609;',
+        'href' => '#',
+      ),
+      array (
+        'title' => '工作总结',
+        'icon' => '&#xe62a;',
+        'href' => '#',
+      ),
+      array (
+        'title' => '培训学院',
+        'icon' => '&#xe60c;',
+        'href' => '#',
+      ),
+      array (
+        'title' => '素材库',
+        'icon' => '&#xe60c;',
+        'href' => '#',
+      ),
+      array (
+        'title' => '系统管理',
+        'icon' => '&#xe60c;',
+        'href' => '#',
       ),
     ),
   ),
@@ -92,6 +130,17 @@ return array(
         'title' => '权限管理',
         'icon' => '&nbsp;&#xe62d;',
         'href' => 'javascript:;',
+        'href' => '/index.php/Home/Employee/index',
+      ),
+      array (
+        'title' => '角色管理',
+        'icon' => 'fa-check-square-o',
+        'href' => '#',
+      ),
+      array (
+        'title' => '权限管理',
+        'icon' => 'fa-check-square-o',
+        'href' => '#',
       ),
     ),
   ), 
@@ -104,13 +153,19 @@ return array(
     array (
       array (
         'title' => '客户管理',
+
         'icon' => '&nbsp;&#xe67d;',
         'href' => './index.php/Home/Customer/index',
       ),
       array (
         'title' => '资料接收',
         'icon' => '&nbsp;&#xe650;',
-        'href' => 'javascript:;',
+        'href' => '/index.php/Home/Customer/index'//U('Customer/index'),
+      ),
+      array (
+        'title' => '资料接收',
+        'icon' => 'fa-qq',
+        'href' => 'http://www.baidu.com',
       ),
     ),
   ),
@@ -123,6 +178,7 @@ return array(
     array ( 
       array (
         'title' => '量化报表',
+
         'icon' => '&nbsp;&#xe6f2;',
         'href' => 'javascript:;',
       ),
@@ -156,6 +212,36 @@ return array(
         'icon' => '&nbsp;&#xe601;',
         'href' => 'javascript:;',
       ),
+      array (
+        'title' => '客户报表',
+        'icon' => 'fa-qq',
+        'href' => '#',
+      ),
+      array (
+        'title' => '客户统计',
+        'icon' => 'fa-qq',
+        'href' => '#',
+      ),
+      array (
+        'title' => '业绩报表',
+        'icon' => 'fa-qq',
+        'href' => '#',
+      ),
+      array (
+        'title' => '续费报表',
+        'icon' => 'fa-qq',
+        'href' => '#',
+      ),
+      array (
+        'title' => '业绩排名',
+        'icon' => 'fa-qq',
+        'href' => '#',
+      ),
+      array (
+        'title' => '资料跟踪',
+        'icon' => 'fa-qq',
+        'href' => '#',
+      ),
     ),
   ),
   array (
@@ -184,6 +270,21 @@ return array(
         'title' => '回收站',
         'icon' => '&nbsp;&#xe6ec;',
         'href' => 'javascript:;',
+      ),
+      array (
+        'title' => '手机预查',
+        'icon' => 'fa-qq',
+        'href' => '#',
+      ),
+      array (
+        'title' => '异常IP',
+        'icon' => 'fa-qq',
+        'href' => '#',
+      ),
+      array (
+        'title' => '回收站',
+        'icon' => 'fa-qq',
+        'href' => '#',
       ),
     ),
   ),

@@ -7,7 +7,12 @@ class IndexController extends Controller {
 	public function index() {
 		$this->display ();
 	}
-	function main() {
+
+	public function main() {
 		$this->display ();
 	}
+
+	// public function msg() {
+		
+	// }
 }

@@ -29,8 +29,27 @@
 		.el-form--inline .el-form-item {
 			margin-bottom: 0px;
 		}
+		/*#app>.wrapp{
+			display: none;
+		}*/
+
+
 		
 	</style>
+	<!-- 如果没有 则 提供一些高级的js功能  -->
+	<script src="__PUBLIC__/js/advancejs.js"></script>
+
+	<!-- vue 通用部分 -->
+	<script src="__PUBLIC__/js/vueapp-base.js"></script>
+	<!-- / vue 通用部分 -->
+
+	<!-- 不支持IE8 及以下的浏览器 -->
+	<!--[if lte IE 8]> 
+	<script>
+		window.location.href="{:U('notsupport')}";
+	</script>
+	<![endif]-->
+
 	<block name="head"></block>
 </head>
 <body>
@@ -39,10 +58,12 @@
 	</div>
 	
 	<block name="body"></block>
-	<!-- <script type="text/javascript" src="__PUBLIC__/plugins/layui/layui.js"></script> -->
 	<script src="__PUBLIC__/js/vue.js"></script>
 	<script src="__PUBLIC__/js/element-ui--index.js"></script>
 	<script src="__PUBLIC__/js/vue-resource.min.js"></script>
 	<block name="scripts"></block>
+	<script>
+		window.vmInstance  = new Vue(window.vmOption);
+	</script>
 </body>
 </html>
