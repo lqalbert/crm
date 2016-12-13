@@ -1,5 +1,6 @@
 <?php
 return array(
 	//'配置项'=>'配置值'
-	'LOAD_EXT_CONFIG' => 'menu' 
+	'URL_CASE_INSENSITIVE' =>  true,  
+	'LOAD_EXT_CONFIG'      => 'menu' 
 );

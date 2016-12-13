@@ -2,7 +2,7 @@
 <block name="head"></block>
 <block name="body">
 	<div id="app" class="container">
-		<div class="wrapp" v-show="show">
+		<div class="wrapp" v-show="show" style="display: none">
 			<!-- seach form -->
 			<el-row>
 				<el-col :span="24">
@@ -62,10 +62,10 @@
 			  <div class="grid-content bg-purple">
 			  	<span class="wrapper">
 			  		<el-button-group>
-			  			<el-button type="primary" icon="plus"   @click="dialogAddGroup = true">添加</el-button>
-					    <el-button type="primary" icon="edit"   @click="dialogEditGroup = true">修改信息(合二为一)</el-button>
+			  			<el-button type="primary" icon="plus" size="small"   @click="dialogAddGroup = true">添加</el-button>
+					    <el-button type="primary" icon="edit" size="small"   @click="dialogEditGroup = true">修改信息(合二为一)</el-button>
 					    <!-- <el-button type="primary" icon="arrow-left"  @click="">修改一般信息</el-button> -->
-					    <el-button type="primary" icon="close"  @click="dialogStopGroup = true">终止团队或小组</el-button>
+					    <el-button type="primary" icon="close" size="small"  @click="dialogStopGroup = true">终止团队或小组</el-button>
 			  		</el-button-group>
 				</span>
 			  </div>
@@ -82,53 +82,53 @@
 
 		</div>
 
+		<div class="dialogWrapper" v-show="show" style="display: none">
+			<!-- 高级查询 -->
+			<include file="_search" />
+			<!-- / 高级查询 -->
+
+			<!-- 添加 -->
+			<include file="_add" />
+			<!-- / 添加 -->
+
+			<!-- 编辑 -->
+			<include file="_edit" />
+			<!-- / 编辑 -->
+
+			<!-- stop -->
+			<include file="_stop" />
+			<!-- / stop -->
+		</div>
 		
-		<!-- 高级查询 -->
-		<include file="_search" />
-		<!-- / 高级查询 -->
-
-		<!-- 添加 -->
-		<include file="_add" />
-		<!-- / 添加 -->
-
-		<!-- 编辑 -->
-		<include file="_edit" />
-		<!-- / 编辑 -->
-
-		<!-- stop -->
-		<include file="_stop" />
-		<!-- / stop -->
 	</div>
 </block>
 <block name="scripts">
 	<script>
-		var Main = {
-			el: '#app',
-			data:{
-				// 界面
-				show:true,
-				loading: false,
+		Oassign(window.vmData, {
+			loading: false,
 
-				formLabelWidth: '140px',
+			formLabelWidth: '100px',
 
-				//数据
-				datalist:[],
+			//数据
+			datalist:[],
 
-				// 分页
-				currentPage: 1,
-				total: 100,
+			// 分页
+			currentPage: 1,
+			total: 100,
 
-				//高级查询
-				advancedSearch:false,
+			//高级查询
+			advancedSearch:false,
 
-				//添加 对话框
-				dialogAddGroup:false,
+			//添加 对话框
+			dialogAddGroup:false,
 
-				//编辑对话框
-				dialogEditGroup: false,
-				//终止小组
-				dialogStopGroup: false
-			},
+			//编辑对话框
+			dialogEditGroup: false,
+			//终止小组
+			dialogStopGroup: false
+		})
+
+		Oassign(vmOption, {
 			methods:{
 				handleClick:function(index, row){
 
@@ -136,11 +136,8 @@
 				handleCurrentChange:function(page){
 
 				},
-			},
-			updated:function(){
-
 			}
-		}
-		var vm = new Vue(Main);
+		})
+		
 	</script>
 </block>

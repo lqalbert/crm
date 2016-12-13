@@ -5,7 +5,7 @@
 </block>
 <block name="body">
 <div id="app" class="container" >
-<div class="wrapp" v-show="show">
+<div class="wrapp" v-show="show" style="display: none;">
 	<el-row>
 	<el-col :span="24">
 		<el-form :inline="true" :model="formInline"  >
@@ -39,7 +39,7 @@
 	    </el-table-column>
 	    <el-table-column prop="address" label="手机" show-overflow-tooltip>
 	    </el-table-column>
-		<el-table-column  label="QQ号" >
+		  <el-table-column  label="QQ号" >
 	    </el-table-column>
 	    <el-table-column  label="QQ昵称" show-overflow-tooltip>
 	    </el-table-column>
@@ -63,150 +63,120 @@
   </el-col>
 </el-row>
 
-<!-- toolbar -->
-<el-row type="type"  justify="space-between" align="middle"  class="row-bg">
-  <el-col :span="12">
-  <div class="grid-content bg-purple">
-  	 <span class="wrapper">
-    <el-button  @click="dialogFormVisible = true" >录入跟踪</el-button>
-    <el-button  @click="addCustomer">录入客户</el-button>
-    <el-button  @click="addCustomer">修改客户</el-button>
-    <!-- <el-button>计划</el-button>
-    <el-button>推介</el-button> -->
-  </span>
-  </div>
-  </el-col>
-  <el-col :span="12">
-  <div class="grid-content bg-purple-light pull-right">
+  <!-- toolbar -->
+  <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
+    <el-col :span="12">
+    <div class="grid-content bg-purple">
+    	 <span class="wrapper">
+      <el-button  @click="dialogFormVisible = true" >录入跟踪</el-button>
+      <el-button  @click="addCustomer">录入客户</el-button>
+      <el-button  @click="addCustomer">修改客户</el-button>
+      <!-- <el-button>计划</el-button>
+      <el-button>推介</el-button> -->
+    </span>
+    </div>
+    </el-col>
+    <el-col :span="12">
+    <div class="grid-content bg-purple-light pull-right">
 
-    <!-- page -->
-    <include file="Common:_pagination" />
-    <!-- / page -->
-    
-  </div></el-col>
-</el-row>
-<!-- / toolbar -->
+      <!-- page -->
+      <include file="Common:_pagination" />
+      <!-- / page -->
+      
+    </div></el-col>
+  </el-row>
+  <!-- / toolbar -->
 </div>
 
+<div class="dialogWrapper" v-show="show" style="display: none">
+  <!-- 录入跟踪  -->
+  <include file="_track" />
+  <!-- / 录入跟踪 -->
 
-
-<!-- 录入跟踪  -->
-<include file="_track" />
-<!-- / 录入跟踪 -->
-
-<!-- 录入客户 -->
-<include file="_addCustomer" />
-<!-- / 录入客户 -->
-
+  <!-- 录入客户 -->
+  <include file="_addCustomer" />
+  <!-- / 录入客户 -->
+</div>
 
 </div> 
 </block>
-
-
 <block name="scripts">
 
 <script>
-	
-var Main = {
-	el: '#app',
-    data: {
-		formInline: {
-		  user: '',
-		  region: ''
-		},
-		formLabelWidth: '140px',
-		dialogFormVisible: false,
-    dialogAddCustomer: false,
-		form: {
-          name: '',
-          region: '',
-          date1: '',
-          date2: '',
-          delivery: false,
-          type: [],
-          resource: '',
-          desc: ''
-        },
-		/*
-			{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
-        }
-		*/
-		tableData3: [],
-		multipleSelection: [],
-		loading: false	,
-		show: false,
+Oassign(vmData, {
 
+  formInline: {
+      user: '',
+      region: ''
+  },
+  form: {
+      name: '',
+      region: '',
+      date1: '',
+      date2: '',
+      delivery: false,
+      type: [],
+      resource: '',
+      desc: ''
+  },
 
-		currentPage: 1,
-		total: 100
-    },
-    methods: {
+  tableData3: [],
+  multipleSelection: [],
+
+  currentPage: 1,
+  total: 100,
+
+  loading: false ,
+  formLabelWidth: '140px',
+
+  dialogFormVisible: false,
+  dialogAddCustomer: false
+});
+Oassign(vmOption,{
+  methods: {
       handleSelectionChange:function(val) {
         this.multipleSelection = val;
       },
       handleClick:function(index, row){
-      	console.log(index);
-      	console.log(row);
+        console.log(index);
+        console.log(row);
       },
       onSubmit:function(){
 
       },
       onReset:function(){
-      	for ( var x in this.formInline ) {
-      		this.formInline[x] = null;
-      	}
+        for ( var x in this.formInline ) {
+          this.formInline[x] = null;
+        }
       },
       handleSizeChange:function(){
 
       },
       handleCurrentChange:function(page){
-      	// POST /someUrl
-      	// this.$set(this.loading, true);
-      	// console.log(this.$data);
-      	/*this.loading = true;
-      	let  vmThis = this;
-      	let  pa = this.formInline;
-    		this.$http.get('{:U("Nav/test")}', {params: pa}).then((response) => {
-    			vmThis.$set(vmThis, 'loading', false);
-    			vmThis.$set(vmThis, 'tableData3', response.body)
-    			vmThis.$set(vmThis, 'total', 2);
-    		}, (response) => {
-    			vmThis.$set(vmThis, 'loading', false);
-    		});*/
+        // POST /someUrl
+        // this.$set(this.loading, true);
+        // console.log(this.$data);
+        /*this.loading = true;
+        let  vmThis = this;
+        let  pa = this.formInline;
+        this.$http.get('{:U("Nav/test")}', {params: pa}).then((response) => {
+          vmThis.$set(vmThis, 'loading', false);
+          vmThis.$set(vmThis, 'tableData3', response.body)
+          vmThis.$set(vmThis, 'total', 2);
+        }, (response) => {
+          vmThis.$set(vmThis, 'loading', false);
+        });*/
 
 
       },
       fromatterIndex:function(row, col){
-      	// console.log(row);
-      	// console.log(col);
+        // console.log(row);
+        // console.log(col);
       },
       addCustomer:function(){
         this.dialogAddCustomer  = true;
       }
-    },
-     updated: function () {
-	    // console.log("abc");
-	    this.show = true;
-	    // window.$("#app").css("display", "block");
-	 }
-  }
-/*var Ctor = Vue.extend(Main)
-new Ctor().$mount('#app')*/
-new Vue(Main);
+    }
+})
 </script>
 </block>
