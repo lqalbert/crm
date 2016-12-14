@@ -58,6 +58,9 @@ window.vmHooks.add("mounted", function(){
 	
 	this.show = true;
 })
+
+
+
 // console.log(window.vmHooks); 
 
 // show false 在 mounted 之前不起作用

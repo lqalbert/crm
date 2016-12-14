@@ -78,6 +78,7 @@
 			<!-- <script type="text/javascript" src="/crm/Public/datas/nav.js" ></script> -->
 			<script type="text/javascript" src="<?php echo U('Nav/index');?>" ></script>
 			<script src="/crm/Public/js/index.js"></script>
+			
 		</div>
 	</body>
 
