@@ -58,6 +58,7 @@ window.vmHooks.add("mounted", function(){
 	this.show = true;
 })
 
+
 //methods 虽然没有用比较新的技术 来实现，
 //不过这样做也行
 function methods(){
@@ -103,6 +104,11 @@ methods.prototype.values = function(key){
 }
 
 window.vmMethods = new methods();
+
+
+
+
+// console.log(window.vmHooks); 
 
 
 // show false 在 mounted 之前不起作用
