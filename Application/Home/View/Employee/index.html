@@ -140,6 +140,7 @@
 <block name="scripts">
 	<script>
 		Oassign(vmData, {
+			loading: false,
 			formLabelWidth: '100px',
 
 			datalist:[
@@ -184,15 +185,13 @@
 			dialogEditConfirm: false
 		});
 
-		Oassign(vmOption, {
-			methods:{
-				handleClick:function(index, row){
-					this.dialogEditID = true;
-				},
-				handleCurrentChange:function(page){
-
-				},
-			}
+		window.vmMethods.set("handleClick", function(index, row){
+			this.dialogEditID = true;
 		})
+
+		window.vmMethods.set("handleCurrentChange", function(page){
+			
+		})
+		
 	</script>
 </block>

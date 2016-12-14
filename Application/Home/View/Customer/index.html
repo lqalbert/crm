@@ -7,23 +7,23 @@
 <div id="app" class="container" >
 <div class="wrapp" v-show="show" style="display: none;">
 	<el-row>
-	<el-col :span="24">
-		<el-form :inline="true" :model="formInline"  >
-		  <el-form-item>
-		    <el-input v-model="formInline.user" placeholder="审批人"></el-input>
-		  </el-form-item><el-form-item>
-		    <el-select v-model="formInline.region" placeholder="活动区域">
-		      <el-option label="区域一" value="区域一"></el-option>
-		      <el-option label="区域二" value="区域二"></el-option>
-		    </el-select>
-		  </el-form-item><el-form-item>
-		    <el-button  @click="onReset">清空</el-button>
-		    <el-button type="primary" @click="onSubmit">查询</el-button> 
-        <el-button  >高级查询</el-button> 
-		  </el-form-item>
-		</el-form>
-	</el-col>
-</el-row>
+  	<el-col :span="24">
+  		<el-form :inline="true" :model="formInline"  >
+  		  <el-form-item>
+  		    <el-input v-model="formInline.user" placeholder="审批人"></el-input>
+  		  </el-form-item><el-form-item>
+  		    <el-select v-model="formInline.region" placeholder="活动区域">
+  		      <el-option label="区域一" value="区域一"></el-option>
+  		      <el-option label="区域二" value="区域二"></el-option>
+  		    </el-select>
+  		  </el-form-item><el-form-item>
+  		    <el-button  @click="onReset">清空</el-button>
+  		    <el-button type="primary" @click="onSubmit">查询</el-button> 
+          <el-button  >高级查询</el-button> 
+  		  </el-form-item>
+  		</el-form>
+  	</el-col>
+  </el-row>
 
 <el-row>
   <el-col :span="24">
