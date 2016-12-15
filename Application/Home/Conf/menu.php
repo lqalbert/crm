@@ -86,12 +86,12 @@ return array(
       array (
         'title' => '角色管理',
         'icon' => '&nbsp;&#xe625;',
-        'href' => 'javascript:;',
+        'href' => './index.php/Home/Role/index',
       ),
       array (
         'title' => '权限管理',
         'icon' => '&nbsp;&#xe62d;',
-        'href' => 'javascript:;',
+        'href' => './index.php/Home/Permission/index',
       ),
     ),
   ), 

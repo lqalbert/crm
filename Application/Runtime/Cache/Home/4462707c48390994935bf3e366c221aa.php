@@ -14,6 +14,9 @@
 	<link rel="stylesheet" href="/crm/Public/css/element-ui--index.css">
 
 	<style>
+	    *{
+	    	font-family: microsoft YaHei;
+	    }
 		.pull-left {
 			float: left;
 		}

@@ -7,16 +7,18 @@
 			<el-row>
 				<el-col :span="24">
 					<el-form :inline="true"   >
-					  <el-form-item><el-input  placeholder="查询字段一"></el-input>
-					  </el-form-item><el-form-item>
-					    <el-select  placeholder="查询字段二">
+					  <el-form-item>
+					    <el-input  placeholder="查询字段一" v-model="sousuo"></el-input>
+					    </el-form-item><el-form-item>
+					    <el-select  v-model="input" clearable placeholder="查询字段二">
 					      <el-option label="区域一" value="区域一"></el-option>
 					      <el-option label="区域二" value="区域二"></el-option>
 					    </el-select>
-					  </el-form-item><el-form-item>
-					    <el-button  >清空</el-button>
-					    <el-button type="primary" >查询</el-button> 
-			        	<el-button  @click="advancedSearch=true">高级查询</el-button> 
+					  </el-form-item>
+					  <el-form-item>
+					    <el-button icon="close"> 清空</el-button>
+					    <el-button type="primary" icon="search" @click="sb(sousuo)">查询</el-button> 
+			        	<el-button  @click="advancedSearch=true" icon="search">高级查询</el-button> 
 					  </el-form-item>
 					</el-form>
 				</el-col>
@@ -69,11 +71,13 @@
 			  <el-col :span="12">
 			  <div class="grid-content bg-purple">
 			  	<span class="wrapper">
-				    <el-button  @click="dialogAddDepartment = true">添加</el-button>
-				    <!-- <el-button  @click="">录入客户</el-button>
-				    <el-button  @click="">修改客户</el-button> -->
-				    <!-- <el-button>计划</el-button>
-				    <el-button>推介</el-button> -->
+			  		<el-tooltip content="添加新的组织单位！" placement="right">
+					    <el-button  @click="dialogAddDepartment = true" icon="plus" type="primary">添加</el-button>
+					    <!-- <el-button  @click="">录入客户</el-button>
+					    <el-button  @click="">修改客户</el-button> -->
+					    <!-- <el-button>计划</el-button>
+					    <el-button>推介</el-button> -->
+				    </el-tooltip>
 				</span>
 			  </div>
 			  </el-col>
@@ -106,7 +110,7 @@
 	<script>
 		// vm option 里面的 data属性
 		Oassign(window.vmData ,{
-			loading: false,
+			loading: true,
 			formLabelWidth: '140px',
 
 			datalist:[],
@@ -118,18 +122,25 @@
 			advancedSearch: false,
 			//添加对话框
 			dialogAddDepartment: false,
+			sousuo:'',
+			input:'区域一',
 		});
 
 		Oassign(window.vmOption, {
 			//方法
 			methods : {
+          
 				handleClick:function(index, row) {
-
+                      
+				},
+				sb:function(sousuo){
+					alert(sousuo);
 				},
 				handleCurrentChange: function(page){
-
-				}
+                    this.loading=false;
+				},
 			}
 		})
+
 	</script>
 </block>
