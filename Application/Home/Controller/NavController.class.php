@@ -1,9 +1,7 @@
 <?php
 namespace Home\Controller;
 
-use Think\Controller;
-
-class NavController extends Controller {
+class NavController extends CommonController {
 	public function index() {
 		$nav = C('MENU');
 		$this->transNavUrl($nav);

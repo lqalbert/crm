@@ -1,7 +1,7 @@
 <?php
 namespace Home\Controller;
-use Think\Controller;
-class PermissionController extends Controller{
+
+class PermissionController extends CommonController{
 		function index(){
 			$this->display();
 		}

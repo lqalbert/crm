@@ -1,9 +1,7 @@
 <?php
 namespace Home\Controller;
 
-use Think\Controller;
-
-class GroupController extends Controller {
+class GroupController extends CommonController {
 	// public function index (){
 	// 	$this->display();
 	// }

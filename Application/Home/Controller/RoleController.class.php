@@ -1,7 +1,7 @@
 <?php
 namespace Home\Controller;
-use Think\Controller;
-class RoleController extends Controller{
+
+class RoleController extends CommonController{
 	function index(){
 		$this->display();
 	}

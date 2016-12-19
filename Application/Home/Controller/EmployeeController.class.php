@@ -1,9 +1,7 @@
 <?php
 namespace Home\Controller;
 
-use Think\Controller;
-
-class EmployeeController extends Controller {
+class EmployeeController extends CommonController {
 	// public function index (){
 	// 	$this->display();
 	// }

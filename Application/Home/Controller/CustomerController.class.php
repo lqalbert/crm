@@ -1,9 +1,7 @@
 <?php
 namespace Home\Controller;
 
-use Think\Controller;
-
-class CustomerController extends Controller {
+class CustomerController extends CommonController {
 	public function index () {
 		// $dataList = $this->getList();
 
