@@ -89,7 +89,7 @@ layui.config({
 			}
 			title += '<cite>' + data.title + '</cite>';
 			if(that.config.closed) {
-				title += '<i class="layui-icon layui-unselect layui-tab-close" data-id="' + globalTabIdIndex + '">&#x1006;</i>';
+				title += '<i class="layui-icon layui-unselect layui-tab-close" data-id="' + globalTabIdIndex + '">&#xe652;</i>';
 			}
 			//添加tab
 			element.tabAdd(ELEM.tabFilter, {
