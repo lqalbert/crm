@@ -4,9 +4,8 @@ namespace Home\Controller;
 use Think\Controller;
 
 class CustomerController extends Controller {
-
 	public function index () {
-		
+		// $dataList = $this->getList();
 
 		$this->assign("datalist", $this->getList());
 		$this->display();
@@ -32,5 +31,4 @@ class CustomerController extends Controller {
 	public function delete(){
 		
 	}
-
 }

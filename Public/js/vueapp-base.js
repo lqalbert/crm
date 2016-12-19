@@ -31,7 +31,7 @@ hooks.prototype.add = function(hookName, callback, fous){
 	}
 }
 
-hooks.prototype.del = function(){
+hooks.prototype.del = function(callback){
 	if (callback) {
 		var index = this[hookName].indexOf(callback);
 		if (index != -1) {
@@ -55,13 +55,61 @@ hooks.prototype.exeHooks = function(vmThis, hookName){
 window.vmHooks = new hooks();
 
 window.vmHooks.add("mounted", function(){
-	
 	this.show = true;
 })
 
 
+//methods 虽然没有用比较新的技术 来实现，
+//不过这样做也行
+function methods(){
+	this.length =  0;
+	this.keys   = [];
+	this.data   = {};
+}
+methods.prototype.set = function(key, value){
+	if (this.data[key] == null) {
+		this.keys.push(key);
+		this.length = this.keys.length;
+	}
+	this.data[key] = value;
+}
+
+methods.prototype.get = function(key){
+	return this.data[key];
+}
+
+methods.prototype.has = function(key){
+	return this.get(key) ? true : false;
+}
+
+methods.prototype.clear = function(){
+	this.keys = [];
+	// this.data = null;
+	this.data = {};
+	this.length = 0;
+}
+methods.prototype.delete = function(key){
+	//这里不优雅 暂时这样搞
+	// 应该把删除功能 放到 Array的原型上
+	var i = this.keys.indexOf(key)
+	if (i != -1) {
+		this.keys.splice(i,1);
+	}
+	this.data[key] = null;
+	this.length = this.keys.length;
+}
+
+methods.prototype.values = function(key){
+	return this.data;
+}
+
+window.vmMethods = new methods();
+
+
+
 
 // console.log(window.vmHooks); 
+
 
 // show false 在 mounted 之前不起作用
 // #app>wrapp inline style display:none 
@@ -108,5 +156,4 @@ window.vmOption = {
 	destroyed: function(){
 		window.vmHooks.exeHooks(this, 'destroyed');
 	}
-	
 }
