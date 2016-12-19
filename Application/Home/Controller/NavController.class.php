@@ -6,8 +6,27 @@ use Think\Controller;
 class NavController extends Controller {
 	public function index() {
 		$nav = C('MENU');
+		$this->transNavUrl($nav);
 		$this->assign("nav", $nav);
 		$this->display();
+	}
+
+
+	private function transNavUrl(&$nav) {
+		foreach ($nav as $key => $value) {
+			
+			if (isset($value['href'])) {
+				$nav[$key]['href'] = $this->makeUrl($value['href']);
+			}
+
+			if (isset($value['children'])) {
+				$this->transNavUrl($nav[$key]['children']);
+			} 
+		}
+	}
+
+	private function makeUrl($url) {
+		return $url!="javascript:;" ? U($url) : $url;
 	}
 
 	public function test() {

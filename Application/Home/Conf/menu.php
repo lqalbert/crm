@@ -10,12 +10,12 @@ return array(
       array (
         'title' => '我的工作台',
         'icon' => '&nbsp;&#xe656;',
-        'href' => './index.php/Home/Index/main',
+        'href' => 'Index/main',
       ),
       array (
         'title' => '消息盒子',
         'icon' => '&nbsp;&#xe72e;',
-        'href' => './index.php/Home/Index/msg',
+        'href' => 'Index/msg',
       ),
       array (
         'title' => '系统公告',
@@ -45,7 +45,7 @@ return array(
       array (
         'title' => '系统管理',
         'icon' => '&nbsp;&#xe613;',
-        'href' => './index.php/Home/Index/main.html',
+        'href' => 'Index/main.html',
       ),
     ),
   ),
@@ -71,27 +71,27 @@ return array(
       array (
         'title' => '组织单位',
         'icon' => '&nbsp;&#xe61f;',
-        'href' => './index.php/Home/Department/index',
+        'href' => 'Department/index',
       ),
       array (
         'title' => '团队小组',
         'icon' => '&nbsp;&#xe608;',
-        'href' => './index.php/Home/Group/index',
+        'href' => 'Group/index',
       ),
       array (
         'title' => '员工管理',
         'icon' => '&nbsp;&#xe65a;',
-        'href' => './index.php/Home/Employee/index',
+        'href' => 'Employee/index',
       ),
       array (
         'title' => '角色管理',
         'icon' => '&nbsp;&#xe625;',
-        'href' => './index.php/Home/Role/index',
+        'href' => 'Home/Role/index',
       ),
       array (
         'title' => '权限管理',
         'icon' => '&nbsp;&#xe62d;',
-        'href' => './index.php/Home/Permission/index',
+        'href' => 'Permission/index',
       ),
     ),
   ), 
@@ -105,12 +105,12 @@ return array(
       array (
         'title' => '客户管理',
         'icon' => '&nbsp;&#xe67d;',
-        'href' => './index.php/Home/Customer/index',
+        'href' => 'Customer/index',
       ),
       array (
         'title' => '资料接收',
         'icon' => '&nbsp;&#xe650;',
-        'href' => './index.php/Home/Customer/index',
+        'href' => 'Customer/index',
       ),
     ),
   ),
