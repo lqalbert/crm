@@ -110,7 +110,7 @@ return array(
       array (
         'title' => '资料接收',
         'icon' => '&nbsp;&#xe650;',
-        'href' => './index.php/Home/Customer/index',
+        'href' => 'javascript:;',
       ),
     ),
   ),

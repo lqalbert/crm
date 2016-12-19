@@ -1,0 +1,239 @@
+<extend name="Common:base"/>
+<block name="head">
+	<style>
+	  .el-table .info-row {
+	    background: #ffffff;
+	  }
+
+	  .el-table .positive-row {
+	    background: #c9e5f5;
+	  }
+ </style>
+</block>
+<block name="body">
+  <div id="app" class="container">
+  	<div v-show="show" class="wrapp" style="display:none">
+  		<!-- table -->
+  		<el-row>
+     <el-col :span="24">
+      <el-table :data="datalist" v-loading="loading" element-loading-text="拼命加载中" style="width:100%" :row-class-name="tableRowClassName">
+        <el-table-column align="center" type="index" label="编号" width="100">
+        </el-table-column>
+        <el-table-column align="center" label="权限分类" prop="classfication">
+        </el-table-column>
+        <el-table-column align="center" label="权限名称" prop="name">
+        </el-table-column>
+        <el-table-column align="center" label="权限说明" prop="description">
+        </el-table-column>
+        <el-table-column inline-template align="center" label="当前状态">
+          <el-switch v-model="row.value1" on-color="#13ce66" off-color="#ff4949" @change="visibile">
+          </el-switch>
+        </el-table-column>
+        <el-table-column align="center" prop="time" label="时间">
+        </el-table-column>
+        <el-table-column inline-template align="center" label="操作">
+         <div>
+         	 <el-button size="small" @click="handleEdit($index,row)">
+         	   修改
+         	 </el-button>
+         	 <el-button size="small" type="danger" @click="handleDelete($index,row)">
+         	   删除
+         	 </el-button>
+         </div>
+        </el-table-column>
+      </el-table>
+     </el-col>
+  	 </el-row>
+  	 <!-- table -->
+  		<!-- toolbar -->
+  		<el-row type="type" justify="space-around" align="middle" class="row-bg">
+  		 <el-col :span="12">
+       <div class="grid-content bg-purple">
+       	 <span class="wrapper">
+       	 	<el-tooltip content="添加新权限！" placement="right">
+       	 	  <el-button @click="dialogAddPermission = true" icon="plus" type="primary">添加
+       	 	  </el-button>
+       	  </el-tooltip>
+       	 </span>
+       </div>
+  		 </el-col>
+  		 <el-col :span="12">
+  		  <div class="grid-content bg-purple-light pull-right">
+  		  	 <!-- page -->
+  		  	  <include file="Common:_pagination"/>
+  		  	 <!-- page -->
+  		  </div>
+  		 </el-col>
+  	 </el-row>
+  		<!-- toolbar -->
+  	</div>
+  	<div v-show="show" style="display:none">
+  		<!-- 添加 -->
+  		<include file="_add"/>
+  		<!-- 修改 -->
+  		<include file="_edit"/>
+  	</div>
+  </div>
+</block>
+<block name="scripts">
+	<script type="text/javascript">
+		// vm option 里面的 data属性
+		Oassign(window.vmData ,{
+			value1:false,
+			value2:'',
+			loading: false,
+			formLabelWidth: '140px',
+			currentPage: 1,
+			total:100,
+
+			datalist:[{
+				classfication:'员工管理',
+				name:'员工管理',
+				description:'员工管理模块下的权限列表',
+				value1: true,
+				time:'2016-12-15 00:00:00',
+			},{
+				classfication:'',
+				name:'员工列表',
+				description:'',
+				value1: true,
+				time:'2016-12-15 00:00:00',
+			},{
+				classfication:'',
+				name:'添加员工',
+				description:'',
+				value1: true,
+				time:'2016-12-15 00:00:00',
+			},{
+				classfication:'',
+				name:'修改员工',
+				description:'',
+				value1: true,
+				time:'2016-12-15 00:00:00',
+			},{
+				classfication:'',
+				name:'删除员工',
+				description:'',
+				value1: true,
+				time:'2016-12-15 00:00:00',
+			},{
+				classfication:'角色管理',
+				name:'角色管理',
+				description:'角色管理模块下的权限列表',
+				value1: true,
+				time:'2016-12-15 00:00:00',
+			},{
+				classfication:'',
+				name:'浏览角色',
+				description:'',
+				value1: true,
+				time:'2016-12-15 00:00:00',
+			},{
+				classfication:'',
+				name:'添加角色',
+				description:'',
+				value1: true,
+				time:'2016-12-15 00:00:00',
+			},{
+				classfication:'',
+				name:'修改角色',
+				description:'',
+				value1: true,
+				time:'2016-12-15 00:00:00',
+			},{
+				classfication:'',
+				name:'删除角色',
+				description:'',
+				value1: true,
+				time:'2016-12-15 00:00:00',
+			},{
+				classfication:'权限管理',
+				name:'权限管理',
+				description:'权限管理模块下的权限列表',
+				value1: false,
+				time:'2016-12-15 00:00:00',
+			},{
+				classfication:'',
+				name:'浏览权限',
+				description:'',
+				value1: false,
+				time:'2016-12-15 00:00:00',
+			},{
+				classfication:'',
+				name:'添加权限',
+				description:'',
+				value1: false,
+				time:'2016-12-15 00:00:00',
+			},{
+				classfication:'',
+				name:'修改权限',
+				description:'',
+				value1: false,
+				time:'2016-12-15 00:00:00',
+			},{
+				classfication:'',
+				name:'删除权限',
+				description:'',
+				value1: false,
+				time:'2016-12-15 00:00:00',
+			}],
+			//添加对话框
+			dialogAddPermission: false,
+			//修改对话框
+			dialogEditPermission: false,
+			//checked
+			checked1:true,
+			checked2:false,
+   
+			editForm:{
+				classfication:'',
+				name:'',
+				description:'',
+
+			}
+		});
+
+		Oassign(window.vmOption, {
+			//方法
+			methods : {
+	      tableRowClassName:function(row, index) {
+	        if (row.classfication == '') {
+	          return 'info-row';
+	        }else{
+	          return 'positive-row';
+	        }
+	        return '';
+	      },
+	      handleEdit:function(index, row){
+	      	this.editForm.name=row.name;
+	      	this.editForm.description = row.description;
+        this.editForm.classfication=row.classfication;
+        this.dialogEditPermission=true;
+	      },
+	      handleDelete:function(index, row){
+	        this.$confirm('此操作将永久删除该角色, 是否继续?', '提示', {
+	          confirmButtonText: '确定',
+	          cancelButtonText: '取消',
+	          type: 'warning'
+	        }).then(function(){
+	          this.$message({
+	            type: 'success',
+	            message: '删除成功!'
+	          });
+	        }).catch(function(){
+	          this.$message({
+	            type: 'info',
+	            message: '已取消删除'
+	          });          
+	        });
+	      },
+	      visibile:function(){
+            this.value1 = !this.value1;
+	      },
+	      handleCurrentChange:function(page){
+
+	      }
+			}
+		})
+	</script>
+</block>

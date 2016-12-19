@@ -1,0 +1,36 @@
+<el-dialog title="添加权限/功能" v-model="dialogAddPermission">
+ <el-form>
+   <el-row>
+    <el-col :span="12">
+      <el-form-item label="权限分类：" :label-width="formLabelWidth">
+        <el-select  placeholder="请选择权限分类">
+          <el-option label="顶级目录" value="顶级目录"></el-option>
+          <el-option label="员工管理" value="员工管理"></el-option>
+          <el-option label="角色管理" value="角色管理"></el-option>
+          <el-option label="权限管理" value="权限管理"></el-option>
+          <el-option label="。。。" value="。。。"></el-option>
+        </el-select>
+      </el-form-item>
+    </el-col>
+   </el-row>
+   <el-row :gutter="20">
+    <el-col :span="12">
+      <el-form-item label="权限名称：" :label-width="formLabelWidth">
+        <el-input placeholder="请输入权限名称" style="width:270px;"></el-input>
+      </el-form-item>
+    </el-col>
+    <el-col :span="12"><span>*输入如:员工管理</span></el-col>
+   </el-row>
+   <el-form-item label="权限说明：" :label-width="formLabelWidth">
+     <el-input type="textarea" style="width:500px;" placeholder="请为权限添加说明"></el-input>
+   </el-form-item>
+   <el-form-item label="状态：" :label-width="formLabelWidth">
+       <el-checkbox v-model="checked1">开启</el-checkbox>
+       <el-checkbox v-model="checked2">关闭</el-checkbox>
+   </el-form-item>
+ </el-form>
+  <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogAddPermission= false">取 消</el-button>
+    <el-button type="primary" @click="dialogAddPermission = false">确 定</el-button>
+  </span>
+</el-dialog>

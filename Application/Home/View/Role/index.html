@@ -1,14 +1,14 @@
 <extend name="Common:base"/>
 <block name="head">
 	<style>
-  .el-table .info-row {
-    background: #c9e5f5;
-  }
+	  .el-table .info-row {
+	    background: #c9e5f5;
+	  }
 
-  .el-table .positive-row {
-    background: #e2f0e4;
-  }
-</style>
+	  .el-table .positive-row {
+	    background: #e2f0e4;
+	  }
+ </style>
 </block>
 <block name="body">
 	<div class="container" id="app">
@@ -22,10 +22,11 @@
 			    <el-table-column align="center" prop="description" label="角色说明"></el-table-column>
 			    <el-table-column inline-template align="center" label="当前状态">
 							<el-switch
-							  v-model="value1"
+							  v-model="row.value1"
 							  on-color="#13ce66"
-							  off-color="#ff4949">
+							  off-color="#ff4949" @change="visibile">
 							</el-switch>
+
 			    </el-table-column>
 			    <el-table-column align="center" prop="time" label="创建时间">
 			    </el-table-column>
@@ -74,27 +75,46 @@
 	<script type="text/javascript">
 		// vm option 里面的 data属性
 		Oassign(window.vmData ,{
-			value1:true,
+			value1:false,
 			value2:'',
 			loading: false,
 			formLabelWidth: '140px',
 
 			datalist:[{
-				name:'超级管理员',
-				description:'拥有所有的权限',
+				name:'掌控全局',
+				description:'掌控大局相关的管理人员(总经理级别)',
 				time:'2016-12-15',
+				value1: true
 			},{
-				name:'部门主管',
-				description:'可以随意管理自己对于部门',
+				name:'区域管理',
+				description:'各自片区、部门的总负责管理人员',
 				time:'2016-12-15',
+				value1: true
 			},{
-				name:'普通员工',
-				description:'拥有跟踪客户关系相关的操作权限',
+				name:'投资风控',
+				description:'投资顾问、风险控制',
 				time:'2016-12-15',
+				value1: true
 			},{
-				name:'测试账号',
-				description:'进攻给实习员演示和学习',
+				name:'团队组长',
+				description:'管理各自团队、小组的成员',
 				time:'2016-12-15',
+				value1: true
+			},{
+				name:'销售员工',
+				description:'管理自己跟踪的客户及客户资料',
+				time:'2016-12-15',
+				value1: true
+			},{
+				name:'测试演示',
+				description:'用于平台测试、演示的账号(人力资源培训)',
+				time:'2016-12-15',
+				value1: true
+			},{
+				name:'技术维护',
+				description:'拥有所有的权限,一般为技术团队',
+				time:'2016-12-15',
+				value1: true
 			}],
 			//添加对话框
 			dialogAddRole: false,
@@ -126,25 +146,28 @@
 	      handleEdit:function(index, row){
 	      	this.value2=row.name;
 	      	this.editForm.description = row.description;
-         this.dialogEditRole=true;
+          this.dialogEditRole=true;
 	      },
 	      handleDelete:function(index, row){
 	        this.$confirm('此操作将永久删除该角色, 是否继续?', '提示', {
 	          confirmButtonText: '确定',
 	          cancelButtonText: '取消',
 	          type: 'warning'
-	        }).then(() => {
+	        }).then(function(){
 	          this.$message({
 	            type: 'success',
 	            message: '删除成功!'
 	          });
-	        }).catch(() => {
+	        }).catch(function() {
 	          this.$message({
 	            type: 'info',
 	            message: '已取消删除'
 	          });          
 	        });
 	      },
+	      visibile:function(){
+            this.value1 = !this.value1;
+	      }
 			}
 		})
 	</script>
