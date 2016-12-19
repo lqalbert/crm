@@ -54,6 +54,8 @@
 	<![endif]-->
 
 	
+
+
 </head>
 <body>
 	<div style="margin:10px;">
@@ -71,8 +73,17 @@
 			  <div slot="header" class="clearfix">
 			    <span>个人信息</span>
 			  </div>
-			  <div v-for="o in 4" class="text item">
-			    {{'列表内容 ' + o }}
+			  <div style="text-align:center;">
+			  	<img src="/crm/Public/images/0.jpg" class="image">
+
+			  	<div>
+			  		<p>姓名：张三丰</p>
+			  		<p>ID：123456</p>
+			  		<p>类型：网销主管</p>
+			  		<p>QQ：123456</p>
+			  		<p>电话：15845754875</p>
+			  		<p>地址：湖北省十堰市 </p>
+			  	</div>
 			  </div>
 			</el-card>
 		</el-col>
@@ -81,7 +92,26 @@
 				<div slot="header" class="clearfix">
 					系统公告
 				</div>
-
+				<div>
+					<el-table
+				      :data="sysData"
+				      style="width: 100%">
+				      <el-table-column
+				        prop="sys_type"
+				        label="类型"
+				        width="180">
+				      </el-table-column>
+				      <el-table-column
+				        prop="title"
+				        label="标题">
+				      </el-table-column>
+				      <el-table-column
+				        prop="date"
+				        label="日期"
+				        width="180">
+				      </el-table-column>
+				    </el-table>
+				</div>
 			</el-card>
 		</el-col>
 	</el-row>
@@ -106,7 +136,21 @@
 					<span>业绩报表</span>
 				</div>
 				<div>
-					
+					<el-table
+				      :data="sysReport"
+				      style="width: 100%">
+				      <el-table-column
+				        prop="date"
+				        label="日期"
+				        width="180">
+				      </el-table-column>
+						<el-table-column prop="zyj"   label="总业绩"></el-table-column>
+						<el-table-column prop="cjc"   label="成交客户数（新成交/合作）"></el-table-column>
+						<el-table-column prop="xfc"   label="续费客户数（续费/合作）"></el-table-column>
+						<el-table-column prop="xfy"   label="续费业绩（续费/合作）"></el-table-column>
+						<el-table-column prop="sjc"   label="升级客户数（升级/合作）"></el-table-column>
+						<el-table-column prop="sjy"   label="升级业绩（升级）"></el-table-column>
+				    </el-table>
 				</div>
 			</el-card>
 		</el-col>
@@ -119,7 +163,17 @@
 					<span>量化报表</span>
 				</div>
 				<div>
-					
+					<el-table
+						:data="data3"
+						style="width:100%"
+					>
+						<el-table-column prop="date" label="日期"></el-table-column>
+						<el-table-column prop="sd"   label="锁定"></el-table-column>
+						<el-table-column prop="gz"   label="跟踪"></el-table-column>
+						<el-table-column prop="tj"   label="转入"></el-table-column>
+						<el-table-column prop="xg"   label="转出"></el-table-column>
+						<el-table-column prop="xq"   label="冲突"></el-table-column>
+					</el-table>
 				</div>
 			</el-card>
 		</el-col>
@@ -129,7 +183,17 @@
 					<span>客户报表</span>
 				</div>
 				<div>
-					
+					<el-table
+						:data="data3"
+						style="width:100%"
+					>
+						<el-table-column prop="date" label="日期"></el-table-column>
+						<el-table-column prop="sd"   label="锁定"></el-table-column>
+						<el-table-column prop="gz"   label="跟踪"></el-table-column>
+						<el-table-column prop="tj"   label="推介"></el-table-column>
+						<el-table-column prop="xg"   label="修改"></el-table-column>
+						<el-table-column prop="xq"   label="索取"></el-table-column>
+					</el-table> 
 				</div>
 			</el-card>
 		</el-col>
@@ -144,29 +208,128 @@
 	
 <script src="/crm/Public/js/echarts.min.js"></script>
 	<script>
+
+
 		window.vmHooks.add('mounted', function(){
 			var myChart = echarts.init(document.getElementById('echarts'));
             myChart.setOption({
                 // title: { text: 'ECharts 入门示例' },
                 tooltip: {},
                 xAxis: {
-                    data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+                    data: ["2016-11","2016-12","2017-01","2017-02","2017-03","2017-04"]
                 },
                 yAxis: {},
+                legend:{
+                	show: true
+                },
                 series: [{
                     name: '销量',
                     type: 'bar',
                     data: [5, 20, 36, 10, 10, 20]
+                },{
+                    name: '业绩',
+                    type: 'line',
+                    data: [25, 21, 26, 90, 15, 50]
                 }],
                 grid:{
-                	left:"50"
+                	left:"50",
+                	right:"50"
                 }
             });
             window.onresize = myChart.resize;
 		})
+
+		Oassign(vmData, {
+			sysData:[
+				{
+					sys_type:'功有升级',
+					title:'新功能XXXX上线了',
+					date:'2017-01-01 12:12'
+				}
+			],
+			sysReport:[
+				{
+					date:'2016-12-01',
+					zyj:'730',
+					cjc:'0 / 0',
+					xfc:'0.00 / 0.00',
+					xfy:'1 / 0',
+					sjc:'730.00 / 0.00',
+					sjy:'0 / 0',
+					
+				},
+				{
+					date:'2016-12-01',
+					zyj:'730',
+					cjc:'0 / 0',
+					xfc:'0.00 / 0.00',
+					xfy:'1 / 0',
+					sjc:'730.00 / 0.00',
+					sjy:'0 / 0',
+					
+				}
+				,
+				{
+					date:'2016-12-01',
+					zyj:'730',
+					cjc:'0 / 0',
+					xfc:'0.00 / 0.00',
+					xfy:'1 / 0',
+					sjc:'730.00 / 0.00',
+					sjy:'0 / 0',
+					
+				}
+			],
+			data3:[
+				{
+					date:'2016-01-01',
+					sd:'1',
+					gz:'2',
+					tj:'0',
+					xg:'4',
+					xq:'1',
+				},
+				{
+					date:'2016-01-01',
+					sd:'1',
+					gz:'2',
+					tj:'0',
+					xg:'4',
+					xq:'1',
+				},
+				{
+					date:'2016-01-01',
+					sd:'1',
+					gz:'2',
+					tj:'0',
+					xg:'4',
+					xq:'1',
+				},
+				{
+					date:'2016-01-01',
+					sd:'1',
+					gz:'2',
+					tj:'0',
+					xg:'4',
+					xq:'1',
+				}
+			]
+		})
+
+
 	</script>
 
 	<script>
+		// 虽然有 if 但是 这样 methods 更灵活了
+		// 可以兼容以的的代码
+		if (window.vmMethods.length) {
+			if (window.vmOption['methods']) {
+				Oassign(window.vmOption['methods'],  window.vmMethods.values());
+			} else {
+				window.vmOption['methods'] = window.vmMethods.values();
+			}
+		}
+		
 		window.vmInstance  = new Vue(window.vmOption);
 	</script>
 </body>
