@@ -45,7 +45,7 @@ return array(
       array (
         'title' => '系统管理',
         'icon' => '&nbsp;&#xe613;',
-        'href' => 'Index/main.html',
+        'href' => 'javascript:;',
       ),
     ),
   ),
