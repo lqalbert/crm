@@ -38,7 +38,8 @@ class LoginController extends Controller {
 				Rbac::saveAccessList();
 
 
-				$this->success(L('LOGIN_SUCCESS'), U('Index/index'));
+				//$this->success(L('LOGIN_SUCCESS'), U('Index/index'));
+				$this->redirect('Index/index');
 
 
 			}
