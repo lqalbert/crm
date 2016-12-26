@@ -47,7 +47,7 @@ hooks.prototype.delAll = function(){
 }
 
 hooks.prototype.exeHooks = function(vmThis, hookName){
-	window.vmHooks['mounted'].forEach(function(currentValue){
+	window.vmHooks[hookName].forEach(function(currentValue){
 		currentValue.call(this);
 	}, vmThis)
 }
@@ -105,6 +105,16 @@ methods.prototype.values = function(key){
 
 window.vmMethods = new methods();
 
+window.vmMethods.set("initObject", function(form, row){
+	for(var x in form){
+		form[x] = row[x];
+	}
+})
+
+//序号处理
+window.vmMethods.set("handleIndex", function(row, column) {
+	return this.datalist.indexOf(row)  + ((this.currentPage-1)*this.pageSize) +1;
+})
 
 
 
@@ -155,5 +165,7 @@ window.vmOption = {
 	},
 	destroyed: function(){
 		window.vmHooks.exeHooks(this, 'destroyed');
-	}
+	},
+
+	
 }

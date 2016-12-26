@@ -1,0 +1,34 @@
+<el-dialog title="编辑角色" v-model="dialogEditAce">
+   <el-form >
+       <el-form-item label="员工管理：" :label-width="formLabelWidth">
+		  <el-checkbox-group >
+		    <el-checkbox label="员工列表"></el-checkbox>
+		    <el-checkbox label="添加员工"></el-checkbox>
+		    <el-checkbox label="修改员工"></el-checkbox>
+		    <el-checkbox label="删除员工"></el-checkbox>
+		  </el-checkbox-group>
+    </el-form-item>
+    <el-form-item label="角色管理：" :label-width="formLabelWidth" style="margin-top:-20px;">
+		  <el-checkbox-group >
+		    <el-checkbox label="浏览角色"></el-checkbox>
+		    <el-checkbox label="添加角色"></el-checkbox>
+		    <el-checkbox label="修改角色"></el-checkbox>
+		    <el-checkbox label="删除角色"></el-checkbox>
+		  </el-checkbox-group>
+    </el-form-item>
+    <el-form-item label="权限管理：" :label-width="formLabelWidth" style="margin-top:-20px;">
+		  <el-checkbox-group >
+		    <el-checkbox label="浏览权限"></el-checkbox>
+		    <el-checkbox label="添加权限"></el-checkbox>
+		    <el-checkbox label="修改权限"></el-checkbox>
+		    <el-checkbox label="删除权限"></el-checkbox>
+		  </el-checkbox-group>
+    </el-form-item>
+
+
+   </el-form>
+  <div slot="footer" class="dialog-footer">
+    <el-button @click="dialogEditAce= false">取 消</el-button>
+    <el-button type="primary" @click="dialogEditAce= false">确 定</el-button>
+  </div>
+</el-dialog>

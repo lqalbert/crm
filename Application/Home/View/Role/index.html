@@ -19,29 +19,39 @@
 			  <el-table :data="datalist" v-loading="loading" element-loading-text="拼命加载中" style="width: 100%" :row-class-name="tableRowClassName">
 			    <el-table-column align="center" type="index" label="编号" width="100"></el-table-column>
 			    <el-table-column align="center" prop="name" label="角色名称"></el-table-column>
-			    <el-table-column align="center" prop="description" label="角色说明"></el-table-column>
-			    <el-table-column inline-template align="center" label="当前状态">
-							<el-switch
-							  v-model="row.value1"
+			    <el-table-column align="center" prop="remark" label="角色说明"></el-table-column>
+			    <el-table-column inline-template :context="_self" align="center"  label="当前状态" width="100" >
+					<div>
+					      <el-switch
+							  v-model="row.switch"
 							  on-color="#13ce66"
-							  off-color="#ff4949" @change="visibile">
+							  off-color="#ff4949" 
+							  @change="switchHandle($index, row)">
 							</el-switch>
-
+					</div>
 			    </el-table-column>
-			    <el-table-column align="center" prop="time" label="创建时间">
-			    </el-table-column>
-			    <el-table-column inline-template align="center" label="操作">
+			    
+			    <el-table-column inline-template :context="_self" align="center" label="操作">
 			     <div>
 			        <el-button
 			          size="small"
 			          @click="handleEdit($index, row)">
-			          修改
+			          {:L('EDIT')}
 			        </el-button>
+
+			        <el-button
+			          size="small"
+			          type="primary"
+			          @click="handleAuthoriz($index, row)">
+			          {:L('AUTHORIZE')}
+			        </el-button>
+
+
 			        <el-button
 			          size="small"
 			          type="danger"
 			          @click="handleDelete($index, row)">
-			          删除
+			          {:L('DELETE')}
 			        </el-button>
 		       </div>
 			    </el-table-column>
@@ -55,7 +65,7 @@
 			  <div class="grid-content bg-purple">
 			  	<span class="wrapper">
 			  		<el-tooltip content="添加新角色！" placement="right">
-					    <el-button  @click="dialogAddRole = true" icon="plus" type="primary">添加</el-button>
+					    <el-button size="small"  @click="dialogAddRole = true" icon="plus" type="primary">添加</el-button>
 				    </el-tooltip>
 				  </span>
 			  </div>
@@ -68,88 +78,103 @@
 			<include file="_add"/>
 			<!-- 修改 -->
 			<include file="_edit"/>
+			<!-- 授权 -->
+			<include file="_access"/>
 		</div>
 	</div>
 </block>
 <block name="scripts">
+	<script>
+		// var dataList = {$roleList|json_encode};
+		var page  = {
+			dataList:{$roleList|json_encode},
+			addFormUrl:"{:U('addRole')}",
+			editFormUrl:"{:U('editRole')}",
+
+			init:function(){
+				this.dataList.forEach(function(currentValue, index){
+					currentValue['switch'] = currentValue.status == 1 ? true: false;
+				})
+			}
+		}
+		page.init();
+
+	</script>
+
+
 	<script type="text/javascript">
 		// vm option 里面的 data属性
 		Oassign(window.vmData ,{
-			value1:false,
-			value2:'',
+			
 			loading: false,
 			formLabelWidth: '140px',
 
-			datalist:[{
-				name:'掌控全局',
-				description:'掌控大局相关的管理人员(总经理级别)',
-				time:'2016-12-15',
-				value1: true
-			},{
-				name:'区域管理',
-				description:'各自片区、部门的总负责管理人员',
-				time:'2016-12-15',
-				value1: true
-			},{
-				name:'投资风控',
-				description:'投资顾问、风险控制',
-				time:'2016-12-15',
-				value1: true
-			},{
-				name:'团队组长',
-				description:'管理各自团队、小组的成员',
-				time:'2016-12-15',
-				value1: true
-			},{
-				name:'销售员工',
-				description:'管理自己跟踪的客户及客户资料',
-				time:'2016-12-15',
-				value1: true
-			},{
-				name:'测试演示',
-				description:'用于平台测试、演示的账号(人力资源培训)',
-				time:'2016-12-15',
-				value1: true
-			},{
-				name:'技术维护',
-				description:'拥有所有的权限,一般为技术团队',
-				time:'2016-12-15',
-				value1: true
-			}],
+			datalist:page.dataList,
+
 			//添加对话框
 			dialogAddRole: false,
 			//修改对话框
 			dialogEditRole: false,
-			sousuo:'',
-			input:'区域一',
-			//checked
+			//授权对话框
+			dialogEditAce:  false,
+			
 			checkList:['员工列表','添加员工'],
 			checkList1:['浏览角色','添加角色'],
 			checkList2:['浏览权限','添加权限'],
 
 			editForm:{
-				description:""
+				id:"",
+				name:"",
+				pid :"",
+				status:1,
+				remark:""
+			},
+			editIndex:0,
+			addForm:{
+				name:"",
+				pid :"",
+				status:'1',
+				remark:""
+			},
+			statusForm:{
+				id:"",
+				status:'1'
+			},
+			statusIndex:0,
+
+
+			dialogEditAccess:{
+
 			}
+
+			
+			
+
 		});
 
-		Oassign(window.vmOption, {
-			//方法
-			methods : {
-	      tableRowClassName:function(row, index) {
-	        if (index === 1) {
+		window.vmMethods.set("formatter", function(row, col){
+			return row.status==1? true : false;
+		})
+		window.vmMethods.set("tableRowClassName", function(row, index){
+			if (index === 1) {
 	          return 'info-row';
 	        } else if (index === 3) {
 	          return 'positive-row';
 	        }
 	        return '';
-	      },
-	      handleEdit:function(index, row){
-	      	this.value2=row.name;
-	      	this.editForm.description = row.description;
-          this.dialogEditRole=true;
-	      },
-	      handleDelete:function(index, row){
-	        this.$confirm('此操作将永久删除该角色, 是否继续?', '提示', {
+		})
+
+		window.vmMethods.set("handleEdit", function(index, row){
+			
+			// this.initObject("editForm", row);
+			this.initObject(this.editForm , row); // 这种 哪种方式好一点？
+			this.editIndex = index;
+			this.dialogEditRole = true;
+
+		})
+
+		window.vmMethods.set("handleDelete", function(index, row){
+			this.$confirm('此操作将永久删除该角色, 是否继续?', '提示', {
 	          confirmButtonText: '确定',
 	          cancelButtonText: '取消',
 	          type: 'warning'
@@ -164,11 +189,59 @@
 	            message: '已取消删除'
 	          });          
 	        });
-	      },
-	      visibile:function(){
-            this.value1 = !this.value1;
-	      }
-			}
 		})
+
+		window.vmMethods.set("switchHandle", function(index, row){
+			row.status = row.switch ? 1 : 0; 
+			this.initObject(this.statusForm, row);
+			this.statusIndex = index;
+//todo  ajax 更新状态
+			var  vmThis = this;
+			
+			this.$http.post(page.editFormUrl, this.statusForm).then(function(response){
+
+			}, function(response){
+				//失败
+				//
+			});
+		})
+
+		window.vmMethods.set("addFormAction", function(){
+			var  vmThis = this;
+			this.$http.post(page.addFormUrl, this.addForm).then(function (response) {
+// todo success  handle
+	          // vmThis.$set(vmThis, 'loading', false);
+	          // vmThis.$set(vmThis, 'tableData3', response.body)
+	          // vmThis.$set(vmThis, 'total', 2);
+	        }, function(response){
+// todo error handle
+	          // vmThis.$set(vmThis, 'loading', false);
+	        });
+		})
+
+		window.vmMethods.set("editFormAction", function(){
+			var  vmThis = this;
+			// vmThis.dialogEditRole= false
+			this.$http.post(page.editFormUrl, this.editForm).then(function (response) {
+// todo success  handle
+
+	          // vmThis.$set(vmThis, 'loading', false);
+	          // vmThis.$set(vmThis, 'tableData3', response.body)
+	          // vmThis.$set(vmThis, 'total', 2);
+	          vmThis.initObject(vmThis.datalist[vmThis.editIndex], vmThis.editForm);  
+	          vmThis.datalist[vmThis.editIndex]['switch'] = vmThis.editForm['status']==1 ? true : false;
+	        }, function(response){
+// todo error handle	
+	          // vmThis.$set(vmThis, 'loading', false);
+	        });
+		})
+
+		//授权
+		window.vmMethods.set("handleAuthoriz", function(index, row){
+			this.dialogEditAce = true;
+		})
+
+
+		
 	</script>
 </block>

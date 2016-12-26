@@ -1,5 +1,6 @@
+
 layui.config({
-	base: 'plugins/layui/modules/'
+	base: window.webRoot+'plugins/layui/modules/'
 });
 layui.define(['layer', 'laypage', 'icheck'], function(exports) {
 	"use strict";

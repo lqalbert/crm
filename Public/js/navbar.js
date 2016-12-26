@@ -1,6 +1,7 @@
 /** navbar.js By Beginner Emain:zheng_jinfan@126.com HomePage:http://www.zhengjinfan.cn */
+
 layui.config({
-	base: './Public/js/'
+	base: window.webRoot+'Public/js/'
 }).define(['element', 'common'], function(exports) {
 	"use strict";
 	var $ = layui.jquery,

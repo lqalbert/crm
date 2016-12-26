@@ -23,14 +23,17 @@
         </el-table-column>
         <el-table-column align="center" label="权限名称" prop="name">
         </el-table-column>
-        <el-table-column align="center" label="权限说明" prop="description">
+        <el-table-column align="center" label="权限说明" prop="remark">
         </el-table-column>
         <el-table-column inline-template align="center" label="当前状态">
-          <el-switch v-model="row.value1" on-color="#13ce66" off-color="#ff4949" @change="visibile">
+          <el-switch 
+          	v-model="row.switch" 
+          	on-color="#13ce66" 
+          	off-color="#ff4949" 
+          	@change="switchHandle($index, row)">
           </el-switch>
         </el-table-column>
-        <el-table-column align="center" prop="time" label="时间">
-        </el-table-column>
+        
         <el-table-column inline-template align="center" label="操作">
          <div>
          	 <el-button size="small" @click="handleEdit($index,row)">
@@ -51,18 +54,18 @@
        <div class="grid-content bg-purple">
        	 <span class="wrapper">
        	 	<el-tooltip content="添加新权限！" placement="right">
-       	 	  <el-button @click="dialogAddPermission = true" icon="plus" type="primary">添加
+       	 	  <el-button size="small" @click="dialogAddPermission = true" icon="plus" type="primary">添加
        	 	  </el-button>
        	  </el-tooltip>
        	 </span>
        </div>
   		 </el-col>
   		 <el-col :span="12">
+  		  <!-- page 
   		  <div class="grid-content bg-purple-light pull-right">
-  		  	 <!-- page -->
   		  	  <include file="Common:_pagination"/>
-  		  	 <!-- page -->
   		  </div>
+  		   page -->
   		 </el-col>
   	 </el-row>
   		<!-- toolbar -->
@@ -76,6 +79,32 @@
   </div>
 </block>
 <block name="scripts">
+<script>
+	var page  = {
+			dataList:{$dataList|json_encode},
+			levelOne:[{id:"1", name:"顶级权限"}],
+			addFormUrl:"{:U('add')}",
+			editFormUrl:"{:U('edit')}",
+			editIndex:0,
+
+			init:function(){
+				this.dataList.forEach(function(currentValue, index){
+					currentValue['switch'] = currentValue.status == 1 ? true: false;
+					if (currentValue.level == 2) {
+						currentValue['classfication'] = currentValue.name;
+						page.levelOne.push({id: currentValue.id, name:currentValue.name});
+					} else {
+						currentValue['classfication'] =  "";
+					}
+					
+				})
+
+			}
+		}
+		page.init();
+</script>
+
+
 	<script type="text/javascript">
 		// vm option 里面的 data属性
 		Oassign(window.vmData ,{
@@ -86,97 +115,8 @@
 			currentPage: 1,
 			total:100,
 
-			datalist:[{
-				classfication:'员工管理',
-				name:'员工管理',
-				description:'员工管理模块下的权限列表',
-				value1: true,
-				time:'2016-12-15 00:00:00',
-			},{
-				classfication:'',
-				name:'员工列表',
-				description:'',
-				value1: true,
-				time:'2016-12-15 00:00:00',
-			},{
-				classfication:'',
-				name:'添加员工',
-				description:'',
-				value1: true,
-				time:'2016-12-15 00:00:00',
-			},{
-				classfication:'',
-				name:'修改员工',
-				description:'',
-				value1: true,
-				time:'2016-12-15 00:00:00',
-			},{
-				classfication:'',
-				name:'删除员工',
-				description:'',
-				value1: true,
-				time:'2016-12-15 00:00:00',
-			},{
-				classfication:'角色管理',
-				name:'角色管理',
-				description:'角色管理模块下的权限列表',
-				value1: true,
-				time:'2016-12-15 00:00:00',
-			},{
-				classfication:'',
-				name:'浏览角色',
-				description:'',
-				value1: true,
-				time:'2016-12-15 00:00:00',
-			},{
-				classfication:'',
-				name:'添加角色',
-				description:'',
-				value1: true,
-				time:'2016-12-15 00:00:00',
-			},{
-				classfication:'',
-				name:'修改角色',
-				description:'',
-				value1: true,
-				time:'2016-12-15 00:00:00',
-			},{
-				classfication:'',
-				name:'删除角色',
-				description:'',
-				value1: true,
-				time:'2016-12-15 00:00:00',
-			},{
-				classfication:'权限管理',
-				name:'权限管理',
-				description:'权限管理模块下的权限列表',
-				value1: false,
-				time:'2016-12-15 00:00:00',
-			},{
-				classfication:'',
-				name:'浏览权限',
-				description:'',
-				value1: false,
-				time:'2016-12-15 00:00:00',
-			},{
-				classfication:'',
-				name:'添加权限',
-				description:'',
-				value1: false,
-				time:'2016-12-15 00:00:00',
-			},{
-				classfication:'',
-				name:'修改权限',
-				description:'',
-				value1: false,
-				time:'2016-12-15 00:00:00',
-			},{
-				classfication:'',
-				name:'删除权限',
-				description:'',
-				value1: false,
-				time:'2016-12-15 00:00:00',
-			}],
+			datalist:page.dataList,
+			
 			//添加对话框
 			dialogAddPermission: false,
 			//修改对话框
@@ -186,12 +126,89 @@
 			checked2:false,
    
 			editForm:{
-				classfication:'',
+				id:'',
+				pid:'',
 				name:'',
-				description:'',
-
+				title:"",
+				remark:'',
+				status:''
+			},
+			addForm:{
+				name:"",
+				title:"",
+				pid:"",
+				status:"1",
+				remark:"",
+				level:0
 			}
 		});
+
+		window.vmMethods.set("addFormAction", function(){
+			var  vmThis = this;
+			this.$http.post(page.addFormUrl, this.addForm).then(function (response) {
+// todo success  handle
+
+	        }, function(response){
+// todo error handle
+	          
+	        });
+		})
+
+		window.vmMethods.set("editFormAction", function(){
+			var  vmThis = this;
+			this.$http.post(page.editFormUrl, this.editForm).then(function (response) {
+// todo success  handle
+
+	        }, function(response){
+// todo error handle
+	          
+	        });
+		})
+
+		window.vmMethods.set("switchHandle", function(index, row){
+			row.status = row.switch ? 1 : 0; 
+			this.initObject(this.statusForm, row);
+			this.statusIndex = index;
+//todo  ajax 更新状态
+			var  vmThis = this;
+			this.$http.post(page.editFormUrl, this.statusForm).then(function(response){
+
+			}, function(response){
+				//失败
+				//
+			});
+		})
+
+		window.vmMethods.set("handleEdit", function(index, row){
+			
+			// this.initObject("editForm", row);
+			this.initObject(this.editForm , row); // 这种 哪种方式好一点？
+			page.editIndex = index;
+			this.dialogEditPermission = true;
+
+		})
+
+		window.vmMethods.set("addFormSelect", function(value){
+			if (value==1) {
+				this.addForm.level = 2;
+			} else {
+				this.addForm.level = 3;
+			}
+		})
+		//计算属性
+		Oassign(window.vmOption, {
+			computed: {
+				levelOne:function(){
+					var vmThis = this;
+					return page.levelOne.filter(function(obj){
+						if (obj.id != vmThis.editForm.id ) {
+							return obj;
+						}
+					});
+				}
+			}
+		});
+
 
 		Oassign(window.vmOption, {
 			//方法
@@ -203,12 +220,6 @@
 	          return 'positive-row';
 	        }
 	        return '';
-	      },
-	      handleEdit:function(index, row){
-	      	this.editForm.name=row.name;
-	      	this.editForm.description = row.description;
-        this.editForm.classfication=row.classfication;
-        this.dialogEditPermission=true;
 	      },
 	      handleDelete:function(index, row){
 	        this.$confirm('此操作将永久删除该角色, 是否继续?', '提示', {
@@ -226,9 +237,6 @@
 	            message: '已取消删除'
 	          });          
 	        });
-	      },
-	      visibile:function(){
-            this.value1 = !this.value1;
 	      },
 	      handleCurrentChange:function(page){
 

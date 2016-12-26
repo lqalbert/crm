@@ -5,16 +5,17 @@ class CustomerController extends CommonController {
 	public function index () {
 		// $dataList = $this->getList();
 
-		$this->assign("datalist", $this->getList());
+		$this->assign("datalist", array());
 		$this->display();
 	}
 
 
-	private function getList(){
+	public function getList(){
+		$list = D($this->table)->page(I('get.p',0). ','. $this->pageSize)->select();
 		if (IS_AJAX) {
-			$this->ajaxReturn();
+			$this->ajaxReturn($list);
 		}  else {
-			return [];
+			return $list !== false ? $list : array();
 		}
 	}
 

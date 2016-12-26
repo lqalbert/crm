@@ -24,7 +24,7 @@ class NavController extends CommonController {
 	}
 
 	private function makeUrl($url) {
-		return $url!="javascript:;" ? U($url) : $url;
+		return  strpos($url, "javascript:;") === false ? U($url) : $url ;
 	}
 
 	public function test() {

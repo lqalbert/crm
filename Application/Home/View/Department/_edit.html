@@ -1,11 +1,11 @@
-<el-dialog title="添加" v-model="dialogAdd">
+<el-dialog title="添加" v-model="dialogEdit">
 <!-- <el-form :model="form"> -->
-<el-form :model="addForm">
+<el-form :model="editForm">
 
   <el-row>
     <el-col :span="12">
       <el-form-item label="单位名" :label-width="formLabelWidth">
-        <el-input v-model="addForm.name"  auto-complete="off"></el-input>
+        <el-input v-model="editForm.name"  auto-complete="off"></el-input>
       </el-form-item>
     </el-col>
     <el-col :span="12">
@@ -106,8 +106,8 @@
     </el-row>
   </el-form>
   <div slot="footer" class="dialog-footer">
-    <el-button @click="dialogAdd = false">取 消</el-button>
-    <el-button type="primary" v-show="!addFormSubmit" @click="addFormAction" >确 定</el-button>
-    <el-button type="primary" v-show="addFormSubmit" :loading="true" >添加中</el-button>
+    <el-button @click="dialogEdit = false">取 消</el-button>
+    <el-button type="primary" v-show="!editFormSubmit" @click="editFormAction" >确 定</el-button>
+    <el-button type="primary" v-show="editFormSubmit" :loading="true" >修改中</el-button>
   </div>
 </el-dialog>

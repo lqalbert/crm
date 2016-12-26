@@ -1,6 +1,8 @@
 <el-pagination
-  @current-change="handleCurrentChange"
+  @current-change="handleCurrentPageChange"
   :current-page="currentPage"
   layout="total, prev, pager, next, jumper"
-  :total="total">
+  :total="total"
+  :page-size="pageSize"
+  >
 </el-pagination>
