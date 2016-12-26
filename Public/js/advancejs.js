@@ -85,3 +85,14 @@ if (!window.Map) {
 		return null;
 	}
 }
+
+// array remove
+if (!Array.prototype.remove) {
+
+	Array.prototype.remove = function(index){
+		var i = this.indexOf(index)
+		if (i != -1) {
+			this.splice(i,1);
+		}
+	}
+}

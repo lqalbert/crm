@@ -27,7 +27,7 @@ class CommonController extends Controller {
 
 		$this->M = D($this->table);
 
-		$this->assign("pageSize", $this->pageSize);
+		
 	}
 
 
@@ -100,12 +100,19 @@ class CommonController extends Controller {
 	 * 
 	 **/
 	public function getList(){
+		
+		$this->setQeuryCondition();
+		$count = (int)$this->M->count();
+		$this->setQeuryCondition();
 		$list = $this->M->page(I('get.p',0). ','. $this->pageSize)->select();
+		$result = array('list'=>$list, 'count'=>$count);
 		if (IS_AJAX) {
-			$this->ajaxReturn($list);
+			$this->ajaxReturn($result);
 		}  else {
-			return $list !== false ? $list : array();
+			$this->assign("pageSize", $this->pageSize);
+			return $result;
 		}
+
 	}
 
 

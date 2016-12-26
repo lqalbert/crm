@@ -1,7 +1,8 @@
 <?php
 namespace Home\Controller;
 
-class IndexController extends CommonController {
+class TestController extends CommonController {
+	protected $table="department_basic";
 	public function index() {
 		$this->display();
 	}

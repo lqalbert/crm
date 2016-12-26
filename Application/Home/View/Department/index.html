@@ -6,18 +6,18 @@
 			<!-- seach form -->
 			<el-row>
 				<el-col :span="12">
-					<el-form :inline="true"   >
-					  <el-form-item>
-					    <el-input  placeholder="查询字段一" v-model="sousuo"></el-input>
+					<el-form :inline="true"  ref="searchForm" :model="searchForm">
+					  <el-form-item prop="name" >
+					    <el-input   placeholder="查询字段一"  v-model="searchForm.name"></el-input>
 					    </el-form-item><el-form-item>
-					    <el-select  v-model="input" clearable placeholder="查询字段二">
+					    <el-select v-model="input" clearable placeholder="查询字段二">
 					      <el-option label="区域一" value="区域一"></el-option>
 					      <el-option label="区域二" value="区域二"></el-option>
 					    </el-select>
 					  </el-form-item>
 					  <el-form-item>
-					    <el-button icon="close"> 清空</el-button>
-					    <el-button type="primary" icon="search" @click="sb(sousuo)">查询</el-button> 
+					    <el-button icon="close" @click="searchReset"> 清空</el-button>
+					    <el-button type="primary" icon="search" @click="loadDatalist" >查询</el-button> 
 			        	<el-button  @click="advancedSearch=true" icon="search">高级查询</el-button> 
 					  </el-form-item>
 					</el-form>
@@ -117,17 +117,40 @@
 	</div>
 </block>
 <block name="scripts">
+<!-- 
+	先写功能 再重构
+-->
 <script>
 //   {$datalist | json_encode}
 //
 //
 	var page ={
-		dataList:{:json_encode($datalist)},
+		dataList:{:json_encode($dataSource['list'])},
 		addFormUrl:"{:U('add')}",
 		editFormUrl:"{:U('edit')}",
 		indexUrl:"{:U('index')}",
 		deleteUrl:"{:U('delete')}"
 	}
+
+	/*var dataList = {
+		dataLoading:false,
+		indexUrl:"{:U('index')}",
+		source:{:json_encode($datalist)},
+		searchForm:{
+
+		},
+
+		loadDataList:function(){
+
+		},
+		reload:function(){
+			this.loading = true;
+			this.loadDatalist();
+		}
+	}*/
+
+
+
 </script>
 	<script>
 		// vm option 里面的 data属性
@@ -138,7 +161,7 @@
 			datalist:page.dataList,
 
 			currentPage: 1,
-			total:{$totalCount},
+			total:{$dataSource['count']},
 			pageSize:{$pageSize},
 
 			//高级查询
@@ -165,8 +188,11 @@
 			searchForm:{
 				p:1,
 				sortFiled:"id",
-				sortWay:"asc" // desc
-			}
+				sortWay:"asc", // desc,
+
+				name:""
+			},
+			
 
 
 
@@ -193,7 +219,6 @@
 				  type: 'error'
 				});
 	        	vmThis.addFormSubmit = false;
-
 	        });
 		})
 
@@ -257,6 +282,8 @@
 	        });
 		})
 
+
+
 		//重载 数据列表
 		window.vmMethods.set("reload", function(){
 			this.loading = true;
@@ -278,17 +305,28 @@
 		window.vmMethods.set("loadDatalist", function(){
 			var vmThis = this;
 			this.$http.get(page.indexUrl, {params: this.searchForm }).then(function(response){
-				vmThis.$set(vmThis, 'loading', false);
-				vmThis.$set(vmThis, 'datalist', response.body)
-				// vmThis.$set(vmThis, 'total', 2);
+				
+				vmThis.$set(vmThis, 'datalist', response.body.list)
+				vmThis.$set(vmThis, 'total',    parseInt(response.body.count));
 			}, function(response) {
 				vmThis.$message({
 				  message: '获取失败',
 				  type: 'error'
 				});
+			}).finally(function(){
 				vmThis.$set(vmThis, 'loading', false);
 			})
 		})
+
+		// 重置查询
+		// form 要使用 :model 
+		// item 要使用 prop
+		// 才起作用
+		window.vmMethods.set("searchReset", function(){
+			this.$refs.searchForm.resetFields();
+			this.searchReset();
+		})
+
 
 		
 

@@ -1,10 +1,10 @@
 <el-dialog title="高级查询" v-model="advancedSearch">
 <!-- <el-form :model="form"> -->
-<el-form >
+<el-form ref="searchForm">
   <el-row>
     <el-col :span="12">
       <el-form-item label="单位名" :label-width="formLabelWidth">
-        <el-input  auto-complete="off"></el-input>
+        <el-input  auto-complete="off" v-model="sousuo"></el-input>
       </el-form-item>
     </el-col>
     <el-col :span="12">

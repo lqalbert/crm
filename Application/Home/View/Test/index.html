@@ -1,0 +1,240 @@
+<extend name="Common:base" />
+<block name="head"></block>
+<block name="body">
+	<div id="app" class="container">
+		<div class="wrapp" v-show="show" style="display: none">
+			<!-- seach form -->
+			<el-row>
+				<el-col :span="12">
+					<el-form :inline="true"  ref="searchForm" :model="searchForm">
+					  <el-form-item prop="name" >
+					    <el-input   placeholder="查询字段一"  v-model="searchForm.name"></el-input>
+					    </el-form-item><el-form-item>
+					    <el-select clearable placeholder="查询字段二">
+					      <el-option label="区域一" value="区域一"></el-option>
+					      <el-option label="区域二" value="区域二"></el-option>
+					    </el-select>
+					  </el-form-item>
+					  <el-form-item>
+					    <!-- <el-button icon="close" @click="searchReset">清空</el-button> -->
+					    <el-button type="primary" icon="search" @click="loadDatalist" >查询</el-button> 
+			        	<!-- <el-button  @click="advancedSearch=true" icon="search">高级查询</el-button>  -->
+					  </el-form-item>
+					</el-form>
+				</el-col>
+				<el-col :span="12">
+				<!-- <div class="pull-right">
+					删除之后  <el-button @click="reload">刷新</el-button> 一下
+				</div> -->
+					
+				</el-col>	
+			</el-row>
+			<!-- / search form -->
+
+			<!-- datatables  -->
+			<el-row>
+				<el-col :span="24">
+					<el-table :data="datalist" border stripe height  v-loading.body="dataLoad" element-loading-text="拼命加载中" >
+					    <el-table-column type="selection"  width="50" >
+					    </el-table-column>
+					    <el-table-column label="序号"  width="70" :formatter="handleIndex"  >
+					    </el-table-column>
+					    <el-table-column label="单位ID" prop="id" width="140" >
+					    </el-table-column>
+					    <el-table-column label="单位名" prop="name">
+					    </el-table-column>
+					    <!-- <el-table-column label="类型" >
+					    </el-table-column>
+						<el-table-column label="上级组织" >
+					    </el-table-column>
+					    <el-table-column label="片区" >
+					    </el-table-column>
+					    <el-table-column label="联系人" >
+					    </el-table-column>
+					    <el-table-column label="固定电话" >
+					    </el-table-column>
+					    <el-table-column label="拓展一" >
+					    </el-table-column>
+					    <el-table-column  label="拓展二" >
+					    </el-table-column>
+					    <el-table-column  label="形象照片" >
+					    </el-table-column> -->
+
+					    <el-table-column inline-template :context="_self"  fixed="right"  label="操作" width="150">
+					      <span>
+					        <el-button @click="handleEdit($index, row)"    size="small">编辑</el-button>
+					        <el-button @click="handleDelete($index, row)"  size="small" type="danger">删除</el-button>
+					      </span>
+					    </el-table-column>
+				    </el-table>
+				</el-col>
+			</el-row>
+			<!-- / datatables  -->
+
+
+			<!-- toolbar -->
+			<el-row type="type"  justify="space-between" align="middle"  class="row-bg">
+			  <el-col :span="12">
+			  <div class="grid-content bg-purple">
+			  	<span class="wrapper">
+			  		<el-tooltip content="添加新的组织单位！" placement="right">
+					    <el-button size="small"  @click="dialogAdd = true" icon="plus" type="primary">添加</el-button>
+					    <!-- <el-button  @click="">录入客户</el-button>
+					    <el-button  @click="">修改客户</el-button> -->
+					    <!-- <el-button>计划</el-button>
+					    <el-button>推介</el-button> -->
+				    </el-tooltip>
+				</span>
+			  </div>
+			  </el-col>
+			  <el-col :span="12">
+				  <div class="grid-content bg-purple-light pull-right">
+				    <!-- page -->
+				    <include file="Common:_pagination" />
+				    <!-- / page -->
+				  </div>
+			  </el-col>
+			</el-row>
+			<!-- / toolbar -->
+
+		</div>
+
+		<div v-show="show" style="display: none">
+			<!-- 高级查询 
+			<include file="_search" />-->
+			<!-- / 高级查询 -->
+
+			<!-- 添加 
+			<include file="_add" />-->
+			<!-- / 添加 -->
+
+			<!-- 编辑 
+			<include file="_edit" />-->
+			<!-- / 编辑 -->
+		</div>
+
+
+	</div>
+</block>
+<block name="scripts">
+<!-- 
+	先写功能 再重构
+-->
+<!-- 
+	新思路
+	一个vue实例 
+	可以包含一个 查询 
+	一个列表
+	多个添加
+	多个编辑
+	默认提供 一个添加 一个编辑
+
+	这样内置的list 就可以分开了
+
+	一个页面多个 list 就可以是多个vue实例了
+
+	默认情况下是一个 vue 
+
+ -->
+ <!-- 列表处理 -->
+ <!-- todo : 共用的数据项 像添加和编辑select下拉显示的数据 -->
+<script>
+	// 数据项 与 分页
+	// list
+	// count ==> 分页用的。
+
+	// 接口
+	// 请求地址
+
+	// 查询项 ===> 独立成一个表单项
+	// 是否有高级查询 
+	// 查询表单 
+
+	// 加载数据
+
+	// 自有逻辑 完全通用
+	// 初始化 把上面的 附加到 vm 上
+	
+
+	function pagination(url, name){
+		this.url = url;
+		
+		this.pageSize = 10;
+		this.count = 0;
+	}
+
+
+	pagination.prototype.vmData = {
+
+	}
+
+	function dataList(name, url){
+		this.url   = url;
+		this.list  = [];
+		this.count = 0;
+		this.name  = name;
+
+		this.methods = {};
+	}
+
+
+
+	dataList.prototype.appendToVm = function(){
+
+		var option = {};
+		Oassign(window.vmData, {
+			"dataLoad": false,
+			"datalist": this.list,
+			"total"   : this.count,
+			"searchForm" :{
+				p:1
+			},
+			"currentPage":1,
+			"pageSize":10
+		});
+
+		for (var x in this.methods) {
+			window.vmMethods.set(x, this.methods[x]);
+		}
+	}
+
+
+	dataList.prototype.setMethod = function(name, fnc){
+		// this.methods.push(fnc);
+		this.methods[name] = fnc;
+	}	
+
+	dataList.prototype.init = function(){
+		this.appendToVm();
+		
+	}
+
+
+	var d = new dataList("main", "{:U('index')}");
+	d.setMethod("handleCurrentPageChange", function(v){
+		this.dataLoad = true;
+		this.searchForm.p = v;
+		this.currentPage = v;
+		this.loadDatalist();
+	})
+
+	d.setMethod("loadDatalist", function(v){
+		var vmThis = this;
+		this.$http.get(d.indexUrl, {params: this.searchForm }).then(function(response){
+			
+			vmThis.$set(vmThis, 'datalist', response.body.list)
+			vmThis.$set(vmThis, 'total',    parseInt(response.body.count));
+		}, function(response) {
+			vmThis.$message({
+			  message: '获取失败',
+			  type: 'error'
+			});
+		}).finally(function(){
+			vmThis.$set(vmThis, 'loading', false);
+		})
+	})
+
+
+	d.init();
+</script>
+</block>

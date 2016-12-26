@@ -5,11 +5,7 @@ class DepartmentController extends CommonController {
 	protected $table="department_basic";
 
 	public function index(){
-		$this->_before_getList();
-		$count = $this->M->count();
-		$this->_before_getList();
-		$this->assign("datalist", $this->getList());
-		$this->assign("totalCount", $count);
+		$this->assign("dataSource", $this->getList());
 		$this->display();
 	}
 
@@ -18,8 +14,9 @@ class DepartmentController extends CommonController {
 	* 
 	* @return null
 	*/
-	public function _before_getList() {
+	public function setQeuryCondition() {
 		$map = array(); //查询的参数
+		$map['name'] = array('like', I('get.name')."%");
 		$this->M->where($map);
 	}
 }
