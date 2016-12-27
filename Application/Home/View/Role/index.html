@@ -85,6 +85,20 @@
 </block>
 <block name="scripts">
 	<script>
+
+
+		/**
+		* 有状态的可以用
+		* @param array()
+		* @return array();
+		
+		window.defaultOption.setMethod("beforeList", function(list){
+			list.forEach(function(currentValue){
+				currentValue['switch'] = currentValue.id ? true: false;
+			})
+			return list;
+		})*/
+	
 		// var dataList = {$roleList|json_encode};
 		var page  = {
 			dataList:{$roleList|json_encode},

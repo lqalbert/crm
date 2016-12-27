@@ -65,70 +65,23 @@
 	<script src="__PUBLIC__/js/vueHooks.js"></script>
 	<script src="__PUBLIC__/js/vueMethods.js"></script>
 	<script src="__PUBLIC__/js/vueOption.js"></script>
+	<script src="__PUBLIC__/js/vueCommonLogic.js"></script>
 	<script>
-	   var page = {
+		var page = {
 		   	addFormUrl:"{:U('add')}",
 			editFormUrl:"{:U('edit')}",
-			listUrl:"{:U('index')}",
-			deleteUrl:"{:U('delete')}"
-	   }
+			listUrl:"{:U('getList')}",
+			deleteUrl:"{:U('delete')}",
 
-
-
+			pageSize:{$pageSize}
+		}
 		window.defaultOption = new VueOption();
-		window.defaultOption.setData("show", false);
 
-		// 共用的 生命hook 处理函数
-		window.defaultOption.setVueHook("mounted", function(){
-			console.log("change show");
-			this.show = true;
-		})
-
-		window.defaultOption.setVueHook("mounted", function(){
-			
-			this.$refs.pagination.$emit("current-change");
-		})
-
-		//pagination
-		// 共用的 方法 处理函数
-
-		//重载 数据列表
-		window.defaultOption.setMethod("dataReload", function(){
-			this.dataLoading = true;
-			this.loadDatalist();
-		})
-
-		//根据 查询条件 重载数据
-		window.defaultOption.setMethod("loadDatalist", function(){
-			var vmThis = this;
-			this.$http.get(page.listUrl, {params: this.searchForm }).then(function(response){
-				vmThis.$set(vmThis, 'dataList', response.body.list)
-				vmThis.$set(vmThis, 'total',    parseInt(response.body.count));
-			}, function(response) {
-				vmThis.$message({
-				  message: '获取失败',
-				  type: 'error'
-				});
-			}).finally(function(){
-				vmThis.$set(vmThis, 'dataLoading', false);
-			})
-		})
-
-		window.defaultOption.setMethod("handleCurrentPageChange", function(v){
-			console.log(v);
-			this.dataLoading = true;
-			this.searchForm.p = v;
-			this.currentPage = v;
-			this.loadDatalist();
-		})
-
-		window.defaultOption.setMethod("handleIndex", function(row, column){
-			return this.dataList.indexOf(row)  + ((this.currentPage-1)*this.pageSize) +1;
-		})
-
+		setCommonLogic(window.defaultOption);
 
 
 	</script>
+
 	<!-- / vue 通用部分  -->
 
 
@@ -145,7 +98,6 @@
 		}
 		
 		window.vmInstance  = new Vue(window.vmOption);*/
-		console.log("option:", defaultOption.getOption());
 		window.defaultVm = new Vue(window.defaultOption.getOption()).$mount('#app');
 	</script>
 </body>

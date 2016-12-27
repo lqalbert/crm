@@ -8,18 +8,22 @@ function VueOption(){
 
 VueOption.prototype.setData = function(field, value) {
 	this.data[field] = value;
+	return this;
 };
 
 VueOption.prototype.setDatas = function(obj) {
 	Oassign(this.data, obj);
+	return this;
 };
 
 VueOption.prototype.setMethod = function(name, callback) {
 	this.methods.set(name, callback);
+	return this;
 };
 
 VueOption.prototype.setVueHook = function(name, callback, fous) {
 	this.hooks.add(name, callback, fous);
+	return this;
 };
 
 // 计算属性 可以设置getter setter
@@ -34,21 +38,81 @@ VueOption.prototype.getOption = function() {
 	option['methods'] = this.methods.values();
 
 	var thisOption = this;
+
+
+	option['beforeCreate'] = function() {
+		thisOption.hooks.exeHooks(this, 'beforeCreate');
+	}
+	option['created'] = function() {
+		thisOption.hooks.exeHooks(this, 'created');
+	}
+	option['beforeMount'] = function() {
+		thisOption.hooks.exeHooks(this, 'beforeMount');
+	}
+	option['mounted'] = function() {
+		thisOption.hooks.exeHooks(this, 'mounted');
+	}
+	option['beforeUpdate'] = function() {
+		thisOption.hooks.exeHooks(this, 'beforeUpdate');
+	}
+	option['updated'] = function() {
+		thisOption.hooks.exeHooks(this, 'updated');
+	}
+	option['activated'] = function() {
+		thisOption.hooks.exeHooks(this, 'activated');
+	}
+	option['deactivated'] = function() {
+		thisOption.hooks.exeHooks(this, 'deactivated');
+	}
+	option['beforeDestroy'] = function() {
+		thisOption.hooks.exeHooks(this, 'beforeDestroy');
+	}
+	option['destroyed'] = function() {
+		thisOption.hooks.exeHooks(this, 'destroyed');
+	}
+
 	// Object.keys() 只会返回自有属性 
 	// 从原型链上继承来的 不会 枚举
 	// x in this.hooks 会把方法也枚举出来
+
 	var keys = Object.keys(this.hooks).reverse();
 	for (var i = keys.length - 1; i >= 0; i--) {
 		var hookName = keys[i];
-		if (this.hooks[hookName].length) {
-			option[hookName] = function() {
-				thisOption.hooks.exeHooks(this, hookName);
-			}
+		if (this.hooks[hookName].length == 0 ) {
+			delete option[hookName];
 		}  
 	}
 
 	return option;
 };
+
+
+//应用逻辑设置
+
+
+
+//高级查询
+VueOption.prototype.setAdvancedSearch = function(){
+	setAdvancedSearch(this);
+	return this;
+}
+
+//添加与编辑
+VueOption.prototype.setAdd = function(){
+	setForm(this, "add");
+	return this;
+}
+
+VueOption.prototype.setEdit = function(){
+	setForm(this, "edit");
+	return this;
+}
+
+VueOption.prototype.setForm = function(name, obj){
+	this.setData(name, obj);
+	return this;
+}
+
 
 
 // window.defaultOption = Object.create(VueOption.prototype);
