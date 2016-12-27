@@ -5,7 +5,7 @@
 		<div class="wrapp" v-show="show" style="display: none">
 			<!-- seach form -->
 			<el-row>
-				<el-col :span="12">
+				<!-- <el-col :span="12">
 					<el-form :inline="true"  ref="searchForm" :model="searchForm">
 					  <el-form-item prop="name" >
 					    <el-input   placeholder="查询字段一"  v-model="searchForm.name"></el-input>
@@ -16,12 +16,12 @@
 					    </el-select>
 					  </el-form-item>
 					  <el-form-item>
-					    <!-- <el-button icon="close" @click="searchReset">清空</el-button> -->
+					   <el-button icon="close" @click="searchReset">清空</el-button>
 					    <el-button type="primary" icon="search" @click="loadDatalist" >查询</el-button> 
-			        	<!-- <el-button  @click="advancedSearch=true" icon="search">高级查询</el-button>  -->
+			        	<el-button  @click="advancedSearch=true" icon="search">高级查询</el-button>
 					  </el-form-item>
 					</el-form>
-				</el-col>
+				</el-col> -->
 				<el-col :span="12">
 				<!-- <div class="pull-right">
 					删除之后  <el-button @click="reload">刷新</el-button> 一下
@@ -34,7 +34,7 @@
 			<!-- datatables  -->
 			<el-row>
 				<el-col :span="24">
-					<el-table :data="datalist" border stripe height  v-loading.body="dataLoad" element-loading-text="拼命加载中" >
+					<el-table :data="dataList" border stripe height  v-loading.body="dataLoad" element-loading-text="拼命加载中" >
 					    <el-table-column type="selection"  width="50" >
 					    </el-table-column>
 					    <el-table-column label="序号"  width="70" :formatter="handleIndex"  >
@@ -139,102 +139,13 @@
  <!-- 列表处理 -->
  <!-- todo : 共用的数据项 像添加和编辑select下拉显示的数据 -->
 <script>
-	// 数据项 与 分页
-	// list
-	// count ==> 分页用的。
 
-	// 接口
-	// 请求地址
-
-	// 查询项 ===> 独立成一个表单项
-	// 是否有高级查询 
-	// 查询表单 
-
-	// 加载数据
-
-	// 自有逻辑 完全通用
-	// 初始化 把上面的 附加到 vm 上
-	
-
-	function pagination(url, name){
-		this.url = url;
-		
-		this.pageSize = 10;
-		this.count = 0;
-	}
-
-
-	pagination.prototype.vmData = {
-
-	}
-
-	function dataList(name, url){
-		this.url   = url;
-		this.list  = [];
-		this.count = 0;
-		this.name  = name;
-
-		this.methods = {};
-	}
-
-
-
-	dataList.prototype.appendToVm = function(){
-
-		var option = {};
-		Oassign(window.vmData, {
-			"dataLoad": false,
-			"datalist": this.list,
-			"total"   : this.count,
-			"searchForm" :{
-				p:1
-			},
-			"currentPage":1,
-			"pageSize":10
-		});
-
-		for (var x in this.methods) {
-			window.vmMethods.set(x, this.methods[x]);
-		}
-	}
-
-
-	dataList.prototype.setMethod = function(name, fnc){
-		// this.methods.push(fnc);
-		this.methods[name] = fnc;
-	}	
-
-	dataList.prototype.init = function(){
-		this.appendToVm();
-		
-	}
-
-
-	var d = new dataList("main", "{:U('index')}");
-	d.setMethod("handleCurrentPageChange", function(v){
-		this.dataLoad = true;
-		this.searchForm.p = v;
-		this.currentPage = v;
-		this.loadDatalist();
-	})
-
-	d.setMethod("loadDatalist", function(v){
-		var vmThis = this;
-		this.$http.get(d.indexUrl, {params: this.searchForm }).then(function(response){
-			
-			vmThis.$set(vmThis, 'datalist', response.body.list)
-			vmThis.$set(vmThis, 'total',    parseInt(response.body.count));
-		}, function(response) {
-			vmThis.$message({
-			  message: '获取失败',
-			  type: 'error'
-			});
-		}).finally(function(){
-			vmThis.$set(vmThis, 'loading', false);
-		})
-	})
-
-
-	d.init();
+	window.defaultOption.setDatas({
+		dataList:[],
+		total:0,
+		currentPage:1,
+		pageSize:{$pageSize},
+		dataLoad:false
+	});
 </script>
 </block>

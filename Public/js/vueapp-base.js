@@ -89,13 +89,6 @@ methods.prototype.clear = function(){
 	this.length = 0;
 }
 methods.prototype.delete = function(key){
-	//这里不优雅 暂时这样搞
-	// 应该把删除功能 放到 Array的原型上
-	// fixed;
-	/*var i = this.keys.indexOf(key)
-	if (i != -1) {
-		this.keys.splice(i,1);
-	}*/
 	this.keys.remove(key);
 	this.data[key] = null;
 	this.length = this.keys.length;

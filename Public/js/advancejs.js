@@ -95,4 +95,5 @@ if (!Array.prototype.remove) {
 			this.splice(i,1);
 		}
 	}
+	
 }

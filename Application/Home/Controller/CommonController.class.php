@@ -39,8 +39,7 @@ class CommonController extends Controller {
 	private function parseJsonParams(){
 		
 		if (IS_POST && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false  ) {
-			$input = file_get_contents("php://input");
-			$_POST = json_decode($input, true);
+			$_POST = json_decode(file_get_contents("php://input"), true);
 		}
 	}
 
@@ -109,12 +108,16 @@ class CommonController extends Controller {
 		if (IS_AJAX) {
 			$this->ajaxReturn($result);
 		}  else {
-			$this->assign("pageSize", $this->pageSize);
+			
 			return $result;
 		}
 
 	}
 
+
+	public function _before_index(){
+		$this->assign("pageSize", $this->pageSize);
+	}
 
 
 }

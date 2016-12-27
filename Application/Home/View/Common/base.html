@@ -42,10 +42,6 @@
 	<!-- 如果没有 则 提供一些高级的js功能  -->
 	<script src="__PUBLIC__/js/advancejs.js"></script>
 
-	<!-- vue 通用部分 -->
-	<script src="__PUBLIC__/js/vueapp-base.js"></script>
-	<!-- / vue 通用部分 -->
-
 	<!-- 不支持IE8 及以下的浏览器 -->
 	<!--[if lte IE 8]> 
 	<script>
@@ -64,11 +60,83 @@
 	<script src="__PUBLIC__/js/vue.js"></script>
 	<script src="__PUBLIC__/js/element-ui--index.js"></script>
 	<script src="__PUBLIC__/js/vue-resource.min.js"></script>
+
+	<!-- vue 通用部分  -->
+	<script src="__PUBLIC__/js/vueHooks.js"></script>
+	<script src="__PUBLIC__/js/vueMethods.js"></script>
+	<script src="__PUBLIC__/js/vueOption.js"></script>
+	<script>
+	   var page = {
+		   	addFormUrl:"{:U('add')}",
+			editFormUrl:"{:U('edit')}",
+			listUrl:"{:U('index')}",
+			deleteUrl:"{:U('delete')}"
+	   }
+
+
+
+		window.defaultOption = new VueOption();
+		window.defaultOption.setData("show", false);
+
+		// 共用的 生命hook 处理函数
+		window.defaultOption.setVueHook("mounted", function(){
+			console.log("change show");
+			this.show = true;
+		})
+
+		window.defaultOption.setVueHook("mounted", function(){
+			
+			this.$refs.pagination.$emit("current-change");
+		})
+
+		//pagination
+		// 共用的 方法 处理函数
+
+		//重载 数据列表
+		window.defaultOption.setMethod("dataReload", function(){
+			this.dataLoading = true;
+			this.loadDatalist();
+		})
+
+		//根据 查询条件 重载数据
+		window.defaultOption.setMethod("loadDatalist", function(){
+			var vmThis = this;
+			this.$http.get(page.listUrl, {params: this.searchForm }).then(function(response){
+				vmThis.$set(vmThis, 'dataList', response.body.list)
+				vmThis.$set(vmThis, 'total',    parseInt(response.body.count));
+			}, function(response) {
+				vmThis.$message({
+				  message: '获取失败',
+				  type: 'error'
+				});
+			}).finally(function(){
+				vmThis.$set(vmThis, 'dataLoading', false);
+			})
+		})
+
+		window.defaultOption.setMethod("handleCurrentPageChange", function(v){
+			console.log(v);
+			this.dataLoading = true;
+			this.searchForm.p = v;
+			this.currentPage = v;
+			this.loadDatalist();
+		})
+
+		window.defaultOption.setMethod("handleIndex", function(row, column){
+			return this.dataList.indexOf(row)  + ((this.currentPage-1)*this.pageSize) +1;
+		})
+
+
+
+	</script>
+	<!-- / vue 通用部分  -->
+
+
 	<block name="scripts"></block>
 	<script>
 		// 虽然有 if 但是 这样 methods 更灵活了
 		// 可以兼容以前的代码
-		if (window.vmMethods.length) {
+		/*if (window.vmMethods.length) {
 			if (window.vmOption['methods']) {
 				Oassign(window.vmOption['methods'],  window.vmMethods.values());
 			} else {
@@ -76,7 +144,9 @@
 			}
 		}
 		
-		window.vmInstance  = new Vue(window.vmOption);
+		window.vmInstance  = new Vue(window.vmOption);*/
+		console.log("option:", defaultOption.getOption());
+		window.defaultVm = new Vue(window.defaultOption.getOption()).$mount('#app');
 	</script>
 </body>
 </html>
