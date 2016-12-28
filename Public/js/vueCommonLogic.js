@@ -56,7 +56,13 @@ function setCommonLogic(opt){
 	//根据 查询条件 重载数据
 	opt.setMethod("loadDatalist", function(){
 		var vmThis = this;
-		this.$http.get(page.listUrl, {params: this.searchForm }).then(function(response){
+		var params = {};
+		for (var x in this.searchForm ){
+			if (this.searchForm[x]!="") {
+				params[x] = this.searchForm[x];
+			}
+		}
+		this.$http.get(page.listUrl, {params: params }).then(function(response){
 
 			// 在显示之前 对数据进行处理
 			if (this.beforeList) {
@@ -92,6 +98,7 @@ function setCommonLogic(opt){
 
 	// 初始化一个对像
 	opt.setMethod("initObject", function(form, row){
+		console.log(form);
 		for(var x in form){
 			form[x] = row[x];
 		}
@@ -121,6 +128,36 @@ function setCommonLogic(opt){
 	*/
 	opt.setAdd();
 	opt.setEdit();
+	//删除
+	opt.setMethod("handleDelete", function(index, row, url){
+		if (!arguments[2]) {
+			url= this.page.deleteUrl;
+		}
+		var vmThis = this;
+		this.$confirm('确定删除?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(function(){
+        	vmThis.$http.post(url, {ids:[row.id]}).then(function(response){
+        		vmThis.$message({
+		            type: 'success',
+		            message: '删除成功! '
+		          });
+        		vmThis.dataList.splice(index, 1);
+        	}, function(response){
+        		vmThis.$message({
+		            type: 'error',
+		            message: '删除失败'
+		          });
+        	})
+        }).catch(function() {
+          vmThis.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+	})
 
 }
 
@@ -153,7 +190,7 @@ function setForm(opt, type){
 	// 这里还是不好
 	// 感觉还可以再拆分
 	// 暂时先这样
-	// todo form的命名 独立出来 
+	
 	opt.setMethod(type+"FormSubmit", function(url, form){
 		FormName.type = form;
 
@@ -166,7 +203,7 @@ function setForm(opt, type){
 
 		this.$http.post(url, this[formName]).then(function (response) {
 			vmThis.$message({
-				  message: '添加成功',
+				  message: '操作成功',
 				  type: 'success'
 				});
 			setTimeout(function(){
@@ -176,7 +213,7 @@ function setForm(opt, type){
 			}, 2000);
         }, function(response){
 			vmThis.$message({
-			  message: '添加失败',
+			  message: '操作失败',
 			  type: 'error'
 			});
         	vmThis[formStatus] = false;

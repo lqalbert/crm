@@ -105,11 +105,20 @@ VueOption.prototype.setAdd = function(){
 
 VueOption.prototype.setEdit = function(){
 	setForm(this, "edit");
+	//初始化 
+	this.setMethod("handleEdit", function(index, row, type){
+		if (!arguments[2]) {
+			type='edit';
+		}
+		this.initObject( this[FormName.getFormName(type)], row );
+		this.editIndex = index;
+		this.openDialog(type);
+	})
 	return this;
 }
 
 VueOption.prototype.setForm = function(name, obj){
-	this.setData(name, obj);
+	this.setData(FormName.getFormName(name), obj);
 	return this;
 }
 

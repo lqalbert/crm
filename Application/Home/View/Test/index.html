@@ -23,9 +23,9 @@
 					</el-form>
 				</el-col>
 				<el-col :span="12">
-				<!-- <div class="pull-right">
-					删除之后  <el-button @click="reload">刷新</el-button> 一下
-				</div> -->
+				<div class="pull-right">
+					删除之后  <el-button @click="dataReload">刷新</el-button> 一下
+				</div>
 					
 				</el-col>	
 			</el-row>
@@ -109,8 +109,8 @@
 			<include file="_add" />
 			<!-- / 添加 -->
 
-			<!-- 编辑 
-			<include file="_edit" />-->
+			<!-- 编辑 -->
+			<include file="_edit" />
 			<!-- / 编辑 -->
 		</div>
 
@@ -140,16 +140,16 @@
 <script>
 	window.defaultOption.setDatas({
 		searchForm:{
-			p:0,
-
-			name:"",
+			p   : 0,
+			name: "",
 		}
 	}).setAdvancedSearch()
 	// 默认提供了 add 与 edit两个表单
-	.setForm(FormName.getFormName("add"), {
+	.setForm('add', {
 		name:""
-	}).setForm(FormName.getFormName('edit'), {
-
+	}).setForm('edit', {
+		name:"",
+		id:""
 	});
 </script>
 </block>

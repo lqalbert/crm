@@ -2,7 +2,7 @@
 namespace Home\Controller;
 
 class TestController extends CommonController {
-	protected $table="department_basic";
+	protected $table="department";
 
 	public function index() {
 		$this->display();
