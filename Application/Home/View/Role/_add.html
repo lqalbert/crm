@@ -1,19 +1,18 @@
-<el-dialog title="添加角色" v-model="dialogAddRole">
-   <el-form :model="addForm" id="add-form">
-    <el-form-item label="角色名称"  :label-width="formLabelWidth">
+<el-dialog title="添加角色" v-model="addFormDialog">
+   <el-form :model="addForm" id="add-form" :label-width="dialogLabelWidth">
+    <el-form-item label="角色名称"  >
       <el-input v-model="addForm.name"  name="name" auto-complete="off" style="width:400px;" placeholder="请设置角色名称"></el-input>
     </el-form-item>
-    <el-form-item label="父级角色" :label-width="formLabelWidth" style="width:400px;">
+    <!-- <el-form-item label="父级角色"  style="width:400px;">
       <el-select v-model="addForm.pid" placeholder="请选择">
       	<el-option value="0" label="无父级"></el-option>
-      	
       </el-select>
-    </el-form-item>
-    <el-form-item label="角色说明" :label-width="formLabelWidth">
+    </el-form-item> -->
+    <el-form-item label="角色说明" >
       <el-input v-model="addForm.remark" type="textarea" style="width:500px;" placeholder="请为角色添加说明"></el-input>
     </el-form-item>
 
-    <el-form-item label="角色状态" :label-width="formLabelWidth">
+    <el-form-item label="角色状态" >
 		<el-radio class="radio" v-model="addForm.status" label="0">禁用</el-radio>
   		<el-radio class="radio" v-model="addForm.status" label="1">启用</el-radio>
     </el-form-item>
@@ -21,7 +20,7 @@
 
 <!-- 
     <a style="font-size:16px;font-weight:700;color:#1f2d3d">权限分配</a>
-    <el-form-item label="员工管理：" :label-width="formLabelWidth">
+    <el-form-item label="员工管理：" >
 		  <el-checkbox-group v-model="checkList">
 		    <el-checkbox label="员工列表"></el-checkbox>
 		    <el-checkbox label="添加员工"></el-checkbox>
@@ -29,7 +28,7 @@
 		    <el-checkbox label="删除员工"></el-checkbox>
 		  </el-checkbox-group>
     </el-form-item>
-    <el-form-item label="角色管理：" :label-width="formLabelWidth" style="margin-top:-20px;">
+    <el-form-item label="角色管理："  style="margin-top:-20px;">
 		  <el-checkbox-group v-model="checkList1">
 		    <el-checkbox label="浏览角色"></el-checkbox>
 		    <el-checkbox label="添加角色"></el-checkbox>
@@ -37,7 +36,7 @@
 		    <el-checkbox label="删除角色"></el-checkbox>
 		  </el-checkbox-group>
     </el-form-item>
-    <el-form-item label="权限管理：" :label-width="formLabelWidth" style="margin-top:-20px;">
+    <el-form-item label="权限管理："  style="margin-top:-20px;">
 		  <el-checkbox-group v-model="checkList2">
 		    <el-checkbox label="浏览权限"></el-checkbox>
 		    <el-checkbox label="添加权限"></el-checkbox>
@@ -50,7 +49,8 @@
 
    </el-form>
   <div slot="footer" class="dialog-footer">
-    <el-button @click="dialogAddRole= false">取 消</el-button>
-    <el-button type="primary" @click="addFormAction">确 定</el-button>
+    <el-button @click="closeDialog('add')">取 消</el-button>
+     <el-button type="primary" v-show="!addFormSubmitStatus" @click="addFormSubmit(page.addFormUrl, 'add')" >确 定</el-button>
+    <el-button type="primary" v-show="addFormSubmitStatus" :loading="true" >添加中</el-button>
   </div>
 </el-dialog>

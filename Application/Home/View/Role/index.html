@@ -16,22 +16,30 @@
 		  <!-- table -->
 		  <el-row>
 		   <el-col :span="24">
-			  <el-table :data="datalist" v-loading="loading" element-loading-text="拼命加载中" style="width: 100%" :row-class-name="tableRowClassName">
-			    <el-table-column align="center" type="index" label="编号" width="100"></el-table-column>
-			    <el-table-column align="center" prop="name" label="角色名称"></el-table-column>
-			    <el-table-column align="center" prop="remark" label="角色说明"></el-table-column>
-			    <el-table-column inline-template :context="_self" align="center"  label="当前状态" width="100" >
+			  <el-table 
+			  :data="dataList" 
+			  v-loading="dataLoad" 
+			  element-loading-text="{:L('DATA_LOGIN')}" 
+			  :row-class-name="tableRowClassName">
+			    <el-table-column align="center" type="index"   label="{:L('INDEX')}" width="100"></el-table-column>
+			    <el-table-column align="center" prop="name"    label="{:L('FIELD_NAME')}"></el-table-column>
+			    <el-table-column align="center" prop="remark"  label="{:L('FIELD_REMARK')}"></el-table-column>
+			    <el-table-column inline-template :context="_self" align="center"  label="{:L('FIELD_STATUS')}" width="100" >
 					<div>
-					      <el-switch
-							  v-model="row.switch"
-							  on-color="#13ce66"
-							  off-color="#ff4949" 
-							  @change="switchHandle($index, row)">
-							</el-switch>
+				      	<el-switch
+						  v-model="row.switch"
+						  on-color="#13ce66"
+						  off-color="#ff4949" 
+						  @change="switchHandle($index, row)">
+						</el-switch>
 					</div>
 			    </el-table-column>
-			    
-			    <el-table-column inline-template :context="_self" align="center" label="操作">
+			    <el-table-column 
+			    inline-template 
+			    :context="_self" 
+			    align="center" 
+			    label="{:l('OPERATION')}" 
+			    width="250">
 			     <div>
 			        <el-button
 			          size="small"
@@ -45,7 +53,6 @@
 			          @click="handleAuthoriz($index, row)">
 			          {:L('AUTHORIZE')}
 			        </el-button>
-
 
 			        <el-button
 			          size="small"
@@ -64,198 +71,78 @@
 			  <el-col :span="12">
 			  <div class="grid-content bg-purple">
 			  	<span class="wrapper">
-			  		<el-tooltip content="添加新角色！" placement="right">
-					    <el-button size="small"  @click="dialogAddRole = true" icon="plus" type="primary">添加</el-button>
+			  		<el-tooltip content="{:L('ADD_NEW')}" placement="right">
+					    <el-button size="small"  @click="openDialog('add')" icon="plus" type="primary">{:L('ADD')}</el-button>
 				    </el-tooltip>
 				  </span>
 			  </div>
+			  </el-col>
+			   <el-col :span="12">
+				  <div class="grid-content bg-purple-light pull-right">
+				    <!-- page -->
+				    <include file="Common:_pagination" />
+				    <!-- / page -->
+				  </div>
 			  </el-col>
 			</el-row>
 			<!-- / toolbar -->
 		</div>
 		<div v-show="show" style="display:none">
 			<!-- 添加 -->
-			<include file="_add"/>
-			<!-- 修改 -->
-			<include file="_edit"/>
-			<!-- 授权 -->
-			<include file="_access"/>
+			<include file="_add" />
+			<!-- /添加 -->
+
+			<!-- 编辑 -->
+			<include file="_edit" />
+			<!-- /编辑 -->
 		</div>
 	</div>
 </block>
 <block name="scripts">
 	<script>
-
-
-		/**
-		* 有状态的可以用
-		* @param array()
-		* @return array();
-		
-		window.defaultOption.setMethod("beforeList", function(list){
-			list.forEach(function(currentValue){
-				currentValue['switch'] = currentValue.id ? true: false;
+		window.defaultOption.setDatas({
+			searchForm:{
+				p   : 0,
+				name: "",
+			}
+		}).setForm('status',{
+			id:0,
+			status:0
+		}).setForm('add', {
+			name:"",
+			// pid:0,
+			remark:'',
+			status:'1'
+		}).setForm('edit', {
+			name:"",
+			id:"",
+			remark:'',
+			status:''
+		}).setMethod('beforeList', function(dataList){
+			dataList.forEach(function(currentValue, index) {
+				currentValue['switch'] = currentValue.status == 1 ? true : false;
 			})
-			return list;
-		})*/
-	
-		// var dataList = {$roleList|json_encode};
-		var page  = {
-			dataList:{$roleList|json_encode},
-			addFormUrl:"{:U('addRole')}",
-			editFormUrl:"{:U('editRole')}",
+			return dataList;
+		}).setMethod('switchHandle', function(index, row){
 
-			init:function(){
-				this.dataList.forEach(function(currentValue, index){
-					currentValue['switch'] = currentValue.status == 1 ? true: false;
-				})
-			}
-		}
-		page.init();
-
-	</script>
-
-
-	<script type="text/javascript">
-		// vm option 里面的 data属性
-		Oassign(window.vmData ,{
-			
-			loading: false,
-			formLabelWidth: '140px',
-
-			datalist:page.dataList,
-
-			//添加对话框
-			dialogAddRole: false,
-			//修改对话框
-			dialogEditRole: false,
-			//授权对话框
-			dialogEditAce:  false,
-			
-			checkList:['员工列表','添加员工'],
-			checkList1:['浏览角色','添加角色'],
-			checkList2:['浏览权限','添加权限'],
-
-			editForm:{
-				id:"",
-				name:"",
-				pid :"",
-				status:1,
-				remark:""
-			},
-			editIndex:0,
-			addForm:{
-				name:"",
-				pid :"",
-				status:'1',
-				remark:""
-			},
-			statusForm:{
-				id:"",
-				status:'1'
-			},
-			statusIndex:0,
-
-
-			dialogEditAccess:{
-
-			}
-
-			
-			
-
-		});
-
-		window.vmMethods.set("formatter", function(row, col){
-			return row.status==1? true : false;
-		})
-		window.vmMethods.set("tableRowClassName", function(row, index){
-			if (index === 1) {
-	          return 'info-row';
-	        } else if (index === 3) {
-	          return 'positive-row';
-	        }
-	        return '';
-		})
-
-		window.vmMethods.set("handleEdit", function(index, row){
-			
-			// this.initObject("editForm", row);
-			this.initObject(this.editForm , row); // 这种 哪种方式好一点？
-			this.editIndex = index;
-			this.dialogEditRole = true;
-
-		})
-
-		window.vmMethods.set("handleDelete", function(index, row){
-			this.$confirm('此操作将永久删除该角色, 是否继续?', '提示', {
-	          confirmButtonText: '确定',
-	          cancelButtonText: '取消',
-	          type: 'warning'
-	        }).then(function(){
-	          this.$message({
-	            type: 'success',
-	            message: '删除成功!'
-	          });
-	        }).catch(function() {
-	          this.$message({
-	            type: 'info',
-	            message: '已取消删除'
-	          });          
-	        });
-		})
-
-		window.vmMethods.set("switchHandle", function(index, row){
-			row.status = row.switch ? 1 : 0; 
+			row.status = row.switch ? '1' : '0'; 
 			this.initObject(this.statusForm, row);
 			this.statusIndex = index;
-//todo  ajax 更新状态
 			var  vmThis = this;
 			
-			this.$http.post(page.editFormUrl, this.statusForm).then(function(response){
+			//暂时这样了 这里强耦合
+			this.$http.post(page.editFormUrl, this.statusForm).catch(function(response){
+				vmThis.$message({
+				  message: '状态更改失败',
+				  type: 'error'
+				});
+				vmThis.dataList[vmThis.statusIndex].switch = ! vmThis.dataList[vmThis.statusIndex].switch ;
 
-			}, function(response){
-				//失败
-				//
 			});
-		})
-
-		window.vmMethods.set("addFormAction", function(){
-			var  vmThis = this;
-			this.$http.post(page.addFormUrl, this.addForm).then(function (response) {
-// todo success  handle
-	          // vmThis.$set(vmThis, 'loading', false);
-	          // vmThis.$set(vmThis, 'tableData3', response.body)
-	          // vmThis.$set(vmThis, 'total', 2);
-	        }, function(response){
-// todo error handle
-	          // vmThis.$set(vmThis, 'loading', false);
-	        });
-		})
-
-		window.vmMethods.set("editFormAction", function(){
-			var  vmThis = this;
-			// vmThis.dialogEditRole= false
-			this.$http.post(page.editFormUrl, this.editForm).then(function (response) {
-// todo success  handle
-
-	          // vmThis.$set(vmThis, 'loading', false);
-	          // vmThis.$set(vmThis, 'tableData3', response.body)
-	          // vmThis.$set(vmThis, 'total', 2);
-	          vmThis.initObject(vmThis.datalist[vmThis.editIndex], vmThis.editForm);  
-	          vmThis.datalist[vmThis.editIndex]['switch'] = vmThis.editForm['status']==1 ? true : false;
-	        }, function(response){
-// todo error handle	
-	          // vmThis.$set(vmThis, 'loading', false);
-	        });
-		})
-
-		//授权
-		window.vmMethods.set("handleAuthoriz", function(index, row){
-			this.dialogEditAce = true;
-		})
-
-
+		}).setMethod('handleAuthoriz', function(index, row){
+				//
+		}).setRowStyle();
 		
+
 	</script>
 </block>

@@ -122,6 +122,19 @@ VueOption.prototype.setForm = function(name, obj){
 	return this;
 }
 
+VueOption.prototype.setRowStyle = function() {
+	this.setMethod('tableRowClassName', function(row, index){
+		var i = index+1;
+		if (i%4 === 2) {
+          return 'info-row';
+        } else if (i%4 === 0) {
+          return 'positive-row';
+        }
+        return '';
+	})
+	return this;
+}
+
 
 
 // window.defaultOption = Object.create(VueOption.prototype);

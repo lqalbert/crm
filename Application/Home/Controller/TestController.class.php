@@ -2,9 +2,11 @@
 namespace Home\Controller;
 
 class TestController extends CommonController {
-	protected $table="department";
+	protected $table="department_basic";
+	protected $pageSize = 1;
 
 	public function index() {
+		// $this->assign('pageSize', $this->pageSize);
 		$this->display();
 	}
 

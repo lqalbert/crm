@@ -12,6 +12,9 @@ var FormName = {
 	},
 	getFormName:function(name){
 		return this.getName(name) + "Form";
+	},
+	getForm:function(name){
+		return this.getFormName(name);
 	}
 };
 
@@ -56,7 +59,7 @@ function setCommonLogic(opt){
 	//根据 查询条件 重载数据
 	opt.setMethod("loadDatalist", function(){
 		var vmThis = this;
-		var params = {};
+		var params = {p:this.currentPage};
 		for (var x in this.searchForm ){
 			if (this.searchForm[x]!="") {
 				params[x] = this.searchForm[x];
@@ -86,7 +89,6 @@ function setCommonLogic(opt){
 	//处理翻页
 	opt.setMethod("handleCurrentPageChange", function(v){
 		this.dataLoading = true;
-		this.searchForm.p = v;
 		this.currentPage = v;
 		this.loadDatalist();
 	})
@@ -98,7 +100,7 @@ function setCommonLogic(opt){
 
 	// 初始化一个对像
 	opt.setMethod("initObject", function(form, row){
-		console.log(form);
+		
 		for(var x in form){
 			form[x] = row[x];
 		}
@@ -142,9 +144,13 @@ function setCommonLogic(opt){
         	vmThis.$http.post(url, {ids:[row.id]}).then(function(response){
         		vmThis.$message({
 		            type: 'success',
-		            message: '删除成功! '
+		            message: '删除成功!'
 		          });
-        		vmThis.dataList.splice(index, 1);
+
+        		// vmThis.dataList.splice(index, 1);
+
+        		vmThis.loadDatalist();
+
         	}, function(response){
         		vmThis.$message({
 		            type: 'error',

@@ -11,9 +11,6 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
 -- 导出 dev_cn_crm 的数据库结构
-DROP DATABASE IF EXISTS `dev_cn_crm`;
-CREATE DATABASE IF NOT EXISTS `dev_cn_crm` /*!40100 DEFAULT CHARACTER SET utf8 */;
-USE `dev_cn_crm`;
 
 
 -- 导出  表 dev_cn_crm.department_basic 结构

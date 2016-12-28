@@ -35,7 +35,15 @@
 		/*#app>.wrapp{
 			display: none;
 		}*/
+		
+		/*表格条纹样式*/
+		.el-table .info-row {
+		background: #ffffff;
+		}
 
+		.el-table .positive-row {
+		background: #c9e5f5;
+		}
 
 		
 	</style>
@@ -87,17 +95,6 @@
 
 	<block name="scripts"></block>
 	<script>
-		// 虽然有 if 但是 这样 methods 更灵活了
-		// 可以兼容以前的代码
-		/*if (window.vmMethods.length) {
-			if (window.vmOption['methods']) {
-				Oassign(window.vmOption['methods'],  window.vmMethods.values());
-			} else {
-				window.vmOption['methods'] = window.vmMethods.values();
-			}
-		}
-		
-		window.vmInstance  = new Vue(window.vmOption);*/
 		window.defaultVm = new Vue(window.defaultOption.getOption()).$mount('#app');
 	</script>
 </body>

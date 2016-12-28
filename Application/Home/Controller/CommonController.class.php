@@ -56,7 +56,8 @@ class CommonController extends Controller {
 		if ($this->M->create($_POST, Model::MODEL_INSERT) && D($this->table)->add()) {
 			$this->success(L('ADD_SUCCESS'));
 		} else {
-			$this->error(L('ADD_ERROR').D($this->table)->getError());
+			header('HTTP/1.1 418 DIY_ERROR');
+			$this->error(L('ADD_ERROR').$this->M->getError());
 		}
 	}
 
@@ -71,7 +72,8 @@ class CommonController extends Controller {
 		if ($this->M->create($_POST, Model::MODEL_UPDATE) && D($this->table)->save()) {
 			$this->success(L('EDIT_SUCCESS'));
 		} else {
-			$this->error(L('EDIT_ERROR'));
+			header('HTTP/1.1 418 DIY_ERROR');
+			$this->error(L('EDIT_ERROR').$this->M->getError());
 		}
 	}
 
@@ -86,11 +88,21 @@ class CommonController extends Controller {
 		if ($this->M->delete(implode(",", I("post.ids")) )) {
 			$this->success(L('DELETE_SUCCESS'));
 		} else {
-			$this->error(L('DELETE_ERROR'));
+			header('HTTP/1.1 418 DIY_ERROR');
+			$this->error(L('DELETE_ERROR').$this->M->getError());
 		}
 	}
 
 
+	/**
+	 * 公用 设置参数
+	 * 子类
+	 * @return  null
+	 * 
+	 **/
+	public function setQeuryCondition() {
+		
+	}
 
 	/**
 	 * 公用 获取列表

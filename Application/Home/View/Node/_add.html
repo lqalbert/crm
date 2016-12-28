@@ -1,30 +1,31 @@
-<el-dialog title="添加权限/功能" v-model="dialogAddPermission">
- <el-form :model="addForm">
-    <el-form-item label="权限分类：" :label-width="formLabelWidth"  >
-      <el-select @change="addFormSelect" v-model="addForm.pid" placeholder="请选择权限分类" style="width:270px;">
+<el-dialog title="添加节点" v-model="addFormDialog">
+ <el-form :model="addForm" :label-width="dialogLabelWidth">
+    <el-form-item label="节点分类："  >
+      <el-select @change="addFormSelect" v-model="addForm.pid" placeholder="请选择节点分类" style="width:270px;">
         <el-option v-for="item in levelOne" :label="item.name" :value="item.id"></el-option>
       </el-select>
     </el-form-item>
-    <el-form-item label="权限名称：" :label-width="formLabelWidth">
+    <el-form-item label="节点中文名：">
       <el-input  v-model="addForm.name" placeholder="请输入权限名称" style="width:270px;"></el-input>
     </el-form-item>
-    <el-form-item label="节点名：" :label-width="formLabelWidth">
+    <el-form-item label="节点名：">
       <el-input  v-model="addForm.title" placeholder="请输入节点名" style="width:270px;"></el-input>
     </el-form-item>
-   <el-form-item label="权限说明：" :label-width="formLabelWidth">
-     <el-input v-model="addForm.remark" type="textarea" style="width:500px;" placeholder="请为权限添加说明"></el-input>
+   <el-form-item label="节点说明：">
+     <el-input v-model="addForm.remark" type="textarea" style="width:500px;" placeholder="请为节点添加说明"></el-input>
    </el-form-item>
-   <el-form-item label="状态：" :label-width="formLabelWidth">
+   <el-form-item label="状态：">
     <el-radio class="radio" v-model="addForm.status" label="0">禁用</el-radio>
     <el-radio class="radio" v-model="addForm.status" label="1">启用</el-radio>
    </el-form-item>
-<!--   <el-form-item label="等级：" :label-width="formLabelWidth" style="width:300px;">
+<!--   <el-form-item label="等级：" style="width:300px;">
   <el-input-number v-model="addForm.level"  :min="2" :max="3"></el-input-number>
   
   </el-form-item> -->
  </el-form>
   <span slot="footer" class="dialog-footer">
-    <el-button @click="dialogAddPermission= false">取 消</el-button>
-    <el-button type="primary" @click="addFormAction">确 定</el-button>
+    <el-button @click="closeDialog('add')">取 消</el-button>
+     <el-button type="primary" v-show="!addFormSubmitStatus" @click="addFormSubmit(page.addFormUrl, 'add')" >确 定</el-button>
+    <el-button type="primary" v-show="addFormSubmitStatus" :loading="true" >添加中</el-button>
   </span>
 </el-dialog>

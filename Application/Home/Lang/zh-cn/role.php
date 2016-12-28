@@ -1,15 +1,10 @@
 <?php
 return array(
-	/*'ADD_SUCCESS'=>'添加成功',
-	'ADD_ERROR'  =>'添加失败',
+	'FIELD_NAME'=>'角色名称',
+	'FIELD_REMARK'=>'角色说明',
+	'FIELD_STATUS' => '当前状态',
 
-	'EDIT_SUCCESS'=>'编辑成功',
-	'EDIT_ERROR'  =>'编辑失败',
-
-
-	'DELETE_SUCCESS'=>'编辑成功',
-	'DELETE_ERROR'  =>'编辑失败',*/
-
+	'ADD_NEW'   => '添加新角色!'
 
 	
 );

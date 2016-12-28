@@ -6,9 +6,45 @@ class NodeController extends CommonController{
 	protected $table = "rbac_node";
 
 	public function index(){
-		$list = M($this->table)->where(array('level'=>array('gt','1')))->select();
-		$this->assign("dataList", $this->reSort($list));
+		
+		$this->setQeuryCondition();
+		// $this->pageSize = $this->M->count();
+		$this->assign('pageSize', $this->M->count());
+
 		$this->display();
+	}
+
+	/**
+	 * 公用 设置参数
+	 * 子类
+	 * @return  null
+	 * 
+	 **/
+	public function setQeuryCondition() {
+
+		$this->M->where(array('level'=>array('gt', '1')));
+	}
+
+
+	/**
+	 * 公用 获取列表
+	 *
+	 * @return array() || null
+	 * 
+	 **/
+	public function getList(){
+		
+		$this->setQeuryCondition();
+		$count = (int)$this->M->count();
+		$this->setQeuryCondition();
+		$list = $this->M->select();
+		$result = array('list'=>$this->reSort($list), 'count'=>$count);
+		if (IS_AJAX) {
+			$this->ajaxReturn($result);
+		}  else {
+			return $result;
+		}
+
 	}
 
 	private function reSort($list){
