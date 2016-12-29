@@ -1,14 +1,17 @@
-<el-dialog title="添加小组" v-model="dialogAddEmployee">
+<el-dialog title="添加员工" v-model="addFormDialog">
 <!-- <el-form :model="form"> -->
-<el-form >
+<el-form :label-width="dialogLabelWidth">
   <el-row>
     <el-col :span="12">
-      <el-form-item label="登录账号" :label-width="formLabelWidth">
-        <el-input  auto-complete="off"></el-input>
+      <el-form-item label="登录账号">
+        <el-input v-model="addForm.account"  auto-complete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="密码">
+        <el-input v-model="addForm.password" auto-complete="off"></el-input>
       </el-form-item>
     </el-col>
     <el-col :span="12">
-      <el-form-item label="员工姓名" :label-width="formLabelWidth">
+      <el-form-item label="员工姓名">
         <el-input  auto-complete="off"></el-input>
         
       </el-form-item>
@@ -16,7 +19,7 @@
   </el-row>
    <el-row>
     <el-col :span="12">
-      <el-form-item label="头像" :label-width="formLabelWidth">
+      <el-form-item label="头像">
         <el-upload
          action="//jsonplaceholder.typicode.com/posts/"
          show-upload-list="false">
@@ -26,7 +29,7 @@
       </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="员工类型" :label-width="formLabelWidth">
+        <el-form-item label="员工类型">
           <el-select  placeholder="请选择">
             <el-option label="测试数据" value="区域一"></el-option>
           </el-select>
@@ -35,14 +38,14 @@
     </el-row>
     <el-row>
       <el-col :span="12">
-        <el-form-item label="所属组织" :label-width="formLabelWidth">
+        <el-form-item label="所属组织">
           <el-select  placeholder="请选择">
             <el-option label="测试数据" value="区域一"></el-option>
           </el-select>
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="性别" :label-width="formLabelWidth">
+        <el-form-item label="性别">
           <el-radio class="radio"  label="男">男</el-radio>
           <el-radio class="radio"  label="女">女</el-radio>
         </el-form-item>
@@ -51,12 +54,12 @@
 
     <el-row>
       <el-col :span="12">
-        <el-form-item label="固话" :label-width="formLabelWidth">
+        <el-form-item label="固话">
           <el-input auto-complete="off"></el-input>
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="手机" :label-width="formLabelWidth">
+        <el-form-item label="手机">
           <el-input auto-complet="off"></el-input>
         </el-form-item>
       </el-col>
@@ -64,38 +67,38 @@
 
     <el-row>
       <el-col :span="12">
-        <el-form-item label="QQ号" :label-width="formLabelWidth">
+        <el-form-item label="QQ号">
           <el-input auto-complete="off"></el-input>
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="QQ昵称" :label-width="formLabelWidth">
+        <el-form-item label="QQ昵称">
           <el-input auto-complet="off"></el-input>
         </el-form-item>
       </el-col>
     </el-row>
     <el-row>
       <el-col :span="12">
-        <el-form-item label="微信号" :label-width="formLabelWidth">
+        <el-form-item label="微信号">
           <el-input auto-complete="off"></el-input>
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="微信昵称" :label-width="formLabelWidth">
+        <el-form-item label="微信昵称">
           <el-input auto-complet="off"></el-input>
         </el-form-item>
       </el-col>
     </el-row>
     <el-row>
       <el-col :span="12">
-        <el-form-item label="省份" :label-width="formLabelWidth">
+        <el-form-item label="省份">
           <el-select placeholder="请选择">
             <el-option label="测试数据" value="测试数据"></el-option>
           </el-select>
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="城市" :label-width="formLabelWidth">
+        <el-form-item label="城市">
           <el-select placeholder="请选择">
             <el-option label="测试数据" value="测试数据"></el-option>
           </el-select>
@@ -104,21 +107,21 @@
     </el-row>
     <el-row>
       <el-col :span="12">
-        <el-form-item label="区县" :label-width="formLabelWidth">
+        <el-form-item label="区县">
           <el-select placeholder="请选择">
             <el-option label="测试数据" value="测试数据"></el-option>
           </el-select>
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="街道" :label-width="formLabelWidth">
+        <el-form-item label="街道">
           <el-select placeholder="请选择">
             <el-option label="测试数据" value="测试数据"></el-option>
           </el-select>
         </el-form-item>
       </el-col>
     </el-row>
-    <el-form-item label="住址" :label-width="formLabelWidth">
+    <el-form-item label="住址">
       <el-input
       type="textarea"
       :autosize="{ minRows: 2, maxRows: 4}"
@@ -128,7 +131,6 @@
     
   </el-form>
   <div slot="footer" class="dialog-footer">
-    <el-button @click="dialogAddEmployee = false">取 消</el-button>
-    <el-button type="primary" @click="dialogAddEmployee = false">确 定</el-button>
+   <include file="Common:_add" />
   </div>
 </el-dialog>

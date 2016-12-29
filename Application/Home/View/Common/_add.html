@@ -1,0 +1,3 @@
+ <el-button @click="closeDialog('add')">取 消</el-button>
+ <el-button type="primary" v-show="!addFormSubmitStatus" @click="addFormSubmit(page.addFormUrl, 'add')" >确 定</el-button>
+<el-button type="primary" v-show="addFormSubmitStatus" :loading="true" >添加中</el-button>

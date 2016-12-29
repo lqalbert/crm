@@ -22,7 +22,7 @@ class NodeController extends CommonController{
 	 **/
 	public function setQeuryCondition() {
 
-		$this->M->where(array('level'=>array('gt', '1')));
+		$this->M->setFilterLevelOne()->order("sort asc");
 	}
 
 
@@ -38,7 +38,7 @@ class NodeController extends CommonController{
 		$count = (int)$this->M->count();
 		$this->setQeuryCondition();
 		$list = $this->M->select();
-		$result = array('list'=>$this->reSort($list), 'count'=>$count);
+		$result = array('list'=>$this->M->reSort($list), 'count'=>$count);
 		if (IS_AJAX) {
 			$this->ajaxReturn($result);
 		}  else {
@@ -47,30 +47,7 @@ class NodeController extends CommonController{
 
 	}
 
-	private function reSort($list){
-		$arr = array(); //新的数组
-		foreach ($list as $value) {
-			if ($value['pid'] == 1) {
-				$arr[] = $value;
-				$children = $this->findValue($list, $value['id']);
-				foreach ($children as $child) {
-					$arr[] = $child;
-				}
-			}
-		}
-		return $arr;
-	}
-
-	//找到指定的数组
-	private function findValue($list, $pid){
-		$arr = array();
-		foreach ($list as $value) {
-			if ($value['pid'] == $pid ) {
-				$arr[]= $value;
-			}
-		}
-		return $arr;
-	}
+	
 
 
 		

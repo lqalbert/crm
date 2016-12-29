@@ -8,6 +8,10 @@
 	  .el-table .positive-row {
 	    background: #e2f0e4;
 	  }
+
+	  .group-item .el-checkbox__label {
+	  	display: none;
+	  }
  </style>
 </block>
 <block name="body">
@@ -78,7 +82,7 @@
 			  </div>
 			  </el-col>
 			   <el-col :span="12">
-				  <div class="grid-content bg-purple-light pull-right">
+				  <div class="grid-content bg-purple-light pull-right" style="display: none">
 				    <!-- page -->
 				    <include file="Common:_pagination" />
 				    <!-- / page -->
@@ -95,16 +99,34 @@
 			<!-- 编辑 -->
 			<include file="_edit" />
 			<!-- /编辑 -->
+
+			<!-- 授权 -->
+			<include file="_access" />
+			<!-- /授权 -->
 		</div>
 	</div>
 </block>
 <block name="scripts">
 	<script>
+		var authNodeList = {:json_encode($nodeList)};
+		var authForm = {};
+		authNodeList.forEach(function(currentValue, index){
+			authForm[currentValue.id] = false;
+			authForm['son'+ currentValue.id] = [];
+		})
+
+	</script>
+	<script>
+		page.setAuthFormUrl = "{:U('setAccess')}";
+		page.getAuthUrl = "{:U('getAccess')}";
+
 		window.defaultOption.setDatas({
 			searchForm:{
 				p   : 0,
 				name: "",
-			}
+			},
+			nodeList:authNodeList,
+
 		}).setForm('status',{
 			id:0,
 			status:0
@@ -118,7 +140,11 @@
 			id:"",
 			remark:'',
 			status:''
-		}).setMethod('beforeList', function(dataList){
+		}).setForm('setAuth',{
+			role_id:0,
+			node:[],
+			cnode:[]
+		}, true).setMethod('beforeList', function(dataList){
 			dataList.forEach(function(currentValue, index) {
 				currentValue['switch'] = currentValue.status == 1 ? true : false;
 			})
@@ -137,10 +163,37 @@
 				  type: 'error'
 				});
 				vmThis.dataList[vmThis.statusIndex].switch = ! vmThis.dataList[vmThis.statusIndex].switch ;
-
 			});
 		}).setMethod('handleAuthoriz', function(index, row){
-				//
+				this.openDialog('setAuth');
+				this.setAuthForm.role_id = row.id;
+				var vmThis = this;
+				//得到 授权 列表
+			this.$http.get(page.getAuthUrl, {params:{role_id: row.id} }).then(function(response){
+				var len  = response.body.length;
+				
+				if (len>0) {
+					vmThis.setAuthForm.node = [];
+					response.body[0].forEach(function(currentValue){
+						console.log(currentValue);
+						vmThis.setAuthForm.node.push(currentValue.node_id);
+					})
+				}
+
+				if (len>1) {
+					vmThis.setAuthForm.cnode = [];
+					response.body[1].forEach(function(currentValue){
+						vmThis.setAuthForm.cnode.push(currentValue.node_id);
+					})
+				}
+
+				
+
+				
+			})
+
+
+
 		}).setRowStyle();
 		
 

@@ -10,14 +10,22 @@
      </span> -->
     </el-form-item>
     <el-form-item label="节点中文名：">
-     <el-input v-model="editForm.name" place="请输入权限名称" style="width:270px;"></el-input>
+     <el-input v-model="editForm.title" place="请输入权限名称" style="width:270px;"></el-input>
     </el-form-item>
     <el-form-item label="节点名：">
-      <el-input  v-model="editForm.title" placeholder="请输入节点名" style="width:270px;"></el-input>
+      <el-input  v-model="editForm.name" placeholder="请输入节点名" style="width:270px;"></el-input>
     </el-form-item>
    <el-form-item label="节点说明：">
      <el-input type="textarea" v-model="editForm.remark" style="width:500px;" placeholder="请为节点添加说明"></el-input>
    </el-form-item>
+
+   <el-form-item label="节点排序：">
+    <el-input-number v-model="editForm.sort" :min="0" size="small" ></el-input-number>
+    <span>由小到大</span>
+   </el-form-item>
+
+    
+
    <el-form-item label="状态：">
       <el-radio class="radio" v-model="editForm.status" label="0">禁用</el-radio>
       <el-radio class="radio" v-model="editForm.status" label="1">启用</el-radio>

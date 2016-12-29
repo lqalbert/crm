@@ -119,6 +119,9 @@ VueOption.prototype.setEdit = function(){
 
 VueOption.prototype.setForm = function(name, obj){
 	this.setData(FormName.getFormName(name), obj);
+	if (arguments[2]) { // 是否设对应的表单 表单状态 提交的方法
+		setForm(this, name); 
+	}
 	return this;
 }
 

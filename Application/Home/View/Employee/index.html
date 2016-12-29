@@ -28,18 +28,22 @@
 			<!-- datatables  -->
 			<el-row>
 				<el-col :span="24">
-					<el-table :data="datalist" border stripe height  v-loading.body="loading" element-loading-text="拼命加载中">
+					<el-table 
+					  :data="dataList" 
+				      v-loading="dataLoad" 
+				      element-loading-text="{:L('DATA_LOGIN')}"
+					 border stripe height  >
 					    <el-table-column type="selection"  width="50" >
 					    </el-table-column>
-					    <el-table-column type="index"  label="序号"  width="70"  >
+					    <el-table-column  label="序号"  width="70" :formatter="handleIndex" >
 					    </el-table-column>
-					    <el-table-column prop="img" label="头像" width="140">
+<!-- 					    <el-table-column prop="img" label="头像" width="140">
 					    </el-table-column>
 					    <el-table-column prop="id"  label="员工ID" width="100">
-					    </el-table-column>
+					    </el-table-column> -->
 					    <el-table-column prop="account" label="登录账号" width="100">
 					    </el-table-column>
-						<el-table-column prop="realname" label="员工姓名" width="100">
+						<!-- <el-table-column prop="realname" label="员工姓名" width="100">
 					    </el-table-column>
 					    <el-table-column prop="status" label="是否有效" width="100">
 					    </el-table-column>
@@ -72,14 +76,15 @@
 					    <el-table-column prop="weixin"  label="微信号" width="150">
 					    </el-table-column>
 					    <el-table-column prop="weixinname"  label="微信昵称" width="150">
-					    </el-table-column>
+					    </el-table-column> -->
 					    
 					    
 
 					    <el-table-column inline-template :context="_self"  fixed="right"  label="操作" width="100">
 					      <span>
-					        <el-button @click="handleClick($index, row)" type="text" size="small">查看</el-button>
-					        <el-button @click="handleClick($index, row)" type="text" size="small">编辑</el-button>
+					        <!-- <el-button @click="handleClick($index, row)" type="text" size="small">查看</el-button> -->
+					        <el-button @click="handleEdit($index, row)" type="text" size="small">编辑</el-button>
+					        <el-button @click="handleSetRoles($index, row)" type="text" size="small">角色</el-button>
 					      </span>
 					    </el-table-column>
 
@@ -93,19 +98,19 @@
 				  <el-col :span="12">
 				  <div class="grid-content bg-purple">
 				  	<el-button-group>
-					    <el-button type="primary" size="small" @click="dialogAddEmployee = true">添加员工</el-button>
+					    <el-button type="primary" size="small" @click="openDialog('add')">添加员工</el-button>
 					    <el-button type="primary" size="small">修改一般信息</el-button>
 					    <el-button type="primary" size="small">修改核心信息</el-button>
 
-						<el-button type="primary" size="small" @click="dialogEditID = true">修改身份信息</el-button>
+						<el-button type="primary" size="small" >修改身份信息</el-button>
 						<el-button type="primary" size="small">修改账号密码</el-button>
-						<el-button type="primary" size="small" @click="dialogEditConfirm = true">确认身份</el-button>
+						<el-button type="primary" size="small" >确认身份</el-button>
 						<el-button type="primary" size="small">微调权限</el-button>
 						<el-button type="primary" size="small">终止员工</el-button>
 						<el-button type="primary" size="small">开演示号</el-button>
 
 				    </el-button-group>
-				    <span>小号的按钮 是不是好看一点？</span>
+				    
 				  </div>
 				  </el-col>
 				  <el-col :span="12">
@@ -121,19 +126,23 @@
 		
 		<div class="dialogWrapper" v-show="show" style="display: none">
 			<!-- 高级查询 -->
-			<include file="_search" />
+			<include file="_searchx" />
 			<!-- / 高级查询 -->
 
 			<!-- 添加 -->
 			<include file="_add" />
 			<!-- / 添加 -->
 
+			<!-- 角色 -->
+			<include file="_role" />
+			<!-- / 角色 -->
+
 			<!-- 修改身份信息 -->
-			<include file="_editID" />
+			<include file="_editIDx" />
 			<!-- / 修改身份信息 -->
 
 			<!-- 确认身份 -->
-			<include file="_editConfirm" />
+			<include file="_editConfirmx" />
 			<!-- / 确认身份 -->
 		</div>
 
@@ -141,60 +150,38 @@
 </block>
 <block name="scripts">
 	<script>
+		page.getUserRolesUrl="{:U('getUserRoles')}";
+		page.setUserRolesUrl="{:U('setUserRoles')}";
+		window.defaultOption.setDatas({
+			roleList:{:json_encode($roleList)},
+		}).setForm('add',{
+			account:"",
+			password:""
+		}).setForm('setRoles',{
+			user_id:0,
+			role_ids:[]
+		},true).setMethod('handleSetRoles', function(index, row){
+			var vmThis = this;
+			vmThis[FormName.getForm('setRoles')].user_id = row.id;
+			this.$http.get(page.getUserRolesUrl, {params:{user_id: row.id}}).then(function(response){
+				vmThis[FormName.getForm('setRoles')].role_ids = [];
+				response.body.forEach(function(currentValue){
+					vmThis[FormName.getForm('setRoles')].role_ids.push(currentValue.role_id);
+				});
+				vmThis.openDialog('setRoles');
+			})
+		})   ;
+	</script>
+	<script>
 
-		Oassign(vmData, {
-			loading: false,
-			formLabelWidth: '100px',
 
-			datalist:[
-				{
-					img:"暂无头像",
-					id:"123",
-					account:"张真人",
-					realname:"张三丰",
-					status:"是",
-					faccount:"zhang_for",
-					department:"武当",
-					employeetype:"掌门",
-					ishow:"是",
-					telphone:"1234567",
-					mobilephone:"7654321",
-					qq:"0000000",
-					qqname:"武当－掌门",
-					qqq:"武当招生部",
-					qqqq:"武当招生部2",
-					area:"湖北省－十堰市",
-					sex:"男",
-					lastlogin:"1888-01-01 0:0:0",
-					weixin:"",
-					weixinname:"",
-				}
-			],
+		// window.vmMethods.set("handleClick", function(index, row){
+		// 	this.dialogEditID = true;
+		// })
 
-			// 分页
-			currentPage: 1,
-			total: 100,
-
-			//高级查询
-			advancedSearch:false,
-
-			//添加 对话框
-			dialogAddEmployee: false,
-
-			//修改身份信息
-			dialogEditID: false,
-
-			// 确认身份
-			dialogEditConfirm: false
-		});
-
-		window.vmMethods.set("handleClick", function(index, row){
-			this.dialogEditID = true;
-		})
-
-		window.vmMethods.set("handleCurrentChange", function(page){
+		// window.vmMethods.set("handleCurrentChange", function(page){
 			
-		})
+		// })
 		
 	</script>
 </block>

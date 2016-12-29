@@ -1,0 +1,15 @@
+<el-dialog title="添加员工" v-model="setRolesFormDialog">
+<!-- <el-form :model="form"> -->
+<el-form :label-width="dialogLabelWidth">
+  <el-form-item label="角色">
+    <el-checkbox-group v-model="setRolesForm.role_ids">
+      <el-checkbox v-for="role in roleList" :label="role.id">{{ role.name }}</el-checkbox>
+    </el-checkbox-group>
+  </el-form-item>
+</el-form>
+<div slot="footer" class="dialog-footer">
+<el-button @click="closeDialog('setRoles')">取 消</el-button>
+<el-button type="primary" v-show="!setRolesFormSubmitStatus" @click="setRolesFormSubmit(page.setUserRolesUrl, 'setRoles')" >确 定</el-button>
+<el-button type="primary" v-show="setRolesFormSubmitStatus" :loading="true" >添加中</el-button>
+</div>
+</el-dialog>

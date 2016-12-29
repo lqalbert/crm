@@ -1,7 +1,7 @@
 <el-dialog title="添加角色" v-model="addFormDialog">
    <el-form :model="addForm" id="add-form" :label-width="dialogLabelWidth">
     <el-form-item label="角色名称"  >
-      <el-input v-model="addForm.name"  name="name" auto-complete="off" style="width:400px;" placeholder="请设置角色名称"></el-input>
+      <el-input v-model="addForm.name"  name="name" auto-complete="off" style="max-width: 400px" placeholder="请设置角色名称"></el-input>
     </el-form-item>
     <!-- <el-form-item label="父级角色"  style="width:400px;">
       <el-select v-model="addForm.pid" placeholder="请选择">
@@ -9,7 +9,7 @@
       </el-select>
     </el-form-item> -->
     <el-form-item label="角色说明" >
-      <el-input v-model="addForm.remark" type="textarea" style="width:500px;" placeholder="请为角色添加说明"></el-input>
+      <el-input v-model="addForm.remark" type="textarea"  placeholder="请为角色添加说明"></el-input>
     </el-form-item>
 
     <el-form-item label="角色状态" >

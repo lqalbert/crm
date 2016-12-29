@@ -32,11 +32,8 @@ class LoginController extends Controller {
 					// session(C['ADMIN_AUTH_KEY'], true);
 					$_SESSION[C('ADMIN_AUTH_KEY')] = true;
 				}
-
-				
 				//将权限写入session
 				Rbac::saveAccessList();
-
 
 				$this->success(L('LOGIN_SUCCESS'), U('Index/index'));
 

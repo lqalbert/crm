@@ -17,7 +17,7 @@
         </el-table-column>
         <el-table-column align="center" label="{:L('FIELD_ClFIC')}" prop="classfication">
         </el-table-column>
-        <el-table-column align="center" label="{:L('FIELD_NAME')}" prop="name">
+        <el-table-column align="center" label="{:L('FIELD_NAME')}" prop="title">
         </el-table-column>
         <el-table-column align="center" label="{:L('FIELD_REMARK')}" prop="remark">
         </el-table-column>
@@ -62,7 +62,7 @@
   		 </el-col>
   		 <el-col :span="12">
   		  <!-- page -->
-  		  <div class="grid-content bg-purple-light pull-right">
+  		  <div class="grid-content bg-purple-light pull-right" style="display: none;">
   		  	  <include file="Common:_pagination"/>
   		  </div>
   		   <!-- page -->
@@ -90,7 +90,8 @@
 		title:"",
 		remark:"",
 		status:'1',
-		level:2
+		level:2,
+		sort:0
 	}).setForm('edit', {
 		id:'',
 		pid:'',
@@ -98,6 +99,7 @@
 		title:"",
 		remark:"",
 		status:'1',
+		sort:0
 	}).setForm('status',{
 			id:0,
 			status:0
@@ -108,8 +110,8 @@
 			currentValue['switch'] = currentValue.status == 1 ? true: false;
 
 			if (currentValue.level == 2) {
-				currentValue['classfication'] = currentValue.name;
-				vmThis.levelOne.push({id: currentValue.id, name:currentValue.name});
+				currentValue['classfication'] = currentValue.title;
+				vmThis.levelOne.push({id: currentValue.id, name:currentValue.title});
 			} else {
 				currentValue['classfication'] =  "";
 			}

@@ -6,13 +6,17 @@
       </el-select>
     </el-form-item>
     <el-form-item label="节点中文名：">
-      <el-input  v-model="addForm.name" placeholder="请输入权限名称" style="width:270px;"></el-input>
+      <el-input  v-model="addForm.title" placeholder="请输入权限名称" style="width:270px;"></el-input>
     </el-form-item>
     <el-form-item label="节点名：">
-      <el-input  v-model="addForm.title" placeholder="请输入节点名" style="width:270px;"></el-input>
+      <el-input  v-model="addForm.name" placeholder="请输入节点名" style="width:270px;"></el-input>
     </el-form-item>
    <el-form-item label="节点说明：">
      <el-input v-model="addForm.remark" type="textarea" style="width:500px;" placeholder="请为节点添加说明"></el-input>
+   </el-form-item>
+    <el-form-item label="节点排序：">
+    <el-input-number size="small" v-model="addForm.sort" :min="0" ></el-input-number>
+    <span>由小到大</span>
    </el-form-item>
    <el-form-item label="状态：">
     <el-radio class="radio" v-model="addForm.status" label="0">禁用</el-radio>
