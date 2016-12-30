@@ -1,7 +1,6 @@
-<el-dialog title="添加" v-model="dialogEdit">
+<el-dialog title="编辑修改" v-model="dialogEdit">
 <!-- <el-form :model="form"> -->
 <el-form :model="editForm">
-
   <el-row>
     <el-col :span="12">
       <el-form-item label="单位名" :label-width="formLabelWidth">
@@ -10,8 +9,8 @@
     </el-col>
     <el-col :span="12">
       <el-form-item label="类型" :label-width="formLabelWidth">
-        <el-select  placeholder="请选择活动区域">
-          <el-option label="测试数据" value="片区"></el-option>
+        <el-select  v-model="editForm.type">
+          <el-option label="片区" value="片区"></el-option>
           <el-option label="推广" value="推广"></el-option>
           <el-option label="网销" value="网销"></el-option>
           <el-option label="体验" value="体验"></el-option>
@@ -22,86 +21,82 @@
    <el-row>
     <el-col :span="12">
       <el-form-item label="上级组织" :label-width="formLabelWidth">
-        <el-select  placeholder="">
-          <el-option label="测试数据" value="片区"></el-option>
-          <el-option label="推广" value="推广"></el-option>
-          <el-option label="网销" value="网销"></el-option>
-          <el-option label="体验" value="体验"></el-option>
+        <el-select  v-model="editForm.p_name">
+         <foreach name="namelist" item="v">
+           <el-option label="{$v.name}" value="{$v.name}"></el-option>
+         </foreach>
         </el-select>
       </el-form-item>
     </el-col>
     <el-col :span="12">
-      <el-form-item label="片区" :label-width="formLabelWidth">
-        <el-select  placeholder="">
-          <el-option label="测试数据" value="片区"></el-option>
-          <el-option label="推广" value="推广"></el-option>
-          <el-option label="网销" value="网销"></el-option>
-          <el-option label="体验" value="体验"></el-option>
+      <el-form-item label="片区" :label-width="formLabelWidth" prop="zone" >
+        <el-select  v-model="editForm.zone">
+          <foreach name="namelist" item="v">
+            <el-option label="{$v.zone}" value="{$v.zone}"></el-option>
+          </foreach>
         </el-select>
       </el-form-item>
     </el-col>
    </el-row>
     <el-row>
       <el-col :span="12">
-        <el-form-item label="拓展一" :label-width="formLabelWidth">
-          <el-select  placeholder="">
-            <el-option label="测试数据" value="片区"></el-option>
-            <el-option label="推广" value="推广"></el-option>
-            <el-option label="网销" value="网销"></el-option>
-            <el-option label="体验" value="体验"></el-option>
-          </el-select>
+        <el-form-item label="拓展一" :label-width="formLabelWidth" prop="expand1" >
+           <el-input v-model="editForm.expand1"  auto-complete="off"></el-input>
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="拓展二" :label-width="formLabelWidth">
-          <el-select  placeholder="">
-            <el-option label="测试数据" value="片区"></el-option>
-            <el-option label="推广" value="推广"></el-option>
-            <el-option label="网销" value="网销"></el-option>
-            <el-option label="体验" value="体验"></el-option>
-          </el-select>
+        <el-form-item label="拓展二" :label-width="formLabelWidth" prop="expand2" >
+           <el-input v-model="editForm.expand2"  auto-complete="off"></el-input>
         </el-form-item>
       </el-col>
     </el-row>
     <el-row>
       <el-col :span="12">
-        <el-form-item label="体验" :label-width="formLabelWidth">
-          <el-select  placeholder="">
-            <el-option label="测试数据" value="片区"></el-option>
-            <el-option label="推广" value="推广"></el-option>
-            <el-option label="网销" value="网销"></el-option>
-            <el-option label="体验" value="体验"></el-option>
-          </el-select>
+        <el-form-item label="联系人" :label-width="formLabelWidth" prop="contact" >
+          <el-input  auto-complete="off" v-model="editForm.contact" ></el-input>
         </el-form-item>
+
       </el-col>
       <el-col :span="12">
-        <el-form-item label="财务编号" :label-width="formLabelWidth">
-          <el-input  auto-complete="off"></el-input>
+        <el-form-item label="联系电话" :label-width="formLabelWidth" prop="tel" >
+          <el-input  auto-complete="off" v-model="editForm.tel"></el-input>
         </el-form-item>
       </el-col>
     </el-row>
     <el-row>
       <el-col :span="12">
-        <el-form-item label="公示" :label-width="formLabelWidth">
-          <el-radio class="radio"  label="1">未录入</el-radio>
-          <el-radio class="radio"  label="2">已录入</el-radio>
-          <el-radio class="radio"  label="3">不存在</el-radio>
+        <el-form-item label="财务编号" :label-width="formLabelWidth" prop="f_num" >
+          <el-input  auto-complete="off" v-model="editForm.f_num"></el-input>
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="联系人" :label-width="formLabelWidth">
-          <el-input  auto-complete="off"></el-input>
+        <el-form-item label="是否公示" :label-width="formLabelWidth" prop="public">
+          <el-radio-group v-model="editForm.public">
+           <el-radio   label="1">是</el-radio>
+           <el-radio   label="0">否</el-radio>
+          </el-radio-group>
         </el-form-item>
       </el-col>
     </el-row>
     <el-row>
       <el-col :span="12">
-        <el-form-item label="固定电话" :label-width="formLabelWidth">
-          <el-input  auto-complete="off"></el-input>
-        </el-form-item>
+        <input type="hidden" name="img" v-model="editForm.img">
+        <el-upload action="{:U('Upload/index')}" :on-success="uploadImg_E" :thumbnail-mode="true" :default-file-list="fileList" type="drag" :multiple="false" style="margin-left:25%;;">
+          <i class="el-icon-upload" style="margin:10px 0 16px;"></i>
+          <input type="hidden" name="img" v-model="editForm.id">
+          <div class="el-dragger__text">将<em>形象照片</em>拖到此处，或<em>点击上传</em></div>
+          <div class="el-upload__tip" slot="tip" style="margin-right:115px;">只能上传jpg/png/gif文件，且不超过2M</div>
+        </el-upload>
+
       </el-col>
       <el-col :span="12">
-       
+        <el-form-item label="地址" :label-width="formLabelWidth" prop="address">
+          <el-input  auto-complete="off" v-model="editForm.address"></el-input>
+        </el-form-item>
+        <el-form-item label="备注" :label-width="formLabelWidth" prop="remark">
+          <el-input  auto-complete="off" v-model="editForm.remark"></el-input>
+        </el-form-item>
+        <p style="color:red;margin-left:100px;">*ps:未修改任何数据提交则会提示“编辑失败”</p>
       </el-col>
     </el-row>
   </el-form>

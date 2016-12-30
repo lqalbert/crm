@@ -23,9 +23,9 @@
 					</el-form>
 				</el-col>
 				<el-col :span="12">
-				<div class="pull-right">
+<!-- 				<div class="pull-right">
 					删除之后  <el-button @click="reload">刷新</el-button> 一下
-				</div>
+				</div> -->
 					
 				</el-col>	
 			</el-row>
@@ -34,33 +34,48 @@
 			<!-- datatables  -->
 			<el-row>
 				<el-col :span="24">
-					<el-table :data="datalist" border stripe height  v-loading.body="loading" element-loading-text="拼命加载中" >
-					    <el-table-column type="selection"  width="50" >
+					<el-table style="width: 100%" 
+					:data="datalist" 
+					border stripe height  
+					v-loading.body="loading" 
+					element-loading-text="拼命加载中">
+					    <el-table-column type="selection"  align="center" width="50" >
 					    </el-table-column>
-					    <el-table-column label="序号"  width="70" :formatter="handleIndex"  >
+					    <el-table-column label="序号"  align="center" width="65" :formatter="handleIndex"  >
 					    </el-table-column>
-					    <el-table-column label="单位ID" prop="id" width="140" >
+					    <el-table-column label="单位ID" align="center" prop="id" width="80">
 					    </el-table-column>
-					    <el-table-column label="单位名" prop="name">
+					    <el-table-column label="单位名" align="center" prop="name" width="120">
 					    </el-table-column>
-					    <!-- <el-table-column label="类型" >
+					    <el-table-column label="类型" align="center" prop="type">
 					    </el-table-column>
-						<el-table-column label="上级组织" >
+						<el-table-column label="上级组织" align="center" prop="p_name" width="110">
 					    </el-table-column>
-					    <el-table-column label="片区" >
+					    <el-table-column label="片区" align="center" prop="zone">
 					    </el-table-column>
-					    <el-table-column label="联系人" >
+					    <el-table-column label="联系人" align="center" prop="contact">
 					    </el-table-column>
-					    <el-table-column label="固定电话" >
+					    <el-table-column label="联系电话" align="center" prop="tel" width="140">
 					    </el-table-column>
-					    <el-table-column label="拓展一" >
+					    <el-table-column label="拓展一" align="center" prop="expand1">
 					    </el-table-column>
-					    <el-table-column  label="拓展二" >
+					    <el-table-column  label="拓展二" align="center" prop="expand2">
 					    </el-table-column>
-					    <el-table-column  label="形象照片" >
-					    </el-table-column> -->
+					    <el-table-column  inline-template :context="_self"  align="center" label="形象照片" width="100">
+					    	<el-tooltip content="点击放大图片" placement="right">
+					    	 <img :src="imgUrl(row.img)" @click="bigImg(row.img)" alt="点击放大图片" width="45px" height="45px">
+					    	<el-tooltip content="添加新的组织单位！" placement="right">	
+					    </el-table-column>
+                        <el-table-column label="地址" align="center" prop="address" width="180">
+                        </el-table-column>
+                        <el-table-column label="财务编号" align="center" prop="f_num" width="100">
+                        </el-table-column>
+                        <el-table-column label="是否公示" align="center" prop="public" width="100">
+                        </el-table-column>
+                        <el-table-column label="备注" align="center" prop="remark" width="100">
+                        </el-table-column>
 
-					    <el-table-column inline-template :context="_self"  fixed="right"  label="操作" width="150">
+					    <el-table-column inline-template :context="_self"  fixed="right"  label="操作" width="140" align="center" >
 					      <span>
 					        <el-button @click="handleEdit($index, row)"    size="small">编辑</el-button>
 					        <el-button @click="handleDelete($index, row)"  size="small" type="danger">删除</el-button>
@@ -70,7 +85,7 @@
 				</el-col>
 			</el-row>
 			<!-- / datatables  -->
-
+            
 
 			<!-- toolbar -->
 			<el-row type="type"  justify="space-between" align="middle"  class="row-bg">
@@ -111,6 +126,13 @@
 			<!-- 编辑 -->
 			<include file="_edit" />
 			<!-- / 编辑 -->
+
+
+			<!-- bigimg -->
+			<el-dialog  title="图片放大" :modal="false" size="small" v-model="bigimg" style="z-index:1000;">
+			  <div style="margin:0;padding:0;text-align:center;z-index:1000;"><img :src="imageUrl" style="margin-left:-14px;width:850px;height:550px;"></div>
+			</el-dialog>
+            <!-- bigimg -->
 		</div>
 
 
@@ -126,8 +148,15 @@
 		addFormUrl:"{:U('add')}",
 		editFormUrl:"{:U('edit')}",
 		indexUrl:"{:U('index')}",
-		deleteUrl:"{:U('delete')}"
+		deleteUrl:"{:U('delete')}",
+		init:function(){
+				this.dataList.forEach(function(currentValue, index){
+					
+					// currentValue['img']    = "__ROOT__/Upload/"+currentValue['img'];
+				})
+			}
 	}
+	page.init();
 </script>
 	<script>
 		// vm option 里面的 data属性
@@ -146,61 +175,142 @@
 			//添加对话框
 			dialogAdd: false,
 			dialogEdit: false,
-
+            //放大图片
+            bigimg:false,
+            //放大图片地址
+            imageUrl:'',
 
 			sousuo:'',
 			input:'区域一',
 
 			addForm :{
-				name:""
+				name:"",
+				public:"",
+				type:"",
+				p_name:"",
+				zone:"",
+				expand1:"",
+				expand2:"",
+				contact:"",
+				tel:"",
+				f_num:"",
+				address:"",
+				remark:"",
+				img:""
 			},
 			addFormSubmit:false,
 
 			editForm :{
 				id:"",
-				name:""
+				name:"",
+				public:"",
+				type:"",
+				p_name:"",
+				zone:"",
+				expand1:"",
+				expand2:"",
+				contact:"",
+				tel:"",
+				f_num:"",
+				address:"",
+				remark:"",
+				img:"",
+
 			},
 			editFormSubmit:false,
+			//编辑默认显示的图片
+			fileList:[
+               {name: '', url: ''}
+			],
 
 			searchForm:{
 				p:1,
 				sortFiled:"id",
 				sortWay:"asc" // desc
+			},
+			//表单验证
+			rules:{
+                 name:[
+                    { required: true, message: '请填写单位名称', trigger: 'blur' },
+                 ],
+                 type:[
+                    { required: true, message: '请选择类型', trigger: 'blur' },
+                 ],
+                 zone:[
+                    { required: true, message: '请选择片区', trigger: 'blur' },
+                 ],
+                 contact:[
+                    { required: true, message: '请填写联系人', trigger: 'blur' },
+                 ],
+                 tel:[
+                    { required: true, message: '请填写联系电话', trigger: 'blur' },
+                 ],
+                 public:[
+                    { required: true, message: '请选择是否公示', trigger: 'blur' },
+                 ],
+                 address:[
+                    { required: true, message: '请填写地址', trigger: 'blur' },
+                 ],
 			}
-
+            
 
 
 
 		});
 
+        //设置URL地址
+		window.vmMethods.set('imgUrl', function(url){
+			return "__ROOT__/Upload/department/"+url
+		});
+		window.vmMethods.set('bigImg', function(url){
+			this.bigimg = true;
+			this.imageUrl = "__ROOT__/Upload/department/"+url;
+		})
+        
+        //处理添加图片上传回调的地址
+		window.vmMethods.set('uploadImg', function(response, file, fileList){
+			this.addForm.img = response.path;
+			return response.path;
+		})
+        //处理编辑图片上传回调的地址
+        window.vmMethods.set('uploadImg_E',function(response, file, fileList){
+        	this.editForm.img = response.path;
+        })
 		//处理添加
 		window.vmMethods.set("addFormAction", function(){
 			var  vmThis = this;
-			this.addFormSubmit = true;
-			this.$http.post(page.addFormUrl, this.addForm).then(function (response) {
-				vmThis.$message({
-					  message: '添加成功',
-					  type: 'success'
-					});
-				setTimeout(function(){
-					vmThis.dialogAdd = false;
-					vmThis.addFormSubmit = false;
-					vmThis.loadDatalist();
-				}, 2000);
-	        }, function(response){
-				vmThis.$message({
-				  message: '添加失败',
-				  type: 'error'
-				});
-	        	vmThis.addFormSubmit = false;
-
+	        this.$refs.addForm.validate(function(valid){
+	          if (valid) {
+				vmThis.addFormSubmit = true;
+				vmThis.$http.post(page.addFormUrl, vmThis.addForm).then(function (response) {
+					setTimeout(function(){
+						vmThis.dialogAdd = false;
+						vmThis.addFormSubmit = false;
+						vmThis.loadDatalist();
+						vmThis.$message({
+						  message: '添加成功',
+						  type: 'success'
+						});
+					}, 2000);
+		        }, function(response){
+	                setTimeout(function(){
+	                  vmThis.addFormSubmit = false;	
+					  vmThis.$message({
+					    message: '添加失败',
+					    type: 'error'
+					  });
+	                },2000);
+		        });
+	          }
 	        });
 		})
 
 		//处理编辑
 		window.vmMethods.set("handleEdit", function(index, row){
-
+			//将此行数据赋给editForm
 			this.initObject(this.editForm , row); 
+			//设置显示的图片
+			this.fileList = [{name:row.img, url: this.imgUrl(row.img)}];
 			this.editIndex = index;
 			this.dialogEdit = true;
 
@@ -210,22 +320,24 @@
 			var  vmThis = this;
 			this.editFormSubmit = true;
 			this.$http.post(page.editFormUrl, this.editForm).then(function (response) {
-				vmThis.$message({
-					  message: '编辑成功',
-					  type: 'success'
-					});
-
 				setTimeout(function(){
 					vmThis.dialogEdit = false;
 					vmThis.editFormSubmit = false;
 					vmThis.initObject(vmThis.datalist[vmThis.editIndex], vmThis.editForm);  
+					vmThis.$message({
+						  message: '编辑成功',
+						  type: 'success'
+						});
+
 				}, 2000);
 	        }, function(response){
-				vmThis.$message({
-				  message: '编辑失败',
-				  type: 'error'
-				});
-	        	vmThis.editFormSubmit = false;
+	        	setTimeout(function(){
+	        		vmThis.editFormSubmit = false;
+					vmThis.$message({
+					  message: '编辑失败',
+					  type: 'error'
+					});
+	        	},2000);
 	        });
 		})
 

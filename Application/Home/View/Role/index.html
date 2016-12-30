@@ -94,6 +94,7 @@
 			init:function(){
 				this.dataList.forEach(function(currentValue, index){
 					currentValue['switch'] = currentValue.status == 1 ? true: false;
+					currentValue['img']    = "__ROOT__/Upload/"+currentValue['img'];
 				})
 			}
 		}
