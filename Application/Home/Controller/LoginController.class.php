@@ -43,7 +43,7 @@ class LoginController extends Controller {
 	}
 
 
-	public function loginOut() {
+	public function logOut() {
 
 		if(session("account")){
 			session("uid",null);

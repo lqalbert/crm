@@ -1,5 +1,6 @@
 <?php
 return array(
+	'NO_AUTHORIZED' => '你没有权限',
 
 	'ADD_SUCCESS'    =>'添加成功',
 	'ADD_ERROR'      =>'添加失败',

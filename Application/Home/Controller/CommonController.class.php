@@ -30,6 +30,22 @@ class CommonController extends Controller {
 		
 	}
 
+	/**
+	* 设置一个错误header
+	* @return void
+	*/
+	protected function setErrorHeader(){
+		header('HTTP/1.1 418 DIY_ERROR');
+	}
+
+	/**
+	* 重载父类的error
+	*/ 
+	public function error($msg){
+		$this->setErrorHeader();
+		parent::error($msg);
+	}
+
 
 
 	/**
@@ -56,7 +72,7 @@ class CommonController extends Controller {
 		if ($this->M->create($_POST, Model::MODEL_INSERT) && D($this->table)->add()) {
 			$this->success(L('ADD_SUCCESS'));
 		} else {
-			header('HTTP/1.1 418 DIY_ERROR');
+			
 			$this->error(L('ADD_ERROR').$this->M->getError());
 		}
 	}
@@ -72,7 +88,7 @@ class CommonController extends Controller {
 		if ($this->M->create($_POST, Model::MODEL_UPDATE) && D($this->table)->save()) {
 			$this->success(L('EDIT_SUCCESS'));
 		} else {
-			header('HTTP/1.1 418 DIY_ERROR');
+			
 			$this->error(L('EDIT_ERROR').$this->M->getError());
 		}
 	}
@@ -88,7 +104,7 @@ class CommonController extends Controller {
 		if ($this->M->delete(implode(",", I("post.ids")) )) {
 			$this->success(L('DELETE_SUCCESS'));
 		} else {
-			header('HTTP/1.1 418 DIY_ERROR');
+			
 			$this->error(L('DELETE_ERROR').$this->M->getError());
 		}
 	}

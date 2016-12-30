@@ -73,12 +73,10 @@ function setCommonLogic(opt){
 			} else {
 				vmThis.$set(vmThis, 'dataList', response.body.list);
 			}
-
-
 			vmThis.$set(vmThis, 'total',    parseInt(response.body.count));
 		}, function(response) {
 			vmThis.$message({
-			  message: '获取失败',
+			  message: '获取失败：'+ response.body.info,
 			  type: 'error'
 			});
 		}).finally(function(){
@@ -227,6 +225,14 @@ function setForm(opt, type){
 	})
 
 
+}
+
+//设置重置表单
+function setResetForm(opt, type){
+	opt.setMethod('resetForm', function(type){
+		this.$refs[FormName.getForm(type)].resetFields();
+	})
+	
 }
 
 
