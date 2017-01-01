@@ -1,0 +1,29 @@
+<el-dialog title="添加菜单" v-model="addFormDialog">
+ <el-form :model="addForm" :label-width="dialogLabelWidth">
+    <el-form-item label="菜单分类："  >
+      <el-select @change="addFormSelect" v-model="addForm.pid" placeholder="请选择菜单分类" style="width:270px;">
+        <el-option v-for="item in levelOne" :label="item.name" :value="item.id"></el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item label="菜单中文名：">
+      <el-input  v-model="addForm.title" placeholder="请输入权限名称" style="width:270px;"></el-input>
+    </el-form-item>
+    <el-form-item label="菜单图标：">
+    <el-input  v-model="addForm.icon" placeholder="请输入菜单图标：" style="width:270px;"></el-input>
+   </el-form-item>
+    <el-form-item label="菜单地址：">
+      <el-input  v-model="addForm.href" placeholder="请输入菜单地址：" style="width:270px;"></el-input>
+    </el-form-item>
+   
+    <el-form-item label="菜单排序：">
+    <el-input-number size="small" v-model="addForm.sort" :min="0" ></el-input-number>
+    <span>由小到大</span>
+   </el-form-item>
+  
+ </el-form>
+  <span slot="footer" class="dialog-footer">
+    <el-button @click="closeDialog('add')">取 消</el-button>
+     <el-button type="primary" v-show="!addFormSubmitStatus" @click="addFormSubmit(page.addFormUrl, 'add')" >确 定</el-button>
+    <el-button type="primary" v-show="addFormSubmitStatus" :loading="true" >添加中</el-button>
+  </span>
+</el-dialog>

@@ -3,9 +3,9 @@ return array(
 	//'配置项'=>'配置值'
 	'DB_TYPE' => 'mysql',
 	// 'DB_DSN' => 'mysql://dev_cn_crm:dev2008dev@192.168.0.12:3306/dev_cn_crm#utf8',
-	'DB_USER' => 'dev_cn_crm_01',
-	'DB_PWD' =>'dev2008dev',
-	'DB_DSN' => 'mysql:host=192.168.0.12;dbname=dev_cn_crm_01;charset=utf8',
+	'DB_USER' => 'root',
+	'DB_PWD' =>'',
+	'DB_DSN' => 'mysql:host=localhost;dbname=dev_cn_crm_01;charset=utf8',
 
 
 
@@ -25,7 +25,7 @@ return array(
 	'USER_AUTH_KEY' => 'uid',    // 认证识别号
 	//REQUIRE_AUTH_MODULE  需要认证模块
 	'NOT_AUTH_MODULE' => 'index,nav',// 无需认证模块
-	'NOT_AUTH_ACTION' =>  'main,getList,notsupport', //无需认证操作
+	'NOT_AUTH_ACTION' =>  'main,index,getList,notsupport', //无需认证操作
 	//USER_AUTH_GATEWAY 认证网关
 	//RBAC_DB_DSN  数据库连接DSN
 	'RBAC_ROLE_TABLE' => 'rbac_role',      //角色表名称  

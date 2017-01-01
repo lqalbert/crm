@@ -93,6 +93,11 @@ return array(
         'icon' => '&nbsp;&#xe62d;',
         'href' => 'Node/index',
       ),
+      array (
+        'title' => '菜单管理',
+        'icon' => '&nbsp;&#xe62d;',
+        'href' => 'Menu/index',
+      ),
     ),
   ), 
   array (

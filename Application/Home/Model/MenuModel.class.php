@@ -3,14 +3,13 @@ namespace Home\Model;
 
 use Think\Model;
 use Common\Lib\Arr;
-class RbacNodeModel extends Model {
-    protected $tableName = 'rbac_node';
+
+class MenuModel extends Model {
+	protected $tableName = 'menu_basic';
 
 
-
-
-    public function delete($ids) {
-    	$where    = array("pid"=>array('in', $ids), 'level'=>array('eq', 3));
+	public function delete($ids) {
+    	$where    = array("pid"=>array('in', $ids));
     	$nodeList = $this->where($where)->getField('id', true);
 
     	if ($nodeList) {
@@ -25,24 +24,11 @@ class RbacNodeModel extends Model {
     	}
     }
 
-    public function reSort($list){
+	public function reSort($list){
 		$arr = array(); //新的数组
 		if (!is_array($list)) {
 			$list = $this->data();
 		}
-		return Arr::reSort($list, 'pid', 1);
+		return Arr::reSort($list, 'pid', 0);
 	}
-
-	
-
-	/**
-	* 过滤 level 1
-	*/
-	public function setFilterLevelOne(){
-		$this->where(array('level'=>array('gt', '1')));
-		return $this;
-	}
-
-
-	
 }

@@ -1,30 +1,22 @@
 <?php
 namespace Home\Controller;
 
-class NodeController extends CommonController{
+/**
+* 左侧的菜单管理
+*
+*/
 
-	protected $table = "rbac_node";
+class MenuController extends CommonController {
 
-	public function index(){
-		
+	protected $table = 'menu';
+
+
+	public function index() {
+
 		$this->setQeuryCondition();
-		// $this->pageSize = $this->M->count();
 		$this->assign('pageSize', $this->M->count());
-
 		$this->display();
 	}
-
-	/**
-	 * 公用 设置参数
-	 * 子类
-	 * @return  null
-	 * 
-	 **/
-	public function setQeuryCondition() {
-
-		$this->M->setFilterLevelOne()->order("sort asc");
-	}
-
 
 	/**
 	 *  获取列表
@@ -46,9 +38,4 @@ class NodeController extends CommonController{
 		}
 
 	}
-
-	
-
-
-		
 }

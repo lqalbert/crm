@@ -1,7 +1,9 @@
 <extend name="Common:base"/>
 <block name="head">
-	
+	<link rel="stylesheet" href="__PUBLIC__/plugins/layui/css/layui.css" media="all" />
+	<link rel="stylesheet" href="__PUBLIC__/plugins/font-awesome/css/font-awesome.min.css">
 </block>
+
 <block name="body">
   <div id="app" class="container">
   	<div v-show="show" class="wrapp" style="display:none">
@@ -15,20 +17,17 @@
       :row-class-name="tableRowClassName">
         <el-table-column align="center" type="index" label="{:L('INDEX')}" width="100">
         </el-table-column>
-        <el-table-column align="center" label="{:L('FIELD_ClFIC')}" prop="classfication">
+        <el-table-column align="center" label="菜单分类" prop="classfication">
         </el-table-column>
-        <el-table-column align="center" label="{:L('FIELD_NAME')}" prop="title">
+        <el-table-column align="center" inline-template label="菜单名称" prop="title">
+        <span>
+        	<i class="layui-icon" :data-icon="row.icon" >{{ row.icon }}</i>
+        	{{ row.title }}
+        </span>
         </el-table-column>
-        <el-table-column align="center" label="{:L('FIELD_REMARK')}" prop="remark">
+        <el-table-column align="center" label="地址" prop="href">
         </el-table-column>
-        <el-table-column inline-template align="center" label="{:L('FIELD_STATUS')}">
-          <el-switch 
-          	v-model="row.switch" 
-          	on-color="#13ce66" 
-          	off-color="#ff4949" 
-          	@change="switchHandle($index, row)">
-          </el-switch>
-        </el-table-column>
+       
         
         <el-table-column inline-template align="center" label="操作">
          <div>
@@ -86,28 +85,25 @@
 		searchForm:{}
 	}).setForm('add', {
 		pid:'',
-		name:"",
 		title:"",
-		remark:"",
-		status:'1',
-		level:2,
+		icon:"",
+		href:'',
 		sort:0
 	}).setForm('edit', {
 		id:'',
 		pid:'',
-		name:"",
 		title:"",
-		remark:"",
-		status:'1',
+		icon:"",
+		href:'',
 		sort:0
 	}).setForm('status',{
 			id:0,
 			status:0
 	}).setMethod('beforeList', function(dataList){
 		var vmThis = this;
-		vmThis.levelOne = [{id:"1", name:"顶级节点"}];
+		vmThis.levelOne = [{id:"0", name:"顶级节点"}];
 		dataList.forEach(function(currentValue, index){
-			currentValue['switch'] = currentValue.status == 1 ? true: false;
+			
 
 			if (currentValue.pid == 0) {
 				currentValue['classfication'] = currentValue.title;
