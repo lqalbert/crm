@@ -15,6 +15,7 @@ class MenuController extends CommonController {
 
 		$this->setQeuryCondition();
 		$this->assign('pageSize', $this->M->count());
+		$this->assign('nodeList', M('rbac_node')->field('id,title')->where(array('level'=>2))->select());
 		$this->display();
 	}
 

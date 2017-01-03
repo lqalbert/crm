@@ -82,12 +82,14 @@
 <script>
 	window.defaultOption.setDatas({
 		levelOne:[{id:"1", name:"顶级节点"}],
-		searchForm:{}
+		searchForm:{},
+		nodeList:{:json_encode($nodeList)}
 	}).setForm('add', {
 		pid:'',
 		title:"",
 		icon:"",
 		href:'',
+		node_id:'',
 		sort:0
 	}).setForm('edit', {
 		id:'',
@@ -95,6 +97,7 @@
 		title:"",
 		icon:"",
 		href:'',
+		node_id:'',
 		sort:0
 	}).setForm('status',{
 			id:0,
@@ -135,7 +138,7 @@
 			this.addForm.level = 3;
 		}
 	}).setMethod('tableRowClassName', function(row, index){
-		if (row.level==2) {
+		if (row.pid==0) {
           return 'positive-row';
         } else {
           return '';

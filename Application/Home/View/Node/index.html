@@ -109,7 +109,7 @@
 		dataList.forEach(function(currentValue, index){
 			currentValue['switch'] = currentValue.status == 1 ? true: false;
 
-			if (currentValue.pid == 0) {
+			if (currentValue.level == 2) {
 				currentValue['classfication'] = currentValue.title;
 				vmThis.levelOne.push({id: currentValue.id, name:currentValue.title});
 			} else {

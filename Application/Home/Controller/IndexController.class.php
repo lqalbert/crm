@@ -7,6 +7,7 @@ class IndexController extends CommonController {
 	}
 
 	public function main() {
+		$this->assign("pageSize", 0);
 		$this->display ();
 	}
 

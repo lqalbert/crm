@@ -23,6 +23,9 @@ class CommonController extends Controller {
 
 		Rbac::AccessDecision() || $this->error(L('NO_AUTHORIZED'));
 
+		
+
+
 		$this->parseJsonParams();
 
 		$this->M = D($this->table);
