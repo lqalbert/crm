@@ -1,20 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-	<meta charset="UTF-8">
-	<title>login</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>客户关系管理系统 - 登录</title>
+    <link href="__PUBLIC__/css/bootstrap.min.css" rel="stylesheet">
+    <link href="__PUBLIC__/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/animate.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/style.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/login.css" rel="stylesheet">
+    <!-- 不支持IE8 及以下的浏览器 -->
+    <!--[if lte IE 8]> 
+    <script>
+        window.location.href="{:U('notsupport')}";
+    </script>
+    <![endif]-->
+    <script>
+        if (window.top !== window.self) {
+            window.top.location = window.location;
+        }
+    </script>
+    <style>
+      *{
+        font-family:Microsoft YaHei;
+      }
+    </style>
 </head>
-<body>
-	<form action="{:U('Login/loginHandle')}" method="post" >
-		<div>
-			账号： <input type="text" name="account" value="admin">
-		</div>
-		<div>
-			密码： <input type="password" name="password" value="123456">
-		</div>
-		<div>
-			<input type="submit" value="登录">
-		</div>
-	</form>
+<body class="signin">
+    <div class="signinpanel">
+        <div class="row">
+            <div class="col-sm-7">
+                <div class="signin-info">
+                    <div class="logopanel m-b">
+                        <h1>[ NOTICE ]</h1>
+                    </div>
+                    <a style="list-style:none;font-size:14px;color:#fff;">欢迎使用 <strong>客户关系管理(CRM)系统！<br/>为了更好的体验使用请使用如下浏览器之一！</strong></a>
+                    <ul class="m-b" style="font-size:16px;">
+                        <li ><i class="fa fa-arrow-circle-o-right m-r-xs"></i> <a href="http://rj.baidu.com/soft/detail/14744.html?ald" target="_blank" style="color:#fff;">请点击下载谷歌浏览器(强烈推荐)</a></li>
+                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> <a href="http://www.firefox.com.cn/" target="_blank" style="color:#fff;">请点击下载火狐浏览器</a></li>
+                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> <a href="http://rj.baidu.com/soft/detail/11508.html?ald" target="_blank" style="color:#fff;">请点击下载欧朋浏览器</a></li>
+                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> <a href="https://support.microsoft.com/zh-cn/help/17621/internet-explorer-downloads" target="_blank" style="color:#fff;">请点击下载最新IE浏览器</a></li>
+                        <li><i class="fa fa-arrow-circle-o-right m-r-xs"></i> <a href="http://www.liebao.cn/download.html" target="_blank" style="color:#fff;">请点击下载猎豹浏览器</a></li>
+                    </ul>
+                    <strong>忘记密码？ <a style="color:#2196F3;list-style:none;">请联系管理员&raquo;</a></strong>
+                </div>
+            </div>
+            <div class="col-sm-5">
+                <form method="post" action="{:U('Login/loginHandle')}">
+                    <a class="no-margins" style="font-size:18px;color:#fff;font-weight:bold;">登录：</a>
+                    <p class="m-t-md" style="font-size:16px;">登录到客户管理系统中心</p>
+                    <input type="text" class="form-control uname" name="account" value="admin" autocomplete="off" placeholder="请输入用户名" />
+                    <input type="password" class="form-control pword m-b" name="password" value="123456" autocomplete="off" placeholder="请输入密码" />
+                    <!--<a href="">忘记密码了？</a>-->
+                    <button class="btn btn-success btn-block" style="font-size:16px;font-weight:bold;">登录</button>
+                </form>
+            </div>
+        </div>
+        <div class="signup-footer">
+            <div class="pull-left">
+                &copy; 2016 All Rights Reserved. 源创智讯
+            </div>
+        </div>
+    </div>
 </body>
+
 </html>

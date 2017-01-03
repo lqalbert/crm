@@ -35,7 +35,9 @@ class LoginController extends Controller {
 				//将权限写入session
 				Rbac::saveAccessList();
 
-				$this->success(L('LOGIN_SUCCESS'), U('Index/index'));
+				//$this->success(L('LOGIN_SUCCESS'), U('Index/index'));
+				$this->redirect('Index/index');
+
 
 
 			}

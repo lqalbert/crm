@@ -26,25 +26,36 @@
 			<!-- datatables  -->
 			<el-row>
 				<el-col :span="24">
-					<el-table :data="datalist" border stripe height  v-loading.body="loading" element-loading-text="拼命加载中">
-					    <el-table-column type="selection"  width="50" >
+					<el-table :data="datalist" style="width: 100%"  border stripe height  v-loading.body="loading" element-loading-text="拼命加载中">
+					    <el-table-column type="selection"  align="center" width="50" >
 					    </el-table-column>
-					    <el-table-column type="index"  label="序号"  width="70"  >
+					    <el-table-column type="index"  align="center" label="序号" >
 					    </el-table-column>
-					    <el-table-column label="团队小组名称" width="140">
+					    <el-table-column label="团队ID" align="center" prop="id">
 					    </el-table-column>
-					    <el-table-column label="组织类型" width="120">
+					    <el-table-column label="团队小组名称" align="center" prop="name">
 					    </el-table-column>
-						<el-table-column label="上级组织" >
+						<el-table-column label="团队小组类型" align="center" prop="type">
 					    </el-table-column>
-					    <
-					    <el-table-column label="联系人" >
+						<el-table-column label="上级组织" align="center" prop="p_name">
 					    </el-table-column>
-					    <el-table-column label="联系电话" >
+						<el-table-column label="联系人(负责人)" align="center" prop="contact">
 					    </el-table-column>
-					    <el-table-column label="备注" >
+						<el-table-column label="联系电话" align="center" prop="tel">
 					    </el-table-column>
-					    <el-table-column inline-template :context="_self"  fixed="right"  label="操作" width="100">
+						<el-table-column label="状态" align="center" prop="status">
+					    </el-table-column>
+						<el-table-column label="备注说明" align="center" prop="remark">
+					    </el-table-column>
+						<el-table-column label="上级组织" align="center" >
+					    </el-table-column>
+					    <el-table-column label="联系人" align="center" >
+					    </el-table-column>
+					    <el-table-column label="联系电话" align="center" >
+					    </el-table-column>
+					    <el-table-column label="备注" align="center" >
+					    </el-table-column>
+					    <el-table-column inline-template :context="_self"  fixed="right"  label="操作">
 					      <span>
 					        <el-button @click="handleClick($index, row)" type="text" size="small">查看</el-button>
 					        <el-button type="text" size="small">编辑</el-button>

@@ -69,7 +69,7 @@ return array(
     'children' => 
     array (
       array (
-        'title' => '组织单位',
+        'title' => '部门单位',
         'icon' => '&nbsp;&#xe61f;',
         'href' => 'Department/index',
       ),
