@@ -11,7 +11,8 @@ class IndexController extends CommonController {
 		$this->display ();
 	}
 
-	// public function msg() {
-		
-	// }
+	
+	public function getList(){
+		$this->ajaxReturn(array());
+	}
 }

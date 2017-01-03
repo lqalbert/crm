@@ -144,6 +144,7 @@ class CommonController extends Controller {
 
 
 	public function _before_index(){
+		
 		$this->assign("pageSize", $this->pageSize);
 	}
 

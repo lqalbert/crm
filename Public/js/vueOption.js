@@ -3,7 +3,7 @@ function VueOption(){
 	this.methods  = new VueMethods(); //new vueHooks();//{};
 
 	this.hooks    = new VueHooks()//Object.create(VueHooks.prototype); //new VueHooks();
-	this.computed = {}; //Object.create(Object.prototype); //{};
+	this.computed = new VueMethods(); {}; //Object.create(Object.prototype); //{};
 }
 
 VueOption.prototype.setData = function(field, value) {
@@ -18,6 +18,11 @@ VueOption.prototype.setDatas = function(obj) {
 
 VueOption.prototype.setMethod = function(name, callback) {
 	this.methods.set(name, callback);
+	return this;
+};
+
+VueOption.prototype.setComputed = function(name, callback) {
+	this.computed.set(name, callback);
 	return this;
 };
 
@@ -36,6 +41,7 @@ VueOption.prototype.getOption = function() {
 	var option = {};
 	option['data'] = this.data;
 	option['methods'] = this.methods.values();
+	option['computed'] = this.computed.values();
 
 	var thisOption = this;
 

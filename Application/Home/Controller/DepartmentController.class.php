@@ -2,12 +2,12 @@
 namespace Home\Controller;
 
 class DepartmentController extends CommonController {
-	protected $table="department";
+	protected $table="department_basic";
 
 	public function index(){
-		$this->_before_getList();
+		
 		$count = $this->M->count();
-		$this->_before_getList();
+		
 		$datalist=$this->getList();
 		$namelist=$this->M->field("name,zone")->where(array("p_id"=>0))->select();
 		$this->assign("datalist", $datalist);

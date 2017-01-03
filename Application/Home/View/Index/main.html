@@ -136,6 +136,9 @@
 					</el-table> 
 				</div>
 			</el-card>
+			<div style="display: none;">
+  		  	  <include file="Common:_pagination"/>
+  		  </div>
 		</el-col>
 	</el-row>
 </div>
@@ -146,38 +149,38 @@
 <script src="__PUBLIC__/js/echarts.min.js"></script>
 	<script>
 
+	window.defaultOption.setVueHook('mounted', function(){
+		// console.log('mounted charts');
+		var myChart = echarts.init(document.getElementById('echarts'));
+        myChart.setOption({
+            // title: { text: 'ECharts 入门示例' },
+            tooltip: {},
+            xAxis: {
+                data: ["2016-11","2016-12","2017-01","2017-02","2017-03","2017-04"]
+            },
+            yAxis: {},
+            legend:{
+            	show: true
+            },
+            series: [{
+                name: '销量',
+                type: 'bar',
+                data: [15, 30, 46, 20, 30, 50]
+            },{
+                name: '业绩',
+                type: 'line',
+                data: [25, 21, 26, 90, 15, 50]
+            }],
+            grid:{
+            	left:"50",
+            	right:"50"
+            }
+        });
+        
+        window.onresize = myChart.resize;
 
-		window.vmHooks.add('mounted', function(){
-			var myChart = echarts.init(document.getElementById('echarts'));
-            myChart.setOption({
-                // title: { text: 'ECharts 入门示例' },
-                tooltip: {},
-                xAxis: {
-                    data: ["2016-11","2016-12","2017-01","2017-02","2017-03","2017-04"]
-                },
-                yAxis: {},
-                legend:{
-                	show: true
-                },
-                series: [{
-                    name: '销量',
-                    type: 'bar',
-                    data: [15, 30, 46, 20, 30, 50]
-                },{
-                    name: '业绩',
-                    type: 'line',
-                    data: [25, 21, 26, 90, 15, 50]
-                }],
-                grid:{
-                	left:"50",
-                	right:"50"
-                }
-            });
-            window.onresize = myChart.resize;
-		})
-
-		Oassign(vmData, {
-			sysData:[
+	}).setDatas({
+		sysData:[
 				{
 					sys_type:'功有升级',
 					title:'新功能XXXX上线了',
@@ -251,7 +254,10 @@
 					xq:'1',
 				}
 			]
-		})
+	});
+
+		
+
 
 
 	</script>

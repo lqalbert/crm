@@ -20,7 +20,7 @@ return array(
 
 
 	//权限验证
-	'USER_AUTH_ON' => true,      // 是否需要认证
+	'USER_AUTH_ON' => false,      // 是否需要认证
 	'USER_AUTH_TYPE' => 1,       // 认证类型
 	'USER_AUTH_KEY' => 'uid',    // 认证识别号
 	//REQUIRE_AUTH_MODULE  需要认证模块
@@ -29,9 +29,9 @@ return array(
 	//USER_AUTH_GATEWAY 认证网关
 	//RBAC_DB_DSN  数据库连接DSN
 	'RBAC_ROLE_TABLE' => 'rbac_role',      //角色表名称  
-	'RBAC_USER_TABLE'=>'rbac_role_user', //用户与角色的中间表  
+	'RBAC_USER_TABLE'=>  'rbac_role_user', //用户与角色的中间表  
 	'RBAC_ACCESS_TABLE'=>'rbac_access',   //权限表  
-	'RBAC_NODE_TABLE'=>'rbac_node',       //节点表  
+	'RBAC_NODE_TABLE'=>  'rbac_node',       //节点表  
 	// 'RBAC_SUPERADMIN' => 'admin',
 	'ADMIN_AUTH_KEY'=>'superAdmin',       //超级管理员识别  
 );

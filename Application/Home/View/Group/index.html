@@ -26,7 +26,11 @@
 			<!-- datatables  -->
 			<el-row>
 				<el-col :span="24">
-					<el-table :data="datalist" style="width: 100%"  border stripe height  v-loading.body="loading" element-loading-text="拼命加载中">
+					<el-table 
+					:data="dataList"  
+					border  
+					v-loading="dataLoad"  
+					element-loading-text="{:L('DATA_LOGIN')}">
 					    <el-table-column type="selection"  align="center" width="50" >
 					    </el-table-column>
 					    <el-table-column type="index"  align="center" label="序号" >
@@ -115,40 +119,44 @@
 </block>
 <block name="scripts">
 	<script>
+		// window.defaultOption
+	</script>
+
+	<!-- <script>
 		Oassign(window.vmData, {
 			loading: false,
-
+	
 			formLabelWidth: '100px',
-
+	
 			//数据
 			datalist:[],
-
+	
 			// 分页
 			currentPage: 1,
 			total: 100,
-
+	
 			//高级查询
 			advancedSearch:false,
-
+	
 			//添加 对话框
 			dialogAddGroup:false,
-
+	
 			//编辑对话框
 			dialogEditGroup: false,
 			//终止小组
 			dialogStopGroup: false
 		})
-
+	
 		Oassign(vmOption, {
 			methods:{
 				handleClick:function(index, row){
-
+	
 				},
 				handleCurrentChange:function(page){
-
+	
 				},
 			}
 		})
 		
-	</script>
+	</script> -->
 </block>

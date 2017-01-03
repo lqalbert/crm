@@ -10,7 +10,7 @@
 					  <el-form-item prop="name" >
 					    <el-input   placeholder="查询字段一"  v-model="searchForm.name"></el-input>
 					    </el-form-item><el-form-item>
-					    <el-select v-model="input" clearable placeholder="查询字段二">
+					    <el-select v-model="searchForm.input" clearable placeholder="查询字段二">
 					      <el-option label="区域一" value="区域一"></el-option>
 					      <el-option label="区域二" value="区域二"></el-option>
 					    </el-select>
@@ -18,7 +18,7 @@
 					  <el-form-item>
 					    <el-button icon="close" @click="searchReset"> 清空</el-button>
 					    <el-button type="primary" icon="search" @click="loadDatalist" >查询</el-button> 
-			        	<el-button  @click="advancedSearch=true" icon="search">高级查询</el-button> 
+			        	<el-button  @click="openDialog('advancedSearch')" icon="search">高级查询</el-button> 
 					  </el-form-item>
 					</el-form>
 				</el-col>
@@ -31,10 +31,10 @@
 			<el-row>
 				<el-col :span="24">
 					<el-table style="width: 100%" 
-					:data="datalist" 
-					border stripe height  
-					v-loading.body="loading" 
-					element-loading-text="拼命加载中">
+					:data="dataList" 
+					border  height  
+					v-loading="dataLoad"
+					element-loading-text="{:L('DATA_LOGIN')}">
 					    <el-table-column type="selection"  align="center" width="50" >
 					    </el-table-column>
 					    <el-table-column label="序号"  align="center" width="65" :formatter="handleIndex"  >
@@ -89,7 +89,7 @@
 			  <div class="grid-content bg-purple">
 			  	<span class="wrapper">
 			  		<el-tooltip content="添加新的组织单位！" placement="right">
-					    <el-button size="small"  @click="dialogAdd = true" icon="plus" type="primary">添加</el-button>
+					    <el-button size="small"  @click="openDialog('add')" icon="plus" type="primary">添加</el-button>
 					    <!-- <el-button  @click="">录入客户</el-button>
 					    <el-button  @click="">修改客户</el-button> -->
 					    <!-- <el-button>计划</el-button>
@@ -135,6 +135,103 @@
 	</div>
 </block>
 <block name="scripts">
+<script>
+	window.defaultOption.setDatas({
+		//放大图片
+        bigimg:false,
+        //放大图片地址
+        imageUrl:'',
+
+        fileList:[
+           {name: '', url: ''}
+		],
+
+		rules:{
+             name:[
+                { required: true, message: '请填写单位名称', trigger: 'blur' },
+             ],
+             type:[
+                { required: true, message: '请选择类型', trigger: 'blur' },
+             ],
+             zone:[
+                { required: true, message: '请选择片区', trigger: 'blur' },
+             ],
+             contact:[
+                { required: true, message: '请填写联系人', trigger: 'blur' },
+             ],
+             tel:[
+                { required: true, message: '请填写联系电话', trigger: 'blur' },
+             ],
+             public:[
+                { required: true, message: '请选择是否公示', trigger: 'blur' },
+             ],
+             address:[
+                { required: true, message: '请填写地址', trigger: 'blur' },
+             ],
+		}
+
+	}).setForm('add', {
+		name:"",
+		public:"",
+		type:"",
+		p_id:"",
+		zone:"",
+		expand1:"",
+		expand2:"",
+		contact:"",
+		tel:"",
+		f_num:"",
+		address:"",
+		remark:"",
+		img:""
+	}).setForm('edit', {
+		id:"",
+		name:"",
+		public:"",
+		type:"",
+		p_id:"",
+		zone:"",
+		expand1:"",
+		expand2:"",
+		contact:"",
+		tel:"",
+		f_num:"",
+		address:"",
+		remark:"",
+		img:"",
+	}).setForm('search', {
+		name:"",
+		input:"",
+		sortFiled:"id",
+		sortWay:"asc" // desc
+	}).setMethod('imgUrl', function(url){
+			return "__ROOT__/Upload/department/"+url
+	}).setMethod('bigImg', function(url){
+		this.bigimg = true;
+		this.imageUrl = "__ROOT__/Upload/department/"+url;
+	}).setMethod('uploadImg', function(response, file, fileList){
+		this.addForm.img = response.path;
+		return response.path;
+	}).setMethod('uploadImg_E',function(response, file, fileList){
+    	this.editForm.img = response.path;
+    }).setAdvancedSearch().setMethod("handleEdit", function(index, row){
+		//将此行数据赋给editForm
+		var type='edit';
+		this.initObject(this[FormName.getFormName(type)] , row); 
+		//设置显示的图片
+		this.fileList = [{name:row.img, url: this.imgUrl(row.img)}];
+		this.editIndex = index;
+		this.openDialog(type);
+
+	}).setMethod('organization', function(){
+		return this.dataList.filter(function (value) {
+	      return value.p_id == 0 ;
+	    })
+	});
+</script>
+
+
+
 <!-- 
 	先写功能 再重构
 -->
@@ -142,7 +239,7 @@
 //   {$datalist | json_encode}
 //
 //
-	var page ={
+	/*var page ={
 		dataList:{:json_encode($dataSource['list'])},
 		addFormUrl:"{:U('add')}",
 		editFormUrl:"{:U('edit')}",
@@ -155,20 +252,13 @@
 				})
 			}
 	}
-	page.init();
+	page.init();*/
 
 </script>
 	<script>
 		// vm option 里面的 data属性
-		Oassign(window.vmData ,{
-			loading: false,
-			formLabelWidth: '140px',
-
-			datalist:page.dataList,
-
-			currentPage: 1,
-			total:{$dataSource['count']},
-			pageSize:{$pageSize},
+		/*Oassign(window.vmData ,{
+			
 
 			//高级查询
 			advancedSearch: false,
@@ -255,57 +345,13 @@
 				name:""
 			},
 			
-		});
+		});*/
 
-        //设置URL地址
-		window.vmMethods.set('imgUrl', function(url){
-			return "__ROOT__/Upload/department/"+url
-		});
-		window.vmMethods.set('bigImg', function(url){
-			this.bigimg = true;
-			this.imageUrl = "__ROOT__/Upload/department/"+url;
-		})
-        
-        //处理添加图片上传回调的地址
-		window.vmMethods.set('uploadImg', function(response, file, fileList){
-			this.addForm.img = response.path;
-			return response.path;
-		})
-        //处理编辑图片上传回调的地址
-        window.vmMethods.set('uploadImg_E',function(response, file, fileList){
-        	this.editForm.img = response.path;
-        })
-		//处理添加
-		window.vmMethods.set("addFormAction", function(){
-			var  vmThis = this;
-	        this.$refs.addForm.validate(function(valid){
-	          if (valid) {
-				vmThis.addFormSubmit = true;
-				vmThis.$http.post(page.addFormUrl, vmThis.addForm).then(function (response) {
-					setTimeout(function(){
-						vmThis.dialogAdd = false;
-						vmThis.addFormSubmit = false;
-						vmThis.loadDatalist();
-						vmThis.$message({
-						  message: '添加成功',
-						  type: 'success'
-						});
-					}, 2000);
-		        }, function(response){
-	                setTimeout(function(){
-	                  vmThis.addFormSubmit = false;	
-					  vmThis.$message({
-					    message: '添加失败',
-					    type: 'error'
-					  });
-	                },2000);
-		        });
-	          }
-	        });
-		})
+     
+		
 
 		//处理编辑
-		window.vmMethods.set("handleEdit", function(index, row){
+		/*window.vmMethods.set("handleEdit", function(index, row){
 			//将此行数据赋给editForm
 			this.initObject(this.editForm , row); 
 			//设置显示的图片
@@ -313,108 +359,7 @@
 			this.editIndex = index;
 			this.dialogEdit = true;
 
-		})
-
-		window.vmMethods.set("editFormAction", function(){
-			var  vmThis = this;
-			this.editFormSubmit = true;
-			this.$http.post(page.editFormUrl, this.editForm).then(function (response) {
-				setTimeout(function(){
-					vmThis.dialogEdit = false;
-					vmThis.editFormSubmit = false;
-					vmThis.initObject(vmThis.datalist[vmThis.editIndex], vmThis.editForm);  
-					vmThis.$message({
-						  message: '编辑成功',
-						  type: 'success'
-						});
-
-				}, 2000);
-	        }, function(response){
-	        	setTimeout(function(){
-	        		vmThis.editFormSubmit = false;
-					vmThis.$message({
-					  message: '编辑失败',
-					  type: 'error'
-					});
-	        	},2000);
-	        });
-		})
-
-		//处理删除
-		window.vmMethods.set("handleDelete", function(index, row){
-			var vmThis = this;
-			this.$confirm('确定删除?', '提示', {
-	          confirmButtonText: '确定',
-	          cancelButtonText: '取消',
-	          type: 'warning'
-	        }).then(function(){
-	        	vmThis.$http.post(page.deleteUrl, {ids:[row.id]}).then(function(response){
-	        		vmThis.$message({
-			            type: 'success',
-			            message: '删除成功! '
-			          });
-	        		vmThis.datalist.splice(index, 1);
-	        	}, function(response){
-	        		vmThis.$message({
-			            type: 'error',
-			            message: '删除失败'
-			          });
-	        	})
-	        }).catch(function() {
-	          vmThis.$message({
-	            type: 'info',
-	            message: '已取消删除'
-	          });          
-	        });
-		})
-
-
-
-		//重载 数据列表
-		window.vmMethods.set("reload", function(){
-			this.loading = true;
-			this.loadDatalist();
-		})
-
-
-
-		//处理分页
-		window.vmMethods.set("handleCurrentPageChange", function(v){
-
-			this.loading = true;
-			this.searchForm.p = v;
-			this.currentPage = v;
-			this.loadDatalist();
-		})
-
-		//根据 查询条件 重载数据
-		window.vmMethods.set("loadDatalist", function(){
-			var vmThis = this;
-			this.$http.get(page.indexUrl, {params: this.searchForm }).then(function(response){
-				
-				vmThis.$set(vmThis, 'datalist', response.body.list)
-				vmThis.$set(vmThis, 'total',    parseInt(response.body.count));
-			}, function(response) {
-				vmThis.$message({
-				  message: '获取失败',
-				  type: 'error'
-				});
-			}).finally(function(){
-				vmThis.$set(vmThis, 'loading', false);
-			})
-		})
-
-		// 重置查询
-		// form 要使用 :model 
-		// item 要使用 prop
-		// 才起作用
-		window.vmMethods.set("searchReset", function(){
-			this.$refs.searchForm.resetFields();
-			this.searchReset();
-		})
-
-
-		
+		})*/
 
 	</script>
 </block>
