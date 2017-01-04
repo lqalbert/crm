@@ -32,7 +32,15 @@
 	    </el-table-column>
 	    <el-table-column prop="name"  label="客户姓名" width="140">
 	    </el-table-column>
-	    <el-table-column prop="type" label="客户类型" width="140" :formatter="getType">
+      <el-table-column prop="sex"  label="性别" width="140">
+        <template scope="scope">
+          {{ getType(scope.row.sex, 'sexType') }}
+        </template>
+      </el-table-column>
+	    <el-table-column prop="type" label="客户类型" width="140" >
+        <template scope="scope">
+         {{ getType(scope.row.type, 'customerType') }}
+        </template>
 	    </el-table-column>
 	    <el-table-column prop="phone" label="手机" >
 	    </el-table-column>
@@ -40,9 +48,12 @@
 	    </el-table-column>
 	    <el-table-column prop="qq_nickname" label="QQ昵称" >
 	    </el-table-column>
-	    <!-- <el-table-column  label="地区" >
+	   <el-table-column  label="地区" >
+      <template scope="scope">
+           {{ scope.row.province_name+"-"+scope.row.city_name }}
+        </template>
 	    </el-table-column>
-	    <el-table-column  label="跟踪员工" >
+	    <!--<el-table-column  label="跟踪员工" >
 	    </el-table-column>
 	    <el-table-column  label="跟踪方最后跟踪时间" >
 	    </el-table-column>
@@ -52,8 +63,8 @@
 
 	    <el-table-column inline-template :context="_self"  fixed="right"  label="操作" width="200">
 	      <span>
-	        <el-button @click="handleEdit($index, row)" type="text" size="small">查看</el-button>
-	        <el-button @click="handleEdit($index, row)" type="text" size="small">编辑</el-button>
+	        <el-button @click="handleEdit($index, row)"  size="small">查看</el-button>
+	        <el-button @click="handleEdit($index, row)"  size="small">编辑</el-button>
 	      </span>
 	    </el-table-column>
     </el-table>
@@ -102,8 +113,16 @@
 </block>
 <block name="scripts">
 <script>
+function toInt(v){
+  return parseInt(v);
+}
+</script>
+<script>
   window.defaultOption.setDatas({
     customerType:{:json_encode($customerType)},
+    sexType:{:json_encode($sexType)},
+    provinces:[],
+    cities:[]
   }).setForm('search', {
     user:'',
     region:''
@@ -115,6 +134,11 @@
     weixin:"",
     weixin_nickname:"",
     type:"",
+    sex:0,
+    area_province:null,
+    area_city:null,
+    year:1,
+    remark:""
   }).setForm('edit',{
     id:"",
     name:"",
@@ -123,57 +147,42 @@
     qq_nickname:"",
     weixin:"",
     weixin_nickname:"",
-    type:0,
-  }).setMethod('getType', function(row, column){
-      return this.customerType[row.type];
+    type:"",
+    sex:0,
+    area_province:null,
+    area_city:null,
+    year:1,
+    remark:""
+  }).setMethod('getType', function(type, field){
+      return this[field][type];
   }).setMethod('beforeList', function(data){
     data.forEach(function(currentValue){
-      currentValue.type = parseInt(currentValue.type);
+      currentValue.type  = parseInt(currentValue.type);
     })
     return data;
-  }).setAdvancedSearch();
-</script>
-
-
-
-<script>
-// Oassign(vmData, {
-
-//   formInline: {
-//       user: '',
-//       region: ''
-//   },
-//   form: {
-//       name: '',
-//       region: '',
-//       date1: '',
-//       date2: '',
-//       delivery: false,
-//       type: [],
-//       resource: '',
-//       desc: ''
-//   },
-
-//   tableData3: [],
-//   multipleSelection: [],
-
-//   currentPage: 1,
-//   total: 100,
-//   pageSize:{$pageSize},
-
-//   loading: false ,
-//   formLabelWidth: '140px',
-
-//   dialogFormVisible: false,
-//   dialogAddCustomer: false
-// });
-// Oassign(vmOption,{
-//   methods: {
-//       handleSelectionChange:function(val) {
-//         this.multipleSelection = val;
-//       },
-     
-//     }
-// })
+  }).setMethod('provinceChange', function(v){
+    var vmThis = this;
+    this.$http.get('{:U("Area/getAreasByPid")}', {params:{pid:v} }).then(function(response){
+      var cities = [];
+       response.body.forEach(function(currentValue,index){
+        cities.push({id: currentValue.id, name: currentValue.name});
+       })
+       vmThis.$set(vmThis, 'cities', cities);
+    });
+  }).setMethod('beforeEdit',function(){
+    if (this.cities.length==0) {
+      console.log(this.$refs);
+      // this.$refs.editselect.$emit('change');
+    }
+  }).setAdvancedSearch().setVueHook('mounted', function(){
+    var vmThis = this;
+    this.$http.get('{:U("Area/getAreasByPid")}', {params:{pid:1} }).then(function(response){
+      var provinces = [];
+      response.body.forEach(function(currentValue,index){
+        provinces.push({id: currentValue.id, name: currentValue.name});
+      })
+      vmThis.$set(vmThis, 'provinces', provinces);
+    });
+  });
 </script>
 </block>

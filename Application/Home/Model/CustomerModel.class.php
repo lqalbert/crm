@@ -11,6 +11,10 @@ class CustomerModel extends Model {
 	const TYPE_N = 5;
 	const TYPE_F = 6;
 
+	const UNKNOW = 0;
+	const MAN    = 1;
+	const WOMAN  = 2;
+
 
     protected $tableName = 'customers_basic';
     protected $customerType = array(
@@ -23,6 +27,12 @@ class CustomerModel extends Model {
           "F.黑名单（同行）",
     	);
 
+    protected $sexType = array(
+    	  "未选择",
+          "男",
+          "女"
+    	);
+
 
     protected $_validate = array(
 		array('name','require','姓名必须！'), //默认情况下用正则进行验证
@@ -32,12 +42,28 @@ class CustomerModel extends Model {
    );
 
 
-
+    /**
+    * 返回类型 或 所有的类型
+    * 
+    * @return string|array
+    */
     public function getType($index){
     	if (is_int($index)) {
     		return $this->customerType[$index];
     	} else {
     		return $this->customerType;
+    	}
+    }
+
+    /**
+    * 返回性别的汉字
+    * @return string|array
+    */
+    public function getSexType($index){
+    	if (is_int($index)) {
+    		return $this->sexType[$index];
+    	} else {
+    		return $this->sexType;
     	}
     }
 

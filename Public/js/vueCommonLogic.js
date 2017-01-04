@@ -52,7 +52,7 @@ function setCommonLogic(opt){
 	// 共用的 方法 处理函数
 	//重载 数据列表
 	opt.setMethod("dataReload", function(){
-		this.dataLoading = true;
+		this.dataLoad = true;
 		this.loadDatalist();
 	})
 
@@ -80,13 +80,13 @@ function setCommonLogic(opt){
 			  type: 'error'
 			});
 		}).finally(function(){
-			vmThis.$set(vmThis, 'dataLoading', false);
+			vmThis.$set(vmThis, 'dataLoad', false);
 		})
 	})
 
 	//处理翻页
 	opt.setMethod("handleCurrentPageChange", function(v){
-		this.dataLoading = true;
+		this.dataLoad = true;
 		this.currentPage = v;
 		this.loadDatalist();
 	})
@@ -196,6 +196,24 @@ function setForm(opt, type){
 	// 暂时先这样
 	
 	opt.setMethod(type+"FormSubmit", function(url, form){
+		FormName.type = form;
+		var  vmThis   = this;
+		var  formName    =  FormName.getFormName();       //form+"Form";
+		if (this.$refs[formName].rules) {
+			this.$refs[formName].validate(function(valid){
+				if (valid) {
+		            vmThis.commonSubmitLogic(url, form);
+		          } else {
+		            console.log('error submit!!');
+		            return false;
+		          }
+			})
+		} else {
+			vmThis.commonSubmitLogic(url, form);
+		}
+	});
+
+	opt.setMethod('commonSubmitLogic', function(url, form){
 		FormName.type = form;
 
 		var  vmThis   = this;
