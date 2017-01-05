@@ -7,6 +7,8 @@ class CustomerController extends CommonController {
 		// $dataList = $this->getList();
 		$this->assign('customerType', $this->M->getType());
 		$this->assign('sexType',      $this->M->getSexType());
+		$this->assign('logType',      D('CustomerLog')->getType());
+
 		$this->display();
 	}
 
@@ -17,6 +19,9 @@ class CustomerController extends CommonController {
 	*/
 	public function setQeuryCondition() {
 		$this->M->where(array("user_id"=> session('uid')));
+		if (I('get.name')) {
+			$this->M->where(array("name"=> array('like', I('get.name')."%")));
+		}
 	}
 
 	/**
@@ -40,5 +45,37 @@ class CustomerController extends CommonController {
 		} else {
 			return false;
 		}
+	}
+
+	/**
+	* 批量添加跟踪纪录
+	*
+	*/
+	public function addTrackLogs(){
+		$ids = I('post.cus_ids');
+		// 传过来的时间是 utc 通用标准时间 这里进行一个转化
+		$time = date('Y-m-d', strtotime(I('post.next_datetime')));
+		$insert_arr = array();
+		foreach ($ids as $key => $value) {
+			$tmp = array();
+			$tmp['cus_id']  = $value;
+			$tmp['user_id'] = session('uid');
+			$tmp['track_type'] = I('post.track_type');
+			$tmp['content'] = I('post.content');
+			$tmp['next_datetime'] = $time;
+
+			$insert_arr[] = $tmp;
+		}
+
+		$result = D('CustomerLog')->addAll($insert_arr);
+		if ($result !== false) {
+			$this->success("添加成功");
+		} else {
+			$this->error("操作出错".D('CustomerLog')->getError());
+		}
+	}
+
+	public function getTracks(){
+		var_dump(D('CustomerLog')->select());
 	}
 }

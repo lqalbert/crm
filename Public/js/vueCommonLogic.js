@@ -199,7 +199,22 @@ function setForm(opt, type){
 		FormName.type = form;
 		var  vmThis   = this;
 		var  formName    =  FormName.getFormName();       //form+"Form";
-		if (this.$refs[formName].rules) {
+		try{
+			this.$refs[formName].rules;
+
+			this.$refs[formName].validate(function(valid){
+				if (valid) {
+		            vmThis.commonSubmitLogic(url, form);
+		          } else {
+		            console.log('error submit!!');
+		            return false;
+		          }
+			})
+
+		}catch(e){
+			vmThis.commonSubmitLogic(url, form);
+		}
+		/*if ( this.$refs[formName].rules ) {
 			this.$refs[formName].validate(function(valid){
 				if (valid) {
 		            vmThis.commonSubmitLogic(url, form);
@@ -210,7 +225,7 @@ function setForm(opt, type){
 			})
 		} else {
 			vmThis.commonSubmitLogic(url, form);
-		}
+		}*/
 	});
 
 	opt.setMethod('commonSubmitLogic', function(url, form){

@@ -6,18 +6,14 @@
 <div class="wrapp" v-show="show" style="display: none;">
 	<el-row>
   	<el-col :span="24">
-  		<el-form :inline="true" :model="searchForm">
-  		  <el-form-item>
-  		    <el-input v-model="searchForm.user" placeholder="审批人"></el-input>
-  		  </el-form-item><el-form-item>
-  		    <el-select v-model="searchForm.region" placeholder="活动区域">
-  		      <el-option label="区域一" value="区域一"></el-option>
-  		      <el-option label="区域二" value="区域二"></el-option>
-  		    </el-select>
-  		  </el-form-item><el-form-item>
-  		    <el-button >清空</el-button>
-  		    <el-button type="primary">查询</el-button> 
-          <el-button  >高级查询</el-button> 
+  		<el-form :inline="true" ref="searchForm" :model="searchForm">
+  		  <el-form-item prop="name">
+  		    <el-input v-model="searchForm.name" placeholder="客户姓名"></el-input>
+  		  </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="loadDatalist">查询</el-button> 
+  		    <el-button @click="searchReset">清空</el-button>
+          <!-- <el-button  >高级查询</el-button>  -->
   		  </el-form-item>
   		</el-form>
   	</el-col>
@@ -25,7 +21,14 @@
 
 <el-row>
   <el-col :span="24">
-  	<el-table :data="dataList" border  height v-loading="dataLoad" element-loading-text="{:L('DATA_LOGIN')}">
+  	<el-table 
+    :data="dataList" 
+    border  
+    height 
+    v-loading="dataLoad" 
+    element-loading-text="{:L('DATA_LOGIN')}"
+    @selection-change="handleSelectionChange"
+    >
 	    <el-table-column type="selection"  width="50" >
 	    </el-table-column>
 	    <el-table-column   label="{:L('INDEX')}"  :formatter="handleIndex" width="70"  >
@@ -77,7 +80,7 @@
     <div class="grid-content bg-purple">
           <span class="wrapper">
             <el-button size="small"  @click="openDialog('add')" icon="plus" type="primary">{:L('ADD')}</el-button>
-            <el-button size="small" >录入跟踪</el-button>
+            <el-button size="small" @click="openDialog('addTrack')">录入跟踪</el-button>
               <!-- <el-button  @click="addCustomer">修改客户</el-button> -->
               <!-- <el-button>计划</el-button>
               <el-button>推介</el-button> -->
@@ -99,7 +102,7 @@
 
 <div class="dialogWrapper" v-show="show" style="display: none">
   <!-- 录入跟踪  -->
-  
+  <include file="_track" />
   <!-- / 录入跟踪 -->
 
   <!-- 录入客户 -->
@@ -118,14 +121,17 @@ function toInt(v){
 }
 </script>
 <script>
+  page.addTrackFormUrl = "{:U('addTrackLogs')}";
   window.defaultOption.setDatas({
     customerType:{:json_encode($customerType)},
     sexType:{:json_encode($sexType)},
     provinces:[],
-    cities:[]
+    cities:[],
+    multipleSelection: [],
+    alertDesc:"",
+    logType:{:json_encode($logType)}
   }).setForm('search', {
-    user:'',
-    region:''
+    name:''
   }).setForm('add',{
     name:"",
     phone:"",
@@ -153,7 +159,12 @@ function toInt(v){
     area_city:null,
     year:1,
     remark:""
-  }).setMethod('getType', function(type, field){
+  }).setForm('addTrack',{
+    cus_ids:[],
+    next_datetime:'',
+    track_type:'',
+    content:''
+  },true).setMethod('getType', function(type, field){
       return this[field][type];
   }).setMethod('beforeList', function(data){
     data.forEach(function(currentValue){
@@ -172,6 +183,24 @@ function toInt(v){
   }).setMethod('beforeEdit',function(){
     if (!this.$refs['editselect']) {
       this.provinceChange(this.editForm.area_province);
+    }
+  }).setMethod('handleSelectionChange', function(val){
+    this.multipleSelection = val;
+  }).setMethod('beforeAddTrack', function(){
+    var form = 'addTrack';
+    var vmThis = this;
+    if (this.multipleSelection.length ==0 ) {
+      this.closeDialog(form);
+      this.$message.error('请先选择客户');
+    } else {
+      var custs = [];
+
+      this[FormName.getForm(form)].cus_ids = [];
+      this.multipleSelection.forEach(function(currentValue){
+        custs.push(currentValue.name);
+        vmThis[FormName.getForm(form)].cus_ids.push(currentValue.id);
+      })
+      this.alertDesc = custs.join("，");
     }
   }).setAdvancedSearch().setVueHook('mounted', function(){
     var vmThis = this;
