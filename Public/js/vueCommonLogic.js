@@ -33,7 +33,7 @@ function setCommonLogic(opt){
 		currentPage: 1,
 		pageSize: page.pageSize,
 
-		dialogLabelWidth:"130px",
+		dialogLabelWidth:"140px",
 		page:page
 
 	});
@@ -65,7 +65,7 @@ function setCommonLogic(opt){
 				params[x] = this.searchForm[x];
 			}
 		}
-		this.$http.get(page.listUrl, {params: params }).then(function(response){
+		this.$http.get(page.listUrl, {params:params}).then(function(response){
 
 			// 在显示之前 对数据进行处理
 			if (this.beforeList) {
@@ -76,7 +76,7 @@ function setCommonLogic(opt){
 			vmThis.$set(vmThis, 'total',    parseInt(response.body.count));
 		}, function(response) {
 			vmThis.$message({
-			  message: '获取失败：'+ response.body.info,
+			  message: '获取数据失败：'+ response.body.info,
 			  type: 'error'
 			});
 		}).finally(function(){
@@ -237,23 +237,28 @@ function setForm(opt, type){
 		var  formDialog  =  FormName.getDialog();         //form+"FormDialog";
 
 		this[formStatus] =  true;
-
 		this.$http.post(url, this[formName]).then(function (response) {
+
 			vmThis.$message({
-				  message: '操作成功',
-				  type: 'success'
-				});
+					  message: '操作成功',
+					  type: 'success'
+					});
+
 			setTimeout(function(){
 				vmThis[formDialog] = false;
 				vmThis[formStatus] = false;
 				vmThis.loadDatalist();
+				
 			}, 2000);
-        }, function(response){
-			vmThis.$message({
-			  message: '操作失败',
-			  type: 'error'
-			});
-        	vmThis[formStatus] = false;
+
+        }, function(response){	
+        	setTimeout(function(){
+        		vmThis[formStatus] = false;
+				vmThis.$message({
+				  message: '操作失败',
+				  type: 'error'
+				});
+        	},2000);
         });
 	})
 
