@@ -197,6 +197,39 @@ function setForm(opt, type){
 	
 	opt.setMethod(type+"FormSubmit", function(url, form){
 		FormName.type = form;
+		var  vmThis   = this;
+		var  formName    =  FormName.getFormName();       //form+"Form";
+		try{
+			this.$refs[formName].rules;
+
+			this.$refs[formName].validate(function(valid){
+				if (valid) {
+		            vmThis.commonSubmitLogic(url, form);
+		          } else {
+		            console.log('error submit!!');
+		            return false;
+		          }
+			})
+
+		}catch(e){
+			vmThis.commonSubmitLogic(url, form);
+		}
+		/*if ( this.$refs[formName].rules ) {
+			this.$refs[formName].validate(function(valid){
+				if (valid) {
+		            vmThis.commonSubmitLogic(url, form);
+		          } else {
+		            console.log('error submit!!');
+		            return false;
+		          }
+			})
+		} else {
+			vmThis.commonSubmitLogic(url, form);
+		}*/
+	});
+
+	opt.setMethod('commonSubmitLogic', function(url, form){
+		FormName.type = form;
 
 		var  vmThis   = this;
 		var  formName    =  FormName.getFormName();       //form+"Form";
@@ -205,15 +238,19 @@ function setForm(opt, type){
 
 		this[formStatus] =  true;
 		this.$http.post(url, this[formName]).then(function (response) {
+
+			vmThis.$message({
+					  message: '操作成功',
+					  type: 'success'
+					});
+
 			setTimeout(function(){
 				vmThis[formDialog] = false;
 				vmThis[formStatus] = false;
 				vmThis.loadDatalist();
-				vmThis.$message({
-					  message: '操作成功',
-					  type: 'success'
-					});
+				
 			}, 2000);
+
         }, function(response){	
         	setTimeout(function(){
         		vmThis[formStatus] = false;

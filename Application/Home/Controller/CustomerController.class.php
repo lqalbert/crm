@@ -6,6 +6,7 @@ class CustomerController extends CommonController {
 	public function index () {
 		// $dataList = $this->getList();
 		$this->assign('customerType', $this->M->getType());
+		$this->assign('sexType',      $this->M->getSexType());
 		$this->display();
 	}
 

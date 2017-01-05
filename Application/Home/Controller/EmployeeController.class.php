@@ -48,12 +48,11 @@ class EmployeeController extends CommonController {
 				$this->success("操作成功");
 			} else {
 				$M->rollback();
-				header('HTTP/1.1 418 DIY_ERROR');
 				$this->error("操作失败".$M->getError());
 			}
 		} else {
 			$M->rollback();
-			header('HTTP/1.1 418 DIY_ERROR');
+			
 			$this->error("操作失败".$M->getError());
 		}
 	}

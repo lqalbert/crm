@@ -11,7 +11,7 @@
 /**
 * 
 */
-namespace Common\LIb;
+namespace Common\Lib;
 
 class Arr 
 {	
