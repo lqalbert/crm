@@ -114,29 +114,27 @@
 			<!-- / 编辑 -->
 		</div>
 
+		
+
+
+
+
+		<div>
+			<!-- tabs -->
+			<el-tabs type="card" closable @tab-click="handleClick" @tab-remove="handleRemove">
+			    <el-tab-pane label="用户管理">用户管理</el-tab-pane>
+			    <el-tab-pane label="配置管理">配置管理</el-tab-pane>
+			    <el-tab-pane label="角色管理">角色管理</el-tab-pane>
+			    <el-tab-pane label="定时任务补偿">定时任务补偿</el-tab-pane>
+			  </el-tabs>
+
+			<!--  -->
+		</div>
+
 
 	</div>
 </block>
 <block name="scripts">
-
-<!-- 
-	新思路
-	一个vue实例 
-	可以包含一个 查询 
-	一个列表
-	多个添加
-	多个编辑
-	默认提供 一个添加 一个编辑
-
-	这样内置的list 就可以分开了
-
-	一个页面多个 list 就可以是多个vue实例了
-
-	默认情况下是一个 vue 
-
- -->
- <!-- 列表处理 -->
- <!-- todo : 共用的数据项 像添加和编辑select下拉显示的数据 -->
 <script>
 	window.defaultOption.setDatas({
 		searchForm:{
@@ -150,6 +148,10 @@
 	}).setForm('edit', {
 		name:"",
 		id:""
+	}).setMethod('handleClick', function(tab, event){
+
+	}).setMethod('handleRemove', function(tab){
+		
 	});
 </script>
 </block>

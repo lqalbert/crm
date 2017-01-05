@@ -252,12 +252,12 @@ function setForm(opt, type){
 			}, 2000);
 
         }, function(response){	
+        	vmThis.$message({
+			  message: '操作失败：'+response.body.info,
+			  type: 'error'
+			});
         	setTimeout(function(){
         		vmThis[formStatus] = false;
-				vmThis.$message({
-				  message: '操作失败',
-				  type: 'error'
-				});
         	},2000);
         });
 	})

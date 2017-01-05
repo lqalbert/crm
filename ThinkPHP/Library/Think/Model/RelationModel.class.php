@@ -71,6 +71,7 @@ class RelationModel extends Model {
     // 写入成功后的回调方法
     protected function _after_insert($data,$options) {
         // 关联写入
+
         if(!empty($options['link']))
             $this->opRelation('ADD',$data,$options['link']);
     }
@@ -245,6 +246,7 @@ class RelationModel extends Model {
      * @return mixed
      */
     protected function opRelation($opType,$data='',$name='') {
+
         $result =   false;
         if(empty($data) && !empty($this->data)){
             $data = $this->data;
@@ -279,6 +281,7 @@ class RelationModel extends Model {
                         // 获取关联model对象
                         $model = D($mappingClass);
                         $mappingData    =   isset($data[$mappingName])?$data[$mappingName]:false;
+
                         if(!empty($mappingData) || $opType == 'DEL') {
                             switch($mappingType) {
                                 case self::HAS_ONE:

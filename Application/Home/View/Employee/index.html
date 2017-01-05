@@ -37,9 +37,12 @@
 					    </el-table-column>
 					    <el-table-column  label="序号"  width="70" :formatter="handleIndex" >
 					    </el-table-column>
-<!-- 					    <el-table-column prop="img" label="头像" width="140">
+ 					    <el-table-column prop="userInfo.head" inline-template label="头像"  width="140">
+							<div>
+								<img :src="row.userInfo.head" alt="" width="100" height="100">
+							</div>
 					    </el-table-column>
-					    <el-table-column prop="id"  label="员工ID" width="100">
+					   <!-- <el-table-column prop="id"  label="员工ID" width="100">
 					    </el-table-column> -->
 					    <el-table-column prop="account" label="登录账号" width="100">
 					    </el-table-column>
@@ -80,11 +83,12 @@
 					    
 					    
 
-					    <el-table-column inline-template :context="_self"  fixed="right"  label="操作" width="100">
+					    <el-table-column inline-template :context="_self"  fixed="right"  label="操作" width="200">
 					      <span>
 					        <!-- <el-button @click="handleClick($index, row)" type="text" size="small">查看</el-button> -->
-					        <el-button @click="handleEdit($index, row)" type="text" size="small">编辑</el-button>
-					        <el-button @click="handleSetRoles($index, row)" type="text" size="small">角色</el-button>
+					        <el-button @click="handleEdit($index, row)"  size="small">编辑</el-button>
+					        <el-button @click="handleSetRoles($index, row)" type="info" size="small">角色</el-button>
+					        <el-button @click="handleDelete($index, row)"  type="danger" size="small">删除</el-button>
 					      </span>
 					    </el-table-column>
 
@@ -154,9 +158,25 @@
 		page.setUserRolesUrl="{:U('setUserRoles')}";
 		window.defaultOption.setDatas({
 			roleList:{:json_encode($roleList)},
+			pathInfo:{folder:'users'},
+			addUpload:"",
+			addUploadImg:false,
+			xuploadheader:{"X-Requested-With":"XMLHttpRequest"},
+			groupList:{:json_encode($groupList)},
+			provinces:[],
+			cities:[],
+			districts:[],
 		}).setForm('add',{
 			account:"",
-			password:""
+			password:"123456",
+			head:"",
+			group_id:"",
+			sex:0,
+			phone:"",
+			mphone:"",
+			area_province:"",
+			area_city:"",
+			area_district:"",
 		}).setForm('setRoles',{
 			user_id:0,
 			role_ids:[]
@@ -170,7 +190,40 @@
 				});
 				vmThis.openDialog('setRoles');
 			})
-		})   ;
+		}).setMethod('addFormUploadSuccess', function(response, file, fileList){
+			this.addUpload = '__ROOT__'+ response.path;
+			this.addUploadImg = true;
+			this.addForm.head = response.path
+		}).setMethod('addFormUploadError', function(err, response, file){
+			this.$message.error('上传出错：' + response.info);
+		}).setVueHook('mounted', function(){
+	    var vmThis = this;
+	    this.$http.get('{:U("Area/getAreasByPid")}', {params:{pid:1} }).then(function(response){
+	      var provinces = [];
+	      response.body.forEach(function(currentValue,index){
+	        provinces.push({id: currentValue.id, name: currentValue.name});
+	      })
+	      vmThis.$set(vmThis, 'provinces', provinces);
+	    });
+	  }).setMethod('provinceChange', function(v){
+	    var vmThis = this;
+	    this.$http.get('{:U("Area/getAreasByPid")}', {params:{pid:v} }).then(function(response){
+	      var cities = [];
+	       response.body.forEach(function(currentValue,index){
+	        cities.push({id: currentValue.id, name: currentValue.name});
+	       })
+	       vmThis.$set(vmThis, 'cities', cities);
+	    })
+	  }).setMethod('cityChange', function(v){
+	    var vmThis = this;
+	    this.$http.get('{:U("Area/getAreasByPid")}', {params:{pid:v} }).then(function(response){
+	      var cities = [];
+	       response.body.forEach(function(currentValue,index){
+	        cities.push({id: currentValue.id, name: currentValue.name});
+	       })
+	       vmThis.$set(vmThis, 'districts', cities);
+	    })
+	  });
 	</script>
 	<script>
 

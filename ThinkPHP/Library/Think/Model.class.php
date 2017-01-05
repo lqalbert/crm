@@ -298,6 +298,7 @@ class Model {
      * @return mixed
      */
     public function add($data='',$options=array(),$replace=false) {
+
         if(empty($data)) {
             // 没有传递数据，获取当前数据对象的值
             if(!empty($this->data)) {
@@ -310,7 +311,9 @@ class Model {
             }
         }
         // 数据处理
+
         $data       =   $this->_facade($data);
+
         // 分析表达式
         $options    =   $this->_parseOptions($options);
         if(false === $this->_before_insert($data,$options)) {

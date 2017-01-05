@@ -23,9 +23,6 @@ class CommonController extends Controller {
 
 		Rbac::AccessDecision() || $this->error(L('NO_AUTHORIZED'));
 
-		
-
-
 		$this->parseJsonParams();
 
 		$this->M = D($this->table);
@@ -71,10 +68,10 @@ class CommonController extends Controller {
 	 * 
 	 **/
 	public function add() {	
-		if (!empty($_POST) && $this->M->create($_POST, Model::MODEL_INSERT) && D($this->table)->add()) {
+		if (!empty($_POST) && $this->M->create($_POST, Model::MODEL_INSERT) && $this->M->add()) {
 			$this->success(L('ADD_SUCCESS'));
 		} else {
-			$this->error(L('ADD_ERROR').$this->M->getError());
+			$this->error($this->M->getError());
 		}
 	}
 
@@ -87,10 +84,10 @@ class CommonController extends Controller {
 	 **/
 	public function edit() {
 		
-		if ($this->M->create($_POST, Model::MODEL_UPDATE) && D($this->table)->save()) {
+		if ($this->M->create($_POST, Model::MODEL_UPDATE) && $this->M->save()) {
 			$this->success(L('EDIT_SUCCESS'));
 		} else {
-			$this->error(L('EDIT_ERROR').$this->M->getError());
+			$this->error($this->M->getError());
 		}
 	}
 

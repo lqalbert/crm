@@ -2,12 +2,17 @@
 namespace Home\Controller;
 
 class EmployeeController extends CommonController {
-	protected $table="rbac_user";
+	protected $table="RbacUser";
 
 
 	public function index (){
 		$this->assign("roleList", $this->getRoles());
+		$this->assign("groupList", D('Group')->where(array('status'=>1))->select());
 		$this->display();
+	}
+
+	public function setQeuryCondition() {
+		$this->M->relation(true);
 	}
 
 	public function getRoles(){
@@ -35,9 +40,6 @@ class EmployeeController extends CommonController {
 		foreach ($role_ids as $value) {
 			$insert_list[] = array('role_id'=>$value, 'user_id'=>$user_id);
 		}
-
-		
-
 		$M->startTrans(); 
 		$result = $M->where(array('user_id'=>$user_id))->delete();
 
@@ -55,5 +57,28 @@ class EmployeeController extends CommonController {
 			
 			$this->error("操作失败".$M->getError());
 		}
+	}
+
+	/**
+	* 添加
+	*/
+	public function add(){
+		
+		$re = $this->M->create($_POST, 1);
+		if ($re) {
+			$re['userInfo'] = M('userInfo')->create($_POST, 1);
+			if ($this->M->relation('userInfo')->add($re)) {
+				$this->success(L('ADD_SUCCESS'));
+			} else {
+				$this->error($this->M->getError());
+			}
+		} else {
+			$this->error($this->M->getError());
+		}
+
+	}
+
+	public function _before_delete() {
+		$this->setQeuryCondition();
 	}
 }

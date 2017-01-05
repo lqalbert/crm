@@ -19,35 +19,43 @@
   </el-row>
    <el-row>
     <el-col :span="12">
+
       <el-form-item label="头像">
+      <img v-show='addUploadImg' :src="addUpload" alt="" style="max-width: 200px; max-height: 200px;">
         <el-upload
-         action="//jsonplaceholder.typicode.com/posts/"
-         show-upload-list="false">
+         action="{:U('Upload/index2')}"
+         :data="pathInfo"
+         :headers="xuploadheader"
+         :multiple="false"
+         accept="image/*"
+         :on-success="addFormUploadSuccess"
+         :on-error="addFormUploadError"
+         :show-upload-list="false">
         <el-button size="small" type="primary">点击上传</el-button>
         <!-- <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div> -->
       </el-upload>
       </el-form-item>
       </el-col>
-      <el-col :span="12">
+     <!--  <el-col :span="12">
         <el-form-item label="员工类型">
           <el-select  placeholder="请选择">
             <el-option label="测试数据" value="区域一"></el-option>
           </el-select>
         </el-form-item>
-      </el-col>
+      </el-col> -->
     </el-row>
     <el-row>
       <el-col :span="12">
-        <el-form-item label="所属组织">
-          <el-select  placeholder="请选择">
-            <el-option label="测试数据" value="区域一"></el-option>
+        <el-form-item label="所属团队">
+          <el-select  v-model='addForm.group_id' placeholder="请选择">
+            <el-option  v-for="group in groupList" :label="group.name" :value="group.id"></el-option>
           </el-select>
         </el-form-item>
       </el-col>
       <el-col :span="12">
         <el-form-item label="性别">
-          <el-radio class="radio"  label="男">男</el-radio>
-          <el-radio class="radio"  label="女">女</el-radio>
+          <el-radio class="radio" v-model="addForm.sex" label="1">男</el-radio>
+          <el-radio class="radio" v-model="addForm.sex" label="2">女</el-radio>
         </el-form-item>
       </el-col>
     </el-row>
@@ -55,12 +63,12 @@
     <el-row>
       <el-col :span="12">
         <el-form-item label="固话">
-          <el-input auto-complete="off"></el-input>
+          <el-input v-model="addForm.phone"  auto-complete="off"></el-input>
         </el-form-item>
       </el-col>
       <el-col :span="12">
         <el-form-item label="手机">
-          <el-input auto-complet="off"></el-input>
+          <el-input v-model="addForm.mphone" auto-complet="off"></el-input>
         </el-form-item>
       </el-col>
     </el-row>
@@ -68,39 +76,39 @@
     <el-row>
       <el-col :span="12">
         <el-form-item label="QQ号">
-          <el-input auto-complete="off"></el-input>
+          <el-input v-model="addForm.qq" auto-complete="off"></el-input>
         </el-form-item>
       </el-col>
       <el-col :span="12">
         <el-form-item label="QQ昵称">
-          <el-input auto-complet="off"></el-input>
+          <el-input v-model="addForm.qq_nickname" auto-complet="off"></el-input>
         </el-form-item>
       </el-col>
     </el-row>
     <el-row>
       <el-col :span="12">
         <el-form-item label="微信号">
-          <el-input auto-complete="off"></el-input>
+          <el-input v-model="addForm.weixin" auto-complete="off"></el-input>
         </el-form-item>
       </el-col>
       <el-col :span="12">
         <el-form-item label="微信昵称">
-          <el-input auto-complet="off"></el-input>
+          <el-input v-model="addForm.weixin_nikname" auto-complet="off"></el-input>
         </el-form-item>
       </el-col>
     </el-row>
     <el-row>
       <el-col :span="12">
         <el-form-item label="省份">
-          <el-select placeholder="请选择">
-            <el-option label="测试数据" value="测试数据"></el-option>
+          <el-select v-model="addForm.area_province" @change="provinceChange" placeholder="请选择">
+             <el-option v-for="province in provinces" :label="province.name"  :value="province.id"></el-option>
           </el-select>
         </el-form-item>
       </el-col>
       <el-col :span="12">
         <el-form-item label="城市">
-          <el-select placeholder="请选择">
-            <el-option label="测试数据" value="测试数据"></el-option>
+          <el-select v-model="addForm.area_city" @change="cityChange"   placeholder="请选择">
+            <el-option v-for="city in cities" :label="city.name"  :value="city.id"></el-option>
           </el-select>
         </el-form-item>
       </el-col>
@@ -108,18 +116,18 @@
     <el-row>
       <el-col :span="12">
         <el-form-item label="区县">
-          <el-select placeholder="请选择">
-            <el-option label="测试数据" value="测试数据"></el-option>
+          <el-select v-model="addForm.area_district" placeholder="请选择">
+            <el-option v-for="dis in districts" :label="dis.name"  :value="dis.id"></el-option>
           </el-select>
         </el-form-item>
       </el-col>
-      <el-col :span="12">
+     <!--  <el-col :span="12">
         <el-form-item label="街道">
           <el-select placeholder="请选择">
             <el-option label="测试数据" value="测试数据"></el-option>
           </el-select>
         </el-form-item>
-      </el-col>
+      </el-col> -->
     </el-row>
     <el-form-item label="住址">
       <el-input
