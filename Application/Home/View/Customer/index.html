@@ -63,8 +63,8 @@
 
 	    <el-table-column inline-template :context="_self"  fixed="right"  label="操作" width="200">
 	      <span>
-	        <el-button @click="handleEdit($index, row)"  size="small">查看</el-button>
 	        <el-button @click="handleEdit($index, row)"  size="small">编辑</el-button>
+	        <el-button @click="handleDelete($index, row)"  size="small" type="danger">删除</el-button>
 	      </span>
 	    </el-table-column>
     </el-table>
@@ -170,9 +170,8 @@ function toInt(v){
        vmThis.$set(vmThis, 'cities', cities);
     });
   }).setMethod('beforeEdit',function(){
-    if (this.cities.length==0) {
-      console.log(this.$refs);
-      // this.$refs.editselect.$emit('change');
+    if (!this.$refs['editselect']) {
+      this.provinceChange(this.editForm.area_province);
     }
   }).setAdvancedSearch().setVueHook('mounted', function(){
     var vmThis = this;
