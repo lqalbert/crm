@@ -52,7 +52,7 @@ function setCommonLogic(opt){
 	// 共用的 方法 处理函数
 	//重载 数据列表
 	opt.setMethod("dataReload", function(){
-		this.dataLoading = true;
+		this.dataLoad = true;
 		this.loadDatalist();
 	})
 
@@ -65,7 +65,7 @@ function setCommonLogic(opt){
 				params[x] = this.searchForm[x];
 			}
 		}
-		this.$http.get(page.listUrl, {params: params }).then(function(response){
+		this.$http.get(page.listUrl, {params:params}).then(function(response){
 
 			// 在显示之前 对数据进行处理
 			if (this.beforeList) {
@@ -76,17 +76,17 @@ function setCommonLogic(opt){
 			vmThis.$set(vmThis, 'total',    parseInt(response.body.count));
 		}, function(response) {
 			vmThis.$message({
-			  message: '获取失败：'+ response.body.info,
+			  message: '获取数据失败：'+ response.body.info,
 			  type: 'error'
 			});
 		}).finally(function(){
-			vmThis.$set(vmThis, 'dataLoading', false);
+			vmThis.$set(vmThis, 'dataLoad', false);
 		})
 	})
 
 	//处理翻页
 	opt.setMethod("handleCurrentPageChange", function(v){
-		this.dataLoading = true;
+		this.dataLoad = true;
 		this.currentPage = v;
 		this.loadDatalist();
 	})
@@ -204,23 +204,24 @@ function setForm(opt, type){
 		var  formDialog  =  FormName.getDialog();         //form+"FormDialog";
 
 		this[formStatus] =  true;
-
 		this.$http.post(url, this[formName]).then(function (response) {
-			vmThis.$message({
-				  message: '操作成功',
-				  type: 'success'
-				});
 			setTimeout(function(){
 				vmThis[formDialog] = false;
 				vmThis[formStatus] = false;
 				vmThis.loadDatalist();
+				vmThis.$message({
+					  message: '操作成功',
+					  type: 'success'
+					});
 			}, 2000);
-        }, function(response){
-			vmThis.$message({
-			  message: '操作失败',
-			  type: 'error'
-			});
-        	vmThis[formStatus] = false;
+        }, function(response){	
+        	setTimeout(function(){
+        		vmThis[formStatus] = false;
+				vmThis.$message({
+				  message: '操作失败',
+				  type: 'error'
+				});
+        	},2000);
         });
 	})
 

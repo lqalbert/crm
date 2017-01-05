@@ -58,9 +58,11 @@
 					    <el-table-column  label="拓展二" align="center" prop="expand2">
 					    </el-table-column>
 					    <el-table-column  inline-template :context="_self"  align="center" label="形象照片" width="100">
+					       <div>
 					    	<el-tooltip content="点击放大图片" placement="right">
 					    	 <img :src="imgUrl(row.img)" @click="bigImg(row.img)" alt="点击放大图片" width="45px" height="45px">
-					    	<el-tooltip content="添加新的组织单位！" placement="right">	
+					    	<el-tooltip>	
+					       </div>
 					    </el-table-column>
                         <el-table-column label="地址" align="center" prop="address" width="180">
                         </el-table-column>
@@ -71,11 +73,11 @@
                         <el-table-column label="备注" align="center" prop="remark" width="100">
                         </el-table-column>
 
-					    <el-table-column inline-template :context="_self"  fixed="right"  label="操作" width="140" align="center" >
-					      <span>
-					        <el-button @click="handleEdit($index, row)"    size="small">编辑</el-button>
-					        <el-button @click="handleDelete($index, row)"  size="small" type="danger">删除</el-button>
-					      </span>
+					    <el-table-column :context="_self"  fixed="right"  label="操作" width="140" align="center" >
+					      <template scope="scope">
+					        <el-button @click="handleEdit(scope.$index, scope.row)"    size="small">编辑</el-button>
+					        <el-button @click="handleDelete(scope.$index, scope.row)"  size="small" type="danger">删除</el-button>
+					      </template>
 					    </el-table-column>
 				    </el-table>
 				</el-col>
@@ -174,7 +176,7 @@
 		name:"",
 		public:"",
 		type:"",
-		p_id:"",
+		p_name:"",
 		zone:"",
 		expand1:"",
 		expand2:"",
@@ -189,7 +191,7 @@
 		name:"",
 		public:"",
 		type:"",
-		p_id:"",
+		p_name:"",
 		zone:"",
 		expand1:"",
 		expand2:"",
