@@ -6,17 +6,17 @@
 			<!-- seach form -->
 			<el-row>
 				<el-col :span="24">
-					<el-form :inline="true" ref="searchForm" :model="searchForm">
-					  <el-form-item prop="name"><el-input  placeholder="查询字段一" v-model="searchForm.name"></el-input>
+					<el-form :inline="true"   >
+					  <el-form-item><el-input  placeholder="查询字段一"></el-input>
 					  </el-form-item><el-form-item>
-					    <el-select  placeholder="查询字段二" v-model="searchForm.name" clearable>
+					    <el-select  placeholder="查询字段二">
 					      <el-option label="区域一" value="区域一"></el-option>
 					      <el-option label="区域二" value="区域二"></el-option>
 					    </el-select>
 					  </el-form-item><el-form-item>
-					    <el-button  icon="close" @click="searchReset">清空</el-button>
-					    <el-button type="primary" @click="loadDatalist" icon="search">查询</el-button> 
-			        	<el-button  @click="openDialog('advancedSearch')" icon="search">高级查询</el-button> 
+					    <el-button  >清空</el-button>
+					    <el-button type="primary" >查询</el-button> 
+			        	<el-button  @click="advancedSearch=true" icon="search">高级查询</el-button> 
 					  </el-form-item>
 					</el-form>
 				</el-col>
@@ -30,12 +30,12 @@
 					:data="dataList"  
 					border  
 					v-loading="dataLoad"  
-					element-loading-text="拼命加载中">
+					element-loading-text="{:L('DATA_LOGIN')}">
 					    <el-table-column type="selection"  align="center" width="50" >
 					    </el-table-column>
-					    <el-table-column type="index" :formatter="handleIndex" width="65" align="center" label="序号" >
+					    <el-table-column type="index"  align="center" label="序号" >
 					    </el-table-column>
-					    <el-table-column label="团队ID" width="100" align="center" prop="id">
+					    <el-table-column label="团队ID" align="center" prop="id">
 					    </el-table-column>
 					    <el-table-column label="团队小组名称" align="center" prop="name">
 					    </el-table-column>
@@ -43,40 +43,27 @@
 					    </el-table-column>
 						<el-table-column label="上级组织" align="center" prop="p_name">
 					    </el-table-column>
-
-					    <el-table-column  inline-template :context="_self"  align="center" label="形象照片" width="100">
-					       <div>
-					    	<el-tooltip content="点击放大图片" placement="right">
-					    	 <img :src="imgUrl(row.img)" @click="bigImg(row.img)" alt="点击放大图片" width="45px" height="45px">
-					    	<el-tooltip>	
-					       </div>
-					    </el-table-column>
-
 						<el-table-column label="联系人(负责人)" align="center" prop="contact">
 					    </el-table-column>
 						<el-table-column label="联系电话" align="center" prop="tel">
 					    </el-table-column>
-						<el-table-column label="是否启用" :context="_self" align="center" prop="status">
-					     <template scope="scope">
-							<div>
-						      	<el-switch
-								  v-model="scope.row.switch"
-								  on-color="#13ce66"
-								  off-color="#ff4949" 
-								  @change="switchHandle(scope.$index, scope.row)">
-								</el-switch>
-							</div>
-                         </template>
+						<el-table-column label="状态" align="center" prop="status">
 					    </el-table-column>
-					    <el-table-column label="说明备注" align="center" prop="remark">
+						<el-table-column label="备注说明" align="center" prop="remark">
 					    </el-table-column>
-					    <el-table-column :context="_self"  fixed="right"  label="操作" align="center" width="140" >
-					     <template scope="scope">
+						<el-table-column label="上级组织" align="center" >
+					    </el-table-column>
+					    <el-table-column label="联系人" align="center" >
+					    </el-table-column>
+					    <el-table-column label="联系电话" align="center" >
+					    </el-table-column>
+					    <el-table-column label="备注" align="center" >
+					    </el-table-column>
+					    <el-table-column inline-template :context="_self"  fixed="right"  label="操作">
 					      <span>
-					        <el-button @click="handleEdit(scope.$index, scope.row)" type="info" size="small">编辑</el-button>
-					        <el-button @click="handleDelete(scope.$index,scope.row)"  type="danger" size="small">删除</el-button>
+					        <el-button @click="handleClick($index, row)" type="text" size="small">查看</el-button>
+					        <el-button type="text" size="small">编辑</el-button>
 					      </span>
-					     </template>
 					    </el-table-column>
 				    </el-table>
 				</el-col>
@@ -89,10 +76,12 @@
 			  <el-col :span="12">
 			  <div class="grid-content bg-purple">
 			  	<span class="wrapper">
-                  <el-tooltip content="添加新的团队小组" placement="right">
-                    <el-button size="small" @click="openDialog('add')" icon="plus" type="primary">添加
-                    </el-button>
-                  </el-tooltip>
+			  		<el-button-group>
+			  			<el-button type="primary" icon="plus" size="small"   @click="dialogAddGroup = true">添加团队或者小组</el-button>
+					    <el-button type="primary" icon="edit" size="small"   @click="dialogEditGroup = true">修改信息</el-button>
+					    <!-- <el-button type="primary" icon="arrow-left"  @click="">修改一般信息</el-button> -->
+					    <el-button type="primary" icon="close" size="small"  @click="dialogStopGroup = true">终止团队或小组</el-button>
+			  		</el-button-group>
 				</span>
 			  </div>
 			  </el-col>
@@ -124,87 +113,50 @@
 			<!-- stop -->
 			<include file="_stop" />
 			<!-- / stop -->
-			<!-- bifimg -->
-			<el-dialog  title="图片放大" :modal="false" size="small" v-model="bigimg" style="z-index:1000;">
-			  <div style="margin:0;padding:0;text-align:center;z-index:1000;"><img :src="imageUrl" style="margin-left:-14px;width:850px;height:550px;"></div>
-			</el-dialog>
-			<!-- bigimg -->
 		</div>
 		
 	</div>
 </block>
 <block name="scripts">
-<script>
-  window.defaultOption.setDatas({
-  	 //传输照片上传地址
-  	 pathInfo:{sb:'sb111'},
-     //放大照片
-     bigimg:false,
-     //放大图片地址
-     imageUrl:'',
+	<script>
+		// window.defaultOption
+	</script>
 
-     fileList:[
-       {name:'',url:''}
-     ],
-     rules:{
-             name:[
-                { required: true, message: '请填写单位名称', trigger: 'blur' },
-             ],
-             type:[
-                { required: true, message: '请选择类型', trigger: 'blur' },
-             ],
-             contact:[
-                { required: true, message: '请填写联系人', trigger: 'blur' },
-             ],
-             tel:[
-                { required: true, message: '请填写联系电话', trigger: 'blur' },
-             ],
-	 }
-  }).setForm('add',{
-  	id:'',
-  	name:"",
-  	type:"",
-  	p_name:"",
-  	contact:'',
-  	tel:"",
-  	status:"",
-  	remark:"",
-  	img:'',
-  }).setForm('edit',{
-  	id:'',
-  	name:"",
-  	type:"",
-  	p_name:"",
-  	contact:'',
-  	tel:"",
-  	status:"",
-  	remark:"",
-  	img:'',
-  }).setForm('search',{
-	name:"",
-	input:"",
-	sortFiled:"id",
-	sortWay:"asc" // desc
-  }).setMethod('imgUrl',function(url){
-  	 return "__ROOT__/Upload/group/"+url
-  }).setMethod('bigImg',function(url){
-  	this.bigimg=true;
-  	this.imageUrl="__ROOT__/Upload/group/"+url;
-  }).setMethod('uploadImg',function(response,file,fileList){
-  	this.addForm.img=response.path;
-  	return response.path;
-  }).setMethod('uploadImg_E',function(response,file,fileList){
-  	this.editForm.img=response.path;
-  }).setMethod('handleEdit',function(index,row){
-	//将此行数据赋给editForm
-	var type='edit';
-	this.initObject(this[FormName.getFormName(type)] , row); 
-	//设置显示的图片
-	this.fileList = [{name:row.img, url: this.imgUrl(row.img)}];
-	this.editIndex = index;
-	this.openDialog(type);
-  }).setMethod('switchHandle',function(index,row){
-
-  });
-</script>
+	<!-- <script>
+		Oassign(window.vmData, {
+			loading: false,
+	
+			formLabelWidth: '100px',
+	
+			//数据
+			datalist:[],
+	
+			// 分页
+			currentPage: 1,
+			total: 100,
+	
+			//高级查询
+			advancedSearch:false,
+	
+			//添加 对话框
+			dialogAddGroup:false,
+	
+			//编辑对话框
+			dialogEditGroup: false,
+			//终止小组
+			dialogStopGroup: false
+		})
+	
+		Oassign(vmOption, {
+			methods:{
+				handleClick:function(index, row){
+	
+				},
+				handleCurrentChange:function(page){
+	
+				},
+			}
+		})
+		
+	</script> -->
 </block>

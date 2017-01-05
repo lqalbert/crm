@@ -6,12 +6,14 @@ class DepartmentController extends CommonController {
 
 	public function index(){
 		
-		//$count = $this->M->count();
-		//$datalist=$this->getList();
+		$count = $this->M->count();
+		
+		$datalist=$this->getList();
 		$namelist=$this->M->field("name,zone")->where(array("p_id"=>0))->select();
-		//$this->assign("datalist", $datalist);
-		//$this->assign("totalCount", $count);
+		$this->assign("datalist", $datalist);
+		$this->assign("totalCount", $count);
 		$this->assign("namelist",$namelist);
+
 		$this->display();
 	}
 
