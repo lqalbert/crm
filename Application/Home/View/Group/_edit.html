@@ -1,56 +1,95 @@
-<el-dialog title="修改小组" v-model="dialogEditGroup">
-<!-- <el-form :model="form"> -->
-<el-form >
+<el-dialog title="编辑团队小组" v-model="editFormDialog">
+
+  <el-form :model="editForm" :label-width="dialogLabelWidth">
+  <input type="hidden" name="img" v-model="editForm.img"/>
   <el-row>
     <el-col :span="12">
-      <el-form-item label="名称" :label-width="formLabelWidth">
-        <el-input  auto-complete="off"></el-input>
+      <el-form-item label="团队小组名称" prop="name">
+        <el-input  auto-complete="off" v-model="editForm.name" placeholder="请填写团队小组名"></el-input>
       </el-form-item>
     </el-col>
     <el-col :span="12">
-      <el-form-item label="组织类型" :label-width="formLabelWidth">
-        <el-select  placeholder="请选择">
-          <el-option label="测试数据" value="区域一"></el-option>
+      <el-form-item label="类型" prop="type">
+        <el-select  placeholder="请选择类型" v-model="editForm.type">
+          <el-option label="小组" value="小组"></el-option>
+          <el-option label="小队" value="小队"></el-option>
+          <el-option label="团队" value="团队"></el-option>
         </el-select>
       </el-form-item>
     </el-col>
   </el-row>
-   <el-row>
+  <el-row>
     <el-col :span="12">
-      <el-form-item label="上级组织" :label-width="formLabelWidth">
-        <el-select  placeholder="请选择">
-          <el-option label="测试数据" value="区域一"></el-option>
-        </el-select>
+    <el-form-item label="上级部门组织" prop="p_name">
+      <el-select  placeholder="请选择上级组织" v-model="editForm.p_name">
+        <el-option-group label="四川">
+          <foreach name="namelist" item="v">
+            <if condition="$v.zone eq 四川">
+             <el-option label="{$v.name}" value="{$v.zone}-{$v.name}"></el-option>
+            </if>
+          </foreach>
+        </el-option-group>
+        <el-option-group label="河南">
+          <foreach name="namelist" item="v">
+            <if condition="$v.zone eq 河南">
+             <el-option label="{$v.name}" value="{$v.zone}-{$v.name}"></el-option>
+            </if>
+          </foreach>
+      </el-option-group>
+      </el-select>
+    </el-form-item>
+    </el-col>
+    <el-col :span="12">
+      <el-form-item label="联系人(负责人)"  prop="contact">
+        <el-input  auto-complete="off" placeholder="请填写联系人" v-model="editForm.contact">
+        </el-input>
+      </el-form-item>
+    </el-col>
+  </el-row>
+  <el-row>
+    <el-col :span="12">
+      <el-form-item label="电话" prop="tel">
+        <el-input  auto-complete="off" placeholder="请填写电话号码" v-model="editForm.tel"></el-input>
       </el-form-item>
     </el-col>
     <el-col :span="12">
-        <el-form-item label="联系人" :label-width="formLabelWidth">
-          <el-input  auto-complete="off"></el-input>
-        </el-form-item>
+     <el-form-item label="是否启用" prop="status">
+       <el-radio-group v-model="editForm.status">
+         <el-radio label="1">启用</el-radio>
+         <el-radio label="0">禁用</el-radio>
+       </el-radio-group>
+     </el-form-item>
     </el-col>
-   </el-row>
-    <el-row>
-      <el-col :span="12">
-        <el-form-item label="电话" :label-width="formLabelWidth">
-          <el-input  auto-complete="off"></el-input>
-        </el-form-item>
-      </el-col>
-      <el-col :span="12">
-        <!-- <el-form-item label="QQ昵称" :label-width="formLabelWidth">
-          <el-input  auto-complete="off"></el-input>
-        </el-form-item> -->
-      </el-col>
-    </el-row>
-
-    <el-form-item label="备注" :label-width="formLabelWidth">
-      <el-input
-        type="textarea"
-        :autosize="{ minRows: 2, maxRows: 4}"
-        placeholder="请输入内容">
+  </el-row>
+  <el-row>
+    <el-col :span="12">
+      <el-upload 
+      action="{:U('Upload/index')}" 
+      :data="pathInfo" 
+      :on-success="uploadImg_E" 
+      :thumbnail-mode="true" 
+      :default-file-list="fileList" 
+      type="drag" 
+      :multiple="false" 
+      style="margin-left:30%;">
+        <i class="el-icon-upload" style="margin:10px 0 16px;"></i>
+        <div class="el-dragger__text">将<em>形象照片</em>拖到此处，或<em>点击上传</em></div>
+        <div class="el-upload__tip" slot="tip" style="margin-right:115px;">只能上传jpg/png/gif文件，且不超过2M</div>
+      </el-upload>
+    </el-col>
+    <el-col :span="12">
+      <el-form-item label="备注说明" prop="remark">
+        <el-input
+          type="textarea"
+          :autosize="{ minRows: 2, maxRows: 4}"
+          placeholder="请输入内容" v-model="editForm.remark">
+        </el-input>
       </el-form-item>
+      <p style="color:red;margin-left:100px;">*ps:未修改任何数据提交则会提示“编辑失败”</p>
+    </el-col>
+  </el-row>
   </el-form>
-  <div slot="footer" class="dialog-footer">
-    <el-button @click="dialogEditGroup = false">取 消</el-button>
-    <el-button type="primary" @click="dialogEditGroup = false">确 定</el-button>
-  </div>
+<div slot="footer" class="dialog-footer">
+  <include file="Common:_edit" />
+</div>
 </el-dialog>

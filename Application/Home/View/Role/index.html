@@ -148,6 +148,7 @@
 		}, true).setMethod('beforeList', function(dataList){
 			dataList.forEach(function(currentValue, index) {
 				currentValue['switch'] = currentValue.status == 1 ? true : false;
+				console.log(currentValue);
 			})
 			return dataList;
 		}).setMethod('switchHandle', function(index, row){

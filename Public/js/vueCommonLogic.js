@@ -108,6 +108,8 @@ function setCommonLogic(opt){
 	opt.setMethod("searchReset", function(){
 		// console.log("clear");
 		this.$refs.searchForm.resetFields();
+		this.dataLoad = true;
+		this.loadDatalist();
 	})
 
 	

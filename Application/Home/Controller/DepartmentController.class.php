@@ -24,7 +24,7 @@ class DepartmentController extends CommonController {
 	*/
 	public function setQeuryCondition() {
 		$map = array(); //查询的参数
-		$map['name'] = array('like', I('get.name')."%");
+		$map['name'] = array('like',"%". I('get.name')."%");
 		$this->M->where($map);
 	}
 
