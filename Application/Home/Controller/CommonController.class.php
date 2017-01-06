@@ -9,7 +9,7 @@ use Think\Model;
 *  继承一个公共的父类
 */
 class CommonController extends Controller {
-	protected $pageSize = 15;
+	protected $pageSize = 14;
 
 	protected $M = null;
 

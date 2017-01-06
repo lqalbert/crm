@@ -18,7 +18,7 @@ class CustomerModel extends Model {
 
     protected $tableName = 'customers_basic';
     protected $customerType = array(
-    	  "A.准客户",
+    	    "A.准客户",
           "B.意向客户",
           "C.一般客户",
           "D.未有意向客户",

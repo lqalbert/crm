@@ -29,7 +29,7 @@
 					<el-table 
 					:data="dataList" 
 					border    
-					max-height="600"
+					max-height="690"
 					style="width: 100%"
 					v-loading="dataLoad"
 					element-loading-text="{:L('DATA_LOGIN')}">
@@ -37,9 +37,9 @@
 					    </el-table-column>
 					    <el-table-column label="序号"  align="center" width="65" :formatter="handleIndex"  >
 					    </el-table-column>
-					    <el-table-column label="单位ID" align="center" prop="id" width="80">
+					    <el-table-column label="单位ID" align="center" prop="id" width="90">
 					    </el-table-column>
-					    <el-table-column label="单位名" align="center" prop="name" width="120">
+					    <el-table-column label="单位名" align="center" prop="name" width="125">
 					    </el-table-column>
 					    <el-table-column label="类型" align="center" prop="type">
 					    </el-table-column>
@@ -143,11 +143,9 @@
         bigimg:false,
         //放大图片地址
         imageUrl:'',
-
         fileList:[
            {name: '', url: ''}
 		],
-
 		rules:{
              name:[
                 { required: true, message: '请填写单位名称', trigger: 'blur' },
@@ -173,10 +171,12 @@
 		}
 
 	}).setForm('add', {
+		id:'',
 		name:"",
 		public:"",
 		type:"",
 		p_id:"",
+		p_name:'',
 		zone:"",
 		expand1:"",
 		expand2:"",
@@ -192,6 +192,7 @@
 		public:"",
 		type:"",
 		p_id:"",
+		p_name:'',
 		zone:"",
 		expand1:"",
 		expand2:"",
@@ -219,7 +220,10 @@
     }).setAdvancedSearch().setMethod("handleEdit", function(index, row){
 		//将此行数据赋给editForm
 		var type='edit';
+		//console.log(row);
+		row['public']=row['public'] == "是"?"1":"0";
 		this.initObject(this[FormName.getFormName(type)] , row); 
+
 		//设置显示的图片
 		this.fileList = [{name:row.img, url: this.imgUrl(row.img)}];
 		this.editIndex = index;
@@ -231,7 +235,6 @@
 	    })
 	}).setMethod('beforeList',function(dataList){
 		dataList.forEach(function(currentValue,index){
-			console.log(currentValue);
 			currentValue['public']=currentValue.public == 1 ?'是':'否';
 		})
 		return dataList;
