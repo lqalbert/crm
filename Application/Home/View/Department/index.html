@@ -29,7 +29,7 @@
 					<el-table 
 					:data="dataList" 
 					border    
-					max-height="600"
+		
 					style="width: 100%"
 					v-loading="dataLoad"
 					element-loading-text="{:L('DATA_LOGIN')}">
@@ -144,6 +144,7 @@
         //放大图片地址
         imageUrl:'',
 
+        topO:[],
         fileList:[
            {name: '', url: ''}
 		],
@@ -226,12 +227,16 @@
 		this.openDialog(type);
 
 	}).setMethod('organization', function(){
-		return this.dataList.filter(function (value) {
+		/*return this.dataList.filter(function (value) {
 	      return value.p_id == 0 ;
+	    })*/
+	    var vmThis = this;
+	    this.$http.get("{:U('getTopD')}").then(function(response){
+	    	vmThis.topO = response.body;
 	    })
 	}).setMethod('beforeList',function(dataList){
 		dataList.forEach(function(currentValue,index){
-			console.log(currentValue);
+			
 			currentValue['public']=currentValue.public == 1 ?'是':'否';
 		})
 		return dataList;
