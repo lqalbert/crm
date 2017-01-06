@@ -178,7 +178,9 @@
 		}).setForm('setRoles',{
 			user_id:0,
 			role_ids:[]
-		},true).setMethod('handleSetRoles', function(index, row){
+		},true).setForm('search',{
+			name:""
+		}).setMethod('handleSetRoles', function(index, row){
 			var vmThis = this;
 			vmThis[FormName.getForm('setRoles')].user_id = row.id;
 			this.$http.get(page.getUserRolesUrl, {params:{user_id: row.id}}).then(function(response){
