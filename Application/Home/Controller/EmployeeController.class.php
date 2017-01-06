@@ -13,7 +13,11 @@ class EmployeeController extends CommonController {
 	}
 
 	public function setQeuryCondition() {
+
 		$this->M->relation(true)->field('password',true);
+		if (isset($_GET['name'])) {
+			$this->M->where(array('account'=>array('like', I('get.name')."%")));
+		}
 	}
 
 	public function getRoles(){

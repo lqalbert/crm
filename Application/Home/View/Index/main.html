@@ -14,15 +14,18 @@
 			    <span>个人信息</span>
 			  </div>
 			  <div style="text-align:center;">
-			  	<img src="__PUBLIC__/images/0.jpg" class="image">
-
+			  	<php>
+					$userInfo = session('account')['userInfo'];
+				</php>
+			  	<img src="__ROOT__{$userInfo['head']}" class="image" width="200" height="200">
+				
 			  	<div>
-			  		<p>姓名：张三丰</p>
-			  		<p>ID：123456</p>
-			  		<p>类型：网销主管</p>
-			  		<p>QQ：123456</p>
-			  		<p>电话：15845754875</p>
-			  		<p>地址：湖北省十堰市 </p>
+			  		<p>姓名：{:$userInfo['realname']}</p>
+			  		<p>ID：{:$userInfo['user_id']}</p>
+			  		<!-- <p>类型：网销主管</p> -->
+			  		<p>QQ：{:$userInfo['qq']}</p>
+			  		<p>电话：{:$userInfo['phone']}</p>
+			  		<!-- <p>地址：湖北省十堰市 </p> -->
 			  	</div>
 			  </div>
 			</el-card>
@@ -59,7 +62,7 @@
 		<el-col :span="24">
 			<el-card class="box-card">
 				<div slot="header" class="clearfix">
-					<span>业绩走势</span>
+					<span>业绩走势 测试数据</span>
 				</div>
 				<div>
 					<div id="echarts" style="height: 200px;">
@@ -73,7 +76,7 @@
 		<el-col :span="24">
 			<el-card class="box-card">
 				<div class="clearfix" slot="header">
-					<span>业绩报表</span>
+					<span>业绩报表 测试数据</span>
 				</div>
 				<div>
 					<el-table
@@ -100,7 +103,7 @@
 		<el-col :span="12">
 			<el-card class="box-card">
 				<div class="clearfix" slot="header">
-					<span>量化报表</span>
+					<span>量化报表 测试数据</span>
 				</div>
 				<div>
 					<el-table
@@ -120,7 +123,7 @@
 		<el-col :span="12">
 			<el-card class="box-card">
 				<div class="clearfix" slot="header">
-					<span>客户报表</span>
+					<span>客户报表 测试数据</span>
 				</div>
 				<div>
 					<el-table
@@ -182,7 +185,7 @@
 	}).setDatas({
 		sysData:[
 				{
-					sys_type:'功有升级',
+					sys_type:'测试数据',
 					title:'新功能XXXX上线了',
 					date:'2017-01-01 12:12'
 				}
