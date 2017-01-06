@@ -8,17 +8,15 @@
 			<!-- seach form -->
 			<el-row>
 				<el-col :span="24">
-					<el-form :inline="true"   >
-					  <el-form-item><el-input  placeholder="查询字段一"></el-input>
-					  </el-form-item><el-form-item>
-					    <el-select  placeholder="查询字段二">
-					      <el-option label="区域一" value="区域一"></el-option>
-					      <el-option label="区域二" value="区域二"></el-option>
-					    </el-select>
-					  </el-form-item><el-form-item>
+					<el-form :inline="true"  ref="searchForm" :model="searchForm">
+					  <el-form-item prop="name">
+					   <el-input  placeholder="请输入员工名字" >
+					   </el-input>
+					  </el-form-item>
+					  <el-form-item> 
+					    <el-button type="primary" icon="search">查询</el-button> 
 					    <el-button  >清空</el-button>
-					    <el-button type="primary" >查询</el-button> 
-			        	<el-button  @click="advancedSearch=true">高级查询</el-button> 
+			        <!-- 	<el-button  @click="advancedSearch=true">高级查询</el-button>  -->
 					  </el-form-item>
 					</el-form>
 				</el-col>

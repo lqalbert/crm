@@ -7,16 +7,12 @@
 			<el-row>
 				<el-col :span="24">
 					<el-form :inline="true" ref="searchForm" :model="searchForm">
-					  <el-form-item prop="name"><el-input  placeholder="查询字段一" v-model="searchForm.name"></el-input>
-					  </el-form-item><el-form-item>
-					    <el-select  placeholder="查询字段二" v-model="searchForm.name" clearable>
-					      <el-option label="区域一" value="区域一"></el-option>
-					      <el-option label="区域二" value="区域二"></el-option>
-					    </el-select>
-					  </el-form-item><el-form-item>
-					    <el-button  icon="close" @click="searchReset">清空</el-button>
+					  <el-form-item prop="name"><el-input  placeholder="请输入团队小组名" v-model="searchForm.name"></el-input>
+					  </el-form-item>
+					  <el-form-item>
 					    <el-button type="primary" @click="loadDatalist" icon="search">查询</el-button> 
-			        	<el-button  @click="openDialog('advancedSearch')" icon="search">高级查询</el-button> 
+					    <el-button  icon="close" @click="searchReset">清空</el-button>
+			        	<!-- <el-button  @click="openDialog('advancedSearch')" icon="search">高级查询</el-button>  -->
 					  </el-form-item>
 					</el-form>
 				</el-col>
@@ -48,7 +44,7 @@
 					       <div>
 					    	<el-tooltip content="点击放大图片" placement="right">
 					    	 <img :src="imgUrl(row.img)" @click="bigImg(row.img)" alt="点击放大图片" width="45px" height="45px">
-					    	<el-tooltip>	
+					    	</el-tooltip>	
 					       </div>
 					    </el-table-column>
 
@@ -87,19 +83,19 @@
 			<!-- toolbar -->
 			<el-row type="type"  justify="space-between" align="middle"  class="row-bg">
 			  <el-col :span="12">
-			  <div class="grid-content bg-purple">
-			  	<span class="wrapper">
-                  <el-tooltip content="添加新的团队小组" placement="right">
-                    <el-button size="small" @click="openDialog('add')" icon="plus" type="primary">添加
-                    </el-button>
-                  </el-tooltip>
-				</span>
-			  </div>
+				  <div class="grid-content bg-purple">
+				  	<span class="wrapper">
+	                  <el-tooltip content="添加新的团队小组" placement="right">
+	                    <el-button size="small" @click="openDialog('add')" icon="plus" type="primary">添加
+	                    </el-button>
+	                  </el-tooltip>
+					</span>
+				  </div>
 			  </el-col>
 			  <el-col :span="12">
 				  <div class="grid-content bg-purple-light pull-right">
 				    <!-- page -->
-				    <include file="Common:_pagination" />
+				    	<include file="Common:_pagination" />
 				    <!-- / page -->
 				  </div>
 			  </el-col>
@@ -120,13 +116,15 @@
 			<!-- 编辑 -->
 			<include file="_edit" />
 			<!-- / 编辑 -->
-
-			<!-- stop -->
+            
+			<!-- 终止小组(暂时去掉) -->
 			<include file="_stop" />
 			<!-- / stop -->
 			<!-- bifimg -->
 			<el-dialog  title="图片放大" :modal="false" size="small" v-model="bigimg" style="z-index:1000;">
-			  <div style="margin:0;padding:0;text-align:center;z-index:1000;"><img :src="imageUrl" style="margin-left:-14px;width:850px;height:550px;"></div>
+			  <div style="margin:0;padding:0;text-align:center;z-index:1000;">
+			  	<img :src="imageUrl" style="margin-left:-14px;width:850px;height:550px;">
+			  </div>
 			</el-dialog>
 			<!-- bigimg -->
 		</div>
@@ -142,6 +140,12 @@
      bigimg:false,
      //放大图片地址
      imageUrl:'',
+
+     //状态值
+     statusForm:{
+        id:0,
+        status:'1',
+     },
 
      fileList:[
        {name:'',url:''}
@@ -188,7 +192,9 @@
   }).setMethod('imgUrl',function(url){
   	 return "__ROOT__/Upload/group/"+url
   }).setMethod('bigImg',function(url){
+
   	this.bigimg=true;
+
   	this.imageUrl="__ROOT__/Upload/group/"+url;
   }).setMethod('uploadImg',function(response,file,fileList){
   	this.addForm.img=response.path;
@@ -203,8 +209,23 @@
 	this.fileList = [{name:row.img, url: this.imgUrl(row.img)}];
 	this.editIndex = index;
 	this.openDialog(type);
+  }).setMethod('beforeList',function(dataList){
+  	dataList.forEach(function(currentValue,index){
+  		currentValue['switch']=currentValue.status==1?true:false;
+  	})
+  	return dataList;
   }).setMethod('switchHandle',function(index,row){
-
+    row.status=row.switch?'1':'0';
+    this.initObject(this.statusForm, row);
+    this.statusIndex=index;
+    var vmThis =this;
+    this.$http.post(page.editFormUrl,this.statusForm).catch(function(response){
+    	vmThis.$message({
+    		message:'状态更改失败',
+    		type:'error'
+    	});
+    	vmThis.dataList[vmThis.statusIndex].switch = !vmThis.dataList[vmThis.statusIndex].switch;
+    });
   });
 </script>
 </block>
