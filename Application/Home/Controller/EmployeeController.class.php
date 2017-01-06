@@ -8,11 +8,12 @@ class EmployeeController extends CommonController {
 	public function index (){
 		$this->assign("roleList", $this->getRoles());
 		$this->assign("groupList", D('Group')->where(array('status'=>1))->select());
+		$this->assign("sexType", array("未定义", "男", "女"));
 		$this->display();
 	}
 
 	public function setQeuryCondition() {
-		$this->M->relation(true);
+		$this->M->relation(true)->field('password',true);
 	}
 
 	public function getRoles(){
@@ -74,6 +75,25 @@ class EmployeeController extends CommonController {
 			}
 		} else {
 			$this->error($this->M->getError());
+		}
+
+	}
+
+	/**
+	* 添加
+	*/
+	public function edit(){
+		
+		$re = $this->M->create($_POST, 2);
+		if ($re) {
+			$re['userInfo'] = M('userInfo')->create($_POST);
+			if ($this->M->relation('userInfo')->save($re) !== false) {
+				$this->success(L('ADD_SUCCESS'));
+			} else {
+				$this->error($this->M->getError().$this->M->getLastSql());
+			}
+		} else {
+			$this->error($this->M->getError().$this->M->getLastSql());
 		}
 
 	}

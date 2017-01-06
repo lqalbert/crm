@@ -143,6 +143,7 @@
         bigimg:false,
         //放大图片地址
         imageUrl:'',
+        topO:[],
         fileList:[
            {name: '', url: ''}
 		],
@@ -230,8 +231,12 @@
 		this.openDialog(type);
 
 	}).setMethod('organization', function(){
-		return this.dataList.filter(function (value) {
+		/*return this.dataList.filter(function (value) {
 	      return value.p_id == 0 ;
+	    })*/
+	    var vmThis = this;
+	    this.$http.get("{:U('getTopD')}").then(function(response){
+	    	vmThis.topO = response.body;
 	    })
 	}).setMethod('beforeList',function(dataList){
 		dataList.forEach(function(currentValue,index){
@@ -241,136 +246,5 @@
 	});
 </script>
 
-
-
-<!-- 
-	先写功能 再重构
--->
-<script>
-//   {$datalist | json_encode}
-//
-//
-	/*var page ={
-		dataList:{:json_encode($dataSource['list'])},
-		addFormUrl:"{:U('add')}",
-		editFormUrl:"{:U('edit')}",
-		indexUrl:"{:U('index')}",
-		deleteUrl:"{:U('delete')}",
-		init:function(){
-				this.dataList.forEach(function(currentValue, index){
-					
-					// currentValue['img']    = "__ROOT__/Upload/"+currentValue['img'];
-				})
-			}
-	}
-	page.init();*/
-
-</script>
-	<script>
-		// vm option 里面的 data属性
-		/*Oassign(window.vmData ,{
-			
-
-			//高级查询
-			advancedSearch: false,
-			//添加对话框
-			dialogAdd: false,
-			dialogEdit: false,
-            //放大图片
-            bigimg:false,
-            //放大图片地址
-            imageUrl:'',
-
-			sousuo:'',
-			input:'区域一',
-
-			addForm :{
-				name:"",
-				public:"",
-				type:"",
-				p_name:"",
-				zone:"",
-				expand1:"",
-				expand2:"",
-				contact:"",
-				tel:"",
-				f_num:"",
-				address:"",
-				remark:"",
-				img:""
-			},
-			addFormSubmit:false,
-
-			editForm :{
-				id:"",
-				name:"",
-				public:"",
-				type:"",
-				p_name:"",
-				zone:"",
-				expand1:"",
-				expand2:"",
-				contact:"",
-				tel:"",
-				f_num:"",
-				address:"",
-				remark:"",
-				img:"",
-
-			},
-			editFormSubmit:false,
-			//编辑默认显示的图片
-			fileList:[
-               {name: '', url: ''}
-			],
-
-			searchForm:{
-				p:1,
-				sortFiled:"id",
-				sortWay:"asc" // desc
-			},
-			//表单验证
-			rules:{
-                 name:[
-                    { required: true, message: '请填写单位名称', trigger: 'blur' },
-                 ],
-                 type:[
-                    { required: true, message: '请选择类型', trigger: 'blur' },
-                 ],
-                 zone:[
-                    { required: true, message: '请选择片区', trigger: 'blur' },
-                 ],
-                 contact:[
-                    { required: true, message: '请填写联系人', trigger: 'blur' },
-                 ],
-                 tel:[
-                    { required: true, message: '请填写联系电话', trigger: 'blur' },
-                 ],
-                 public:[
-                    { required: true, message: '请选择是否公示', trigger: 'blur' },
-                 ],
-                 address:[
-                    { required: true, message: '请填写地址', trigger: 'blur' },
-                 ],
-			},
-				name:""
-			},
-			
-		});*/
-
-     
-		
-
-		//处理编辑
-		/*window.vmMethods.set("handleEdit", function(index, row){
-			//将此行数据赋给editForm
-			this.initObject(this.editForm , row); 
-			//设置显示的图片
-			this.fileList = [{name:row.img, url: this.imgUrl(row.img)}];
-			this.editIndex = index;
-			this.dialogEdit = true;
-
-		})*/
-
-	</script>
+	
 </block>

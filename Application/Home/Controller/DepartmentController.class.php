@@ -28,4 +28,10 @@ class DepartmentController extends CommonController {
 		$this->M->where($map);
 	}
 
+	public function getTopD(){
+		$this->ajaxReturn(
+			$this->M->where(array('p_id'=>0))->field('id,name')->select()
+		);
+	}
+
 }

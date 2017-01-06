@@ -1,4 +1,4 @@
-<el-dialog title="编辑修改" v-model="editFormDialog">
+<el-dialog title="编辑修改" v-model="editFormDialog" @open="organization">
 <!-- <el-form :model="form"> -->
 <el-form :model="editForm" :label-width="dialogLabelWidth">
   <el-row>
@@ -23,7 +23,7 @@
       <el-form-item label="上级组织" >
         <el-select  v-model="editForm.p_name">
          <el-option label="顶级组织" value="0"></el-option>
-          <el-option v-for='item in organization()' :label="item.name" :value="item.name"></el-option>
+          <el-option v-for='item in topO' :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
     </el-col>

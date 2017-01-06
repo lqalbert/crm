@@ -117,6 +117,7 @@ function setCommonLogic(opt){
 	// //打开关闭对话框
 
 	opt.setMethod("openDialog", function(dialog){
+
 		this[FormName.getDialog(dialog)] = true;
 	});
 
@@ -205,12 +206,13 @@ function setForm(opt, type){
 			this.$refs[formName].rules;
 
 			this.$refs[formName].validate(function(valid){
+				console.log(valid);
 				if (valid) {
-		            vmThis.commonSubmitLogic(url, form);
-		          } else {
-		            console.log('error submit!!');
-		            return false;
-		          }
+					vmThis.commonSubmitLogic(url, form);
+				} else {
+					console.log('error submit!!');
+					return false;
+				}
 			})
 
 		}catch(e){

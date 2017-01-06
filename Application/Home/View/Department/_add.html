@@ -1,4 +1,4 @@
-<el-dialog title="添加" v-model="addFormDialog">
+<el-dialog title="添加" v-model="addFormDialog" @open="organization">
 <!-- <el-form :model="form"> -->
 <el-form :model="addForm" :rules="rules" ref="addForm" :label-width="dialogLabelWidth">
   <input type="hidden" name="img" v-model="addForm.img">
@@ -24,8 +24,7 @@
       <el-form-item label="上级组织"  prop="p_name" >
         <el-select  v-model="addForm.p_name" placeholder="没有可以不选择">
           <el-option label="顶级组织" value="0"></el-option>
-          <el-option v-for='item in organization()' :label="item.name" :value="item.name"></el-option>
-         
+          <el-option v-for='item in topO' :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
     </el-col>
