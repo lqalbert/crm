@@ -21,11 +21,11 @@ class LoginController extends Controller {
 					'password' => md5(I('post.password'))
 				);
 
-			$result = $userModel->where($where)->find();
+			$result = $userModel->relation('userInfo')->where($where)->find();
 			if (!$result) {
 				$this->error(L('LOGIN_ERROR'));
 			} else {
-				session('account', I('post.account'));
+				session('account', $result);
 				session('uid', $result['id']);
 
 				if ($result['no_authorized'] == CRM_SUPER_ADMIN) {

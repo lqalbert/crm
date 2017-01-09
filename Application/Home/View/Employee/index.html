@@ -36,7 +36,7 @@
 					    </el-table-column>
 					    <el-table-column  label="序号"  width="70" :formatter="handleIndex" >
 					    </el-table-column>
- 					    <el-table-column prop="userInfo.head" inline-template label="头像"  width="90">
+ 					    <el-table-column prop="userInfo.head" inline-template label="头像"  width="100">
 							<div>
 								<img :src="row.userInfo.head" alt="" width="50" height="50">
 							</div>
@@ -45,9 +45,9 @@
 					    </el-table-column> -->
 					    <el-table-column prop="account" label="登录账号" width="100">
 					    </el-table-column>
-						 <el-table-column prop="userInfo.realname" label="员工姓名" width="100">
+						 <el-table-column prop="userInfo.realname" label="员工姓名" width="150">
 					    </el-table-column>
-					    <el-table-column prop="userInfo.sex"  label="性别" width="80">
+					    <el-table-column prop="userInfo.sex"  label="性别" width="100">
 						    <template scope="scope">
 					          {{ getType(scope.row.userInfo.sex, 'sexType') }}
 					        </template>
@@ -63,10 +63,10 @@
 					    <el-table-column prop="ishow" label="是否公示" width="100">
 					    </el-table-column>
 						 -->
-					    <el-table-column prop="userInfo.phone" label="固话" width="100">
+					    <el-table-column prop="userInfo.phone" label="固话" width="140">
 					    </el-table-column>
 					     
-					    <el-table-column prop="userInfo.mphone" label="手机" width="100">
+					    <el-table-column prop="userInfo.mphone" label="手机" width="140">
 					    </el-table-column>
 					    
 					    <el-table-column prop="userInfo.qq" label="QQ号" width="100">
