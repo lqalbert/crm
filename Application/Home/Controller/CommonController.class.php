@@ -83,7 +83,6 @@ class CommonController extends Controller {
 	 * 
 	 **/
 	public function edit() {
-		
 		if ($this->M->create($_POST, Model::MODEL_UPDATE) && ($this->M->save() !== false) )  {
 			$this->success(L('EDIT_SUCCESS'));
 		} else {

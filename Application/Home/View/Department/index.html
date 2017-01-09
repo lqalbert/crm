@@ -71,11 +71,15 @@
                         <el-table-column label="备注" align="center" prop="remark" width="100">
                         </el-table-column>
 
-					    <el-table-column inline-template :context="_self"  align="center" width="140" fixed="right"  label="操作"  >
-					      <span>
-					        <el-button @click="handleEdit($index, row)"   type="text"  >编辑</el-button>
-					        <el-button @click="handleDelete($index, row)" type="text"   >删除</el-button>
-					      </span>
+					    <el-table-column  :context="_self"  align="center" width="150" fixed="right"  label="操作"  >
+					      <template scope="scope">
+					      	<el-button type="success" @click="handleEdit(scope.$index, scope.row)"     size="small">编辑</el-button>
+					      	<el-button type="danger"  @click="handleDelete(scope.$index, scope.row)"   size="small" >删除</el-button>
+					      </template>
+<!-- 					      <span>
+					        <el-button @click="handleEdit($index, row)"   type="success"  size="small">编辑</el-button>
+					        <el-button @click="handleDelete($index, row)" type="danger"  size="small" >删除</el-button>
+					      </span> -->
 					    </el-table-column>
 				    </el-table>
 				</el-col>
