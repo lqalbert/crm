@@ -38,7 +38,7 @@
 					    </el-table-column>
  					    <el-table-column prop="userInfo.head" inline-template label="头像"  width="100">
 							<div>
-								<img :src="row.userInfo.head" alt="" width="50" height="50">
+								<img :src="setImgUrl(row.userInfo.head)" alt="" width="50" height="50">
 							</div>
 					    </el-table-column>
 					   <!-- <el-table-column prop="id"  label="员工ID" width="100">
@@ -345,6 +345,8 @@
 	       this.editPasswordForm.checkPass = "";
 	  }).setMethod('handleSelectionChange', function(val){
 	    this.multipleSelection = val;
+	  }).setMethod('setImgUrl', function(url){
+	  	return '__ROOT__' + url;
 	  });
 	</script>
 	<script>

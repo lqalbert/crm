@@ -78,4 +78,26 @@ class CustomerController extends CommonController {
 	public function getTracks(){
 		var_dump(D('CustomerLog')->select());
 	}
+
+	public function trackInfo(){
+        $type=$this->M->getType(I('post.type/d'));
+        $group_id=M('user_info')->where(array('user_id'=>I('post.user_id')))->field('group_id')->find();
+        $groupInfo=M('group')->where(array('id'=>$group_id['group_id']))->field('name,p_name')->find();
+        $userName=M('user_info')->where(array('user_id'=>I('user_id')))->field('realname')->find();
+        $user=$groupInfo['p_name']."-".$groupInfo['name']."-".$userName['realname'];
+        $arr=M('customers_log')->where(array('cus_id'=>I('post.id')))->select();
+        foreach ($arr as $key => $value) {
+        	$arr[$key]['type']=$type;
+        	$arr[$key]['user']=$user;
+        	$arr[$key]['name']=I('post.name');
+        	$arr[$key]['track_type']=D('CustomerLog')->getType((int)$arr[$key]['track_type']);
+        }
+		if (IS_AJAX) {
+			$this->ajaxReturn($arr);
+
+		}  else {
+			
+			return $arr;
+		}
+	}
 }

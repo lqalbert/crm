@@ -1,8 +1,28 @@
 <extend name="Common:base" />
 
-<block name="head"></block>
+<block name="head">
+  <style>
+    .el-tabs__header{
+      border-top:2px solid #1AA094;
+      border-bottom: 1px solid #1aa094;
+    }
+    .el-tabs--border-card .el-tabs__item{
+      border-left: none;
+    }
+    .el-tabs--border-card .el-tabs__item.is-active {
+      background-color: #fff;
+      border-right-color: #d3dce6;
+      background: #544b8f;
+      color: #fff;
+    }
+    .el-tabs--border-card .el-tabs__header {
+      background-color: #fff;
+      margin: 0;
+    }
+  </style>
+</block>
 <block name="body">
-<div id="app" class="container" >
+<div id="app" class="container">
 <div class="wrapp" v-show="show" style="display: none;">
 	<el-row>
   	<el-col :span="24">
@@ -11,8 +31,43 @@
   		    <el-input v-model="searchForm.name" placeholder="客户姓名"></el-input>
   		  </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="loadDatalist">查询</el-button> 
-  		    <el-button @click="searchReset">清空</el-button>
+          <el-button type="info" @click="loadDatalist">查询</el-button> 
+          <el-button @click="searchReset">清空</el-button>
+          <el-tooltip content="当前跟踪的个数" placement="right">
+            <el-badge :value="10" :max="9" style="margin-left:15px;">
+              <el-button type="info" >跟踪</el-button>
+            </el-badge>
+          </el-tooltip>
+          <el-tooltip content="当前未跟踪的个数" placement="right">
+            <el-badge :value="2" :max="9" style="margin-left:15px;">
+              <el-button type="info" >未跟踪</el-button>
+            </el-badge>
+          </el-tooltip>
+          <el-tooltip content="当前计划跟踪数" placement="right">
+            <el-badge :value="1" :max="9" style="margin-left:15px;">
+              <el-button type="info" >计划</el-button>
+            </el-badge>
+          </el-tooltip>
+          <el-tooltip content="当前转让给他人的客户数" placement="right">
+            <el-badge :value="1" :max="9" style="margin-left:15px;">
+              <el-button type="info" >转让</el-button>
+            </el-badge>
+          </el-tooltip>
+          <el-tooltip content="当前他人转让进来的客户单位跟踪的数" placement="right">
+            <el-badge :value="1" :max="9" style="margin-left:15px;">
+              <el-button type="info" >转入未跟</el-button>
+            </el-badge>
+          </el-tooltip>
+          <el-tooltip content="当前跟踪后有反馈的个数" placement="right">
+            <el-badge :value="1" :max="9" style="margin-left:15px;">
+              <el-button type="info" >反馈</el-button>
+            </el-badge>
+          </el-tooltip>
+          <el-tooltip content="当前有冲突的个数" placement="right">
+            <el-badge :value="10" :max="9" style="margin-left:15px;">
+    		      <el-button type="info" >冲突</el-button>
+            </el-badge>
+          </el-tooltip>
           <!-- <el-button  >高级查询</el-button>  -->
   		  </el-form-item>
   		</el-form>
@@ -25,9 +80,11 @@
     :data="dataList" 
     border  
     height 
+    max-height="400"
     v-loading="dataLoad" 
     element-loading-text="{:L('DATA_LOGIN')}"
     @selection-change="handleSelectionChange"
+    @row-click="trackLog"
     >
 	    <el-table-column type="selection"  width="50" >
 	    </el-table-column>
@@ -64,7 +121,7 @@
 	    <el-table-column  label="锁定方最后跟踪时间" >
 	    </el-table-column> -->
 
-	    <el-table-column inline-template :context="_self"  fixed="right"  label="操作" width="200">
+	    <el-table-column inline-template :context="_self"  fixed="right"  align="center" label="操作" width="160">
 	      <span>
 	        <el-button @click="handleEdit($index, row)"  size="small">编辑</el-button>
 	        <el-button @click="handleDelete($index, row)"  size="small" type="danger">删除</el-button>
@@ -79,14 +136,32 @@
     <el-col :span="12">
     <div class="grid-content bg-purple">
           <span class="wrapper">
-            <el-button size="small"  @click="openDialog('add')" icon="plus" type="primary">{:L('ADD')}</el-button>
-            <el-button size="small" @click="openDialog('addTrack')">录入跟踪</el-button>
+            <el-tooltip content="添加新的客户" placement="right">
+              <el-button size="small"  @click="openDialog('add')" icon="plus" type="primary">{:L('ADD')}</el-button>
+            </el-tooltip>
+            <el-tooltip content="录入客户跟踪" placement="right">
+              <el-button size="small" @click="openDialog('addTrack')" type="primary" style="margin-left:10px;">录入跟踪</el-button>
+            </el-tooltip>
+            <el-tooltip content="转让分享客户给他人" placement="right">
+              <el-button size="small" type="warning" style="margin-left:10px;">转让</el-button>
+            </el-tooltip>
+            <el-tooltip content="录入跟踪计划" placement="right">
+              <el-button size="small" type="primary" style="margin-left:10px;">计划</el-button>
+            </el-tooltip>
+            <el-tooltip content="录入客户的反馈信息" placement="right">
+              <el-button size="small" type="success" style="margin-left:10px;">反馈</el-button>
+            </el-tooltip>
+            <el-tooltip content="当前跟踪的个数" placement="right">
+              <el-button size="small" type="primary" style="margin-left:10px;">录入跟踪</el-button>
+            </el-tooltip>
               <!-- <el-button  @click="addCustomer">修改客户</el-button> -->
               <!-- <el-button>计划</el-button>
               <el-button>推介</el-button> -->
+
           </span>
-        </div>
-    
+          
+    </div>
+
     </el-col>
     <el-col :span="12">
     <div class="grid-content bg-purple-light pull-right">
@@ -98,6 +173,35 @@
     </div></el-col>
   </el-row>
   <!-- / toolbar -->
+  <div id="app2" style="margin:5px -10px 5px;">
+    <el-row>
+     <el-col :span="24">
+        <el-tabs type="border-card">
+          <el-tab-pane label="跟踪记录">
+            <el-table :data="tableData" border height style="width: 100%" >
+              <el-table-column prop="name" label="客户姓名" width="180" align="center">
+              </el-table-column>
+              <el-table-column prop="created_at" label="跟踪时间" width="180" align="center">
+              </el-table-column>
+              <el-table-column prop="type" label="客户类型" align="center">
+              </el-table-column>
+              <el-table-column prop="track_type" label="跟踪类型" align="center">
+              </el-table-column>
+              <el-table-column prop="content" label="内容" align="center">
+              </el-table-column>
+              <el-table-column prop="user" label="跟踪员工" align="center">
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
+          <el-tab-pane label="软件账号">软件账号</el-tab-pane>
+          <el-tab-pane label="通话记录">通话记录</el-tab-pane>
+          <el-tab-pane label="客户资料">客户资料</el-tab-pane>
+          <el-tab-pane label="金融信息">金融信息</el-tab-pane>
+          <el-tab-pane label="圈子列表">圈子列表</el-tab-pane>
+        </el-tabs>
+     </el-col>
+    </el-row>
+  </div>
 </div>
 
 <div class="dialogWrapper" v-show="show" style="display: none">
@@ -123,6 +227,13 @@ function toInt(v){
 <script>
   page.addTrackFormUrl = "{:U('addTrackLogs')}";
   window.defaultOption.setDatas({
+    tableData: [{'name':'',
+                 'created_at':'',
+                 'type':'',
+                 'track_type':'',
+                 'content':'',
+                 'user':''
+    }],
     customerType:{:json_encode($customerType)},
     sexType:{:json_encode($sexType)},
     provinces:[],
@@ -211,6 +322,19 @@ function toInt(v){
       })
       vmThis.$set(vmThis, 'provinces', provinces);
     });
+  }).setMethod('trackLog',function(row,event,column){
+      this.$http.post('{:U(trackInfo)}',row).then(function(response){
+        this.tableData = response.body;
+      },function(response){
+        console.log("操作失败");
+      });
   });
+</script>
+<script>
+  var app=document.getElementById('app');
+  var app2=document.getElementById('app2');
+  var h=document.body.scrollHeight;
+  app.style.height=h/2+'px';
+  app2.style.height=h/2-100+'px';
 </script>
 </block>

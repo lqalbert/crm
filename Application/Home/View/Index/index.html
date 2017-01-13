@@ -32,9 +32,15 @@
 						<li class="layui-nav-item">
 							<a href="javascript:;">清除缓存</a>
 						</li>
+					  	<php>
+							$userInfo = session('account')['userInfo'];
+							$arr=M('group')->where(array('id'=>$userInfo['group_id']))->field('p_name,name')->find();
+							$userInfo['p_name']=$arr['p_name'];
+							$userInfo['name']=$arr['name'];
+						</php>
 						<li class="layui-nav-item">
 							<a href="javascript:;" class="admin-header-user">
-								<img src="__PUBLIC__/images/0.jpg" />
+								<img src="__ROOT__{$userInfo['head']}" />
 								<span><?php echo session('account')['account']?></span>
 							</a>
 							<dl class="layui-nav-child">
@@ -63,7 +69,7 @@
 							<cite>我的工作台</cite>
 						</li>
 					</ul>
-					<div class="layui-tab-content" style="min-height: 150px; padding: 5px 0 0 0;">
+					<div class="layui-tab-content" style="min-height: 150px; padding:0;">
 						<div class="layui-tab-item layui-show">
 							<iframe src="{:U('Index/main')}"></iframe>
 						</div>
