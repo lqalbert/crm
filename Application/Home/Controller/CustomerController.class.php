@@ -3,6 +3,7 @@ namespace Home\Controller;
 
 class CustomerController extends CommonController {
 	protected $table = "customer";
+	protected $pageSize = 11;
 	public function index () {
 		// $dataList = $this->getList();
 		$this->assign('customerType', $this->M->getType());
@@ -78,14 +79,18 @@ class CustomerController extends CommonController {
 	public function getTracks(){
 		var_dump(D('CustomerLog')->select());
 	}
-
+    
+    /**
+    *   获取跟踪信息
+    *
+    */
 	public function trackInfo(){
         $type=$this->M->getType(I('post.type/d'));
         $group_id=M('user_info')->where(array('user_id'=>I('post.user_id')))->field('group_id')->find();
         $groupInfo=M('group')->where(array('id'=>$group_id['group_id']))->field('name,p_name')->find();
         $userName=M('user_info')->where(array('user_id'=>I('user_id')))->field('realname')->find();
         $user=$groupInfo['p_name']."-".$groupInfo['name']."-".$userName['realname'];
-        $arr=M('customers_log')->where(array('cus_id'=>I('post.id')))->select();
+        $arr=M('customers_log')->where(array('cus_id'=>I('post.id')))->order('id desc')->select();
         foreach ($arr as $key => $value) {
         	$arr[$key]['type']=$type;
         	$arr[$key]['user']=$user;

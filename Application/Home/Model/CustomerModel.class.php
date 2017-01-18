@@ -25,6 +25,7 @@ class CustomerModel extends Model {
           "E.本地化客户",
           "N.无效客户",
           "F.黑名单（同行）",
+          "v.成交客户",
     	);
 
     protected $sexType = array(
