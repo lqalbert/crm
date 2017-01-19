@@ -9,7 +9,7 @@ use Think\Model;
 *  继承一个公共的父类
 */
 class CommonController extends Controller {
-	protected $pageSize = 14;
+	protected $pageSize = 15;
 
 	protected $M = null;
 
@@ -83,7 +83,6 @@ class CommonController extends Controller {
 	 * 
 	 **/
 	public function edit() {
-		
 		if ($this->M->create($_POST, Model::MODEL_UPDATE) && ($this->M->save() !== false) )  {
 			$this->success(L('EDIT_SUCCESS'));
 		} else {

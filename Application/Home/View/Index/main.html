@@ -1,6 +1,6 @@
 <extend name="Common:base" />
 <block name="head">
-
+	
 </block>
 <block name="body">
 
@@ -13,19 +13,23 @@
 			  <div slot="header" class="clearfix">
 			    <span>个人信息</span>
 			  </div>
-			  <div style="text-align:center;">
+			  <div style=" position:relative;display: table-cell;vertical-align:middle;">
 			  	<php>
 					$userInfo = session('account')['userInfo'];
+					$arr=M('group')->where(array('id'=>$userInfo['group_id']))->field('p_name,name')->find();
+					$userInfo['p_name']=$arr['p_name'];
+					$userInfo['name']=$arr['name'];
 				</php>
-			  	<img src="__ROOT__{$userInfo['head']}" class="image" width="200" height="200">
-				
-			  	<div>
-			  		<p>姓名：{$userInfo['realname']}</p>
-			  		<p>ID：{$userInfo['user_id']}</p>
-			  		<!-- <p>类型：网销主管</p> -->
-			  		<p>QQ：{$userInfo['qq']}</p>
-			  		<p>电话：{$userInfo['phone']}</p>
-			  		<!-- <p>地址：湖北省十堰市 </p> -->
+			  	<img src="__ROOT__{$userInfo['head']}" class="image" width="100%" height="100%" style="width:200px;height:200px;float:left;border-radius:100%; vertical-align:middle;">
+			  	<div style="position:absolute;right:8%;float:right;border-left:1px solid #e2e2e2;line-height:200%">
+			  		&nbsp;&nbsp;&nbsp;<span>姓名：{$userInfo['realname']}</span><br>
+			  		&nbsp;&nbsp;&nbsp;<span>ID：{$userInfo['user_id']}</span><br>
+			  		&nbsp;&nbsp;&nbsp;<span>类型：网销主管</span><br>
+			  		&nbsp;&nbsp;&nbsp;<span>单位：{$userInfo['p_name']}</span><br>
+			  		&nbsp;&nbsp;&nbsp;<span>QQ：{$userInfo['qq']}</span><br>
+			  		&nbsp;&nbsp;&nbsp;<span>电话：{$userInfo['spanhone']}</span><br>
+			  		&nbsp;&nbsp;&nbsp;<span>地址：湖北省十堰市 </span>
+
 			  	</div>
 			  </div>
 			</el-card>
