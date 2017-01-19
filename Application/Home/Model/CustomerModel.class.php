@@ -35,10 +35,10 @@ class CustomerModel extends Model {
 
 
     protected $_validate = array(
-		array('name','require','姓名必须！'), //默认情况下用正则进行验证
-		array('phone','',      '手机号已经存在！', self::MUST_VALIDATE, 'unique'), // 验证phone字段是否唯一
-		array('qq','',         'QQ号已经存在！',   self::MUST_VALIDATE, 'unique'), // 验证qq字段是否唯一
-		array('weixin','',     '微信号已经存在！', self::MUST_VALIDATE, 'unique'), // 验证微信号是否唯一
+    		array('name','require','姓名必须！'), //默认情况下用正则进行验证
+    		array('phone','',      '手机号已经存在！', self::MUST_VALIDATE, 'unique'), // 验证phone字段是否唯一
+    		array('qq','',         'QQ号已经存在！',   self::MUST_VALIDATE, 'unique'), // 验证qq字段是否唯一
+    		array('weixin','',     '微信号已经存在！', self::MUST_VALIDATE, 'unique'), // 验证微信号是否唯一
    );
 
 

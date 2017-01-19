@@ -14,7 +14,8 @@ class EmployeeController extends CommonController {
 
 	public function setQeuryCondition() {
 
-		$this->M->relation(true)->field('password',true);
+		$this->M->relation(true)->field('password',true)->where(array('no_authorized'=>0));
+
 		if (isset($_GET['name'])) {
 			$this->M->where(array('account'=>array('like', I('get.name')."%")));
 		}
@@ -84,14 +85,13 @@ class EmployeeController extends CommonController {
 	}
 
 	/**
-	* 添加
+	* 编辑
 	*/
 	public function edit(){
 		
-		$re = $this->M->create($_POST, 2);
+		$re = M('userInfo')->create($_POST, 2);
 		if ($re) {
-			$re['userInfo'] = M('userInfo')->create($_POST);
-			if ($this->M->relation('userInfo')->save($re) !== false) {
+			if (M('userInfo')->where(array('user_id'=>I('post.id') ))->save() !== false) {
 				$this->success(L('ADD_SUCCESS'));
 			} else {
 				$this->error($this->M->getError().$this->M->getLastSql());
@@ -100,6 +100,20 @@ class EmployeeController extends CommonController {
 			$this->error($this->M->getError().$this->M->getLastSql());
 		}
 
+	}
+
+
+	public function changePassword(){
+		$re = $this->M->create($_POST, 2);
+		if ($re) {
+			if ($this->M->save() !== false) {
+				$this->success(L('ADD_SUCCESS'));
+			} else {
+				$this->error($this->M->getError().$this->M->getLastSql());
+			}
+		} else {
+			$this->error($this->M->getError().$this->M->getLastSql());
+		}
 	}
 
 	public function _before_delete() {

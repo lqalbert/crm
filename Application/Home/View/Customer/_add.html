@@ -1,10 +1,9 @@
 <el-dialog title="录入客户/修改客户" v-model="addFormDialog">
 <!-- <el-form :model="form"> -->
-<el-form :model="addForm" v-model="addForm" :label-width="dialogLabelWidth">
-
+<el-form ref="addForm" :rules="addRules" :model="addForm" v-model="addForm" :label-width="dialogLabelWidth">
   <el-row>
     <el-col :span="12">
-      <el-form-item label="客户姓名" >
+      <el-form-item label="客户姓名" prop="name">
         <el-input v-model="addForm.name" auto-complete="off"></el-input>
       </el-form-item>
     </el-col>
@@ -18,7 +17,7 @@
   </el-row>
    <el-row>
     <el-col :span="12">
-      <el-form-item label="手机" >
+      <el-form-item label="手机" prop="phone">
         <el-input v-model="addForm.phone" auto-complete="off"></el-input>
       </el-form-item>
     </el-col>

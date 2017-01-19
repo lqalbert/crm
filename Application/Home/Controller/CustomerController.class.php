@@ -58,10 +58,10 @@ class CustomerController extends CommonController {
 		$insert_arr = array();
 		foreach ($ids as $key => $value) {
 			$tmp = array();
-			$tmp['cus_id']  = $value;
-			$tmp['user_id'] = session('uid');
-			$tmp['track_type'] = I('post.track_type');
-			$tmp['content'] = I('post.content');
+			$tmp['cus_id']        = $value;
+			$tmp['user_id']       = session('uid');
+			$tmp['track_type']    = I('post.track_type');
+			$tmp['content']       = I('post.content');
 			$tmp['next_datetime'] = $time;
 
 			$insert_arr[] = $tmp;

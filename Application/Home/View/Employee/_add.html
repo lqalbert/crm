@@ -1,9 +1,9 @@
 <el-dialog title="添加员工" v-model="addFormDialog">
 <!-- <el-form :model="form"> -->
-<el-form :label-width="dialogLabelWidth">
+<el-form ref="addForm" :rules="addRules" :label-width="dialogLabelWidth">
   <el-row>
     <el-col :span="12">
-      <el-form-item label="登录账号">
+      <el-form-item label="登录账号" prop="account">
         <el-input v-model="addForm.account"  auto-complete="off"></el-input>
       </el-form-item>
       <el-form-item label="密码">

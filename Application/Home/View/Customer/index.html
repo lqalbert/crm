@@ -129,7 +129,16 @@ function toInt(v){
     cities:[],
     multipleSelection: [],
     alertDesc:"",
-    logType:{:json_encode($logType)}
+    logType:{:json_encode($logType)},
+
+    addRules:{
+      name:[
+        { required: true, message: '请输入客户姓名', trigger: 'blur' }
+      ],
+      phone:[
+        { required: true, message: '请输入客户手机', trigger: 'blur' }
+      ]
+    }
   }).setForm('search', {
     name:''
   }).setForm('add',{

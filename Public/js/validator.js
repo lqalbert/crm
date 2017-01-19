@@ -194,7 +194,7 @@ layui.define(function(exports) {
 		},
 		//验证手机号码 [可匹配"(+86)013325656352"，括号可以省略，+号可以省略，(+86)可以省略，11位手机号前的0可以省略；11位手机号第二位数可以是3、4、5、8中的任意一个]  
 		IsMobilePhoneNumber: function(input) {
-			var regex = /^((\+)?86|((\+)?86)?)0?1[3458]\d{9}$/;
+			var regex = /^((\+)?86|((\+)?86)?)0?1[34578]\d{9}$/;
 			if(input.match(regex)) {
 				return true;
 			} else {

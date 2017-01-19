@@ -1,4 +1,4 @@
-<el-dialog title="编辑修改" v-model="editFormDialog" @open="organization">
+<el-dialog title="编辑修改" v-model="editFormDialog" >
 <!-- <el-form :model="form"> -->
 <el-form :model="editForm" :label-width="dialogLabelWidth">
   <el-row>
@@ -10,10 +10,9 @@
     <el-col :span="12">
       <el-form-item label="类型" >
         <el-select  v-model="editForm.type">
-          <el-option label="片区" value="片区"></el-option>
-          <el-option label="推广" value="推广"></el-option>
-          <el-option label="网销" value="网销"></el-option>
-          <el-option label="体验" value="体验"></el-option>
+          <el-option label="区域"    value="1"></el-option>
+          <el-option label="事业部"  value="2"></el-option>
+          <el-option label="推广部"  value="3"></el-option>
         </el-select>
       </el-form-item>
     </el-col>
@@ -21,13 +20,13 @@
    <el-row>
     <el-col :span="12">
       <el-form-item label="上级组织" >
-        <el-select  v-model="editForm.p_name">
+        <el-select  v-model="editForm.p_id">
          <el-option label="顶级组织" value="0"></el-option>
           <el-option v-for='item in topO' :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
     </el-col>
-    <el-col :span="12">
+    <!-- <el-col :span="12">
       <el-form-item label="片区"  prop="zone" >
         <el-select  v-model="editForm.zone">
           <foreach name="namelist" item="v">
@@ -35,7 +34,7 @@
           </foreach>
         </el-select>
       </el-form-item>
-    </el-col>
+    </el-col> -->
    </el-row>
     <el-row>
       <el-col :span="12">
