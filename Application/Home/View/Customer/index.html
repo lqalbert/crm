@@ -44,41 +44,51 @@
   		    <el-input v-model="searchForm.name" placeholder="客户姓名" ></el-input>
   		  </el-form-item>
         <el-form-item>
-          <el-button type="info" @click="loadDatalist">查询</el-button> 
+          <el-button type="info" icon="search" @click="loadDatalist">查询</el-button> 
           <el-button @click="searchReset">清空</el-button>
-          <el-tooltip content="当前跟踪的个数" placement="right">
+          <el-tooltip content="本人跟踪的客户" placement="bottom-start">
             <el-badge :value="10" :max="9" style="margin-left:15px;">
               <el-button type="info" >跟踪</el-button>
             </el-badge>
           </el-tooltip>
-          <el-tooltip content="当前未跟踪的个数" placement="right">
+          <el-tooltip content="本人没有跟踪的客户" placement="bottom-start">
             <el-badge :value="2" :max="9" style="margin-left:15px;">
               <el-button type="info" >未跟踪</el-button>
             </el-badge>
           </el-tooltip>
-          <el-tooltip content="当前计划跟踪数" placement="right">
+          <el-tooltip content="本人计划跟踪的客户" placement="bottom-start">
             <el-badge :value="1" :max="9" style="margin-left:15px;">
               <el-button type="info" >计划</el-button>
             </el-badge>
           </el-tooltip>
-          <el-tooltip content="当前转让给他人的客户数" placement="right">
+          <el-tooltip content="本人把客户转给他人的客户(分成)" placement="bottom-start">
             <el-badge :value="1" :max="9" style="margin-left:15px;">
               <el-button type="info" >转让</el-button>
             </el-badge>
           </el-tooltip>
-          <el-tooltip content="当前他人转让进来的客户单位跟踪的数" placement="right">
+          <el-tooltip content="他人把客户转给本人的客户(分成)" placement="bottom-start">
             <el-badge :value="1" :max="9" style="margin-left:15px;">
-              <el-button type="info" >转入未跟</el-button>
+              <el-button type="info" >转入</el-button>
             </el-badge>
           </el-tooltip>
-          <el-tooltip content="当前跟踪后有反馈的个数" placement="right">
+          <el-tooltip content="本人单独跟踪的客户(不分成)" placement="bottom-start">
             <el-badge :value="1" :max="9" style="margin-left:15px;">
-              <el-button type="info" >反馈</el-button>
+              <el-button type="info" >锁定</el-button>
             </el-badge>
           </el-tooltip>
-          <el-tooltip content="当前有冲突的个数" placement="right">
+          <el-tooltip content="本人跟踪且成交了的客户" placement="bottom-start">
+            <el-badge :value="1" :max="9" style="margin-left:15px;">
+              <el-button type="success" >服务</el-button>
+            </el-badge>
+          </el-tooltip>
+          <el-tooltip content="对客户进行筛选后重点跟踪" placement="bottom-start">
+            <el-badge :value="1" :max="9" style="margin-left:15px;">
+              <el-button type="info" >自选</el-button>
+            </el-badge>
+          </el-tooltip>
+          <el-tooltip content="他人的客户与您的客户有冲突" placement="bottom-start">
             <el-badge :value="10" :max="9" style="margin-left:15px;">
-    		      <el-button type="info" >冲突</el-button>
+    		      <el-button type="warning" >冲突</el-button>
             </el-badge>
           </el-tooltip>
           <!-- <el-button  >高级查询</el-button>  -->
@@ -148,23 +158,25 @@
     <el-col :span="12">
     <div class="grid-content bg-purple">
           <span class="wrapper">
-            <el-tooltip content="添加新的客户" placement="right">
+            <el-tooltip content="录入新的客户" placement="right">
               <el-button size="small"  @click="openDialog('add')" icon="plus" type="primary">{:L('ADD')}</el-button>
             </el-tooltip>
-            <el-tooltip content="录入客户跟踪" placement="right">
+            <el-tooltip content="选择客户录入跟踪信息" placement="right">
               <el-button size="small" @click="openDialog('addTrack')" type="primary" style="margin-left:10px;">录入跟踪</el-button>
             </el-tooltip>
-            <el-tooltip content="转让分享客户给他人" placement="right">
-              <el-button size="small" type="warning" style="margin-left:10px;">转让</el-button>
-            </el-tooltip>
-            <el-tooltip content="录入跟踪计划" placement="right">
+            <el-tooltip content="选择客户录入对其跟踪计划" placement="right">
               <el-button size="small" type="primary" style="margin-left:10px;">计划</el-button>
             </el-tooltip>
-            <el-tooltip content="录入客户的反馈信息" placement="right">
-              <el-button size="small" type="success" style="margin-left:10px;">反馈</el-button>
+            <el-tooltip content="选择客户对其转让给他人" placement="right">
+              <el-button size="small" type="warning" style="margin-left:10px;">转让</el-button>
             </el-tooltip>
-            <el-tooltip content="当前跟踪的个数" placement="right">
-              <el-button size="small" type="primary" style="margin-left:10px;">录入跟踪</el-button>
+            <el-tooltip content="。。。。。。" placement="right">
+              <el-button size="small" type="info" style="margin-left:10px;">提醒</el-button>
+            </el-tooltip>
+            <el-tooltip content="筛选客户重点跟踪" placement="right">
+              <el-button size="small" type="primary" style="margin-left:10px;">自选</el-button>
+            <el-tooltip content="选择客户对其拨打电话" placement="right">
+              <el-button size="small" type="primary" style="margin-left:10px;">拨打电话</el-button>
             </el-tooltip>
               <!-- <el-button  @click="addCustomer">修改客户</el-button> -->
               <!-- <el-button>计划</el-button>
@@ -211,8 +223,6 @@
           <el-tab-pane label="软件账号">软件账号</el-tab-pane>
           <el-tab-pane label="通话记录">通话记录</el-tab-pane>
           <el-tab-pane label="客户资料">客户资料</el-tab-pane>
-          <el-tab-pane label="金融信息">金融信息</el-tab-pane>
-          <el-tab-pane label="圈子列表">圈子列表</el-tab-pane>
         </el-tabs>
      </el-col>
     </el-row>

@@ -84,14 +84,25 @@ class EmployeeController extends CommonController {
 	}
 
 	/**
-	* 添加
+	* 编辑
 	*/
 	public function edit(){
-		
-		$re = $this->M->create($_POST, 2);
+		//移除老方法的编辑会改变密码
+        /*$re = $this->M->create($_POST, 2);
 		if ($re) {
 			$re['userInfo'] = M('userInfo')->create($_POST);
 			if ($this->M->relation('userInfo')->save($re) !== false) {
+				$this->success(L('ADD_SUCCESS'));
+			} else {
+				$this->error($this->M->getError().$this->M->getLastSql());
+			}
+		} else {
+			$this->error($this->M->getError().$this->M->getLastSql());
+		}*/
+		//新方法
+        $re = M('userInfo')->create($_POST, 2);
+		if ($re) {
+			if (M('userInfo')->where(array('user_id'=>I('post.id') ))->save() !== false) {
 				$this->success(L('ADD_SUCCESS'));
 			} else {
 				$this->error($this->M->getError().$this->M->getLastSql());

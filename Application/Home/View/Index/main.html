@@ -13,23 +13,24 @@
 			  <div slot="header" class="clearfix">
 			    <span>个人信息</span>
 			  </div>
-			  <div style=" position:relative;display: table-cell;vertical-align:middle;">
+			  <div style="width:480px;display: table-cell;vertical-align:middle;">
 			  	<php>
 					$userInfo = session('account')['userInfo'];
-					$arr=M('group')->where(array('id'=>$userInfo['group_id']))->field('p_name,name')->find();
-					$userInfo['p_name']=$arr['p_name'];
-					$userInfo['name']=$arr['name'];
+					$arr=M('user_info')->where(array('user_id'=>$userInfo['user_id']))->find();
+					$group=M('group')->where(array('id'=>$arr['group_id']))->field('name,p_name')->find();
+					$arr['name']=$group['name'];
+					$arr['p_name']=$group['p_name'];
 				</php>
-			  	<img src="__ROOT__{$userInfo['head']}" class="image" width="100%" height="100%" style="width:200px;height:200px;float:left;border-radius:100%; vertical-align:middle;">
+			  	<img src="__ROOT__{$arr['head']}" class="image" width="100%" height="100%" style="width:200px;height:200px;border-radius:100%; vertical-align:middle;">
 				
-			  	<div style="position:absolute;right:8%;float:right;border-left:1px solid #e2e2e2;line-height:200%">
-			  		&nbsp;&nbsp;&nbsp;<span>姓名：{$userInfo['realname']}</span><br>
-			  		&nbsp;&nbsp;&nbsp;<span>ID：{$userInfo['user_id']}</span><br>
+			  	<div style="float:right;width:200px;border-left:1px solid #e2e2e2;line-height:200%">
+			  		&nbsp;&nbsp;&nbsp;<span>姓名：{$arr['realname']}</span><br>
+			  		&nbsp;&nbsp;&nbsp;<span>I  D：{$arr['user_id']}</span><br>
 			  		&nbsp;&nbsp;&nbsp;<span>类型：网销主管</span><br>
-			  		&nbsp;&nbsp;&nbsp;<span>单位：{$userInfo['p_name']}</span><br>
-			  		&nbsp;&nbsp;&nbsp;<span>QQ：{$userInfo['qq']}</span><br>
-			  		&nbsp;&nbsp;&nbsp;<span>电话：{$userInfo['spanhone']}</span><br>
-			  		&nbsp;&nbsp;&nbsp;<span>地址：湖北省十堰市 </span>
+			  		&nbsp;&nbsp;&nbsp;<span>单位：{$arr['p_name']}</span><br>
+			  		&nbsp;&nbsp;&nbsp;<span>Q  Q：{$arr['qq']}</span><br>
+			  		&nbsp;&nbsp;&nbsp;<span>电话：{$arr['phone']}</span><br>
+			  		&nbsp;&nbsp;&nbsp;<span>地址：{$arr['address']}</span>
 			  	</div>
 			  </div>
 			</el-card>
