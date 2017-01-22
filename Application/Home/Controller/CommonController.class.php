@@ -131,7 +131,7 @@ class CommonController extends Controller {
 		$result = array('list'=>$list, 'count'=>$count);
 		if (IS_AJAX) {
 			$this->ajaxReturn($result);
-
+			// $this->ajaxReturn($this->M->getLastSql());
 		}  else {
 			
 			return $result;

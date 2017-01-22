@@ -23,6 +23,16 @@ class CustomerController extends CommonController {
 		if (I('get.name')) {
 			$this->M->where(array("name"=> array('like', I('get.name')."%")));
 		}
+
+		if (I('get.plan', false)) {
+			$today = Date("Y-m-d")." 00:00:00" ;
+			$this->M->where(array(
+				'plan'=> array(
+					array('GT', Date("Y-m-d")." 00:00:00"), 
+					array('LT', Date("Y-m-d H:i:s", strtotime("+1 day", strtotime($today))))
+					)
+				));
+		}
 	}
 
 	/**
