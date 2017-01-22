@@ -88,8 +88,8 @@ class EmployeeController extends CommonController {
 	* 编辑
 	*/
 	public function edit(){
-		
-		$re = M('userInfo')->create($_POST, 2);
+		//新方法
+        $re = M('userInfo')->create($_POST, 2);
 		if ($re) {
 			if (M('userInfo')->where(array('user_id'=>I('post.id') ))->save() !== false) {
 				$this->success(L('ADD_SUCCESS'));
