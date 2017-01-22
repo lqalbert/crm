@@ -241,12 +241,12 @@
 		this.editIndex = index;
 		this.openDialog(type);
 
-	}).setMethod('organization', function(v){
+	}).setMethod('organization', function(){
 		/*return this.dataList.filter(function (value) {
 	      return value.p_id == 0 ;
 	    })*/
 	    var vmThis = this;
-	    this.$http.get("{:U('getTopD')}", {params:{type:v}}).then(function(response){
+	    this.$http.get("{:U('getTopD')}").then(function(response){
 	    	vmThis.topO = response.body;
 	    })
 
