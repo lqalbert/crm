@@ -1,4 +1,4 @@
-<el-dialog title="添加" v-model="addFormDialog">
+<el-dialog title="添加" v-model="addFormDialog" @open="organization">
 <!-- <el-form :model="form"> -->
 <el-form :model="addForm" :rules="rules" ref="addForm" :label-width="dialogLabelWidth">
   <input type="hidden" name="img" v-model="addForm.img">
@@ -10,31 +10,32 @@
     </el-col>
     <el-col :span="12">
       <el-form-item label="类型"  prop="type">
-        <el-select  v-model="addForm.type" placeholder="请选择类型" @change="changeType">
-
-          <el-option label="区域"    value="1"></el-option>
-          <el-option label="事业部"  value="2"></el-option>
-          <el-option label="推广部"  value="3"></el-option>
-         <!--  <el-option label="体验" value="体验"></el-option> -->
+        <el-select  v-model="addForm.type" placeholder="请选择类型">
+          <el-option label="片区" value="片区"></el-option>
+          <el-option label="推广" value="推广"></el-option>
+          <el-option label="网销" value="网销"></el-option>
+          <el-option label="体验" value="体验"></el-option>
         </el-select>
       </el-form-item>
     </el-col>
   </el-row>
    <el-row>
-    <el-col :span="24">
-      <el-form-item label="上级组织"  prop="p_id" >
-        <el-select  v-model="addForm.p_id" placeholder="请选择上级">
+    <el-col :span="12">
+      <el-form-item label="上级组织"  prop="p_name" >
+        <el-select  v-model="addForm.p_name" placeholder="没有可以不选择">
+          
           <el-option v-for='item in topO' :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
     </el-col>
-    <el-col :span="24">
-      <el-form-item label="负责主管"  prop="contact" >
-          <el-select  v-model="addForm.user_id" placeholder="请选择负责的主管">
-            <el-option label="待定" value="0"></el-option>
-            <el-option v-for='item in users' :label="item.name" :value="item.id"></el-option>
-          </el-select>
-        </el-form-item>
+    <el-col :span="12">
+      <el-form-item label="片区"  prop="zone" >
+        <el-select  v-model="addForm.zone" placeholder="请选择片区">
+          <foreach name="namelist" item="v">
+            <el-option label="{$v.zone}" value="{$v.zone}"></el-option>
+          </foreach>
+        </el-select>
+      </el-form-item>
     </el-col>
    </el-row>
     <el-row>
@@ -49,13 +50,19 @@
         </el-form-item>
       </el-col>
     </el-row>
+    <el-row>
+      <el-col :span="12">
+        <el-form-item label="联系人"  prop="contact" >
+          <el-input  auto-complete="off" v-model="addForm.contact" placeholder="请填写该单位联系人"></el-input>
+        </el-form-item>
 
-    <!-- <el-row>
-      <el-col :span="24">
-        
       </el-col>
-    </el-row> -->
-
+      <el-col :span="12">
+        <el-form-item label="联系电话"  prop="tel" >
+          <el-input  auto-complete="off" v-model="addForm.tel" placeholder="请填写联系电话"></el-input>
+        </el-form-item>
+      </el-col>
+    </el-row>
     <el-row>
       <el-col :span="12">
         <el-form-item label="财务编号"  prop="f_num" >

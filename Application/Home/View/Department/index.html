@@ -196,7 +196,8 @@
 		f_num:"",
 		address:"",
 		remark:"",
-		img:""
+		img:"",
+		zone:""
 	}).setForm('edit', {
 		id:"",
 		name:"",
@@ -257,16 +258,7 @@
 			currentValue['typeText'] = vmThis.typeList[currentValue['type']];
 		})
 		return dataList;
-	}).setMethod('changeType', function(v){
-		var vmThis = this;
-	    this.$http.get("{:U('getUsers')}", {params:{type:v}}).then(function(response){
-	    	vmThis.users = response.body;
-	    });
-	    this.organization(v);
-	    this[this.currentForm].p_id = "";
-
-
-	});
+	})
 </script>
 
 	
