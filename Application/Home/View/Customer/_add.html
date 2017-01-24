@@ -1,7 +1,6 @@
 <el-dialog title="录入客户/修改客户" v-model="addFormDialog">
 <!-- <el-form :model="form"> -->
-<el-form :model="addForm" v-model="addForm" :label-width="dialogLabelWidth">
-
+<el-form ref="addForm" :rules="addRules" :model="addForm" v-model="addForm" :label-width="dialogLabelWidth">
   <el-row>
     <el-col :span="8">
       <el-form-item label="客户姓名" >

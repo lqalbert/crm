@@ -5,6 +5,11 @@ use Think\Model\RelationModel;
 class RbacUserModel extends RelationModel {
     protected $tableName = 'rbac_user';
 
+    protected $_validate = array(
+     array('account','require','账号必须！', self::MUST_VALIDATE, '' ,self::MODEL_INSERT), //默认情况下用正则进行验证
+     array('password','require','密码必须！', self::MUST_VALIDATE, '' ,self::MODEL_INSERT), 
+   );
+
     protected $_link = array(
         'userInfo'=> array(
         	'mapping_type'      => self::HAS_ONE,
@@ -19,7 +24,7 @@ class RbacUserModel extends RelationModel {
 
 
     public function cryptPawssword($p){
-    	return md5($p);
+        return md5($p);
     }
 
     /**
@@ -27,8 +32,8 @@ class RbacUserModel extends RelationModel {
     *
     *
     */
-    public function add($data='',$options=array(),$replace=false){
+    /*public function add($data='',$options=array(),$replace=false){
     	// $this->password = $this->cryptPawssword($this->password);
     	return parent::add($data, $options,$replace);
-    }
+    }*/
 }

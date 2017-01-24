@@ -25,6 +25,7 @@ var FormName = {
 function setCommonLogic(opt){
 	opt.setDatas({
 		show: false,
+		currentForm: null,
 
 		dataList:[],
 		dataLoad: false,
@@ -119,10 +120,12 @@ function setCommonLogic(opt){
 	opt.setMethod("openDialog", function(dialog){
 
 		this[FormName.getDialog(dialog)] = true;
+		this.currentForm = FormName.getForm(dialog);
 	});
 
 	opt.setMethod("closeDialog", function(dialog){
 		this[FormName.getDialog(dialog)] = false;
+		this.currentForm = null;
 	})
 
 	/*
@@ -206,7 +209,7 @@ function setForm(opt, type){
 			this.$refs[formName].rules;
 
 			this.$refs[formName].validate(function(valid){
-				console.log(valid);
+				// console.log(valid);
 				if (valid) {
 					vmThis.commonSubmitLogic(url, form);
 				} else {

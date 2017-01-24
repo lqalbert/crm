@@ -32,7 +32,8 @@ define('CRM_SUPER_ADMIN', 1);
 
 
 
-
+header( 'Access-Control-Allow-Origin:*' );
+header( 'Access-Control-Allow-Credentials:true' );
 
 // 引入ThinkPHP入口文件
 require './ThinkPHP/ThinkPHP.php';

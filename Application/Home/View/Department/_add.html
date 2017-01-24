@@ -22,9 +22,8 @@
   </el-row>
    <el-row>
     <el-col :span="12">
-      <el-form-item label="上级组织"  prop="p_name" >
-        <el-select  v-model="addForm.p_name" placeholder="没有可以不选择">
-          <el-option label="顶级组织" value="0"></el-option>
+      <el-form-item label="上级组织"  prop="p_id" >
+        <el-select  v-model="addForm.p_id" placeholder="没有可以不选择">
           <el-option v-for='item in topO' :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>

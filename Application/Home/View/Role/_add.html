@@ -3,6 +3,15 @@
     <el-form-item label="角色名称"  >
       <el-input v-model="addForm.name"  name="name" auto-complete="off" style="max-width: 400px" placeholder="请设置角色名称"></el-input>
     </el-form-item>
+    <el-form-item label="角色英文名" >
+      <el-select v-model="addForm.ename"  name="ename"   placeholder="请选择">
+        <el-option
+          v-for="item in enames"
+          :label="item"
+          :value="item">
+        </el-option>
+      </el-select>
+    </el-form-item>
     <!-- <el-form-item label="父级角色"  style="width:400px;">
       <el-select v-model="addForm.pid" placeholder="请选择">
       	<el-option value="0" label="无父级"></el-option>

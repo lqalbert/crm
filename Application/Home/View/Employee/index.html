@@ -15,7 +15,7 @@
 					  </el-form-item>
 					  <el-form-item> 
 					    <el-button type="primary" icon="search" @click="loadDatalist">查询</el-button> 
-					    <el-button @click="searchReset" >清空</el-button>
+					    <el-button @click="searchReset" >重置</el-button>
 			        <!-- 	<el-button  @click="advancedSearch=true">高级查询</el-button>  -->
 					  </el-form-item>
 					</el-form>
@@ -31,7 +31,7 @@
 				      v-loading="dataLoad" 
 				      element-loading-text="{:L('DATA_LOGIN')}"
 				      @selection-change="handleSelectionChange"
-					 border  >
+					 border>
 					    <el-table-column type="selection"  width="50" >
 					    </el-table-column>
 					    <el-table-column  label="序号"  width="70" :formatter="handleIndex" >
@@ -93,9 +93,8 @@
 					    
 					    
 
-					    <el-table-column inline-template :context="_self"  fixed="right"  label="操作" width="200">
+					    <el-table-column inline-template :context="_self"  fixed="right"  label="操作" width="250">
 					      <span>
-					        
 					        <el-button @click="handleEdit($index, row)"  size="small">编辑</el-button>
 					        <el-button @click="handleSetRoles($index, row)" type="info" size="small">角色</el-button>
 					        <el-button @click="handleDelete($index, row)"  type="danger" size="small">删除</el-button>
@@ -187,6 +186,7 @@
 	<script>
 		page.getUserRolesUrl="{:U('getUserRoles')}";
 		page.setUserRolesUrl="{:U('setUserRoles')}";
+		page.changePasswordUrl="{:U(changePassword)}";
 		window.defaultOption.setDatas({
 			roleList:{:json_encode($roleList)},
 			pathInfo:{folder:'users'},
@@ -210,6 +210,11 @@
 					{ validator: validatePass2, trigger: 'blur' }
 				]
 
+			},
+			addRules:{
+				account:[
+					{ required: true, message: '请输入账号', trigger: 'blur' }
+				]
 			}
 
 
@@ -253,7 +258,8 @@
 			user_id:0,
 			role_ids:[]
 		},true).setForm('search',{
-			name:""
+			name:"",
+			plan:false
 		}).setForm('editPassword',{
 			id:"",
 			account:"",

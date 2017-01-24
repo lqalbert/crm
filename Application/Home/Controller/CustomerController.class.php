@@ -23,6 +23,16 @@ class CustomerController extends CommonController {
 		if (I('get.name')) {
 			$this->M->where(array("name"=> array('like', I('get.name')."%")));
 		}
+
+		if (I('get.plan', false)) {
+			$today = Date("Y-m-d")." 00:00:00" ;
+			$this->M->where(array(
+				'plan'=> array(
+					array('GT', Date("Y-m-d")." 00:00:00"), 
+					array('LT', Date("Y-m-d H:i:s", strtotime("+1 day", strtotime($today))))
+					)
+				));
+		}
 	}
 
 	/**
@@ -59,10 +69,10 @@ class CustomerController extends CommonController {
 		$insert_arr = array();
 		foreach ($ids as $key => $value) {
 			$tmp = array();
-			$tmp['cus_id']  = $value;
-			$tmp['user_id'] = session('uid');
-			$tmp['track_type'] = I('post.track_type');
-			$tmp['content'] = I('post.content');
+			$tmp['cus_id']        = $value;
+			$tmp['user_id']       = session('uid');
+			$tmp['track_type']    = I('post.track_type');
+			$tmp['content']       = I('post.content');
 			$tmp['next_datetime'] = $time;
 
 			$insert_arr[] = $tmp;

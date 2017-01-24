@@ -1,6 +1,11 @@
 <?php
 return array(
 	//'配置项'=>'配置值'
+
+    //调试
+	'SHOW_PAGE_TRACE' =>true, 
+
+
 	'DB_TYPE' => 'mysql',
 	// 'DB_DSN' => 'mysql://dev_cn_crm:dev2008dev@192.168.0.12:3306/dev_cn_crm#utf8',
 	'DB_USER' => 'dev_cn_crm_01',
