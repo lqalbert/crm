@@ -5,10 +5,10 @@ class NavController extends CommonController {
 	public function index() {
 		$nav = $this->setMenu(); //C('MENU');
 		$this->transNavUrl($nav);
-		// $this->assign("nav", $nav);
-		// $this->display();
-		echo 'var navs = '.json_encode($nav).';';
-		exit();
+		$this->assign("nav", $nav);
+		$this->display();
+		/*echo 'var navs = '.json_encode($nav).';';
+		exit();*/
 		
 	}
 

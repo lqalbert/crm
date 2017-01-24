@@ -43,52 +43,62 @@
   		  <el-form-item prop="name">
   		    <el-input v-model="searchForm.name" placeholder="客户姓名" ></el-input>
   		  </el-form-item>
+        <el-form-item prop="group" style="width:80px">
+          <el-select v-model="searchForm.group" placeholder="请选择">
+            <el-option label="本人" value="user_id"></el-option>
+            <el-option label="团组" value="group" :disabled="true"></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item prop="field" v-show="false">
+          <input type="hidden" v-model="searchForm.field">
+        </el-form-item>
         <el-form-item>
           <el-button type="info" icon="search" @click="loadDatalist">查询</el-button> 
           <el-button @click="searchReset">重置</el-button>
           <el-tooltip content="本人跟踪的客户" placement="bottom-start">
             <el-badge :value="10" :max="9" style="margin-left:15px;">
-              <el-button type="info"  >跟踪</el-button>
+              <el-button type="info"  @click="setField('log')">跟踪</el-button>
             </el-badge>
           </el-tooltip>
           <el-tooltip content="本人没有跟踪的客户" placement="bottom-start">
             <el-badge :value="2" :max="9" style="margin-left:15px;">
-              <el-button type="info" >未跟踪</el-button>
+              <el-button type="info" @click="setField('unlog')">未跟踪</el-button>
             </el-badge>
           </el-tooltip>
           <el-tooltip content="本人计划跟踪的客户" placement="bottom-start">
             <el-badge :value="1" :max="9" style="margin-left:15px;">
-              <el-button type="info" @click="setPlan" >计划</el-button>
+              <el-button type="info" @click="setField('plan')" >计划</el-button>
             </el-badge>
           </el-tooltip>
           <el-tooltip content="本人把客户转给他人的客户(分成)" placement="bottom-start">
             <el-badge :value="1" :max="9" style="margin-left:15px;">
-              <el-button type="info" >转让</el-button>
+              <el-button type="info" @click="setField('transfto')">转让</el-button>
             </el-badge>
           </el-tooltip>
           <el-tooltip content="他人把客户转给本人的客户(分成)" placement="bottom-start">
             <el-badge :value="1" :max="9" style="margin-left:15px;">
-              <el-button type="info" >转入</el-button>
+              <el-button type="info" @click="setField('transfin')">转入</el-button>
             </el-badge>
           </el-tooltip>
           <el-tooltip content="本人单独跟踪的客户(不分成)" placement="bottom-start">
             <el-badge :value="1" :max="9" style="margin-left:15px;">
-              <el-button type="info" >锁定</el-button>
+              <el-button type="info"  @click="setField('')">锁定</el-button>
             </el-badge>
           </el-tooltip>
           <el-tooltip content="本人跟踪且成交了的客户" placement="bottom-start">
             <el-badge :value="1" :max="9" style="margin-left:15px;">
-              <el-button type="success" >服务</el-button>
+              <el-button type="success" @click="setField('type')">服务</el-button>
             </el-badge>
           </el-tooltip>
           <el-tooltip content="对客户进行筛选后重点跟踪" placement="bottom-start">
             <el-badge :value="1" :max="9" style="margin-left:15px;">
-              <el-button type="info" >自选</el-button>
+              <el-button type="info" @click="setField('important')">自选</el-button>
             </el-badge>
           </el-tooltip>
           <el-tooltip content="他人的客户与您的客户有冲突" placement="bottom-start">
             <el-badge :value="10" :max="9" style="margin-left:15px;">
-    		      <el-button type="warning" >冲突</el-button>
+    		      <el-button type="warning" @click="setField('conflict')">冲突</el-button>
             </el-badge>
           </el-tooltip>
           <!-- <el-button  >高级查询</el-button>  -->
@@ -106,8 +116,7 @@
     v-loading="dataLoad" 
     element-loading-text="{:L('DATA_LOGIN')}"
     @selection-change="handleSelectionChange"
-    @row-click="trackLog"
-    >
+    @row-click="trackLog">
 	    <el-table-column type="selection"  width="50" >
 	    </el-table-column>
 	    <el-table-column   label="{:L('INDEX')}"  :formatter="handleIndex" width="70"  >
@@ -121,7 +130,7 @@
       </el-table-column>
 	    <el-table-column prop="type" label="客户类型" width="140" align="center">
         <template scope="scope">
-         {{ getType(scope.row.type, 'customerType') }}
+          {{ getType(scope.row.type, 'customerType') }}
         </template>
 	    </el-table-column>
 	    <el-table-column prop="phone" label="手机" align="center">
@@ -210,11 +219,11 @@
               </el-table-column>
               <el-table-column prop="created_at" label="跟踪时间" width="180" align="center">
               </el-table-column>
-              <el-table-column prop="type" label="客户类型" align="center">
+              <!-- <el-table-column prop="type" label="客户类型" align="center">
+              </el-table-column> -->
+              <el-table-column prop="track_type" label="跟踪类型" >
               </el-table-column>
-              <el-table-column prop="track_type" label="跟踪类型" align="center">
-              </el-table-column>
-              <el-table-column prop="content" label="内容" align="center">
+              <el-table-column prop="content"   label="内容" align="center">
               </el-table-column>
               <el-table-column prop="user" label="跟踪员工" align="center">
               </el-table-column>
@@ -266,6 +275,7 @@ function toInt(v){
     multipleSelection: [],
     alertDesc:"",
     logType:{:json_encode($logType)},
+    steps:{:json_encode($steps)},
     addRules:{
       name:[
         { required: true, message: '请输入客户姓名', trigger: 'blur' }
@@ -276,7 +286,8 @@ function toInt(v){
     }
   }).setForm('search', {
     name:'',
-    plan: '',
+    field: '',
+    group:'user_id'
   }).setForm('add',{
     name:"",
     phone:"",
@@ -305,18 +316,22 @@ function toInt(v){
     year:1,
     remark:""
   }).setForm('addTrack',{
-    cus_ids:[],
+    cus_id:"",
     next_datetime:'',
     track_type:'',
-    content:''
+    to_type:"",
+    content:'',
+    name:"",
+    step:"",
   },true).setMethod('getType', function(type, field){
       return this[field][type];
-  }).setMethod('beforeList', function(data){
-    data.forEach(function(currentValue){
-      currentValue.type  = parseInt(currentValue.type);
-    })
-    return data;
-  }).setMethod('provinceChange', function(v){
+  })// .setMethod('beforeList', function(data){
+  //   // data.forEach(function(currentValue){
+  //   //   currentValue.type  = parseInt(currentValue.type);
+  //   // })
+  //   return data;
+  // })
+  .setMethod('provinceChange', function(v){
     var vmThis = this;
     this.$http.get('{:U("Area/getAreasByPid")}', {params:{pid:v} }).then(function(response){
       var cities = [];
@@ -334,18 +349,13 @@ function toInt(v){
   }).setMethod('beforeAddTrack', function(){
     var form = 'addTrack';
     var vmThis = this;
-    if (this.multipleSelection.length ==0 ) {
+    if (this.multipleSelection.length ==0 ||  this.multipleSelection.length>1) {
       this.closeDialog(form);
-      this.$message.error('请先选择客户');
+      this.$message.error('请先选择一位客户');
     } else {
-      var custs = [];
-
-      this[FormName.getForm(form)].cus_ids = [];
-      this.multipleSelection.forEach(function(currentValue){
-        custs.push(currentValue.name);
-        vmThis[FormName.getForm(form)].cus_ids.push(currentValue.id);
-      })
-      this.alertDesc = custs.join("，");
+      var  row = this.multipleSelection.pop();
+      this[FormName.getForm('addTrack')].name = row.name;
+      this[FormName.getForm('addTrack')].cus_id   = row.id;
     }
   }).setAdvancedSearch().setVueHook('mounted', function(){
     var vmThis = this;
@@ -362,8 +372,8 @@ function toInt(v){
       },function(response){
         console.log("操作失败");
       });
-  }).setMethod('setPlan', function(){
-      this[FormName.getFormName('search')].plan = true;
+  }).setMethod('setField', function(v){
+      this[FormName.getFormName('search')].field = v;
       this.loadDatalist();
   });
 </script>

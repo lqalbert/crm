@@ -9,7 +9,8 @@ class CustomerModel extends Model {
 	const TYPE_D = 3;
 	const TYPE_E = 4;
 	const TYPE_N = 5;
-	const TYPE_F = 6;
+  const TYPE_F = 6;
+	const TYPE_V = 7;
 
 	const UNKNOW = 0;
 	const MAN    = 1;
@@ -18,14 +19,14 @@ class CustomerModel extends Model {
 
     protected $tableName = 'customers_basic';
     protected $customerType = array(
-    	    "A.准客户",
-          "B.意向客户",
-          "C.一般客户",
-          "D.未有意向客户",
-          "E.本地化客户",
-          "N.无效客户",
-          "F.黑名单（同行）",
-          "v.成交客户",
+    	    "A"=>"A.准客户",
+          "B"=>"B.意向客户",
+          "C"=>"C.一般客户",
+          "D"=>"D.未有意向客户",
+          // "E.本地化客户",
+          "F"=>"F.黑名单（同行）",
+          "N"=>"N.无效客户",
+          "V"=>"V.成交客户",
     	);
 
     protected $sexType = array(
@@ -48,9 +49,9 @@ class CustomerModel extends Model {
     * 
     * @return string|array
     */
-    public function getType($index){
-    	if (is_int($index)) {
-    		return $this->customerType[$index];
+    public function getType($index=NULL){
+    	if (!empty($index)) {
+    		return $this->customerType[strtoupper($index)];
     	} else {
     		return $this->customerType;
     	}

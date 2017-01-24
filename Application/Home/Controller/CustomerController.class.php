@@ -1,5 +1,6 @@
 <?php
 namespace Home\Controller;
+use Home\Model\CustomerModel;
 
 class CustomerController extends CommonController {
 	protected $table = "customer";
@@ -9,6 +10,7 @@ class CustomerController extends CommonController {
 		$this->assign('customerType', $this->M->getType());
 		$this->assign('sexType',      $this->M->getSexType());
 		$this->assign('logType',      D('CustomerLog')->getType());
+		$this->assign('steps',        D('CustomerLog')->getSteps());
 
 		$this->display();
 	}
@@ -24,15 +26,50 @@ class CustomerController extends CommonController {
 			$this->M->where(array("name"=> array('like', I('get.name')."%")));
 		}
 
-		if (I('get.plan', false)) {
-			$today = Date("Y-m-d")." 00:00:00" ;
-			$this->M->where(array(
-				'plan'=> array(
-					array('GT', Date("Y-m-d")." 00:00:00"), 
-					array('LT', Date("Y-m-d H:i:s", strtotime("+1 day", strtotime($today))))
-					)
-				));
+		$today = Date("Y-m-d")." 00:00:00" ;
+		$between_today =  array(
+							array('GT', Date("Y-m-d")." 00:00:00"), 
+							array('LT', Date("Y-m-d H:i:s", strtotime("+1 day", strtotime($today))))
+						);
+
+		switch (I('get.field')) {
+			case 'plan':
+				$this->M->where(array(
+					'plan'=> $between_today
+					));
+				break;
+			case 'log':
+				$this->M->where(array('log_count'=> array('NEQ',0)));
+				break;
+			case 'unlog':
+				$this->M->where(array('log_count'=> 0));
+				break;
+			case 'transfto':
+				$this->M->where(array('transfer_status'=>1, 'transfer_to'=>array('NEQ', 0)));
+				break;
+			case 'transfin':
+				$this->M->where(array('transfer_status'=>array( array('EQ', 1), array('EQ', 2), 'or'), 'transfer_to'=>session('uid')));
+				break;
+			case 'type':
+				$this->M->where(array('type'=>CustomerModel::TYPE_V));
+				break;
+			case 'important':
+				$this->M->where(array('important'=>1));
+				break;
+			case 'conflict':
+				$this->M->where(array(
+					'conflict'=> $between_today
+					));
+				break;
+			default:
+				# code...
+				break;
 		}
+
+		// if (I('get.plan', false)) {
+			
+			
+		// }
 	}
 
 	/**
@@ -59,31 +96,42 @@ class CustomerController extends CommonController {
 	}
 
 	/**
-	* 批量添加跟踪纪录
+	* 添加跟踪纪录
 	*
 	*/
 	public function addTrackLogs(){
-		$ids = I('post.cus_ids');
-		// 传过来的时间是 utc 通用标准时间 这里进行一个转化
-		$time = date('Y-m-d', strtotime(I('post.next_datetime')));
-		$insert_arr = array();
-		foreach ($ids as $key => $value) {
-			$tmp = array();
-			$tmp['cus_id']        = $value;
-			$tmp['user_id']       = session('uid');
-			$tmp['track_type']    = I('post.track_type');
-			$tmp['content']       = I('post.content');
-			$tmp['next_datetime'] = $time;
+		// $id = I('post.id');
+		$LogM = D('CustomerLog');
 
-			$insert_arr[] = $tmp;
+		
+		$to_type = I('post.to_type', '');
+		$this->M->find($LogM->cus_id);
+		$LogM->startTrans();
+
+		if (!$LogM->create()) {
+			$LogM->rollback();
+			$this->error(L('ADD_ERROR').$LogM->getError());
 		}
 
-		$result = D('CustomerLog')->addAll($insert_arr);
-		if ($result !== false) {
-			$this->success("添加成功");
+
+		if ($to_type !== "" &&  $to_type != $this->M->type) {
+			$LogM->contentSetChangeType($this->M->type, $to_type);
+			$this->M->type = $to_type;
+			$re = $this->M->save();
+			if ($re === false) {
+				$LogM->rollback();
+				$this->error(L('ADD_ERROR').$this->M->getError()."e");
+			}
+		}
+
+		if ($LogM->add()) {
+			$LogM->commit();
+			$this->success(L('ADD_SUCCESS'));
 		} else {
-			$this->error("操作出错".D('CustomerLog')->getError());
+			$LogM->rollback();
+			$this->error(L('ADD_ERROR').$LogM->getError());
 		}
+		
 	}
 
 	public function getTracks(){
@@ -95,7 +143,7 @@ class CustomerController extends CommonController {
     *
     */
 	public function trackInfo(){
-        $type=$this->M->getType(I('post.type/d'));
+        $type=$this->M->getType(I('post.type'));
         $group_id=M('user_info')->where(array('user_id'=>I('post.user_id')))->field('group_id')->find();
         $groupInfo=M('group')->where(array('id'=>$group_id['group_id']))->field('name,p_name')->find();
         $userName=M('user_info')->where(array('user_id'=>I('user_id')))->field('realname')->find();

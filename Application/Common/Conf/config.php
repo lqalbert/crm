@@ -3,7 +3,7 @@ return array(
 	//'配置项'=>'配置值'
 
     //调试
-	'SHOW_PAGE_TRACE' =>true, 
+	'SHOW_PAGE_TRACE' =>false, 
 
 
 	'DB_TYPE' => 'mysql',

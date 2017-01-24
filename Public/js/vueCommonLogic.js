@@ -206,7 +206,9 @@ function setForm(opt, type){
 		var  vmThis   = this;
 		var  formName    =  FormName.getFormName();       //form+"Form";
 		try{
-			this.$refs[formName].rules;
+			if(!this.$refs[formName].rules){
+				throw 'no rules';
+			}
 
 			this.$refs[formName].validate(function(valid){
 				// console.log(valid);
@@ -254,6 +256,7 @@ function setForm(opt, type){
 			setTimeout(function(){
 				vmThis[formDialog] = false;
 				vmThis[formStatus] = false;
+				vmThis.$refs[formName].resetFields();
 				vmThis.loadDatalist();
 				
 			}, 2000);

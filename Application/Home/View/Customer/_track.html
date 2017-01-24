@@ -1,41 +1,51 @@
 <el-dialog title="录入跟踪" v-model="addTrackFormDialog" @open="beforeAddTrack">
-  <el-form  :label-width="dialogLabelWidth">
-
-     <el-form-item  label-width="0px">
-      <el-alert
-        title="以下信息将会自动添加到以下客户的跟踪纪录里"
-        type="warning"
-        :description="alertDesc"
-        :closable="false"
-        >
-      </el-alert>
+  <el-form  ref="addTrackForm" :label-width="dialogLabelWidth" :model="addTrackForm">
+  <el-row>
+    <el-col :span="12">
+      <el-form-item label="客户姓名"  prop="name">
+        <el-input
+        v-model="addTrackForm.name"
+        :disabled="true">
       </el-form-item>
-
+    </el-col>
+    <el-col :span="12">
+      <el-form-item label="客户类型" prop="to_type">
+        <el-select v-model="addTrackForm.to_type" placeholder="请选择">
+          <el-option
+            v-for="(type, typeIndex) in customerType"
+            :label="type"
+            :value="typeIndex">
+          </el-option>
+        </el-select>
+      </el-form-item>
+    </el-col>
+  </el-row>
+    
    <el-row>
    	<el-col :span="12">
-   		<el-form-item label="下次跟踪时间" >
+   		<el-form-item label="下次跟踪时间" prop="next_datetime">
 		    <el-date-picker
 		      v-model="addTrackForm.next_datetime"
-		      type="date"
-		      placeholder="选择日期"
+		      type="datetime"
+		      placeholder="选择日期时间"
+          :editable="false"
 		      >
 		    </el-date-picker>
     	</el-form-item>
    	</el-col>
    	<el-col :span="12">
-   		<el-form-item label="跟踪类型" >
-	      <el-select v-model="addTrackForm.track_type" placeholder="请选择活动区域">
+   		<el-form-item label="跟踪步骤" prop="step">
+        <el-select v-model="addTrackForm.step" placeholder="请选择">
           <el-option
-            v-for="(type, typeIndex) in logType"
-            :label="type"
+            v-for="(type, typeIndex) in steps"
+            :label="typeIndex+1 +'、'+type"
             :value="typeIndex">
           </el-option>
-	      </el-select>
-	    </el-form-item>
+        </el-select>
+      </el-form-item>
    	</el-col>
    </el-row>
-    <el-form-item label="跟踪内容" >
-      
+    <el-form-item label="跟踪内容"  prop="content">
       <el-input
 		  type="textarea"
 		  :autosize="{ minRows: 2, maxRows: 4}"

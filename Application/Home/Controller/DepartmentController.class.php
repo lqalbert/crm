@@ -37,7 +37,7 @@ class DepartmentController extends CommonController {
 	public function getTopD(){
 		// where(array('type'=>array('EQ', I('get.type')-1)))
 		$this->ajaxReturn(
-			$this->M->field('id,name')->select()
+			$this->M->field('id,name,level')->order('level asc ,id asc')->select()
 		);
 	}
     
