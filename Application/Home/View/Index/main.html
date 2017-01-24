@@ -9,11 +9,11 @@
 
 	<el-row :gutter="20">
 		<el-col :span="8">
-			<el-card class="box-card">
+			<el-card id="one" class="box-card">
 			  <div slot="header" class="clearfix">
 			    <span>个人信息</span>
 			  </div>
-			  <div style="width:480px;display: table-cell;vertical-align:middle;">
+			  <div id="two" style="width:480px;display: table-cell;vertical-align:middle;">
 			  	<php>
 					$userInfo = session('account')['userInfo'];
 					$arr=M('user_info')->where(array('user_id'=>$userInfo['user_id']))->find();
@@ -23,7 +23,7 @@
 				</php>
 			  	<img src="__ROOT__{$arr['head']}" class="image" width="100%" height="100%" style="width:200px;height:200px;border-radius:100%; vertical-align:middle;">
 				
-			  	<div style="float:right;width:200px;border-left:1px solid #e2e2e2;line-height:200%">
+			  	<div id="th" style="float:right;width:200px;border-left:1px solid #e2e2e2;line-height:200%">
 			  		&nbsp;&nbsp;&nbsp;<span>姓名：{$arr['realname']}</span><br>
 			  		&nbsp;&nbsp;&nbsp;<span>I  D：{$arr['user_id']}</span><br>
 			  		&nbsp;&nbsp;&nbsp;<span>类型：网销主管</span><br>
@@ -187,6 +187,17 @@
         
         window.onresize = myChart.resize;
 
+
+        var w=document.body.scrollWidth;
+      	if(w<1400){
+      		var two=document.getElementById('two');
+      		var th=document.getElementById('th');
+      		two.style.textAlign='center';
+            th.style.lineHeight='150%';
+            th.style.marginRight="30px";
+            th.style.textAlign='left';
+      	}
+
 	}).setDatas({
 		sysData:[
 				{
@@ -263,10 +274,8 @@
 				}
 			]
 	});
-
-		
-
-
-
+	</script>
+	<script>
+      	
 	</script>
 </block>

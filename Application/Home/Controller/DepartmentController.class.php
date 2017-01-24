@@ -41,19 +41,6 @@ class DepartmentController extends CommonController {
 		);
 	}
     
-    // public function _before_add(){     
-    //    // if(I('post.p_name') == '0'){
-    //    // 	 $_POST['p_id']=I('post.p_name');
-    //    // 	 $_POST['p_name']='顶级组织';
-    //    // }else{
-    //    // 	 $_POST['p_id']=I('post.p_name');
-    //    // 	 $arr=$this->M->where(array('id'=>I('post.p_name')))->field('name')->find();
-    //    // 	 $_POST['p_name']=$arr['name'];
-    //    // }
-    // 	return true;
-    // }
-
-
 	/**
 	* 在添加之前 处理
 	* @return true
@@ -89,7 +76,5 @@ class DepartmentController extends CommonController {
 		$this->ajaxReturn($result);
 
 	}
-
-
 
 }
