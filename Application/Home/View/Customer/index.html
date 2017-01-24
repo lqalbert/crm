@@ -110,11 +110,11 @@
     >
 	    <el-table-column type="selection"  width="50" >
 	    </el-table-column>
-	    <el-table-column   label="{:L('INDEX')}"  :formatter="handleIndex" width="70"  >
+	    <el-table-column   label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  >
 	    </el-table-column>
 	    <el-table-column prop="name"  label="客户姓名" width="140" align="center">
 	    </el-table-column>
-      <el-table-column prop="sex"  label="性别" width="140" align="center">
+      <el-table-column prop="sex"  label="性别" width="65" align="center">
         <template scope="scope">
           {{ getType(scope.row.sex, 'sexType') }}
         </template>
@@ -124,25 +124,29 @@
          {{ getType(scope.row.type, 'customerType') }}
         </template>
 	    </el-table-column>
-	    <el-table-column prop="phone" label="手机" align="center">
+	    <el-table-column prop="phone" label="手机" align="center" width="140">
 	    </el-table-column>
-		  <el-table-column prop="qq" label="QQ号" align="center">
+		  <el-table-column prop="qq" label="QQ号" align="center" width="140">
 	    </el-table-column>
-	    <el-table-column prop="qq_nickname" label="QQ昵称" align="center">
+	    <el-table-column prop="qq_nickname" label="QQ昵称" align="center" width="140">
 	    </el-table-column>
-	   <el-table-column  label="地区" align="center">
+	   <el-table-column  label="地区" align="center" width="135">
       <template scope="scope">
            {{ scope.row.province_name+"-"+scope.row.city_name }}
         </template>
 	    </el-table-column>
-	    <!--<el-table-column  label="跟踪员工" >
+	    <el-table-column  prop="user_id" label="跟踪员工" align="center" width="140">
 	    </el-table-column>
-	    <el-table-column  label="跟踪方最后跟踪时间" >
+	    <el-table-column  prop="last_track" label="跟踪方最后跟踪时间" align="center" width="175">
 	    </el-table-column>
-
-	    <el-table-column  label="锁定方最后跟踪时间" >
-	    </el-table-column> -->
-
+	    <el-table-column  prop="lock_track" label="锁定方最后跟踪时间" align="center" width="175">
+	    </el-table-column> 
+      <el-table-column  prop="ser_track" label="服务方最后跟踪时间" align="center" width="175">
+      </el-table-column> 
+      <el-table-column  prop="commission" label="跟踪方比例" align="center" width="110">
+      </el-table-column> 
+      <el-table-column  prop="conflict" label="最后冲突时间" align="center" width="175">
+      </el-table-column> 
 	    <el-table-column inline-template :context="_self"  fixed="right"  align="center" label="操作" width="160">
 	      <span>
 	        <el-button @click="handleEdit($index, row)"  size="small">编辑</el-button>
@@ -170,7 +174,7 @@
             <el-tooltip content="选择客户对其转让给他人" placement="right">
               <el-button size="small" type="warning" style="margin-left:10px;">转让</el-button>
             </el-tooltip>
-            <el-tooltip content="。。。。。。" placement="right">
+            <el-tooltip content="选择客户录入其提醒事项及内容" placement="right">
               <el-button size="small" type="info" style="margin-left:10px;">提醒</el-button>
             </el-tooltip>
             <el-tooltip content="筛选客户重点跟踪" placement="right">
@@ -178,10 +182,9 @@
             <el-tooltip content="选择客户对其拨打电话" placement="right">
               <el-button size="small" type="primary" style="margin-left:10px;">拨打电话</el-button>
             </el-tooltip>
-              <!-- <el-button  @click="addCustomer">修改客户</el-button> -->
-              <!-- <el-button>计划</el-button>
-              <el-button>推介</el-button> -->
-
+            <el-tooltip content="选择客户显示客户的所有资料" placement="right">
+              <el-button size="small" type="success" style="margin-left:10px;">客户资料</el-button>
+            </el-tooltip>
           </span>
           
     </div>
@@ -347,6 +350,7 @@ function toInt(v){
       })
       vmThis.$set(vmThis, 'provinces', provinces);
     });
+    this.dialogLabelWidth = "100px";
   }).setMethod('trackLog',function(row,event,column){
       this.$http.post('{:U(trackInfo)}',row).then(function(response){
         this.tableData = response.body;

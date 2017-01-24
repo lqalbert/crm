@@ -3,60 +3,76 @@
 <el-form :model="addForm" v-model="addForm" :label-width="dialogLabelWidth">
 
   <el-row>
-    <el-col :span="12">
+    <el-col :span="8">
       <el-form-item label="客户姓名" >
-        <el-input v-model="addForm.name" auto-complete="off"></el-input>
+        <el-input  v-model="addForm.name" auto-complete="off" ></el-input>
       </el-form-item>
     </el-col>
-    <el-col :span="12">
+    <el-col :span="8">
       <el-form-item label="客户类型" >
-        <el-select v-model="addForm.type" placeholder="请选择客户类型">
-          <el-option v-for="(type, key) in customerType" :label="type" :value="key"></el-option>
+        <el-select v-model="addForm.type" placeholder="请选择客户类型" >
+          <el-option v-for="(type, key) in customerType" :label="type" :value="key" ></el-option>
         </el-select>
+      </el-form-item>
+    </el-col>
+    <el-col :span="8">
+      <el-form-item label="手机1" >
+        <el-input v-model="addForm.phone" auto-complete="off" ></el-input>
       </el-form-item>
     </el-col>
   </el-row>
    <el-row>
-    <el-col :span="12">
-      <el-form-item label="手机" >
-        <el-input v-model="addForm.phone" auto-complete="off"></el-input>
-      </el-form-item>
-    </el-col>
-    <el-col :span="12">
-      <el-form-item label="性别" >
-        <el-radio class="radio" v-model="addForm.sex" label="1">男</el-radio>
-        <el-radio class="radio" v-model="addForm.sex" label="2">女</el-radio>
-      </el-form-item>
-
-      <!-- <el-form-item label="跟类型" >
-        <el-select v-model="form.region" placeholder="请选择活动区域">
-          <el-option label="区域一" value="shanghai"></el-option>
-          <el-option label="区域二" value="beijing"></el-option>
-        </el-select>
-      </el-form-item> -->
-    </el-col>
-   </el-row>
-    <el-row>
-      <el-col :span="12">
+      <el-col :span="8">
         <el-form-item label="QQ号" >
-          <el-input v-model="addForm.qq" auto-complete="off"></el-input>
+          <el-input v-model="addForm.qq" auto-complete="off" ></el-input>
         </el-form-item>
       </el-col>
-      <el-col :span="12">
+      <el-col :span="8">
         <el-form-item label="QQ昵称" >
-          <el-input v-model="addForm.qq_nickname" auto-complete="off"></el-input>
+          <el-input v-model="addForm.qq_nickname" auto-complete="off" ></el-input>
+        </el-form-item>
+      </el-col>
+      <el-col :span="8">
+        <el-form-item label="手机2" >
+          <el-input v-model="addForm.phone" auto-complete="off" ></el-input>
+        </el-form-item>
+      </el-col>
+
+   </el-row>
+    <el-row>
+      <el-col :span="8">
+        <el-form-item label="QQ号2" >
+          <el-input v-model="addForm.qq" auto-complete="off" ></el-input>
+        </el-form-item>
+      </el-col>
+      <el-col :span="8">
+        <el-form-item label="QQ昵称2" >
+          <el-input v-model="addForm.qq_nickname" auto-complete="off" ></el-input>
+        </el-form-item>
+      </el-col>
+      <el-col :span="8">
+        <el-form-item label="性别" >
+          <el-radio class="radio" v-model="addForm.sex" label="1">男</el-radio>
+          <el-radio class="radio" v-model="addForm.sex" label="2">女</el-radio>
         </el-form-item>
       </el-col>
     </el-row>
     <el-row>
-      <el-col :span="12">
+      <el-col :span="8">
         <el-form-item label="微信号" >
-          <el-input v-model="addForm.weixin"  auto-complete="off"></el-input>
+          <el-input v-model="addForm.weixin"  auto-complete="off" ></el-input>
         </el-form-item>
       </el-col>
-      <el-col :span="12">
+      <el-col :span="8">
         <el-form-item label="微信昵称" >
-          <el-input v-model="addForm.weixin_nickname"  auto-complete="off"></el-input>
+          <el-input v-model="addForm.weixin_nickname"  auto-complete="off" ></el-input>
+        </el-form-item>
+      </el-col>
+      <el-col :span="8">
+        <el-form-item label="省份" >
+          <el-select v-model="addForm.area_province" filterable @change="provinceChange" placeholder="请选择省份" >
+            <el-option v-for="province in provinces" :label="province.name"  :value="province.id"></el-option>
+          </el-select>
         </el-form-item>
       </el-col>
     </el-row>
@@ -73,34 +89,114 @@
       </el-col>
     </el-row> -->
     <el-row>
-      <el-col :span="12">
-        <el-form-item label="省份" >
-          <el-select v-model="addForm.area_province" filterable @change="provinceChange" placeholder="请选择">
-            <el-option v-for="province in provinces" :label="province.name"  :value="province.id"></el-option>
+      <el-col :span="8">
+        <el-form-item  label="客户质量" >
+          <el-select v-model="addForm.area_city"   placeholder="请选择" >
+            <el-option v-for="city in cities" :label="city.name"  :value="city.id"></el-option>
           </el-select>
         </el-form-item>
       </el-col>
-      <el-col :span="12">
+      <el-col :span="8">
+        <el-form-item  label="股龄" >
+          <el-select v-model="addForm.area_city"   placeholder="请选择" >
+            <el-option v-for="city in cities" :label="city.name"  :value="city.id"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+      <el-col :span="8">
         <el-form-item  label="城市" >
-          <el-select v-model="addForm.area_city"   placeholder="请选择">
+          <el-select v-model="addForm.area_city"   placeholder="请选择城市" >
             <el-option v-for="city in cities" :label="city.name"  :value="city.id"></el-option>
           </el-select>
         </el-form-item>
       </el-col>
     </el-row>
     <el-row>
-      <el-col :span="12">
-        <el-form-item label="股龄" >
-          <el-input-number  v-model="addForm.year" :min="1" :max="100"></el-input-number>
-        </el-form-item>
-      </el-col>
-     <!--  <el-col :span="12">
-        <el-form-item label="近期收益" >
-          <el-select  placeholder="请选择">
-            <el-option label="测试数据" value="区域一"></el-option>
+      <el-col :span="8">
+        <el-form-item  label="近期收益" >
+          <el-select v-model="addForm.area_city"   placeholder="请选择" >
+            <el-option v-for="city in cities" :label="city.name"  :value="city.id"></el-option>
           </el-select>
         </el-form-item>
-      </el-col> -->
+      </el-col>
+      <el-col :span="8">
+        <el-form-item  label="投资风格" >
+          <el-select v-model="addForm.area_city"   placeholder="请选择" >
+            <el-option v-for="city in cities" :label="city.name"  :value="city.id"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+      <el-col :span="8">
+        <el-form-item  label="资金量" >
+          <el-select v-model="addForm.area_city"   placeholder="请选择" >
+            <el-option v-for="city in cities" :label="city.name"  :value="city.id"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="8">
+        <el-form-item  label="看盘精力" >
+          <el-select v-model="addForm.area_city"   placeholder="请选择" >
+            <el-option v-for="city in cities" :label="city.name"  :value="city.id"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+      <el-col :span="8">
+        <el-form-item  label="投资问题" >
+          <el-select v-model="addForm.area_city"   placeholder="请选择" >
+            <el-option v-for="city in cities" :label="city.name"  :value="city.id"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+      <el-col :span="8">
+        <el-form-item  label="盈利模式" >
+          <el-select v-model="addForm.area_city"   placeholder="请选择" >
+            <el-option v-for="city in cities" :label="city.name"  :value="city.id"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="8">
+        <el-form-item  label="态度" >
+          <el-select v-model="addForm.area_city"   placeholder="请选择" >
+            <el-option v-for="city in cities" :label="city.name"  :value="city.id"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+      <el-col :span="8">
+        <el-form-item  label="职业" >
+          <el-select v-model="addForm.area_city"   placeholder="请选择" >
+            <el-option v-for="city in cities" :label="city.name"  :value="city.id"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+      <el-col :span="8">
+        <el-form-item  label="软件意向" >
+          <el-select v-model="addForm.area_city"   placeholder="请选择" >
+            <el-option v-for="city in cities" :label="city.name"  :value="city.id"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="8">
+        <el-form-item  label="客户来源" >
+          <el-select v-model="addForm.area_city"   placeholder="请选择" >
+            <el-option v-for="city in cities" :label="city.name"  :value="city.id"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+      <el-col :span="16">
+        <el-form-item label="备注">
+          <el-input
+            v-model="addForm.remark"
+            type="textarea"
+            :autosize="{ minRows: 2, maxRows: 4}"
+            placeholder="请输入内容">
+        </el-form-item>
+      </el-col>
     </el-row>
     <!-- <el-row>
       <el-col :span="12">
@@ -178,13 +274,7 @@
         
       </el-col>
     </el-row>-->
-    <el-form-item label="备注" >
-      <el-input
-        v-model="addForm.remark"
-        type="textarea"
-        :autosize="{ minRows: 2, maxRows: 4}"
-        placeholder="请输入内容">
-      </el-form-item>
+
   </el-form>
   <div slot="footer" class="dialog-footer">
     <include file="Common:_add" />

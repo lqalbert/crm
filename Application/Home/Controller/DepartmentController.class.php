@@ -34,7 +34,7 @@ class DepartmentController extends CommonController {
 		);
 	}
     
-    public function _before_add(){     
+/*    public function _before_add(){     
        if(I('post.p_name') == '0'){
        	 $_POST['p_id']=I('post.p_name');
        	 $_POST['p_name']='顶级组织';
@@ -47,6 +47,42 @@ class DepartmentController extends CommonController {
 
     public function _before_edit(){
     	$this->_before_add();
-    }
+    }*/
+
+	/**
+	* 在添加之前 处理
+	* @return true
+	*/
+	public function _before_edit(){
+		$id  = I('post.id');
+		$old = $this->M->field('name')->find($id);
+		$old_name = $old['name'];
+		$new_name = I("post.name");
+		if ($old_name != $new_name) {
+			$re = $this->M->where(array('p_id'=>$id))->save(array('p_name'=>$new_name));
+			if ($re !== false) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		return true;
+	}
+    
+    /**
+    * 获取区域/部门 对应的备选负责人
+    * 1 获取 区域
+    * 2 获取 事业部门
+    * 3 获取 推广部门
+    */
+	public function getUsers(){
+		$type = I("get.type");
+		$role_id = D("role")->getIdByType($type);
+		$sql  = "select user_id from rbac_role_user where role_id = $role_id";
+		$sql  = "select user_id, realname, mphone from user_info where user_id in($sql)";
+		$result = $this->M->query($sql);
+		$this->ajaxReturn($result);
+
+	}
 
 }
