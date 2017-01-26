@@ -33,6 +33,8 @@
   </style>
 </block>
 <block name="body">
+  
+
 <div id="app" class="container">
 <div class="wrapp" id="appx" v-show="show" style="display: none;">
   <!-- <div class="a" style="border:1px solid red;"> -->
@@ -116,7 +118,7 @@
     v-loading="dataLoad" 
     element-loading-text="{:L('DATA_LOGIN')}"
     @selection-change="handleSelectionChange"
-    @row-click="trackLog">
+    @row-click="trackLog"  ref="select" @row-dblclick="userInfo">
 	    <el-table-column type="selection"  width="50" >
 	    </el-table-column>
 	    <el-table-column   label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  >
@@ -139,12 +141,15 @@
 	    </el-table-column>
 	    <el-table-column prop="qq_nickname" label="QQ昵称" align="center" width="140">
 	    </el-table-column>
-	   <el-table-column  label="地区" align="center" width="135">
-      <template scope="scope">
+	    <el-table-column  label="地区" align="center" width="135">
+        <template scope="scope">
            {{ scope.row.province_name+"-"+scope.row.city_name }}
         </template>
 	    </el-table-column>
-	    <el-table-column  prop="user_id" label="跟踪员工" align="center" width="140">
+	    <el-table-column  prop="user_id" label="跟踪员工" align="center" width="200">
+        <template scope="scope">
+          {:session('account')['userInfo']['p_name']}-{:session('account')['userInfo']['realname']}
+        </template>
 	    </el-table-column>
 	    <el-table-column  prop="last_track" label="跟踪方最后跟踪时间" align="center" width="175">
 	    </el-table-column>
@@ -191,7 +196,7 @@
             <el-tooltip content="选择客户对其拨打电话" placement="right">
               <el-button size="small" type="primary" style="margin-left:10px;">拨打电话</el-button>
             </el-tooltip>
-            <el-tooltip content="选择客户显示客户的所有资料" placement="right">
+            <el-tooltip content="选择客户显示客户的详细资料" placement="right">
               <el-button size="small" type="success" style="margin-left:10px;">客户资料</el-button>
             </el-tooltip>
           </span>
@@ -222,9 +227,9 @@
               </el-table-column>
               <el-table-column prop="created_at" label="跟踪时间" width="180" align="center">
               </el-table-column>
-              <!-- <el-table-column prop="type" label="客户类型" align="center">
-              </el-table-column> -->
-              <el-table-column prop="track_type" label="跟踪类型" >
+              <el-table-column prop="type" label="客户类型" align="center">
+              </el-table-column>
+              <el-table-column prop="track_type" label="跟踪类型" align="center">
               </el-table-column>
               <el-table-column prop="content"   label="内容" align="center">
               </el-table-column>
@@ -250,7 +255,10 @@
   <include file="_add" />
   <!-- / 录入客户 -->
   <!-- 编辑 -->
-   <include file="_edit" />
+  <include file="_edit" />
+  <!-- 显示客户一般资料 -->
+  <include file="_userInfo"/>
+
 </div>
 
 </div> 
@@ -264,6 +272,8 @@ function toInt(v){
 <script>
   page.addTrackFormUrl = "{:U('addTrackLogs')}";
   window.defaultOption.setDatas({
+    dialogVisible:false,
+    sb:[],
     tableData: [{'name':'',
                  'created_at':'',
                  'type':'',
@@ -273,6 +283,18 @@ function toInt(v){
     }],
     customerType:{:json_encode($customerType)},
     sexType:{:json_encode($sexType)},
+    Quality:{:json_encode($Quality)},
+    Year:{:json_encode($Year)},
+    Income:{:json_encode($Income)},
+    Sty:{:json_encode($Sty)},
+    Money:{:json_encode($Money)},
+    Energy:{:json_encode($Energy)},
+    Problem:{:json_encode($Problem)},
+    Mode:{:json_encode($Mode)},
+    Attitude:{:json_encode($Attitude)},
+    Profession:{:json_encode($Profession)},
+    Intention:{:json_encode($Intention)},
+    Source:{:json_encode($Source)},
     provinces:[],
     cities:[],
     multipleSelection: [],
@@ -293,31 +315,59 @@ function toInt(v){
     group:'user_id'
   }).setForm('add',{
     name:"",
+    type:"",
     phone:"",
+    phone2:"",
     qq:"",
+    qq2:"",
     qq_nickname:"",
+    qq_nickname2:"",
+    sex:0,
     weixin:"",
     weixin_nickname:"",
-    type:"",
-    sex:0,
     area_province:null,
     area_city:null,
-    year:1,
-    remark:""
+    quality:'',
+    year:'',
+    re_income:'',
+    style:'',
+    money:'',
+    energy:'',
+    problem:'',
+    mode:'',
+    attitude:'',
+    profession:'',
+    intention:'',
+    source:'',
+    remark:"",
   }).setForm('edit',{
     id:"",
     name:"",
+    type:"",
     phone:"",
+    phone2:"",
     qq:"",
+    qq2:"",
     qq_nickname:"",
+    qq_nickname2:"",
+    sex:0,
     weixin:"",
     weixin_nickname:"",
-    type:"",
-    sex:0,
     area_province:null,
     area_city:null,
-    year:1,
-    remark:""
+    quality:'',
+    year:'',
+    re_income:'',
+    style:'',
+    money:'',
+    energy:'',
+    problem:'',
+    mode:'',
+    attitude:'',
+    profession:'',
+    intention:'',
+    source:'',
+    remark:"",
   }).setForm('addTrack',{
     cus_id:"",
     next_datetime:'',
@@ -328,13 +378,25 @@ function toInt(v){
     step:"",
   },true).setMethod('getType', function(type, field){
       return this[field][type];
-  })// .setMethod('beforeList', function(data){
-  //   // data.forEach(function(currentValue){
-  //   //   currentValue.type  = parseInt(currentValue.type);
-  //   // })
-  //   return data;
-  // })
-  .setMethod('provinceChange', function(v){
+  }).setMethod('beforeList', function(data){
+        data.forEach(function(currentValue){
+          //将string类型转换为number和为0的变为空
+          currentValue.quality = currentValue.quality == 0?"":parseInt(currentValue.quality);      
+          currentValue.year = currentValue.year == 0?"":parseInt(currentValue.year);      
+          currentValue.re_income = currentValue.re_income == 0?"":parseInt(currentValue.re_income);      
+          currentValue.style = currentValue.style == 0?"":parseInt(currentValue.style);      
+          currentValue.money = currentValue.money == 0?"":parseInt(currentValue.money);      
+          currentValue.energy = currentValue.energy == 0?"":parseInt(currentValue.energy);      
+          currentValue.problem = currentValue.problem == 0?"":parseInt(currentValue.problem);      
+          currentValue.mode = currentValue.mode == 0?"":parseInt(currentValue.mode);      
+          currentValue.attitude = currentValue.attitude == 0?"":parseInt(currentValue.attitude);      
+          currentValue.profession = currentValue.profession == 0?"":parseInt(currentValue.profession);      
+          currentValue.intention = currentValue.intention == 0?"":parseInt(currentValue.intention);      
+          currentValue.source = currentValue.source == 0?"":parseInt(currentValue.source);          
+          //console.log(typeof(currentValue.quality));
+       })
+     return data;
+  }).setMethod('provinceChange', function(v){
     var vmThis = this;
     this.$http.get('{:U("Area/getAreasByPid")}', {params:{pid:v} }).then(function(response){
       var cities = [];
@@ -371,19 +433,26 @@ function toInt(v){
     });
     this.dialogLabelWidth = "100px";
   }).setMethod('trackLog',function(row,event,column){
-      this.$http.post('{:U(trackInfo)}',row).then(function(response){
-        this.tableData = response.body;
-      },function(response){
-        console.log("操作失败");
-      });
+        this.$refs.select.toggleRowSelection(row);
+        this.$http.post('{:U(trackInfo)}',row).then(function(response){
+          this.tableData = response.body;
+        },function(response){
+          console.log("操作失败");
+        });
+  }).setMethod('userInfo',function(row,event){
+      this.dialogVisible=true;
+      this.sb=row;
+      this.$refs.select.toggleRowSelection(row);
+
   }).setMethod('setField', function(v){
       this[FormName.getFormName('search')].field = v;
       this.loadDatalist();
   });
 </script>
 <script>
-    var he=document.getElementById('he');
-    var h=document.body.scrollHeight;
+     //console.log({:json_encode($Sty)});
+   // var he=document.getElementById('he');
+    //var h=document.body.scrollHeight;
     //console.log(sb);
     //sb.style.height=h/2+'px';  max-height="400"
     //he.setAttribute("max-height",h*0.6);

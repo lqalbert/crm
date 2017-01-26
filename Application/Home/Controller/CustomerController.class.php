@@ -9,9 +9,20 @@ class CustomerController extends CommonController {
 		// $dataList = $this->getList();
 		$this->assign('customerType', $this->M->getType());
 		$this->assign('sexType',      $this->M->getSexType());
+		$this->assign('Quality',      $this->M->getQuality());
+		$this->assign('Year',         $this->M->getYear());
+		$this->assign('Income',       $this->M->getIncome());
+		$this->assign('Sty',          $this->M->getStyle());
+		$this->assign('Money',        $this->M->getMoney());
+		$this->assign('Energy',       $this->M->getEnergy());
+		$this->assign('Problem',      $this->M->getProblem());
+		$this->assign('Mode',         $this->M->getMode());
+		$this->assign('Attitude',     $this->M->getAttitude());
+		$this->assign('Profession',   $this->M->getProfession());
+		$this->assign('Intention',    $this->M->getIntention());
+		$this->assign('Source',       $this->M->getSource());
 		$this->assign('logType',      D('CustomerLog')->getType());
 		$this->assign('steps',        D('CustomerLog')->getSteps());
-
 		$this->display();
 	}
 
