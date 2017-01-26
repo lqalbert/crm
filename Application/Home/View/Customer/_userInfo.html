@@ -1,0 +1,53 @@
+<el-dialog title="查看信息" v-model="dialogVisible">
+  <el-row style="font-size:16px;padding-left:30px;">
+    <el-col :span="12">
+      客户姓名：{{sb.name}}
+    </el-col>
+    <el-col :span="12">
+      客户类型：{{ getType(sb.type, 'customerType') }}
+    </el-col>
+  </el-row>
+  <el-row style="font-size:16px;padding-left:30px;">
+    <el-col :span="12">
+      手机：{{sb.phone}}
+    </el-col>
+    <el-col :span="12">
+      QQ号：{{sb.qq}}
+    </el-col>
+  </el-row>
+  <el-row style="font-size:16px;padding-left:30px;">
+    <el-col :span="12">
+      QQ昵称：{{sb.qq_nickname}}
+    </el-col>
+    <el-col :span="12">
+      地区：{{ sb.province_name+"-"+sb.city_name }}
+    </el-col>
+  </el-row>
+  <el-row style="font-size:16px;padding-left:30px;">
+    <el-col :span="12">
+      跟踪员工：{:session('account')['userInfo']['p_name']}-{:session('account')['userInfo']['realname']}
+    </el-col>
+    <el-col :span="12">
+      跟踪方最后跟踪时间：{{sb.last_track}}
+    </el-col>
+  </el-row>
+  <el-row style="font-size:16px;padding-left:30px;">
+    <el-col :span="12">
+      锁定方最后跟踪时间：{{sb.lock_track}}
+    </el-col>
+    <el-col :span="12">
+      服务方最后跟踪时间：{{sb.ser_track}}
+    </el-col>
+  </el-row>
+  <el-row style="font-size:16px;padding-left:30px;">
+    <el-col :span="12">
+      跟踪比例：{{sb.commission}}
+    </el-col>
+    <el-col :span="12">
+      最后冲突时间：{{sb.conflict}}
+    </el-col>
+  </el-row>
+ <span slot="footer" class="dialog-footer">
+   <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+ </span>
+</el-dialog>
