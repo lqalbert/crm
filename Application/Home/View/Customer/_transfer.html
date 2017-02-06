@@ -1,0 +1,71 @@
+<el-dialog title="客户转让" v-model="addTransferFormDialog" @open="beforeAddTransfer">
+  <el-form  ref="addTransferForm" :label-width="dialogLabelWidth" :model="addTransferForm">
+  <el-row>
+    <el-col :span="8">
+      <el-form-item label="客户姓名"  prop="name">
+        <el-input v-model="addTransferForm.name" :disabled="true">
+      </el-form-item>
+    </el-col>
+
+    <el-col :span="8">
+      <el-form-item label="接收单位" prop="rec_dep">
+        <el-select v-model="addTransferForm.rec_dep" filterable @change="depChange" placeholder="请选择接收单位">
+          <el-option
+            v-for="dep in deps"
+            :label="dep.name"
+            :value="dep.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+    </el-col>
+    <el-col :span="8">
+      <el-form-item label="接收员工" prop="rec_user">
+        <el-select v-model="addTransferForm.rec_user" filterable placeholder="请选择接收员工">
+          <el-option
+            v-for="reUser in reUsers"
+            :label="reUser.name"
+            :value="reUser.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+    </el-col>
+  </el-row>
+  <el-row>
+    <el-col :span="10">
+      <el-form-item label="服务方比例" prop="step">
+        <el-select v-model="addTransferForm.proportion" placeholder="请选择服务比例">
+          <el-option
+            v-for="(proportion, key) in Proportion"
+            :label="proportion"
+            :value="key">
+          </el-option>
+        </el-select>
+      </el-form-item>
+    </el-col>
+   	<el-col :span="14">
+   		<el-form-item label="计划跟踪时间" prop="next_datetime">
+		    <el-date-picker
+		      v-model="addTransferForm.next_datetime"
+		      type="datetime"
+		      placeholder="选择日期时间"
+          :editable="false"
+		      >
+		    </el-date-picker>
+    	</el-form-item>
+   	</el-col>
+  </el-row>
+    <el-form-item label="备注"  prop="content">
+      <el-input
+		  type="textarea"
+		  :autosize="{ minRows: 2, maxRows: 4}"
+		  placeholder="请输入内容"
+		  v-model="addTransferForm.content">
+		</el-input>
+    </el-form-item>
+  </el-form>
+  <div slot="footer" class="dialog-footer">
+   <el-button @click="closeDialog('addTransfer')">取 消</el-button>
+   <el-button type="primary" v-show="!addTransferFormSubmitStatus" @click="addTransferFormSubmit(page.addTransferFormUrl, 'addTransfer')" >确 定</el-button>
+   <el-button type="primary" v-show="addTransferFormSubmitStatus" :loading="true" >添加中</el-button>
+  </div>
+</el-dialog>

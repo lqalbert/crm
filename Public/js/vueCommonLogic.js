@@ -118,9 +118,11 @@ function setCommonLogic(opt){
 	// //打开关闭对话框
 
 	opt.setMethod("openDialog", function(dialog){
-
+        
 		this[FormName.getDialog(dialog)] = true;
+        //console.log(FormName.getDialog(dialog));
 		this.currentForm = FormName.getForm(dialog);
+
 	});
 
 	opt.setMethod("closeDialog", function(dialog){
@@ -154,6 +156,8 @@ function setCommonLogic(opt){
         		// vmThis.dataList.splice(index, 1);
 
         		vmThis.loadDatalist();
+        		//this.dataLoad = true;
+		       // this.loadDatalist();
 
         	}, function(response){
         		vmThis.$message({
@@ -267,7 +271,7 @@ function setForm(opt, type){
 			  type: 'error'
 			});
         	setTimeout(function(){
-        		vmThis[formStatus] = false;
+        		this[formStatus] = false;
         	},2000);
         });
 	})

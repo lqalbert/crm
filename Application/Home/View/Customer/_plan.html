@@ -1,0 +1,27 @@
+<el-dialog title="录入计划" v-model="addPlanFormDialog" @open="beforeAddPlan">
+  <el-form  ref="addPlanForm" :label-width="dialogLabelWidth" :model="addPlanForm">
+  <el-row>
+    <el-col :span="8">
+      <el-form-item label="客户姓名"  prop="name">
+        <el-input v-model="addPlanForm.name" :disabled="true">
+      </el-form-item>
+    </el-col>
+    <el-col :span="16">
+      <el-form-item label="计划下次跟踪时间" prop="plan">
+        <el-date-picker
+          v-model="addPlanForm.plan"
+          type="datetime"
+          placeholder="选择日期时间"
+          :editable="false"
+          >
+        </el-date-picker>
+      </el-form-item>
+    </el-col>
+  </el-row>
+</el-form>
+  <div slot="footer" class="dialog-footer">
+   <el-button @click="closeDialog('addPlan')">取 消</el-button>
+   <el-button type="primary" v-show="!addPlanFormSubmitStatus" @click="addPlanFormSubmit(page.addPlanFormUrl, 'addPlan')" >确 定</el-button>
+   <el-button type="primary" v-show="addPlanFormSubmitStatus" :loading="true" >添加中</el-button>
+  </div>
+</el-dialog>

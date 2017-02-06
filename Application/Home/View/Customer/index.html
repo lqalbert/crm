@@ -183,21 +183,22 @@
               <el-button size="small" @click="openDialog('addTrack')" type="primary" style="margin-left:10px;">录入跟踪</el-button>
             </el-tooltip>
             <el-tooltip content="选择客户录入对其跟踪计划" placement="right">
-              <el-button size="small" type="primary" style="margin-left:10px;">计划</el-button>
+              <el-button size="small" @click="openDialog('addPlan')" type="primary" style="margin-left:10px;">计划</el-button>
             </el-tooltip>
             <el-tooltip content="选择客户对其转让给他人" placement="right">
-              <el-button size="small" type="warning" style="margin-left:10px;">转让</el-button>
+              <el-button size="small" @click="openDialog('addTransfer')" type="warning" style="margin-left:10px;">转让</el-button>
             </el-tooltip>
             <el-tooltip content="选择客户录入其提醒事项及内容" placement="right">
-              <el-button size="small" type="info" style="margin-left:10px;">提醒</el-button>
+              <el-button size="small" @click="openDialog('addRemind')" type="info" style="margin-left:10px;">提醒</el-button>
             </el-tooltip>
             <el-tooltip content="筛选客户重点跟踪" placement="right">
-              <el-button size="small" type="primary" style="margin-left:10px;">自选</el-button>
+              <el-button size="small" @click="openDialog('addChoice')" type="primary" style="margin-left:10px;">自选</el-button>
+            </el-tooltip>
             <el-tooltip content="选择客户对其拨打电话" placement="right">
               <el-button size="small" type="primary" style="margin-left:10px;">拨打电话</el-button>
             </el-tooltip>
             <el-tooltip content="选择客户显示客户的详细资料" placement="right">
-              <el-button size="small" type="success" style="margin-left:10px;">客户资料</el-button>
+              <el-button size="small" @click="openDialog('showDetail')" type="success" style="margin-left:10px;">客户资料</el-button>
             </el-tooltip>
           </span>
           
@@ -247,10 +248,6 @@
 </div>
 
 <div class="dialogWrapper" v-show="show" style="display: none">
-  <!-- 录入跟踪  -->
-  <include file="_track" />
-  <!-- / 录入跟踪 -->
-
   <!-- 录入客户 -->
   <include file="_add" />
   <!-- / 录入客户 -->
@@ -258,7 +255,24 @@
   <include file="_edit" />
   <!-- 显示客户一般资料 -->
   <include file="_userInfo"/>
-
+  <!-- 录入跟踪  -->
+  <include file="_track" />
+  <!-- / 录入跟踪 -->
+  <!-- 录入计划 -->
+  <include file="_plan"/>
+  <!-- /录入计划 -->
+  <!-- 录入转让 -->
+  <include file="_transfer"/>
+  <!-- /录入转让 -->
+  <!-- 录入提醒 -->
+  <include file="_remind"/>
+  <!-- /录入提醒 -->
+  <!-- 录入自选 -->
+  <include file="_choice"/>
+  <!-- /录入自选 -->
+  <!-- 客户全部资料 -->
+  <include file="_detail"/>
+  <!-- /客户全部资料 -->
 </div>
 
 </div> 
@@ -271,6 +285,7 @@ function toInt(v){
 </script>
 <script>
   page.addTrackFormUrl = "{:U('addTrackLogs')}";
+  page.addPlanFormUrl = "{:U('addPlanLogs')}";
   window.defaultOption.setDatas({
     dialogVisible:false,
     sb:[],
@@ -295,8 +310,12 @@ function toInt(v){
     Profession:{:json_encode($Profession)},
     Intention:{:json_encode($Intention)},
     Source:{:json_encode($Source)},
+    Proportion:{:json_encode($Proportion)},
+    Remind:{:json_encode($Remind)},
     provinces:[],
     cities:[],
+    deps:[],//
+    reUsers:[],//
     multipleSelection: [],
     alertDesc:"",
     logType:{:json_encode($logType)},
@@ -376,24 +395,75 @@ function toInt(v){
     content:'',
     name:"",
     step:"",
+    track_type:'',
+  },true).setForm('addPlan',{
+     cus_id:'',
+     name:'',
+     plan:'',
+  },true).setForm('addTransfer',{
+     cus_id:'',
+     name:'',
+     rec_dep:'',
+     rec_user:'',
+     proportion:'',
+  },true).setForm('addRemind',{
+     cus_id:'',
+     name:'',
+     remind:'',
+     remark:'',
+  },true).setForm('addChoice',{
+     cus_id:'',
+     name:'',
+     remark:'',
+     choose:'1',
+     type:'',
+  },true).setForm('showDetail',{
+    id:"",
+    name:"",
+    type:"",
+    phone:"",
+    phone2:"",
+    qq:"",
+    qq2:"",
+    qq_nickname:"",
+    qq_nickname2:"",
+    sex:0,
+    weixin:"",
+    weixin_nickname:"",
+    area_province:null,
+    area_city:null,
+    quality:'',
+    year:'',
+    re_income:'',
+    style:'',
+    money:'',
+    energy:'',
+    problem:'',
+    mode:'',
+    attitude:'',
+    profession:'',
+    intention:'',
+    source:'',
+    remark:"",
   },true).setMethod('getType', function(type, field){
       return this[field][type];
   }).setMethod('beforeList', function(data){
         data.forEach(function(currentValue){
           //将string类型转换为number和为0的变为空
-          currentValue.quality = currentValue.quality == 0?"":parseInt(currentValue.quality);      
-          currentValue.year = currentValue.year == 0?"":parseInt(currentValue.year);      
-          currentValue.re_income = currentValue.re_income == 0?"":parseInt(currentValue.re_income);      
-          currentValue.style = currentValue.style == 0?"":parseInt(currentValue.style);      
-          currentValue.money = currentValue.money == 0?"":parseInt(currentValue.money);      
-          currentValue.energy = currentValue.energy == 0?"":parseInt(currentValue.energy);      
-          currentValue.problem = currentValue.problem == 0?"":parseInt(currentValue.problem);      
-          currentValue.mode = currentValue.mode == 0?"":parseInt(currentValue.mode);      
-          currentValue.attitude = currentValue.attitude == 0?"":parseInt(currentValue.attitude);      
-          currentValue.profession = currentValue.profession == 0?"":parseInt(currentValue.profession);      
-          currentValue.intention = currentValue.intention == 0?"":parseInt(currentValue.intention);      
-          currentValue.source = currentValue.source == 0?"":parseInt(currentValue.source);          
+          currentValue.quality = currentValue.quality == 0?"":currentValue.quality;      
+          currentValue.year = currentValue.year == 0?"":currentValue.year;      
+          currentValue.re_income = currentValue.re_income == 0?"":currentValue.re_income;      
+          currentValue.style = currentValue.style == 0?"":currentValue.style;      
+          currentValue.money = currentValue.money == 0?"":currentValue.money;      
+          currentValue.energy = currentValue.energy == 0?"":currentValue.energy;      
+          currentValue.problem = currentValue.problem == 0?"":currentValue.problem;      
+          currentValue.mode = currentValue.mode == 0?"":currentValue.mode;      
+          currentValue.attitude = currentValue.attitude == 0?"":currentValue.attitude;      
+          currentValue.profession = currentValue.profession == 0?"":currentValue.profession;      
+          currentValue.intention = currentValue.intention == 0?"":currentValue.intention;      
+          currentValue.source = currentValue.source == 0?"":currentValue.source;          
           //console.log(typeof(currentValue.quality));
+
        })
      return data;
   }).setMethod('provinceChange', function(v){
@@ -405,25 +475,52 @@ function toInt(v){
        })
        vmThis.$set(vmThis, 'cities', cities);
     });
+  }).setMethod('depChange',function(v){
+     //console.log(v);
+     var vmThis=this;
+     this.$http.get('{:U("getRecUser")}', {params:{p_name:v}}).then(function(response){
+       var reUsers = [];
+       response.body.forEach(function(currentValue,index){
+         reUsers.push({value:currentValue.value,name:currentValue.value});
+       })
+       vmThis.$set(vmThis,'reUsers',reUsers);
+     });
   }).setMethod('beforeEdit',function(){
     if (!this.$refs['editselect']) {
       this.provinceChange(this.editForm.area_province);
     }
   }).setMethod('handleSelectionChange', function(val){
     this.multipleSelection = val;
-  }).setMethod('beforeAddTrack', function(){
-    var form = 'addTrack';
+  }).setMethod('commonSelect',function(x){
+    var form = x;
     var vmThis = this;
     if (this.multipleSelection.length ==0 ||  this.multipleSelection.length>1) {
       this.closeDialog(form);
       this.$message.error('请先选择一位客户');
     } else {
       var  row = this.multipleSelection.pop();
-      this[FormName.getForm('addTrack')].name = row.name;
-      this[FormName.getForm('addTrack')].cus_id   = row.id;
+      this[FormName.getForm(x)].name = row.name;
+      this[FormName.getForm(x)].cus_id   = row.id;
+      this.row=row;
     }
+  }).setMethod('beforeAddTrack', function(){
+    this.commonSelect('addTrack');
+  }).setMethod('beforeAddPlan',function(){
+    this.commonSelect('addPlan');
+    this.dialogLabelWidth = "140px";
+  }).setMethod('beforeAddTransfer',function(){
+    this.commonSelect('addTransfer');  
+  }).setMethod('beforeAddRemind',function(){
+    this.commonSelect('addRemind');
+  }).setMethod('beforeAddChoice',function(){
+    this.commonSelect('addChoice');
+    this.addChoiceForm.type = this.customerType[this.row.type];
+  }).setMethod('beforeShowDetail',function(){
+    this.commonSelect('showDetail');
+    this.showDetailForm = this.row;   
   }).setAdvancedSearch().setVueHook('mounted', function(){
     var vmThis = this;
+    //省份、城市
     this.$http.get('{:U("Area/getAreasByPid")}', {params:{pid:1} }).then(function(response){
       var provinces = [];
       response.body.forEach(function(currentValue,index){
@@ -431,6 +528,17 @@ function toInt(v){
       })
       vmThis.$set(vmThis, 'provinces', provinces);
     });
+    //接收单位、员工
+    this.$http.get('{:U("getRecDep")}',{params:{id:0}}).then(
+      function(response){
+      var deps=[];
+      response.body.forEach(function(currentValue,index){
+        deps.push({value:currentValue.value,name:currentValue.dep_name});
+      })
+      vmThis.$set(vmThis,'deps',deps);
+      //console.log(deps);
+    });
+
     this.dialogLabelWidth = "100px";
   }).setMethod('trackLog',function(row,event,column){
         this.$refs.select.toggleRowSelection(row);

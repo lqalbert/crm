@@ -1,28 +1,21 @@
 <el-dialog title="录入跟踪" v-model="addTrackFormDialog" @open="beforeAddTrack">
   <el-form  ref="addTrackForm" :label-width="dialogLabelWidth" :model="addTrackForm">
   <el-row>
-    <el-col :span="12">
+    <el-col :span="8">
       <el-form-item label="客户姓名"  prop="name">
-        <el-input
-        v-model="addTrackForm.name"
-        :disabled="true">
+        <el-input v-model="addTrackForm.name" :disabled="true">
       </el-form-item>
     </el-col>
-    <el-col :span="12">
+    <el-col :span="8">
       <el-form-item label="客户类型" prop="to_type">
         <el-select v-model="addTrackForm.to_type" placeholder="请选择">
-          <el-option
-            v-for="(type, typeIndex) in customerType"
-            :label="type"
-            :value="typeIndex">
-          </el-option>
+          <el-option v-for="(type, typeIndex) in customerType" :label="type" :value="typeIndex"></el-option>
         </el-select>
       </el-form-item>
     </el-col>
   </el-row>
-    
-   <el-row>
-   	<el-col :span="12">
+  <el-row>
+   	<el-col :span="8">
    		<el-form-item label="下次跟踪时间" prop="next_datetime">
 		    <el-date-picker
 		      v-model="addTrackForm.next_datetime"
@@ -33,9 +26,9 @@
 		    </el-date-picker>
     	</el-form-item>
    	</el-col>
-   	<el-col :span="12">
+   	<el-col :span="8">
    		<el-form-item label="跟踪步骤" prop="step">
-        <el-select v-model="addTrackForm.step" placeholder="请选择">
+        <el-select v-model="addTrackForm.step" placeholder="请选择跟踪步骤">
           <el-option
             v-for="(type, typeIndex) in steps"
             :label="typeIndex+1 +'、'+type"
@@ -44,7 +37,18 @@
         </el-select>
       </el-form-item>
    	</el-col>
-   </el-row>
+    <el-col :span="8">
+      <el-form-item label="跟踪类型" prop="track_type">
+        <el-select v-model="addTrackForm.track_type" placeholder="请选择跟踪类型">
+          <el-option
+            v-for="(type, key) in logType"
+            :label="type"
+            :value="key">
+          </el-option>
+        </el-select>
+      </el-form-item>
+    </el-col>
+  </el-row>
     <el-form-item label="跟踪内容"  prop="content">
       <el-input
 		  type="textarea"
