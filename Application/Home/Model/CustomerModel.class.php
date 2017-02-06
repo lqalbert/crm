@@ -138,11 +138,57 @@ class CustomerModel extends Model {
       );
 
     protected $_validate = array(
-    		array('name','require','姓名必须！'), //默认情况下用正则进行验证
-    		array('phone','',      '手机号已经存在！', self::MUST_VALIDATE, 'unique'), // 验证phone字段是否唯一
-    		array('qq','',         'QQ号已经存在！',   self::MUST_VALIDATE, 'unique'), // 验证qq字段是否唯一
+    		array('name','require', '姓名必须！'), 
+        array('phone','checkPhone',      '手机号已经存在！', self::VALUE_VALIDATE, 'callback'), // 验证phone字段是否唯一
+    		array('qq',   'checkQQ',         'QQ号已经存在！',   self::VALUE_VALIDATE, 'callback'), // 验证qq字段是否唯一
     		array('weixin','',     '微信号已经存在！', self::MUST_VALIDATE, 'unique'), // 验证微信号是否唯一
    );
+
+    /**
+    * 检查手机有没有重复
+    * 如果有 则要添加重复记录
+    *
+    */
+    public function checkPhone($data){
+      $re = $this->field('id')->where(array('phone'=>$data))->find();
+      if ($re) {
+        D('CustomerConflict')->addPhone($re['id']);
+        return false;
+      } else {
+        return true;
+      }
+    }
+
+
+    /**
+    * 检查QQ有没有重复
+    * 如果有 则要添加重复记录
+    *
+    */
+    public function checkQQ($data){
+      $re = $this->field('id')->where(array('qq'=>$data))->find();
+      if ($re) {
+        D('CustomerConflict')->addQQ($re['id']);
+        return false;
+      } else {
+        return true;
+      }
+    }
+
+    /**
+    * 检查weixin有没有重复
+    * 如果有 则要添加重复记录
+    *
+    */
+    public function checkWx($data){
+      $re = $this->field('id')->where(array('weixin'=>$data))->find();
+      if ($re) {
+        D('CustomerConflict')->addWx($re['id']);
+        return false;
+      } else {
+        return true;
+      }
+    }
 
 
     /**

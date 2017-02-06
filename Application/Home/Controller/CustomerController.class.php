@@ -5,6 +5,15 @@ use Home\Model\CustomerModel;
 class CustomerController extends CommonController {
 	protected $table = "customer";
 	protected $pageSize = 11;
+
+	private function getDayBetween(){
+		$today = Date("Y-m-d")." 00:00:00" ;
+		return   array(
+							array('GT', Date("Y-m-d")." 00:00:00"), 
+							array('LT', Date("Y-m-d H:i:s", strtotime("+1 day", strtotime($today))))
+						);
+	}
+
 	public function index () {
 		// $dataList = $this->getList();
 		$this->assign('customerType', $this->M->getType());
@@ -37,11 +46,8 @@ class CustomerController extends CommonController {
 			$this->M->where(array("name"=> array('like', I('get.name')."%")));
 		}
 
-		$today = Date("Y-m-d")." 00:00:00" ;
-		$between_today =  array(
-							array('GT', Date("Y-m-d")." 00:00:00"), 
-							array('LT', Date("Y-m-d H:i:s", strtotime("+1 day", strtotime($today))))
-						);
+		// $today = Date("Y-m-d")." 00:00:00" ;
+		$between_today =  $this->getDayBetween();
 
 		switch (I('get.field')) {
 			case 'plan':
@@ -116,10 +122,10 @@ class CustomerController extends CommonController {
 
 		
 		$to_type = I('post.to_type', '');
-		$this->M->find($LogM->cus_id);
 		$LogM->startTrans();
 
 		if (!$LogM->create()) {
+			$this->M->find($LogM->cus_id);
 			$LogM->rollback();
 			$this->error(L('ADD_ERROR').$LogM->getError());
 		}
@@ -172,6 +178,35 @@ class CustomerController extends CommonController {
 		}  else {
 			
 			return $arr;
+		}
+	}
+
+	/**
+	* 获取今天之内的 计划客户
+	*/
+	public function getTodays(){
+		$between_today =  $this->getDayBetween();
+		$this->M->where(array('plan'=>$between_today))
+		        ->where(array("user_id"=> session('uid')))
+		        ->field('id,qq,name,plan');
+		$re = $this->M->select();
+		foreach ($re as $key => $value) {
+			$re[$key]['time'] = strtotime($value['plan']) * 1000;
+		}
+		$this->ajaxReturn($re);
+	}
+
+	/**
+	* 设置 plan 为 null
+	* @param $id int
+	*/
+	public function setPlan() {
+		$id = I("post.id");
+		$re = $this->M->where("id=".$id)->data(array("plan"=>NULL))->save();
+		if ($re !== false) {
+			$this->success($this->M->getLastSql());
+		} else {
+			$this->error();
 		}
 	}
 }

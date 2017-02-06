@@ -1,6 +1,6 @@
 <el-dialog title="录入客户/修改客户" v-model="editFormDialog" @open="beforeEdit">
 <!-- <el-form :model="form"> -->
-<el-form :model="editForm" v-model="editForm" :label-width="dialogLabelWidth">
+<el-form ref="editForm" :model="editForm" v-model="editForm" :label-width="dialogLabelWidth">
   <el-row>
     <el-col :span="8">
       <el-form-item label="客户姓名" >

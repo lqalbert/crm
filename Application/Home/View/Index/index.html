@@ -12,6 +12,21 @@
 		<link rel="stylesheet" href="__PUBLIC__/plugins/layui/css/layui.css" media="all" />
 		<link rel="stylesheet" href="__PUBLIC__/css/global.css" media="all">
 		<link rel="stylesheet" href="__PUBLIC__/plugins/font-awesome/css/font-awesome.min.css">
+		<link rel="stylesheet" href="__PUBLIC__/css/amaran.min.css">
+		<style>
+			.ui-pnotify {
+				background: #fff;
+			}
+			.amaran .icon {
+				background: #fff!important;
+			}
+			.amaran .icon img{
+				max-width: 100px;
+				max-height: 100px;
+				display: block;
+				margin: 0 auto;
+			}
+		</style>
 		<script>
 			window.webRoot = '__ROOT__/'; // /crm  
 		</script>
@@ -22,7 +37,7 @@
 				<div class="layui-main">
 					<div class="admin-login-box">
 						<a class="logo" style="left: 0;" href="#">
-							<a style="font-size:22px;line-height:55px;">CRM客户关系管理</a>
+							<span style="font-size:22px;">CRM客户关系管理</span>
 						</a>
 						<div class="admin-side-toggle">
 							<i class="fa fa-bars" aria-hidden="true"></i>
@@ -81,11 +96,110 @@
 			</div>
 			<div class="site-mobile-shade"></div>
 			<script type="text/javascript" src="__PUBLIC__/plugins/layui/layui.js"></script>
+
 			<!-- <script type="text/javascript" src="__PUBLIC__/datas/nav.js" ></script> -->
 			<script type="text/javascript" src="{:U('Nav/index')}" ></script>
 			<script src="__PUBLIC__/js/index.js"></script>
 			
 		</div>
+		<a href="" id="qqTrigger" style="display: none;"></a>
+		<script src="__PUBLIC__/js/jquery.1.11.min.js"></script>
+		<script src="__PUBLIC__/plugins/amaran/jquery.amaran.js"></script>
+		<script>
+
+
+			
+		     var showList = {};
+			 if (window.Notification && Notification.permission !== "granted") {
+			    Notification.requestPermission(function (status) {
+			      if (Notification.permission !== status) {
+			        Notification.permission = status;
+
+			      }
+			    });
+			  }
+			  var trigger = document.getElementById("qqTrigger");
+
+
+			  function notify(option, customer){
+
+			  	option.icon="__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg";
+		
+			  
+			  	if (window.Notification) {
+			  		option.icon="__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg"
+					var n = new Notification("您有一个新计划",option);
+					n.addEventListener('click', showQQ);
+					n.customer = customer;
+			  	} else {
+			  		if (!showList[customer.qq]) {
+			  			$.amaran({
+					        'theme'     :'user no',
+					        'content'   :{
+					            img:'__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg',
+					            user:'您有一个即将到点计划',
+					            message:option.body.replace("\n", "<br>")
+					        },
+					        'diyoption':  customer,
+					        'position'  :'bottom right',
+					        'outEffect' :'slideBottom',
+					        'sticky'    :true,
+					        onClick:function(){
+					        	trigger.setAttribute('href', "tencent://message/?uin="+ this.diyoption.qq +"&Site=&menu=yes");
+				  				trigger.click();
+					        	myWorker.postMessage({type:"del", data:this.diyoption.qq});
+					        	layui.jquery.post("{:U('Customer/setPlan')}", {id:this.diyoption.id});
+					        	delete showList[this.diyoption.qq];
+					        }
+					    });
+					    showList[customer.qq] = customer;
+			  		}
+			  		
+			  	}
+			  	
+				
+			  }
+
+			  function showQQ(){
+			  	trigger.setAttribute('href', "tencent://message/?uin="+ this.tag +"&Site=&menu=yes");
+			  	trigger.click();
+			  	this.close();
+
+			  	myWorker.postMessage({type:"del", data:this.tag});
+			  	layui.jquery.post("{:U('Customer/setPlan')}", {id:this.customer.id});
+			  }
+
+			  // var de = {body:"客户：比",tag:"837737931"};
+			  // notify(de);
+
+			  var myWorker = new Worker('__PUBLIC__/js/worker.js');
+			  myWorker.onerror = function(e) { console.log(e); };
+			  myWorker.onmessage = function(e) { 
+			  	// console.log(e);
+			  	var d = new Date();
+			  	d.setTime(e.data.time);
+			  	 notify({body:"客户："+e.data.name+"\n计划时间："+d.toLocaleString(), tag: e.data.qq }, e.data);
+			  }
+			  // myWorker.addEventListener('message', function(e){
+			  // 	console.log(e);
+			  // 	notify({body:"客户："+e.data.name, tag: e.data.qq }, e.data);
+			  // })
+			  myWorker.postMessage({type:"start", data:"{:U('Customer/getTodays')}"});
+
+
+			  /*var n = new Notification("您有一个新计划",{icon:"__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg",body:"客户：比",tag:"837737931"});
+			  n.addEventListener("click", function(){
+			  	trigger.setAttribute('href', "tencent://message/?uin="+ this.tag +"&Site=&menu=yes")
+			  	// "tencent://message/?uin="+837737931+"&Site=&menu=yes";
+			  	// var evt = document.createEvent("MouseEvents");    
+	     //        evt.initEvent("click", true, true);    
+	     //        trigger.dispatchEvent(evt);  
+			  	// console.log(this.tag);
+			  	trigger.click();
+
+			  	this.close();
+			  })*/
+		</script>
 	</body>
 
 </html>
