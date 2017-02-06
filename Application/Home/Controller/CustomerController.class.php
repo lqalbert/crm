@@ -23,6 +23,8 @@ class CustomerController extends CommonController {
 		$this->assign('Source',       $this->M->getSource());
 		$this->assign('logType',      D('CustomerLog')->getType());
 		$this->assign('steps',        D('CustomerLog')->getSteps());
+		$this->assign('Proportion',   D('CustomerLog')->getProportion());
+		$this->assign('Remind',       D('CustomerLog')->getRemind());
 		$this->display();
 	}
 
@@ -35,6 +37,7 @@ class CustomerController extends CommonController {
 		$this->M->where(array("user_id"=> session('uid')));
 		if (I('get.name')) {
 			$this->M->where(array("name"=> array('like', I('get.name')."%")));
+			var_dump($this->M->getLastSql());
 		}
 
 		$today = Date("Y-m-d")." 00:00:00" ;
@@ -113,18 +116,13 @@ class CustomerController extends CommonController {
 	public function addTrackLogs(){
 		// $id = I('post.id');
 		$LogM = D('CustomerLog');
-
-		
 		$to_type = I('post.to_type', '');
-		$this->M->find($LogM->cus_id);
 		$LogM->startTrans();
-
 		if (!$LogM->create()) {
+			$this->M->find($LogM->cus_id);
 			$LogM->rollback();
 			$this->error(L('ADD_ERROR').$LogM->getError());
 		}
-
-
 		if ($to_type !== "" &&  $to_type != $this->M->type) {
 			$LogM->contentSetChangeType($this->M->type, $to_type);
 			$this->M->type = $to_type;
@@ -144,6 +142,19 @@ class CustomerController extends CommonController {
 		}
 		
 	}
+
+    /**
+    *   添加计划记录
+    *
+    */
+    public function addPlanLogs(){
+    	if($this->M->create() && I('post.cus_id')){
+           $re=$this->M->where(array('id'=>I('post.cus_id')))->save();
+           if($re === false){
+           	 $this->error(L('ADD_ERROR').$this->M->getError());
+           }
+    	}
+    }
 
 	public function getTracks(){
 		var_dump(D('CustomerLog')->select());
@@ -174,4 +185,45 @@ class CustomerController extends CommonController {
 			return $arr;
 		}
 	}
+
+    /**
+    *   获取接收单位
+    *
+    */
+    public function getRecDep(){
+    	$arr=M('department_basic')->select();
+    	foreach ($arr as $k => $v) {
+    		$arr[$k]['dep_name']="[".$arr[$k]['type']."]".$arr[$k]['name'];
+    		$arr[$k]['value']=$arr[$k]['zone']."-".$arr[$k]['name'];
+    	}
+    	$this->ajaxReturn($arr);
+
+    }
+
+    /**
+    *   获取接收员工
+    *
+    */
+    public function getRecUser($p_name){
+    	$arr=explode('-', $p_name);
+    	$pname=end($arr);
+    	$re=M('group')->where(array('p_name'=>$p_name))->field('id')->select();
+    	$res=array();
+    	foreach ($re as $k => $v) {
+
+    		$res[]=M('user_info')->where(array('group_id'=>$re[$k]['id']))->select();
+    	}   
+        foreach ($res as $k => $v) {
+        	foreach ($v as $key => $val) {
+        		$res[$k][$key]['value']="[".$pname."]".$res[$k][$key]['realname'];
+        	}
+        }
+        $resu=array();
+        foreach ($res as $value) {
+        	foreach ($value as $va) {
+        		$resu[]=$va;
+        	}
+        }
+        $this->ajaxReturn($resu);
+    }           
 }

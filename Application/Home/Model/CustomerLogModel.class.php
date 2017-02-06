@@ -15,19 +15,19 @@ class CustomerLogModel extends Model {
 
 	private $types = array(
         "电话跟踪",
-        "网络跟踪",
+        "上门服务",
+        //"网络跟踪",
+        "QQ联系",
+        "Email联系",
+        "微信联系",
         "远程讲解",
         "现场讲解",
         "成交总结",
         "讲师指导",
         "主管建议",
         "售前回访",
-
-		/*"上门服务",
-		"QQ联系",
-		"Email联系",
-		"微信联系",
-		"其它方式"*/
+		//"Email联系",
+		"其它方式"
 	);
     private $steps = array(
         "首次沟通",
@@ -43,7 +43,35 @@ class CustomerLogModel extends Model {
         "售前确认"
 
     );
-
+    
+    //服务比例
+    private $proportion = array(
+      '0'=>'0',
+      '1'=>'10',
+      '2'=>'20',
+      '3'=>'30',
+      '4'=>'40',
+      '5'=>'50',
+      '6'=>'60',
+      '7'=>'70',
+      '8'=>'80',
+      '9'=>'90',
+    );
+    
+    //提醒事项
+    private $remind = array(
+      '1'=>'客户重复加群，麻烦尽快跟踪',
+      '2'=>'对软件有意向',
+      '3'=>'客户之前了解过公司',
+      '4'=>'客户排斥软件',
+      '5'=>'客户排斥电话沟通',
+      '6'=>'客户加同事好友不通过',
+      '7'=>'白天要上班不能接电话',
+      '8'=>'资金量大，重点跟踪',
+      '9'=>'二次推荐，已再次跟踪包装',
+      '10'=>'请跟踪方同事反馈情况',
+      '11'=>'客户一直在咨询股票，请联系远程',
+    );
 
 	/**
     * 返回类型 或 所有的类型
@@ -73,6 +101,24 @@ class CustomerLogModel extends Model {
 
     public function getUser(){
         return session('uid');
+    }
+    
+    //获得跟踪比例
+    public function getProportion($index){
+        if(is_int($index)){
+            return $this->proportion[$index];
+        }else{
+            return $this->proportion;
+        }
+    }
+
+    //获得提醒事项
+    public function getRemind($index){
+       if(is_int($index)){
+          return $this->remind[$index];
+       }else{
+          return $this->remind;
+       }
     }
 
     public function contentSetChangeType($from, $to){
