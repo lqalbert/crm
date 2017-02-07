@@ -17,6 +17,10 @@ class CustomerModel extends Model {
 	const WOMAN  = 2;
 
 
+    protected $_auto = array(
+        array('plan', 'UTC_to_locale_time', 1, 'function'),
+    );
+    
     protected $tableName = 'customers_basic';
     protected $customerType = array(
     	    "A"=>"A.准客户",

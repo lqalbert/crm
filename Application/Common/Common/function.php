@@ -94,3 +94,12 @@ function arr_group($arr, $thekey){
 
 	return $result;
 }
+
+/**
+* UTC时间转成当地时间
+* @param string '2017-02-15T05:35:19.984Z'
+* @return string '2017-02-15 15:35:19'
+*/
+function UTC_to_locale_time($v){
+    return Date('Y-m-d H:i:s', strtotime($v));
+}

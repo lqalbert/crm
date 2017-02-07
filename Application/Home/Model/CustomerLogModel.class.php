@@ -96,7 +96,7 @@ class CustomerLogModel extends Model {
     }
 
     public function transfer($v){
-        return Date('Y-m-d H:i:s', strtotime($v));
+        return UTC_to_locale_time($v);
     }
 
     public function getUser(){
