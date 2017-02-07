@@ -500,10 +500,6 @@ function toInt(v){
       var  row = this.multipleSelection.pop();
       this[FormName.getForm(x)].name = row.name;
       this[FormName.getForm(x)].cus_id   = row.id;
-<<<<<<< HEAD
-=======
-      this.row=row;
->>>>>>> origin/step01
       return row;
     }
   }).setMethod('beforeAddTrack', function(){
@@ -521,15 +517,10 @@ function toInt(v){
       this.addChoiceForm.type = this.customerType[this.row.type];
     }   
   }).setMethod('beforeShowDetail',function(){
-<<<<<<< HEAD
-    this.commonSelect('showDetail');
-    // this.showDetailForm = this.row;   
-=======
     if(this.commonSelect('showDetail') !== false){
       this.showDetailForm = this.row; 
     }
     //this.commonSelect('showDetail');
->>>>>>> origin/step01
   }).setAdvancedSearch().setVueHook('mounted', function(){
     var vmThis = this;
     //省份、城市
