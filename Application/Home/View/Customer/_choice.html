@@ -1,5 +1,5 @@
 <el-dialog title="录入自选" v-model="addChoiceFormDialog" @open="beforeAddChoice">
-  <el-form  ref="addChoiceForm" :label-width="dialogLabelWidth" :model="addChoiceForm">
+  <el-form  ref="addChoiceForm" :model="addChoiceForm" :label-width="dialogLabelWidth" :model="addChoiceForm">
     <el-row>
       <el-col :span="8">
         <el-form-item label="客户姓名"  prop="name">
@@ -13,12 +13,12 @@
       </el-col>
       <el-col :span="8">
         <el-form-item label="是否自选" >
-          <el-radio class="radio" v-model="addChoiceForm.choose" label="1">是</el-radio>
-          <el-radio class="radio" v-model="addChoiceForm.choose" label="2">否</el-radio>
+          <el-radio class="radio" v-model="addChoiceForm.choose" :label="1">是</el-radio>
+          <el-radio class="radio" v-model="addChoiceForm.choose" :label="0">否</el-radio>
         </el-form-item>
       </el-col>
     </el-row>
-    <el-row>
+   <!--  <el-row>
      <el-col >
       <el-form-item label="备注"  prop="remark">
         <el-input
@@ -29,7 +29,7 @@
       </el-input>
       </el-form-item>
      </el-col>
-    </el-row>
+    </el-row> -->
   </el-form>
   <div slot="footer" class="dialog-footer">
    <el-button @click="closeDialog('addChoice')">取 消</el-button>

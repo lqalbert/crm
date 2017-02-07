@@ -137,7 +137,11 @@
 	    </el-table-column>
 	    <el-table-column prop="phone" label="手机" align="center" width="140">
 	    </el-table-column>
-		  <el-table-column prop="qq" label="QQ号" align="center" width="140">
+		  <el-table-column prop="qq" label="QQ号" align="center" width="160">
+      <template scope="scope">
+      {{ scope.row.qq }}
+        <a v-if="scope.row.qq" :href="getTenct(scope.row.qq)"><img width="30"  src="__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg" alt=""></a>
+        </template>
 	    </el-table-column>
 	    <el-table-column prop="qq_nickname" label="QQ昵称" align="center" width="140">
 	    </el-table-column>
@@ -185,8 +189,8 @@
             <el-tooltip content="选择客户录入对其跟踪计划" placement="right">
               <el-button size="small" @click="openDialog('addPlan')" type="primary" style="margin-left:10px;">计划</el-button>
             </el-tooltip>
-            <el-tooltip content="选择客户对其转让给他人" placement="right">
-              <el-button size="small" @click="openDialog('addTransfer')" type="warning" style="margin-left:10px;">转让</el-button>
+            <el-tooltip content="选择客户对其转让给他人(暂未实现)" placement="right">
+              <el-button size="small" @click="openDialog('addTransfer')" :disabled="true" type="warning" style="margin-left:10px;">转让</el-button>
             </el-tooltip>
             <el-tooltip content="选择客户录入其提醒事项及内容" placement="right">
               <el-button size="small" @click="openDialog('addRemind')" type="info" style="margin-left:10px;">提醒</el-button>
@@ -194,12 +198,12 @@
             <el-tooltip content="筛选客户重点跟踪" placement="right">
               <el-button size="small" @click="openDialog('addChoice')" type="primary" style="margin-left:10px;">自选</el-button>
             </el-tooltip>
-            <el-tooltip content="选择客户对其拨打电话" placement="right">
+            <!-- <el-tooltip content="选择客户对其拨打电话" placement="right">
               <el-button size="small" type="primary" style="margin-left:10px;">拨打电话</el-button>
             </el-tooltip>
             <el-tooltip content="选择客户显示客户的详细资料" placement="right">
               <el-button size="small" @click="openDialog('showDetail')" type="success" style="margin-left:10px;">客户资料</el-button>
-            </el-tooltip>
+            </el-tooltip> -->
           </span>
           
     </div>
@@ -284,6 +288,8 @@ function toInt(v){
 <script>
   page.addTrackFormUrl = "{:U('addTrackLogs')}";
   page.addPlanFormUrl = "{:U('addPlanLogs')}";
+  page.addRemindFormUrl = "{:U('setRemid')}";
+  page.addChoiceFormUrl = "{:U('setImportant')}";
   window.defaultOption.setDatas({
     dialogVisible:false,
     sb:[],
@@ -335,12 +341,12 @@ function toInt(v){
     type:"",
     phone:"",
     phone2:"",
-    qq:"",
+    qq:null,
     qq2:"",
     qq_nickname:"",
     qq_nickname2:"",
     sex:0,
-    weixin:"",
+    weixin:null,
     weixin_nickname:"",
     area_province:null,
     area_city:null,
@@ -413,7 +419,7 @@ function toInt(v){
      cus_id:'',
      name:'',
      remark:'',
-     choose:'1',
+     choose:1,
      type:'',
   },true).setForm('showDetail',{
     id:"",
@@ -513,8 +519,10 @@ function toInt(v){
     this.commonSelect('addRemind'); 
   }).setMethod('beforeAddChoice',function(){
     //this.commonSelect('addChoice');
-    if(this.commonSelect('addChoice') !== false){
-      this.addChoiceForm.type = this.customerType[this.row.type];
+    var re = this.commonSelect('addChoice');
+    if(re !== false){
+      this.addChoiceForm.type = this.customerType[re.type];
+      this.addChoiceForm.choose = parseInt(re.important);
     }   
   }).setMethod('beforeShowDetail',function(){
     if(this.commonSelect('showDetail') !== false){
@@ -558,6 +566,8 @@ function toInt(v){
   }).setMethod('setField', function(v){
       this[FormName.getFormName('search')].field = v;
       this.loadDatalist();
+  }).setMethod('getTenct', function(qq){
+    return "tencent://message/?uin="+ qq +"&Site=&menu=yes";
   });
 </script>
 <script>

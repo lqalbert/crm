@@ -20,7 +20,7 @@ class CustomerModel extends Model {
     protected $_auto = array(
         array('plan', 'UTC_to_locale_time', 1, 'function'),
     );
-    
+
     protected $tableName = 'customers_basic';
     protected $customerType = array(
     	    "A"=>"A.准客户",
@@ -143,9 +143,9 @@ class CustomerModel extends Model {
 
     protected $_validate = array(
     		array('name','require', '姓名必须！'), 
-        array('phone','checkPhone',      '手机号已经存在！', self::VALUE_VALIDATE, 'callback'), // 验证phone字段是否唯一
-    		array('qq',   'checkQQ',         'QQ号已经存在！',   self::VALUE_VALIDATE, 'callback'), // 验证qq字段是否唯一
-    		array('weixin','',     '微信号已经存在！', self::VALUE_VALIDATE, 'unique'), // 验证微信号是否唯一
+        array('phone','checkPhone',      '手机号已经存在！', self::VALUE_VALIDATE, 'callback', self::MODEL_INSERT), // 验证phone字段是否唯一
+    		array('qq',   'checkQQ',         'QQ号已经存在！',   self::VALUE_VALIDATE, 'callback', self::MODEL_INSERT), // 验证qq字段是否唯一
+    		array('weixin','checkWx',     '微信号已经存在！', self::VALUE_VALIDATE,    'callback', self::MODEL_INSERT), // 验证微信号是否唯一
    );
 
     /**

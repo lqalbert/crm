@@ -178,7 +178,7 @@
 			  	// console.log(e);
 			  	var d = new Date();
 			  	d.setTime(e.data.time);
-			  	 notify({body:"客户："+e.data.name+"\n计划时间："+d.toLocaleString(), tag: e.data.qq }, e.data);
+			  	 notify({body:"客户："+e.data.name+"\n计划时间："+d.toLocaleString() + "\n" + e.data.remind, tag: e.data.qq }, e.data);
 			  }
 			  // myWorker.addEventListener('message', function(e){
 			  // 	console.log(e);

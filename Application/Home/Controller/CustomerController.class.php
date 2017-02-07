@@ -104,11 +104,40 @@ class CustomerController extends CommonController {
 
 	/**
 	* 在编辑之前 判断是不是 “我” 的客户
+	* 判断有没有修改 手机 QQ 微信号
+	* 如果修改了 则要
 	* @return boolean
 	*/
 	public function _before_edit(){
 		$id = I('post.id');
-		if ($this->M->where(array('id'=>$id, 'user_id'=>session('uid') ))->field('id')->find()) {
+		$row = $this->M->where(array('id'=>$id, 'user_id'=>session('uid') ))->field('id,phone,qq,weixin')->find();
+		if ($row) {
+			if (I('post.phone') != $row['phone']) {
+				$re = $this->M->where(array('phone'=> I('post.phone'), 'id'=>array('NEQ', $row['id'])))->field('id')->find();
+				if ($re) {
+					D('CustomerConflict')->addPhone($re['id']);
+					return false;
+				}
+			}
+
+			if (I('post.qq') != $row['qq']) {
+				$re = $this->M->where(array('qq'=> I('post.qq'), 'id'=>array('NEQ', $row['id']) ))->field('id')->find();
+				if ($re) {
+					D('CustomerConflict')->addQQ($re['id']);
+					return false;
+				}
+				
+			}
+
+			if (I('post.weixin') != $row['weixin']) {
+				$re = $this->M->where(array('weixin'=> I('post.weixin'), 'id'=>array('NEQ', $row['id'])))->field('id')->find();
+				if ($re) {
+					D('CustomerConflict')->addWx($re['id']);
+					return false;
+				}
+			}
+
+
 			return true;
 		} else {
 			return false;
@@ -202,7 +231,7 @@ class CustomerController extends CommonController {
 		$between_today =  $this->getDayBetween();
 		$this->M->where(array('plan'=>$between_today))
 		        ->where(array("user_id"=> session('uid')))
-		        ->field('id,qq,name,plan');
+		        ->field('id,qq,name,plan,remind');
 		$re = $this->M->select();
 		foreach ($re as $key => $value) {
 			$re[$key]['time'] = strtotime($value['plan']) * 1000;
@@ -275,5 +304,49 @@ class CustomerController extends CommonController {
     		$re = M()->execute($sql);
     	}
     }*/
+
+    /**
+    * 设置提醒
+    */
+    public function setRemid(){
+    	$data = array();
+    	$data['remind'] = I('post.remind');
+    	$data['remark'] = I('post.remark');
+    	$data['id'] = I('post.cus_id');
+
+    	if (!empty($data['remind'])) {
+    		$data['remind'] = D('CustomerLog')->getRemind((int)$data['remind']);
+    	}
+
+    	if(!empty($data['remark'])) {
+    		$data['remind'] = $data['remind']."\n". $data['remark'];
+    	}
+
+    	unset($data['remark']);
+
+    	$re = $this->M->data($data)->save();
+    	if ($re !== false) {
+    		$this->success("操作成功");
+    	} else {
+    		$this->error("操作失败");
+    	}
+    }
+
+    /**
+    * 是否自选 
+    *
+    */
+    public function setImportant(){
+    	$data = array(
+    			'important' => I('post.choose'),
+    			'id'        => I('cus_id')
+    		);
+    	$re = $this->M->data($data)->save();
+    	if ($re !== false) {
+    		$this->success("操作成功");
+    	} else {
+    		$this->error("操作失败");
+    	}
+    }
 
 }
