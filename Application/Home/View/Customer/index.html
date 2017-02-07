@@ -506,6 +506,7 @@ function toInt(v){
       var  row = this.multipleSelection.pop();
       this[FormName.getForm(x)].name = row.name;
       this[FormName.getForm(x)].cus_id   = row.id;
+      this.row=row;
       return row;
     }
   }).setMethod('beforeAddTrack', function(){

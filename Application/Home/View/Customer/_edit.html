@@ -15,7 +15,7 @@
       </el-form-item>
     </el-col>
     <el-col :span="8">
-      <el-form-item label="手机1" >
+      <el-form-item label="手机" >
         <el-input v-model="editForm.phone" auto-complete="off" placeholder="请填写手机号"></el-input>
       </el-form-item>
     </el-col>
@@ -32,29 +32,12 @@
         </el-form-item>
       </el-col>
       <el-col :span="8">
-        <el-form-item label="手机2" >
-          <el-input v-model="editForm.phone2" auto-complete="off" placeholder="请填写手机号"></el-input>
-        </el-form-item>
-      </el-col>
-   </el-row>
-    <el-row>
-      <el-col :span="8">
-        <el-form-item label="QQ号2" >
-          <el-input v-model="editForm.qq2" auto-complete="off" placeholder="请填写QQ号"></el-input>
-        </el-form-item>
-      </el-col>
-      <el-col :span="8">
-        <el-form-item label="QQ昵称2" >
-          <el-input v-model="editForm.qq_nickname2" auto-complete="off" placeholder="请填写QQ昵称"></el-input>
-        </el-form-item>
-      </el-col>
-      <el-col :span="8">
         <el-form-item label="性别" >
           <el-radio class="radio" v-model="editForm.sex" label="1">男</el-radio>
           <el-radio class="radio" v-model="editForm.sex" label="2">女</el-radio>
         </el-form-item>
       </el-col>
-    </el-row>
+   </el-row>
     <el-row>
       <el-col :span="8">
         <el-form-item label="微信号" >
