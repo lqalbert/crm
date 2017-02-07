@@ -497,11 +497,13 @@ function toInt(v){
     if (this.multipleSelection.length ==0 ||  this.multipleSelection.length>1) {
       this.closeDialog(form);
       this.$message.error('请先选择一位客户');
+      return false;
     } else {
       var  row = this.multipleSelection.pop();
       this[FormName.getForm(x)].name = row.name;
       this[FormName.getForm(x)].cus_id   = row.id;
       this.row=row;
+      return row;
     }
   }).setMethod('beforeAddTrack', function(){
     this.commonSelect('addTrack');
@@ -510,14 +512,18 @@ function toInt(v){
     this.dialogLabelWidth = "140px";
   }).setMethod('beforeAddTransfer',function(){
     this.commonSelect('addTransfer');  
-  }).setMethod('beforeAddRemind',function(){
-    this.commonSelect('addRemind');
+  }).setMethod('beforeAddRemind',function(){      
+    this.commonSelect('addRemind'); 
   }).setMethod('beforeAddChoice',function(){
-    this.commonSelect('addChoice');
-    this.addChoiceForm.type = this.customerType[this.row.type];
+    //this.commonSelect('addChoice');
+    if(this.commonSelect('addChoice') !== false){
+      this.addChoiceForm.type = this.customerType[this.row.type];
+    }   
   }).setMethod('beforeShowDetail',function(){
-    this.commonSelect('showDetail');
-    this.showDetailForm = this.row;   
+    if(this.commonSelect('showDetail') !== false){
+      this.showDetailForm = this.row; 
+    }
+    //this.commonSelect('showDetail');
   }).setAdvancedSearch().setVueHook('mounted', function(){
     var vmThis = this;
     //省份、城市

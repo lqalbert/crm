@@ -125,10 +125,11 @@ class CustomerController extends CommonController {
 		$to_type = I('post.to_type', '');
 		$LogM->startTrans();
 		if (!$LogM->create()) {
-			$this->M->find($LogM->cus_id);
+			
 			$LogM->rollback();
 			$this->error(L('ADD_ERROR').$LogM->getError());
 		}
+		$this->M->find($LogM->cus_id);
 		if ($to_type !== "" &&  $to_type != $this->M->type) {
 			$LogM->contentSetChangeType($this->M->type, $to_type);
 			$this->M->type = $to_type;
