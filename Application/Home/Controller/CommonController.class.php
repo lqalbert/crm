@@ -40,10 +40,11 @@ class CommonController extends Controller {
 
 	/**
 	* 重载父类的error
+	* $message = '', $jumpUrl = '', $ajax =
 	*/ 
-	public function error($msg){
+	public function error($msg,$jumpUrl='',$ajax=false){
 		$this->setErrorHeader();
-		parent::error($msg);
+		parent::error($msg,$jumpUrl,$ajax);
 	}
 
 

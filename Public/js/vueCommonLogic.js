@@ -271,7 +271,7 @@ function setForm(opt, type){
 			  type: 'error'
 			});
         	setTimeout(function(){
-        		this[formStatus] = false;
+        		vmThis[formStatus] = false;
         	},2000);
         });
 	})

@@ -125,13 +125,15 @@ class CustomerController extends CommonController {
 		$to_type = I('post.to_type', '');
 		$LogM->startTrans();
 		if (!$LogM->create()) {
-			$this->M->find($LogM->cus_id);
+			
 			$LogM->rollback();
 			$this->error(L('ADD_ERROR').$LogM->getError());
 		}
+		$this->M->find($LogM->cus_id);
 		if ($to_type !== "" &&  $to_type != $this->M->type) {
 			$LogM->contentSetChangeType($this->M->type, $to_type);
 			$this->M->type = $to_type;
+			
 			$re = $this->M->save();
 			if ($re === false) {
 				$LogM->rollback();
@@ -261,6 +263,17 @@ class CustomerController extends CommonController {
         	}
         }
         $this->ajaxReturn($resu);
-    }           
+    }     
+
+    /**
+    * 一次性使用的
+    */      
+   /* public function setTrackText(){
+    	$allTypes = D("CustomerLog")->getType();
+    	foreach ($allTypes as $key => $value) {
+    		$sql = "update customers_log set track_text = '{$value}' where track_type={$key}";
+    		$re = M()->execute($sql);
+    	}
+    }*/
 
 }

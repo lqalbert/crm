@@ -130,7 +130,7 @@
           {{ getType(scope.row.sex, 'sexType') }}
         </template>
       </el-table-column>
-	    <el-table-column prop="type" label="客户类型" width="140" align="center">
+	    <el-table-column prop="type" label="客户类型" width="180" align="center">
         <template scope="scope">
           {{ getType(scope.row.type, 'customerType') }}
         </template>
@@ -151,12 +151,12 @@
           {:session('account')['userInfo']['p_name']}-{:session('account')['userInfo']['realname']}
         </template>
 	    </el-table-column>
-	    <el-table-column  prop="last_track" label="跟踪方最后跟踪时间" align="center" width="175">
+	    <el-table-column  prop="plan" label="计划跟踪时间" align="center" width="175">
 	    </el-table-column>
-	    <el-table-column  prop="lock_track" label="锁定方最后跟踪时间" align="center" width="175">
+	    <!-- <el-table-column  prop="lock_track" label="锁定方最后跟踪时间" align="center" width="175">
 	    </el-table-column> 
       <el-table-column  prop="ser_track" label="服务方最后跟踪时间" align="center" width="175">
-      </el-table-column> 
+      </el-table-column>  -->
       <el-table-column  prop="commission" label="跟踪方比例" align="center" width="110">
       </el-table-column> 
       <el-table-column  prop="conflict" label="最后冲突时间" align="center" width="175">
@@ -228,9 +228,7 @@
               </el-table-column>
               <el-table-column prop="created_at" label="跟踪时间" width="180" align="center">
               </el-table-column>
-              <el-table-column prop="type" label="客户类型" align="center">
-              </el-table-column>
-              <el-table-column prop="track_type" label="跟踪类型" align="center">
+              <el-table-column prop="track_text" label="跟踪类型" align="center">
               </el-table-column>
               <el-table-column prop="content"   label="内容" align="center">
               </el-table-column>
@@ -497,11 +495,12 @@ function toInt(v){
     if (this.multipleSelection.length ==0 ||  this.multipleSelection.length>1) {
       this.closeDialog(form);
       this.$message.error('请先选择一位客户');
+      return false;
     } else {
       var  row = this.multipleSelection.pop();
       this[FormName.getForm(x)].name = row.name;
       this[FormName.getForm(x)].cus_id   = row.id;
-      this.row=row;
+      return row;
     }
   }).setMethod('beforeAddTrack', function(){
     this.commonSelect('addTrack');
@@ -517,7 +516,7 @@ function toInt(v){
     this.addChoiceForm.type = this.customerType[this.row.type];
   }).setMethod('beforeShowDetail',function(){
     this.commonSelect('showDetail');
-    this.showDetailForm = this.row;   
+    // this.showDetailForm = this.row;   
   }).setAdvancedSearch().setVueHook('mounted', function(){
     var vmThis = this;
     //省份、城市

@@ -141,7 +141,7 @@ class CustomerModel extends Model {
     		array('name','require', '姓名必须！'), 
         array('phone','checkPhone',      '手机号已经存在！', self::VALUE_VALIDATE, 'callback'), // 验证phone字段是否唯一
     		array('qq',   'checkQQ',         'QQ号已经存在！',   self::VALUE_VALIDATE, 'callback'), // 验证qq字段是否唯一
-    		array('weixin','',     '微信号已经存在！', self::MUST_VALIDATE, 'unique'), // 验证微信号是否唯一
+    		array('weixin','',     '微信号已经存在！', self::VALUE_VALIDATE, 'unique'), // 验证微信号是否唯一
    );
 
     /**
