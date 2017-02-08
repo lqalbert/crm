@@ -8,7 +8,7 @@
       </el-form-item>
     </el-col>
     <el-col :span="8">
-      <el-form-item label="客户类型" >
+      <el-form-item label="客户类型" prop="type">
         <el-select v-model="addForm.type" placeholder="请选择客户类型" >
           <el-option v-for="(type, key) in customerType" :label="type" :value="key" ></el-option>
         </el-select>
@@ -16,14 +16,14 @@
     </el-col>
     <el-col :span="8">
       <el-form-item label="手机" prop="phone">
-        <el-input v-model="addForm.phone" auto-complete="off" placeholder="请填写手机号"></el-input>
+        <el-input v-model.number="addForm.phone" auto-complete="off" placeholder="请填写手机号"></el-input>
       </el-form-item>
     </el-col>
   </el-row>
    <el-row>
       <el-col :span="8">
-        <el-form-item label="QQ号" >
-          <el-input v-model="addForm.qq" auto-complete="off" placeholder="请填写QQ号"></el-input>
+        <el-form-item label="QQ号" prop="qq">
+          <el-input v-model.number="addForm.qq" auto-complete="off" placeholder="请填写QQ号"></el-input>
         </el-form-item>
       </el-col>
       <el-col :span="8">

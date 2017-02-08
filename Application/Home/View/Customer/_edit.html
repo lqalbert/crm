@@ -1,28 +1,28 @@
 <el-dialog title="录入客户/修改客户" v-model="editFormDialog" @open="beforeEdit">
 <!-- <el-form :model="form"> -->
-<el-form ref="editForm" :model="editForm" v-model="editForm" :label-width="dialogLabelWidth">
+<el-form ref="editForm" :rules="editRules" :model="editForm" v-model="editForm" :label-width="dialogLabelWidth">
   <el-row>
     <el-col :span="8">
-      <el-form-item label="客户姓名" >
+      <el-form-item label="客户姓名" prop="name">
         <el-input  v-model="editForm.name" auto-complete="off" placeholder="请填写客户名称"></el-input>
       </el-form-item>
     </el-col>
     <el-col :span="8">
-      <el-form-item label="客户类型" >
+      <el-form-item label="客户类型" prop="type">
         <el-select v-model="editForm.type" placeholder="请选择客户类型" >
           <el-option v-for="(type, key) in customerType" :label="type" :value="key" ></el-option>
         </el-select>
       </el-form-item>
     </el-col>
     <el-col :span="8">
-      <el-form-item label="手机" >
+      <el-form-item label="手机" prop="phone">
         <el-input v-model="editForm.phone" auto-complete="off" placeholder="请填写手机号"></el-input>
       </el-form-item>
     </el-col>
   </el-row>
    <el-row>
       <el-col :span="8">
-        <el-form-item label="QQ号" >
+        <el-form-item label="QQ号" prop="qq">
           <el-input v-model="editForm.qq" auto-complete="off" placeholder="请填写QQ号"></el-input>
         </el-form-item>
       </el-col>

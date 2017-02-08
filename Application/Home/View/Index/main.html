@@ -40,25 +40,19 @@
 				<div slot="header" class="clearfix">
 					系统公告
 				</div>
-				<div>
-					<el-table
-				      :data="sysData"
-				      style="width: 100%">
-				      <el-table-column
-				        prop="sys_type"
-				        label="类型"
-				        width="180">
-				      </el-table-column>
-				      <el-table-column
-				        prop="title"
-				        label="标题">
-				      </el-table-column>
-				      <el-table-column
-				        prop="date"
-				        label="日期"
-				        width="180">
-				      </el-table-column>
+				<div style="margin:-20px;">
+					<el-table :data="sysData" style="width: 100%;border:none;">
+				      <el-table-column prop="sys_type" label="类型" width="180" align="center"></el-table-column>
+				      <el-table-column prop="title" label="标题" align="center"></el-table-column>
+				      <el-table-column prop="date" label="日期" width="180" align="center"></el-table-column>
 				    </el-table>
+				    <el-col :span="24">
+					     <div class="grid-content bg-purple-light pull-right" style="padding:2px;">
+					       <!-- page -->
+					       <include file="Common:_pagination" />
+					       <!-- / page -->
+					     </div>
+				    </el-col>
 				</div>
 			</el-card>
 		</el-col>
@@ -204,7 +198,23 @@
 					sys_type:'测试数据',
 					title:'新功能XXXX上线了',
 					date:'2017-01-01 12:12'
-				}
+				},
+				{
+					sys_type:'测试数据',
+					title:'新功能XXXX上线了',
+					date:'2017-01-01 12:12'
+				},
+				{
+					sys_type:'测试数据',
+					title:'新功能XXXX上线了',
+					date:'2017-01-01 12:12'
+				},
+				{
+					sys_type:'测试数据',
+					title:'新功能XXXX上线了',
+					date:'2017-01-01 12:12'
+				},
+
 			],
 			sysReport:[
 				{
