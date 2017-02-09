@@ -1,23 +1,31 @@
 <el-dialog title="添加员工" v-model="addFormDialog">
 <!-- <el-form :model="form"> -->
 <el-form ref="addForm" :rules="addRules" :model="addForm" :label-width="dialogLabelWidth">
-  <el-row>
-    <el-col :span="12">
-      <el-form-item label="登录账号" prop="account">
-        <el-input v-model="addForm.account"  auto-complete="off"></el-input>
-      </el-form-item>
-      <el-form-item label="密码">
-        <el-input v-model="addForm.password" auto-complete="off"></el-input>
-      </el-form-item>
-    </el-col>
-    <el-col :span="12">
-      <el-form-item label="员工姓名">
-        <el-input v-model="addForm.realname" auto-complete="off"></el-input>
-        
-      </el-form-item>
-    </el-col>
-  </el-row>
-   <el-row>
+<el-tabs  type="card" >
+    <el-tab-pane label="账号" name="first">
+       <el-row>
+      <el-col :span="12">
+        <el-form-item label="登录账号" prop="account">
+          <el-input v-model="addForm.account"  auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="密码">
+          <el-input v-model="addForm.password" auto-complete="off"></el-input>
+        </el-form-item>
+      </el-col>
+      <el-col :span="12">
+        <el-form-item label="员工姓名">
+          <el-input v-model="addForm.realname" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="员工职能">
+          <el-select v-model="addForm.role_id">
+            <el-option v-for="role in roleList" :label="role.name" :value="role.id"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+    </el-row>
+    </el-tab-pane>
+    <el-tab-pane label="其它信息" name="second">
+      <el-row>
     <el-col :span="12">
 
       <el-form-item label="头像">
@@ -44,13 +52,13 @@
       </el-col> -->
     </el-row>
     <el-row>
-      <el-col :span="12">
+      <!-- <el-col :span="12">
         <el-form-item label="所属团队">
           <el-select  v-model='addForm.group_id' placeholder="请选择">
             <el-option  v-for="group in groupList" :label="group.name" :value="group.id"></el-option>
           </el-select>
         </el-form-item>
-      </el-col>
+      </el-col> -->
       <el-col :span="12">
         <el-form-item label="性别">
           <el-radio class="radio" v-model="addForm.sex" label="1">男</el-radio>
@@ -136,6 +144,10 @@
       placeholder="请输入内容">
     </el-input>
     </el-form-item>
+    </el-tab-pane>
+  </el-tabs>
+ 
+   
     
   </el-form>
   <div slot="footer" class="dialog-footer">

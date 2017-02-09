@@ -117,6 +117,15 @@ class CommonController extends Controller {
 		
 	}
 
+	protected function _getList(){
+		$this->setQeuryCondition();
+		$count = (int)$this->M->count();
+		$this->setQeuryCondition();
+		$list = $this->M->page(I('get.p',0). ','. $this->pageSize)->order('id desc')->select();
+		$result = array('list'=>$list, 'count'=>$count);
+		return $result;
+	}
+
 	/**
 	 * 公用 获取列表
 	 *
@@ -124,12 +133,7 @@ class CommonController extends Controller {
 	 * 
 	 **/
 	public function getList(){
-		
-		$this->setQeuryCondition();
-		$count = (int)$this->M->count();
-		$this->setQeuryCondition();
-		$list = $this->M->page(I('get.p',0). ','. $this->pageSize)->order('id desc')->select();
-		$result = array('list'=>$list, 'count'=>$count);
+		$result = $this->_getList();
 		if (IS_AJAX) {
 			$this->ajaxReturn($result);
 			// $this->ajaxReturn($this->M->getLastSql());
@@ -144,6 +148,13 @@ class CommonController extends Controller {
 	public function _before_index(){
 		
 		$this->assign("pageSize", $this->pageSize);
+	}
+
+
+	protected function setContactPost($user_id){
+		 $row = M('user_info')->field('phone,realname')->find($user_id);
+		 $_POST['contact'] = $row['realname'];
+		 $_POST['tel']     = $row['phone'];
 	}
 
 

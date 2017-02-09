@@ -1,10 +1,10 @@
-<el-dialog title="设置角色" v-model="setRolesFormDialog">
+<el-dialog title="设置职能" v-model="setRolesFormDialog" @close="closeSetRole">
 <!-- <el-form :model="form"> -->
-<el-form :label-width="dialogLabelWidth">
-  <el-form-item label="角色">
-    <el-checkbox-group v-model="setRolesForm.role_ids">
-      <el-checkbox v-for="role in roleList" :label="role.id">{{ role.name }}</el-checkbox>
-    </el-checkbox-group>
+<el-form ref="setRolesForm" :model="setRolesForm" :label-width="dialogLabelWidth">
+  <el-form-item label="职能">
+    <el-select v-model="setRolesForm.role_ids">
+        <el-option v-for="role in roleList" :label="role.name" :value="role.id"></el-option>
+      </el-select>
   </el-form-item>
 </el-form>
 <div slot="footer" class="dialog-footer">

@@ -3,17 +3,25 @@ namespace Home\Model;
 use Think\Model;
 
 class DepartmentModel extends Model {
+
+    const CAREER = 2;
+    const GENERALIZE = 3;
+
 	protected $tableName = 'department_basic';
 
 	
-
+    protected $_validate = array(
+         array('name','','部门名称已存在',0,'unique'), // 
+   );
 
 	private $types = array(
-		'我是总经办你想找事？',
-		'区域',
+		'总部',
+		'事业区',
 		'事业部',
 		'推广部',
 	);
+
+
 
 
 	/**
@@ -28,5 +36,7 @@ class DepartmentModel extends Model {
     		return $this->types;
     	}
     }
+
+    
 
 }

@@ -34,6 +34,28 @@ class CustomerController extends CommonController {
 		$this->assign('steps',        D('CustomerLog')->getSteps());
 		$this->assign('Proportion',   D('CustomerLog')->getProportion());
 		$this->assign('Remind',       D('CustomerLog')->getRemind());
+
+
+		//统计
+		//条件的数组
+		$field = array(
+			'plan',
+			'log',
+			'unlog',
+			'transfto',
+			'transfin',
+			'type',
+			'important',
+			'conflict'
+		);
+
+		$aggregation = array();
+		foreach ($field as $value) {
+			$_GET['field'] = $value;
+			$this->setQeuryCondition();
+			$aggregation[$value] = $this->M->count();
+		}
+		$this->assign('aggregation', $aggregation);
 		$this->display();
 	}
 

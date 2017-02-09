@@ -4,16 +4,19 @@ namespace Home\Model;
 use Think\Model;
 
 class RoleModel extends Model {
+	
+	const GOLD = 'gold';
+	const DEPARTMENTMASTER = 'departmentMaster';
+	const CAPTAIN = 'captain';
+	const STAFF = 'staff';
+
 	protected $tableName = 'rbac_role';
 
 
 	private $enames = array(
 		'gold',  //总经办
-		'areaMaster', //区域主管
-		'careerMaster', //事业部经理
-		'generaMaster', //推广部经理
+		'departmentMaster', //部门经理
 		'captain', //主管 队长
-		'personnelSupervisor', //人事
 		'staff' //员工
 	);
 
@@ -35,6 +38,7 @@ class RoleModel extends Model {
 		return $this->enames[$type];
 	}
 
+	
 	public function getIdByEname($name){
 		return $this->where(array('ename'=>$name))->getField("id");
 	}

@@ -7,13 +7,18 @@
 			<el-row>
 				<el-col :span="12">
 					<el-form :inline="true"  ref="searchForm" :model="searchForm">
+					  <el-form-item style="display: none;" prop="id">
+					  	<el-input   v-model="searchForm.id">
+					   </el-input>
+					  </el-form-item>
+					  
 					  <el-form-item prop="name" >
 					    <el-input   placeholder="请输入单位名"  v-model="searchForm.name">
 					    </el-input>
 					  </el-form-item>
 					  <el-form-item>
 					    <el-button type="primary" icon="search" @click="loadDatalist" >查询</el-button> 
-					    <el-button icon="close" @click="searchReset"> 清空</el-button>
+					    <el-button icon="close" @click="searchReset">重置</el-button>
 			        	<!-- <el-button  @click="openDialog('advancedSearch')" icon="search">高级查询</el-button>  -->
 					  </el-form-item>
 					</el-form>
@@ -32,15 +37,16 @@
 					
 					v-loading="dataLoad"
 					element-loading-text="{:L('DATA_LOGIN')}">
+
 					    <el-table-column type="selection"  align="center" width="50" >
 					    </el-table-column>
 					    <el-table-column label="序号"  align="center" width="65" :formatter="handleIndex"  >
 					    </el-table-column>
-					    <el-table-column label="单位ID" align="center" prop="id" width="90">
+					    <!-- <el-table-column label="单位ID" align="center" prop="id" width="90">
+					    </el-table-column> -->
+					    <el-table-column   label="单位名"  prop="name" width="180">
 					    </el-table-column>
-					    <el-table-column label="单位名" align="center" prop="name" width="125">
-					    </el-table-column>
-					    <el-table-column label="类型" align="center" prop="type" >
+					    <el-table-column label="类型" align="center" prop="typeText" >
 					    </el-table-column>
 						<el-table-column label="上级组织" align="center" prop="p_name" width="110">
 					    </el-table-column>
@@ -55,23 +61,26 @@
 					    <el-table-column  label="拓展二" align="center" prop="expand2">
 					    </el-table-column>
 					    <el-table-column  inline-template :context="_self"  align="center" label="形象照片" width="100">
-						    <div>
+
+						    <div v-if="row.img.length">
 						    	<el-tooltip content="点击放大图片" placement="right">
 						    	 <img :src="imgUrl(row.img)" @click="bigImg(row.img)" alt="点击放大图片" width="45px" height="45px">
 						    	<el-tooltip content="添加新的组织单位！" placement="right">	
 						    </div>
 					    </el-table-column>
-                        <el-table-column label="地址" align="center" prop="address" width="180">
+                        <el-table-column label="地址"  prop="address" width="180">
                         </el-table-column>
-                        <el-table-column label="财务编号" align="center" prop="f_num" width="100">
+                        <!-- <el-table-column label="财务编号" align="center" prop="f_num" width="100">
                         </el-table-column>
                         <el-table-column label="是否公示" align="center" prop="public" width="100">
-                        </el-table-column>
+                        </el-table-column> -->
                         <el-table-column label="备注" align="center" prop="remark" width="100">
                         </el-table-column>
 
-					    <el-table-column  :context="_self"  align="center" width="150" fixed="right"  label="操作"  >
+					    <el-table-column  :context="_self"  align="center" width="250" fixed="right"  label="操作"  >
 					      <template scope="scope">
+					      	<el-button v-if="scope.row.type==1" type="text"    @click="checkDown(scope.row.id)" >查看下级</el-button>
+					      	<el-button v-else type="text" @click="searchReset">返回上一级</el-button>
 					      	<el-button type="success" @click="handleEdit(scope.$index, scope.row)"     size="small">编辑</el-button>
 					      	<el-button type="danger"  @click="handleDelete(scope.$index, scope.row)"   size="small" >删除</el-button>
 					      </template>
@@ -164,15 +173,15 @@
              p_id:[
                 { required: true, message: '请选择上级', trigger: 'blur' },
              ],
-             zone:[
+             zone_id:[
                 { required: true, message: '请选择片区', trigger: 'blur' },
              ],
-             contact:[
-                { required: true, message: '请填写联系人', trigger: 'blur' },
-             ],
-             tel:[
-                { required: true, message: '请填写联系电话', trigger: 'blur' },
-             ],
+             // contact:[
+             //    { required: true, message: '请填写联系人', trigger: 'blur' },
+             // ],
+             // tel:[
+             //    { required: true, message: '请填写联系电话', trigger: 'blur' },
+             // ],
              public:[
                 { required: true, message: '请选择是否公示', trigger: 'blur' },
              ],
@@ -180,20 +189,22 @@
                 { required: true, message: '请填写地址', trigger: 'blur' },
              ],
 		},
-		typeList:{:json_encode($typeList)}
+		typeList:{:json_encode($typeList)},
+		zoneList:{:json_encode($zoneList)},
+		userList:{:json_encode($departmentMaster)},
+		computedusers:[]
 
 	}).setForm('add', {
 		id:'',
 		name:"",
-		public:"",
+		// public:"",
 		type:"",
 		p_id:"",
 		p_name:'',
-		zone:"",
+		zone_id:"",
 		expand1:"",
 		expand2:"",
-		contact:"",
-		tel:"",
+		user_id:"",
 		f_num:"",
 		address:"",
 		remark:"",
@@ -206,18 +217,17 @@
 		type:"",
 		p_id:"",
 		p_name:'',
-		zone:"",
+		zone_id:"",
 		expand1:"",
 		expand2:"",
-		contact:"",
-		tel:"",
+		user_id:"",
 		f_num:"",
 		address:"",
 		remark:"",
 		img:"",
 	}).setForm('search', {
 		name:"",
-		input:"",
+		id:"0",
 		sortFiled:"id",
 		sortWay:"asc" // desc
 	}).setMethod('imgUrl', function(url){
@@ -251,14 +261,33 @@
 	    	vmThis.topO = response.body;
 	    })
 
-
 	}).setMethod('beforeList',function(dataList){
 		var vmThis = this;
 		dataList.forEach(function(currentValue, index){
-			currentValue['public']   = currentValue.public == 1 ?'是':'否';
+			// currentValue['public']   = currentValue.public == 1 ?'是':'否';
 			currentValue['typeText'] = vmThis.typeList[currentValue['type']];
+			currentValue['zone']     = vmThis.zoneList[currentValue['zone_id']];
 		})
 		return dataList;
+	}).setMethod('typeChange', function(v){
+		var vmThis = this;
+	    this.$http.get("{:U('getTopD')}", {params:{type:v}}).then(function(response){
+	    	vmThis.topO = response.body;
+	    });
+	    if (v == 1) {
+	    	this.computedusers = [];
+	    } else {
+	    	this.computedusers = this.userList;
+	    }
+	}).setMethod('checkDown', function(v){
+		this[FormName.getFormName('search')].id = v;
+		this.dataReload();
+	}).setMethod('editOpen', function(){
+		// 加载上级组织选项
+		this.organization();
+		//
+		this.computedusers = this.userList;
+		console.log(this.computedusers);
 	})
 </script>
 

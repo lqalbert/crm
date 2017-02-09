@@ -1,6 +1,6 @@
 <el-dialog title="编辑团队小组" v-model="editFormDialog">
 
-  <el-form :model="editForm" :label-width="dialogLabelWidth">
+  <el-form ref="editForm" :model="editForm" :label-width="dialogLabelWidth">
   <input type="hidden" name="img" v-model="editForm.img"/>
   <el-row>
     <el-col :span="12">
@@ -9,62 +9,35 @@
       </el-form-item>
     </el-col>
     <el-col :span="12">
-      <el-form-item label="类型" prop="type">
-        <el-select  placeholder="请选择类型" v-model="editForm.type">
-          <el-option label="小组" value="小组"></el-option>
-          <el-option label="小队" value="小队"></el-option>
-          <el-option label="团队" value="团队"></el-option>
+      <el-form-item label="上级部门组织" prop="department_id">
+        <el-select  placeholder="请选择上级组织" v-model="editForm.department_id">
+          <el-option v-for="org in namelist"  :label="org.name" :value="org.id"></el-option>
         </el-select>
       </el-form-item>
     </el-col>
   </el-row>
   <el-row>
     <el-col :span="12">
-    <el-form-item label="上级部门组织" prop="p_name">
-      <el-select  placeholder="请选择上级组织" v-model="editForm.p_name">
-        <el-option-group label="四川">
-          <foreach name="namelist" item="v">
-            <if condition="$v.zone eq 四川">
-             <el-option label="{$v.name}" value="{$v.zone}-{$v.name}"></el-option>
-            </if>
-          </foreach>
-        </el-option-group>
-        <el-option-group label="河南">
-          <foreach name="namelist" item="v">
-            <if condition="$v.zone eq 河南">
-             <el-option label="{$v.name}" value="{$v.zone}-{$v.name}"></el-option>
-            </if>
-          </foreach>
-      </el-option-group>
-      </el-select>
-    </el-form-item>
+      <el-form-item label="联系人(负责人)"  prop="user_id">
+          <el-select   placeholder="请选择联系人" v-model="editForm.user_id">
+            <el-option v-for="contact in contactList" :label="contact.realname" :value="contact.user_id"></el-option>
+          </el-input>
+        </el-form-item>
     </el-col>
     <el-col :span="12">
-      <el-form-item label="联系人(负责人)"  prop="contact">
-        <el-input  auto-complete="off" placeholder="请填写联系人" v-model="editForm.contact">
-        </el-input>
-      </el-form-item>
-    </el-col>
-  </el-row>
-  <el-row>
-    <el-col :span="12">
-      <el-form-item label="电话" prop="tel">
-        <el-input  auto-complete="off" placeholder="请填写电话号码" v-model="editForm.tel"></el-input>
-      </el-form-item>
-    </el-col>
-    <el-col :span="12">
-     <el-form-item label="是否启用" prop="status">
+      <el-form-item label="是否启用" prop="status">
        <el-radio-group v-model="editForm.status">
-         <el-radio label="1">启用</el-radio>
-         <el-radio label="0">禁用</el-radio>
+         <el-radio :label="1">启用</el-radio>
+         <el-radio :label="0">禁用</el-radio>
        </el-radio-group>
      </el-form-item>
     </el-col>
   </el-row>
+  
   <el-row>
     <el-col :span="12">
       <el-upload 
-      action="{:U('Upload/index')}" 
+      action="{:U('Upload/index2')}" 
       :data="pathInfo" 
       :on-success="uploadImg_E" 
       :thumbnail-mode="true" 

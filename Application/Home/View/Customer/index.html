@@ -59,47 +59,47 @@
           <el-button type="info" icon="search" @click="loadDatalist">查询</el-button> 
           <el-button @click="searchReset">重置</el-button>
           <el-tooltip content="本人跟踪的客户" placement="bottom-start">
-            <el-badge :value="10" :max="9" style="margin-left:15px;">
+            <el-badge :value="{$aggregation.log}" :max="9" style="margin-left:15px;">
               <el-button type="info"  @click="setField('log')">跟踪</el-button>
             </el-badge>
           </el-tooltip>
           <el-tooltip content="本人没有跟踪的客户" placement="bottom-start">
-            <el-badge :value="2" :max="9" style="margin-left:15px;">
+            <el-badge :value="{$aggregation.unlog}" :max="9" style="margin-left:15px;">
               <el-button type="info" @click="setField('unlog')">未跟踪</el-button>
             </el-badge>
           </el-tooltip>
           <el-tooltip content="本人计划跟踪的客户" placement="bottom-start">
-            <el-badge :value="1" :max="9" style="margin-left:15px;">
+            <el-badge :value="{$aggregation.plan}" :max="9" style="margin-left:15px;">
               <el-button type="info" @click="setField('plan')" >计划</el-button>
             </el-badge>
           </el-tooltip>
           <el-tooltip content="本人把客户转给他人的客户(分成)" placement="bottom-start">
-            <el-badge :value="1" :max="9" style="margin-left:15px;">
+            <el-badge :value="{$aggregation.transfto}" :max="9" style="margin-left:15px;">
               <el-button type="info" @click="setField('transfto')">转让</el-button>
             </el-badge>
           </el-tooltip>
           <el-tooltip content="他人把客户转给本人的客户(分成)" placement="bottom-start">
-            <el-badge :value="1" :max="9" style="margin-left:15px;">
+            <el-badge :value="{$aggregation.transfin}" :max="9" style="margin-left:15px;">
               <el-button type="info" @click="setField('transfin')">转入</el-button>
             </el-badge>
           </el-tooltip>
-          <el-tooltip content="本人单独跟踪的客户(不分成)" placement="bottom-start">
+          <!-- <el-tooltip content="本人单独跟踪的客户(不分成)" placement="bottom-start">
             <el-badge :value="1" :max="9" style="margin-left:15px;">
               <el-button type="info"  @click="setField('')">锁定</el-button>
             </el-badge>
-          </el-tooltip>
+          </el-tooltip> -->
           <el-tooltip content="本人跟踪且成交了的客户" placement="bottom-start">
-            <el-badge :value="1" :max="9" style="margin-left:15px;">
+            <el-badge :value="{$aggregation.type}" :max="9" style="margin-left:15px;">
               <el-button type="success" @click="setField('type')">服务</el-button>
             </el-badge>
           </el-tooltip>
           <el-tooltip content="对客户进行筛选后重点跟踪" placement="bottom-start">
-            <el-badge :value="1" :max="9" style="margin-left:15px;">
+            <el-badge :value="{$aggregation.important}" :max="9" style="margin-left:15px;">
               <el-button type="info" @click="setField('important')">自选</el-button>
             </el-badge>
           </el-tooltip>
           <el-tooltip content="他人的客户与您的客户有冲突" placement="bottom-start">
-            <el-badge :value="10" :max="9" style="margin-left:15px;">
+            <el-badge :value="{$aggregation.conflict}" :max="9" style="margin-left:15px;">
     		      <el-button type="warning" @click="setField('conflict')">冲突</el-button>
             </el-badge>
           </el-tooltip>

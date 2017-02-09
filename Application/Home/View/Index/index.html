@@ -49,8 +49,8 @@
 						</li>
 					  	<php>
 							$userInfo = session('account')['userInfo'];
-							$arr=M('group')->where(array('id'=>$userInfo['group_id']))->field('p_name,name')->find();
-							$userInfo['p_name']=$arr['p_name'];
+							$arr=M('group_basic')->where(array('id'=>$userInfo['group_id']))->field('name')->find();
+							
 							$userInfo['name']=$arr['name'];
 						</php>
 						<li class="layui-nav-item">
