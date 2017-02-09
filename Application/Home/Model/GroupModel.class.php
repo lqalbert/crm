@@ -3,5 +3,5 @@ namespace Home\Model;
 use Think\Model;
 
 class GroupModel extends Model {
-	protected $tableName = 'group';
+	protected $tableName = 'group_basic';
 }

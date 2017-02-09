@@ -2,7 +2,7 @@
 namespace Home\Controller;
 use Think\Controller;
 class GroupController extends CommonController {
-	protected $table="group";
+	protected $table="group_basic";
 
 	
 	public function index (){
