@@ -67,8 +67,8 @@ class CustomerController extends CommonController {
 	public function setQeuryCondition() {
 		$this->M->where(array("user_id"=> session('uid')));
 		if (I('get.name')) {
-			$this->M->where(array("name"=> array('like', I('get.name')."%")));
-			var_dump($this->M->getLastSql());
+			$this->M->where(array("name|phone|qq|qq_nickname|weixin"=> array('like', I('get.name')."%")));
+			//var_dump($this->M->getLastSql());
 		}
 
 		// $today = Date("Y-m-d")." 00:00:00" ;
@@ -120,7 +120,24 @@ class CustomerController extends CommonController {
 	*/
 	public function _before_add(){
 		$_POST['user_id'] = session('uid');
-		return true;
+		if(I('post.phone')=='' && I('post.qq')=='' && I('post.weixin')==''){
+		    $this->error('手机/QQ/微信任填其一');
+		}else if(I('post.phone')=='' && I('post.qq')==''){
+			$_POST['phone']= null;
+			$_POST['qq']= null;
+			return true;
+		}else if(I('post.phone')=='' && I('post.weixin')==''){
+            $_POST['phone'] = null;
+            $_POST['weixin']= null;
+            return true;
+		}else if(I('post.qq')=='' && I('post.weixin')==''){
+            $_POST['qq']= null;
+            $_POST['weixin']= null;
+            return true;
+		}else{
+			return true;
+		}
+		
 	}
 
 

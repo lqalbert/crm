@@ -43,7 +43,7 @@
   	<el-col :span="24">
   		<el-form :inline="true" ref="searchForm" :model="searchForm">
   		  <el-form-item prop="name">
-  		    <el-input v-model="searchForm.name" placeholder="客户姓名" ></el-input>
+  		    <el-input v-model="searchForm.name" placeholder="客户姓名|手机|qq|微信"></el-input>
   		  </el-form-item>
         <el-form-item prop="group" style="width:80px">
           <el-select v-model="searchForm.group" placeholder="请选择">
@@ -125,7 +125,7 @@
 	    </el-table-column>
 	    <el-table-column prop="name"  label="客户姓名" width="140" align="center">
 	    </el-table-column>
-      <el-table-column prop="sex"  label="性别" width="65" align="center">
+      <el-table-column prop="sex"  label="性别" width="80" align="center">
         <template scope="scope">
           {{ getType(scope.row.sex, 'sexType') }}
         </template>
@@ -138,10 +138,14 @@
 	    <el-table-column prop="phone" label="手机" align="center" width="140">
 	    </el-table-column>
 		  <el-table-column prop="qq" label="QQ号" align="center" width="160">
-      <template scope="scope">
-      {{ scope.row.qq }}
-        <a v-if="scope.row.qq" :href="getTenct(scope.row.qq)"><img width="30"  src="__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg" alt=""></a>
-        </template>
+        
+          <template scope="scope">
+            {{ scope.row.qq }}
+            <a v-if="scope.row.qq" :href="getTenct(scope.row.qq)">
+              <img width="30"  src="__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg" alt="">
+            </a>
+          </template>
+        
 	    </el-table-column>
 	    <el-table-column prop="qq_nickname" label="QQ昵称" align="center" width="140">
 	    </el-table-column>
@@ -290,6 +294,27 @@ function toInt(v){
   page.addPlanFormUrl = "{:U('addPlanLogs')}";
   page.addRemindFormUrl = "{:U('setRemid')}";
   page.addChoiceFormUrl = "{:U('setImportant')}";
+  //表单验证
+  var checkPhone=function(rule,value,callback){
+     var phoneReg = /^1[34578]\d{9}$/;
+     if(value==='' || value===null){
+       callback();
+     }else if(!phoneReg.test(value)){
+       callback('手机号格式错误');
+     }else{
+       callback();
+     }
+  }
+  var checkQQ=function(rule,value,callback){
+    var number=/^\d+$/;
+    if(value==='' || value===null){
+      callback();
+    }else if(!number.test(value)){
+      callback('QQ号格式错误');
+    }else{
+      callback();
+    }
+  }
   window.defaultOption.setDatas({
     dialogVisible:false,
     sb:[],
@@ -326,12 +351,39 @@ function toInt(v){
     steps:{:json_encode($steps)},
     addRules:{
       name:[
-        { required: true, message: '请输入客户姓名', trigger: 'blur' }
+        { required: true, message: '请输入客户姓名', trigger: 'blur' },
+        
       ],
       phone:[
-        { required: true, message: '请输入客户手机', trigger: 'blur' }
-      ]
-    }
+        //{ required: true, message: '请输入客户手机', trigger: 'blur' },
+        //{ type: 'number', message: '手机必须为数字'},
+        { validator: checkPhone, trigger: 'blur' }
+      ],
+      qq:[
+        //{ type: 'number', message: 'QQ号必须为数字'},
+        { validator: checkQQ, trigger:'blur' },
+      ],
+      type:[
+        { required:true, message:'请选择客户类型',trigger:'blur'},
+      ],
+    },
+    editRules:{
+      name:[
+        { required: true, message: '请输入客户姓名', trigger: 'blur' },
+      ],
+      phone:[
+        //{ required: true, message: '请输入客户手机', trigger: 'blur' },
+        //{ type: 'number', message: '手机必须为数字'},
+        { validator: checkPhone, trigger: 'blur' }
+      ],
+      qq:[
+        //{ type: 'number', message: 'QQ号必须为数字'},
+        { validator: checkQQ, trigger:'blur' },
+      ],
+      type:[
+        { required:true, message:'请选择客户类型',trigger:'blur'},
+      ],
+    },
   }).setForm('search', {
     name:'',
     field: '',
@@ -339,9 +391,9 @@ function toInt(v){
   }).setForm('add',{
     name:"",
     type:"",
-    phone:"",
+    phone:'',
     phone2:"",
-    qq:null,
+    qq:'',
     qq2:"",
     qq_nickname:"",
     qq_nickname2:"",

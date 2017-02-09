@@ -2,7 +2,7 @@
 //phone：手机号
 //手机号码正确返回true,否则返回false
 function isMobile(phone) {
-    var phoneReg = /^1[2,3,4,5,6,7,8,9][0-9]{9}$/;
+    var phoneReg = /^1[2,3,4,5,6,7,8,9][0-9]{9}$/;//  /^1[34578]\d{9}$/
     if (phoneReg.test(phone)) {
         return true;
     }

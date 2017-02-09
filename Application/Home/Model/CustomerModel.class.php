@@ -17,7 +17,7 @@ class CustomerModel extends Model {
 	const WOMAN  = 2;
 
 
-   
+
 
     protected $tableName = 'customers_basic';
     protected $customerType = array(
@@ -141,17 +141,17 @@ class CustomerModel extends Model {
 
     protected $_validate = array(
     		array('name','require', '姓名必须！'), 
-        array('phone','/^1[34578]\d{9}$/','手机号格式错误',1,'regex'),
+        array('phone','/^1[34578]\d{9}$/','手机号格式错误',2,'regex'),
         array('phone','checkPhone',      '手机号已经存在！', self::VALUE_VALIDATE, 'callback', self::MODEL_INSERT), // 验证phone字段是否唯一
+
         array('qq','number','QQ号格式错误',0),
     		array('qq',   'checkQQ',         'QQ号已经存在！',   self::VALUE_VALIDATE, 'callback', self::MODEL_INSERT), // 验证qq字段是否唯一
-    		array('weixin','checkWx',     '微信号已经存在！', self::VALUE_VALIDATE,    'callback', self::MODEL_INSERT), // 验证微信号是否唯
+    		array('weixin','checkWx',     '微信号已经存在！', self::VALUE_VALIDATE,    'callback', self::MODEL_INSERT), // 验证微信号是否唯一
     );
 
     protected $_auto = array(
-          array('plan', 'transfer', 1, 'callback'),
+        array('plan', 'transfer', 1, 'callback'),
     );
-    
     //UTC时间转换
     public function transfer($v){
       if (empty($v)) {
