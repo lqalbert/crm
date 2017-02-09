@@ -144,7 +144,7 @@ class CustomerModel extends Model {
         array('phone','/^1[34578]\d{9}$/','手机号格式错误',2,'regex'),
         array('phone','checkPhone',      '手机号已经存在！', self::VALUE_VALIDATE, 'callback', self::MODEL_INSERT), // 验证phone字段是否唯一
 
-        array('qq','number','QQ号格式错误',0),
+        array('qq','number','QQ号格式错误',2),
     		array('qq',   'checkQQ',         'QQ号已经存在！',   self::VALUE_VALIDATE, 'callback', self::MODEL_INSERT), // 验证qq字段是否唯一
     		array('weixin','checkWx',     '微信号已经存在！', self::VALUE_VALIDATE,    'callback', self::MODEL_INSERT), // 验证微信号是否唯一
     );
