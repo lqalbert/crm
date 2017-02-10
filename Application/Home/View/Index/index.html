@@ -54,8 +54,7 @@
 						</li>
 					  	<php>
 							$userInfo = session('account')['userInfo'];
-							$arr=M('group_basic')->where(array('id'=>$userInfo['group_id']))->field('p_name,name')->find();
-							$userInfo['p_name']=$arr['p_name'];
+							$arr=M('group_basic')->where(array('id'=>$userInfo['group_id']))->field('name')->find();
 							$userInfo['name']=$arr['name'];
 						</php>
 						<li class="layui-nav-item">
@@ -65,7 +64,7 @@
 							</a>
 							<dl class="layui-nav-child">
 								<dd>
-									<a data-tab="true" data-url='javascript:;'><i class="layui-icon">&#xe629;</i> <cite>个人信息</cite></a>
+									<a data-tab="true" data-url="{:U('UserDetail/index')}"><i class="layui-icon">&#xe629;</i> <cite>个人信息</cite></a>
 								</dd>
 								<dd>
 									<a data-tab="true" data-url='javascript:;'><i class="layui-icon">&#xe620;</i> <cite>设置</cite></a>

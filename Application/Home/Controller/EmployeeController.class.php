@@ -1,5 +1,6 @@
 <?php
 namespace Home\Controller;
+use Common\Lib\User;
 
 class EmployeeController extends CommonController {
 	protected $table="RbacUser";
@@ -14,7 +15,21 @@ class EmployeeController extends CommonController {
 
 	public function setQeuryCondition() {
 
-		$this->M->relation(true)->field('password',true)->where(array('no_authorized'=>0));
+		// $this->M->relation(true)->field('password',true)->where(array('no_authorized'=>0));
+		$this->M->join('user_info ON rbac_user.id = user_info.user_id')
+		        ->field('account,address,
+		        	area_city,area_district,
+		        	area_province,created_at,
+		        	department_id,group_id,
+		        	head,id,mphone,no_authorized,phone,
+		        	qq,qq_nickname,realname,role_ename,role_id,sex,status,user_id,weixin,weixin_nikname')->where(array('no_authorized'=>0));
+
+
+
+
+		$user = new User;
+		$user->getRoleObject();
+		return $user->setEmployQueryCondition($this->M);
 
 		if (isset($_GET['name'])) {
 			$this->M->where(array('account'=>array('like', I('get.name')."%")));
@@ -22,7 +37,14 @@ class EmployeeController extends CommonController {
 	}
 
 	public function getRoles(){
-		return D('rbac_role')->select();
+		$row = M('rbac_role')->field('level')->find(session('account')['userInfo']['role_id']);
+		return D('rbac_role')->where(array('level'=>array('gt', $row['level'])))->select();
+
+		/*$user = new User;
+		$user->getRoleObject();
+		return $user->getEmployeeRoleList();*/
+
+
 	}
 
 
@@ -43,17 +65,29 @@ class EmployeeController extends CommonController {
 		$user_id = I('post.user_id',0);
 		$role_ids = I('post.role_ids');
 		$insert_list = array();
-		foreach ($role_ids as $value) {
-			$insert_list[] = array('role_id'=>$value, 'user_id'=>$user_id);
+		if (is_array($role_ids)) {
+			foreach ($role_ids as $value) {
+				$insert_list[] = array('role_id'=>$value, 'user_id'=>$user_id);
+			}
+		} else {
+			$insert_list[] = array('role_id'=>$role_ids, 'user_id'=>$user_id);
 		}
+		
 		$M->startTrans(); 
 		$result = $M->where(array('user_id'=>$user_id))->delete();
 
 		if ($result !== false) {
 			$insert_result = $M->addAll($insert_list);
 			if ($insert_result !== false) {
-				$M->commit();
-				$this->success("操作成功");
+				$re = M('user_info')->data(array('user_id'=>$user_id, 'role_id'=>$role_ids))->save();
+				if ($re !== false) {
+					$M->commit();
+					$this->success("操作成功");
+				} else {
+					$M->rollback();
+					$this->error("操作失败".M('user_info')->getError());
+				}
+				
 			} else {
 				$M->rollback();
 				$this->error("操作失败".$M->getError());
@@ -66,16 +100,39 @@ class EmployeeController extends CommonController {
 	}
 
 	/**
+	* 预处理
+	*/
+	public function _before_add(){
+		$user = new User;
+		$user->getRoleObject();
+		$user->setEmployeeAddData();
+
+	}
+
+	/**
 	* 添加
 	*/
 	public function add(){
-		
+
 		$re = $this->M->create($_POST, 1);
 		if ($re) {
+			$this->M->startTrans(); 
 			$re['userInfo'] = M('userInfo')->create($_POST, 1);
-			if ($this->M->relation('userInfo')->add($re)) {
-				$this->success(L('ADD_SUCCESS'));
+			if (empty($re['userInfo']['head'])) {
+				unset($re['userInfo']['head']);
+			}
+			$id = $this->M->relation('userInfo')->add($re);
+			if ($id) {
+				$role_list = array('role_id'=>$re['userInfo']['role_id'], 'user_id'=>$id);
+				if (M('rbac_role_user')->add($role_list)) {
+					$this->M->commit();
+					$this->success(L('ADD_SUCCESS'));
+				} else {
+					$this->M->rollback();
+					$this->error(M('rbac_role_user')->getError());
+				}
 			} else {
+				$this->M->rollback();
 				$this->error($this->M->getError());
 			}
 		} else {

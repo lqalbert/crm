@@ -261,7 +261,7 @@ function setForm(opt, type){
 				vmThis[formDialog] = false;
 				vmThis[formStatus] = false;
 				vmThis.$refs[formName].resetFields();
-				vmThis.loadDatalist();
+				vmThis.dataReload();
 				
 			}, 2000);
 

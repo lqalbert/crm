@@ -11,7 +11,7 @@
 					  </el-form-item>
 					  <el-form-item>
 					    <el-button type="primary" @click="loadDatalist" icon="search">查询</el-button> 
-					    <el-button  icon="close" @click="searchReset">清空</el-button>
+					    <el-button  icon="close" @click="searchReset">重置</el-button>
 			        	<!-- <el-button  @click="openDialog('advancedSearch')" icon="search">高级查询</el-button>  -->
 					  </el-form-item>
 					</el-form>
@@ -35,15 +35,15 @@
 					    </el-table-column>
 					    <el-table-column label="团队小组名称" align="center" prop="name">
 					    </el-table-column>
-						<el-table-column label="团队小组类型" align="center" prop="type">
-					    </el-table-column>
-						<el-table-column label="上级组织" align="center" prop="p_name">
-					    </el-table-column>
+						<!-- <el-table-column label="团队小组类型" align="center" prop="type">
+					    </el-table-column> -->
+						<!-- <el-table-column label="上级组织" align="center" prop="p_name">
+					    </el-table-column> -->
 
 					    <el-table-column  inline-template :context="_self"  align="center" label="形象照片" width="100">
 					       <div>
 					    	<el-tooltip content="点击放大图片" placement="right">
-					    	 <img :src="imgUrl(row.img)" @click="bigImg(row.img)" alt="点击放大图片" width="45px" height="45px">
+					    	 <img :src="row.img" @click="bigImg(row.img)" alt="点击放大图片" width="45px" height="45px">
 					    	</el-tooltip>	
 					       </div>
 					    </el-table-column>
@@ -163,25 +163,23 @@
              tel:[
                 { required: true, message: '请填写联系电话', trigger: 'blur' },
              ],
-	 }
+	 },
+     contactList:{:json_encode($contactList)},
+     namelist:{:json_encode($namelist)}
   }).setForm('add',{
   	id:'',
   	name:"",
-  	type:"",
-  	p_name:"",
-  	contact:'',
-  	tel:"",
-  	status:"",
+  	user_id:"",
+    department_id:"",
+  	status:1,
   	remark:"",
   	img:'',
   }).setForm('edit',{
   	id:'',
   	name:"",
-  	type:"",
-  	p_name:"",
-  	contact:'',
-  	tel:"",
-  	status:"",
+  	user_id:"",
+    department_id:"",
+  	status:0,
   	remark:"",
   	img:'',
   }).setForm('search',{
@@ -195,7 +193,7 @@
 
   	this.bigimg=true;
 
-  	this.imageUrl="__ROOT__/Upload/group/"+url;
+  	this.imageUrl=url;
   }).setMethod('uploadImg',function(response,file,fileList){
   	this.addForm.img=response.path;
   	return response.path;
@@ -209,9 +207,11 @@
 	this.fileList = [{name:row.img, url: this.imgUrl(row.img)}];
 	this.editIndex = index;
 	this.openDialog(type);
+
   }).setMethod('beforeList',function(dataList){
   	dataList.forEach(function(currentValue,index){
   		currentValue['switch']=currentValue.status==1?true:false;
+        currentValue.status = parseInt(currentValue.status);
   	})
   	return dataList;
   }).setMethod('switchHandle',function(index,row){

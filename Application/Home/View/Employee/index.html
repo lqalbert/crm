@@ -36,20 +36,20 @@
 					    </el-table-column>
 					    <el-table-column  label="序号"  width="70" :formatter="handleIndex" >
 					    </el-table-column>
- 					    <el-table-column prop="userInfo.head" inline-template label="头像"  width="100">
+ 					    <el-table-column prop="head" inline-template label="头像"  width="100">
 							<div>
-								<img :src="setImgUrl(row.userInfo.head)" alt="" width="50" height="50">
+								<img :src="setImgUrl(row.head)" alt="" width="50" height="50">
 							</div>
 					    </el-table-column>
 					   <!-- <el-table-column prop="id"  label="员工ID" width="100">
 					    </el-table-column> -->
 					    <el-table-column prop="account" label="登录账号" width="100">
 					    </el-table-column>
-						 <el-table-column prop="userInfo.realname" label="员工姓名" width="150">
+						 <el-table-column prop="realname" label="员工姓名" width="150">
 					    </el-table-column>
-					    <el-table-column prop="userInfo.sex"  label="性别" width="100">
+					    <el-table-column prop="sex"  label="性别" width="100">
 						    <template scope="scope">
-					          {{ getType(scope.row.userInfo.sex, 'sexType') }}
+					          {{ getType(scope.row.sex, 'sexType') }}
 					        </template>
 					    </el-table-column>
 					    <!--<el-table-column prop="status" label="是否有效" width="100">
@@ -63,20 +63,20 @@
 					    <el-table-column prop="ishow" label="是否公示" width="100">
 					    </el-table-column>
 						 -->
-					    <el-table-column prop="userInfo.phone" label="固话" width="140">
+					    <el-table-column prop="phone" label="固话" width="140">
 					    </el-table-column>
 					     
-					    <el-table-column prop="userInfo.mphone" label="手机" width="140">
+					    <el-table-column prop="mphone" label="手机" width="140">
 					    </el-table-column>
 					    
-					    <el-table-column prop="userInfo.qq" label="QQ号" width="100">
+					    <el-table-column prop="qq" label="QQ号" width="100">
 					    </el-table-column>
-					    <el-table-column prop="userInfo.qq_nickname" label="QQ昵称" width="180">
+					    <el-table-column prop="qq_nickname" label="QQ昵称" width="180">
 					    </el-table-column>
 						
-						<el-table-column prop="userInfo.weixin"  label="微信号" width="150">
+						<el-table-column prop="weixin"  label="微信号" width="150">
 					    </el-table-column>
-					    <el-table-column prop="userInfo.weixin_nikname"  label="微信昵称" width="150">
+					    <el-table-column prop="weixin_nikname"  label="微信昵称" width="150">
 					    </el-table-column>
 
 						<!--
@@ -96,7 +96,7 @@
 					    <el-table-column inline-template :context="_self"  fixed="right"  label="操作" width="250">
 					      <span>
 					        <el-button @click="handleEdit($index, row)"  size="small">编辑</el-button>
-					        <el-button @click="handleSetRoles($index, row)" type="info" size="small">角色</el-button>
+					        <el-button @click="handleSetRoles($index, row)" type="info" size="small">职能</el-button>
 					        <el-button @click="handleDelete($index, row)"  type="danger" size="small">删除</el-button>
 					      </span>
 					    </el-table-column>
@@ -221,6 +221,7 @@
 		}).setForm('add',{
 			account:"",
 			password:"123456",
+			role_id:"",
 			head:"",
 			group_id:"",
 			sex:0,
@@ -238,6 +239,7 @@
 			weixin_nikname:""
 		}).setForm('edit',{
 			account:"",
+			role_id:"",
 			id:"",
 			head:"",
 			group_id:"",
@@ -256,7 +258,7 @@
 			weixin_nikname:""
 		}).setForm('setRoles',{
 			user_id:0,
-			role_ids:[]
+			role_ids:0
 		},true).setForm('search',{
 			name:"",
 			plan:false
@@ -268,15 +270,13 @@
 		}, true).setMethod('getType', function(type, field){
 			return this[field][type];
 		}).setMethod('handleSetRoles', function(index, row){
-			var vmThis = this;
-			vmThis[FormName.getForm('setRoles')].user_id = row.id;
-			this.$http.get(page.getUserRolesUrl, {params:{user_id: row.id}}).then(function(response){
-				vmThis[FormName.getForm('setRoles')].role_ids = [];
-				response.body.forEach(function(currentValue){
-					vmThis[FormName.getForm('setRoles')].role_ids.push(currentValue.role_id);
-				});
-				vmThis.openDialog('setRoles');
-			})
+			// var vmThis = this;
+			var f = FormName.getForm('setRoles');
+			this[f].user_id = row.id;
+			this[f].role_ids = row.role_id;
+			
+			this.openDialog('setRoles');
+			
 		}).setMethod('addFormUploadSuccess', function(response, file, fileList){
 			this.addUpload = '__ROOT__'+ response.path;
 			this.addUploadImg = true;
@@ -353,6 +353,8 @@
 	    this.multipleSelection = val;
 	  }).setMethod('setImgUrl', function(url){
 	  	return '__ROOT__' + url;
+	  }).setMethod('closeSetRole', function(){
+	  	 // this.dataReload();
 	  });
 	</script>
 	<script>

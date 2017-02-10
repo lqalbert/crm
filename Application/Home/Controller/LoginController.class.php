@@ -22,9 +22,9 @@ class LoginController extends Controller {
 				);
 
 			$result = $userModel->relation('userInfo')->where($where)->find();
-			$groupInfo=M('group_basic')->field('name,p_name')->where(array('id'=>$result['userInfo']['group_id']))->find();
+			$groupInfo=M('group_basic')->field('name')->where(array('id'=>$result['userInfo']['group_id']))->find();
 			$result['userInfo']['name']=$groupInfo['name'];
-			$result['userInfo']['p_name']=$groupInfo['p_name'];
+			// $result['userInfo']['p_name']=$groupInfo['p_name'];
 			if (!$result) {
 				$this->error(L('LOGIN_ERROR'));
 			} else {

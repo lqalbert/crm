@@ -86,19 +86,13 @@ layui.config({
 	   $('#lock').mouseover(function(){
 	   	   layer.tips('请按Alt+L快速锁屏！', '#lock', {
 	             tips: [1, '#FF5722'],
-	             time: 4000
+	             time: 1000
 	       });
 	   })
 	   // 快捷键锁屏设置
 	    $(document).keydown(function(e){
 	         if(e.altKey && e.which == 76){
 	         	 lockSystem();
-	         }else if(e.which == 116){
-	         	 lockSystem();
-	         }else if(e.ctrlKey && e.which == 82){
-                 lockSystem();
-	         }else if(e.ctrlKey && e.which == 82){
-
 	         }
 	    });
 	   function startTimer(){
@@ -115,29 +109,69 @@ layui.config({
 	   function checkLockStatus(locked){
 	        // 锁屏
 	        if(locked == 1){
-	        	$('.lock-screen').show(0,sb);
-	            $('#locker').show(0,sb);
-	            $('#layui_layout').hide(0,sb);
+	        	$('.lock-screen').show(0,fordidden);
+	            $('#locker').show(0,fordidden);
+	            $('#layui_layout').hide(0,fordidden);
 	            //$('#lock_password').val('');
 	        }else{
-	        	$('.lock-screen').hide();
-	            $('#locker').hide();
-	            $('#layui_layout').show();
+	        	$('.lock-screen').hide(1,allow);
+	            $('#locker').hide(1,allow);
+	            $('#layui_layout').show(1,allow);
 	        }
 	    }
-       function sb(){
-       	 $(document).keydown(function(e){
+
+	   //锁屏状态下禁止刷新
+       function fordidden(){
+       	 $(window).keydown(function(e){
 	         if(e.altKey && e.which == 76){
-	         	 checkLockStatus(1);
-	         }else if(e.which == 116){
-	         	 checkLockStatus(1);
-	         }else if(e.ctrlKey && e.which == 82){
-                 checkLockStatus(1);
-	         }else if(e.ctrlKey && e.which == 82){
-                 checkLockStatus(1);
+	         	 return false;
+	         	// checkLockStatus(1);
+	         }else if(e.which == 116){ //F5
+	         	 return false;
+	         	 //checkLockStatus(1);
+	         }else if(e.ctrlKey && e.which == 82){ // ctrl+R
+	         	 return false;
+                 //checkLockStatus(1);
+	         }else if(e.ctrlKey && e.which == 116){ //ctrl + F5
+                 return false;
+                 //checkLockStatus(1);
+	         }else if(e.which == 13){
+	         	 return false;
 	         }
-	    });
-       
+	     }).bind("contextmenu",function(e){
+             return false; 
+	     });
+	     console.log(window.location.href);
+	     // function RunOnBeforeUnload() {
+	     // 	window.onbeforeunload = function(){ 
+	     // 		return '将丢失未保存的数据!';
+	     // 	} 
+	     // }
+       }
+
+       //解锁完毕以后开启刷新
+       function allow(){
+
+       	 $(window).keydown(function(e){
+	         if(e.altKey && e.which == 76){
+	         	 return true;
+	         	// checkLockStatus(1);
+	         }else if(e.which == 116){ //F5
+	         	 return true;
+	         	 //checkLockStatus(1);
+	         }else if(e.ctrlKey && e.which == 82){ // ctrl+R
+	         	 return true;
+                 //checkLockStatus(1);
+	         }else if(e.ctrlKey && e.which == 116){ //ctrl + F5
+                 return true;
+                 //checkLockStatus(1);
+	         }else if(e.which == 13){
+	         	 return true;
+	         }
+	     }).bind("contextmenu",function(e){
+             return true; 
+	     });
+	     //window.onload();   
        }
          
 
@@ -174,9 +208,17 @@ layui.config({
 		       success:function(response){
 		         if(response==1){
 		          unlockSystem();
+		          allow();
+		          window.location.reload();
 		          //checkLockStatus(1)
 		         }else{
-		           checkLockStatus(1);  
+		           //checkLockStatus(1);  
+		           layer.open({
+		           	 title:'警告',
+		           	 content:'密码错误！别想偷看，死鬼！',
+		           	 shadeClose:true,
+		           	 time:3000,
+		           });
 		         }
 		       }
 
