@@ -35,13 +35,7 @@
 
     </el-row>
     <el-row>
-      <el-col :span="12">
-        <el-form-item label="所属团队">
-          <el-select  v-model='editForm.group_id' placeholder="请选择">
-            <el-option  v-for="group in groupList" :label="group.name" :value="group.id"></el-option>
-          </el-select>
-        </el-form-item>
-      </el-col>
+      
       <el-col :span="12">
         <el-form-item label="性别">
           <el-radio class="radio" v-model="editForm.sex" label="1">男</el-radio>
@@ -52,15 +46,15 @@
 
     <el-row>
       <el-col :span="12">
-        <el-form-item label="固话">
+        <el-form-item label="手机">
           <el-input v-model="editForm.phone"  auto-complete="off"></el-input>
         </el-form-item>
       </el-col>
-      <el-col :span="12">
+      <!-- <el-col :span="12">
         <el-form-item label="手机">
           <el-input v-model="editForm.mphone" auto-complet="off"></el-input>
         </el-form-item>
-      </el-col>
+      </el-col> -->
     </el-row>
 
     <el-row>

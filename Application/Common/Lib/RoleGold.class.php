@@ -34,4 +34,16 @@ class RoleGold {
     public function setEmployQueryCondition($m){
 
     }
+
+    public function setGroupQueryCondition($m, $obj){
+        
+    }
+
+    public function getAllBenC($obj){
+        //所有的队员
+        $captainId = D('Role')->getIdByEname(RoleModel::CAPTAIN);
+        $sql = "select user_info.user_id,realname, group_basic.name as group_name  from user_info left join group_basic on user_info.group_id = group_basic.id  where user_info.role_id <> $captainId";
+        $members = M()->query($sql);
+        return $members;
+    }
 }
