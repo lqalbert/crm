@@ -4,7 +4,8 @@ namespace Home\Controller;
 use Think\Controller;
 use Org\Util\Rbac;
 use Think\Model;
-
+use Common\Lib\User;
+use Home\Model\RoleModel;
 /**
 *  继承一个公共的父类
 */
@@ -155,6 +156,21 @@ class CommonController extends Controller {
 		 $row = M('user_info')->field('phone,realname')->find($user_id);
 		 $_POST['contact'] = $row['realname'];
 		 $_POST['tel']     = $row['phone'];
+	}
+
+	/**
+	*   是不是 部门经理
+	*  是 团队、员工不能添加
+	*/
+	protected function rightProcted(){
+		$user = new User;
+		$role_row = $user->getRole();
+		if ($role_row['ename'] == RoleModel::DEPARTMENTMASTER) {
+			$depart = D('department')->where(array('user_id'=>session('uid')))->find();
+			if (!$depart) {
+				$this->error("还没有分配部门给你，暂时不能添加");
+			}
+		}
 	}
 
 

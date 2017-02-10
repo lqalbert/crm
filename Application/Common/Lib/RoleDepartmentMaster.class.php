@@ -42,10 +42,14 @@ class RoleDepartmentMaster {
     public function getAllBenC($obj){
         $depart_id = $this->getDepartId($obj->id);
         $captainId = D('Role')->getIdByEname(RoleModel::CAPTAIN);
-        $sql = "select user_info.user_id,realname, group_basic.name as group_name  from user_info left join group_basic on user_info.group_id = group_basic.id where   user_info.role_id <> $captainId and user_info.department_id = ".$depart_id;
+        if ($depart_id) {
+            $sql = "select user_info.user_id,realname, group_basic.name as group_name  from user_info left join group_basic on user_info.group_id = group_basic.id where   user_info.role_id <> $captainId and user_info.department_id = ".$depart_id;
 
-        $members = M()->query($sql);
-        return $members;
+                    $members = M()->query($sql);
+                    return $members;
+        } else {
+            return [];
+        }
     }
 
 

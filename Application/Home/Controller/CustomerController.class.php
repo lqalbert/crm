@@ -243,9 +243,9 @@ class CustomerController extends CommonController {
 	public function trackInfo(){
         $type=$this->M->getType(I('post.type'));
         $group_id=M('user_info')->where(array('user_id'=>I('post.user_id')))->field('group_id')->find();
-        $groupInfo=M('group')->where(array('id'=>$group_id['group_id']))->field('name,p_name')->find();
+        $groupInfo=M('group_basic')->where(array('id'=>$group_id['group_id']))->field('name')->find();
         $userName=M('user_info')->where(array('user_id'=>I('user_id')))->field('realname')->find();
-        $user=$groupInfo['p_name']."-".$groupInfo['name']."-".$userName['realname'];
+        $user='a'."-".$groupInfo['name']."-".$userName['realname'];
         $arr=M('customers_log')->where(array('cus_id'=>I('post.id')))->order('id desc')->select();
         foreach ($arr as $key => $value) {
         	$arr[$key]['type']=$type;

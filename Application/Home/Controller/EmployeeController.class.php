@@ -103,9 +103,11 @@ class EmployeeController extends CommonController {
 	* 预处理
 	*/
 	public function _before_add(){
+		$this->rightProcted();
 		$user = new User;
 		$user->getRoleObject();
 		$user->setEmployeeAddData();
+
 
 	}
 

@@ -32,7 +32,8 @@ class RoleGold {
     }
 
     public function setEmployQueryCondition($m){
-
+        $goldId = D('Role')->getIdByEname(RoleModel::GOLD);
+        $m->where(array('user_info.role_id'=>array('neq', $goldId)));
     }
 
     public function setGroupQueryCondition($m, $obj){

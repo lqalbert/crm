@@ -215,15 +215,10 @@
              name:[
                 { required: true, message: '请填写单位名称', trigger: 'blur' },
              ],
-             type:[
-                { required: true, message: '请选择类型', trigger: 'blur' },
+             department_id:[
+                { required: true, message: '请选择上级部门', trigger: 'blur' },
              ],
-             contact:[
-                { required: true, message: '请填写联系人', trigger: 'blur' },
-             ],
-             tel:[
-                { required: true, message: '请填写联系电话', trigger: 'blur' },
-             ],
+             
 	 },
      contactList:{:json_encode($contactList)},
      namelist:{:json_encode($namelist)},
