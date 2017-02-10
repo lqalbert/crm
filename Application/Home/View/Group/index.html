@@ -26,7 +26,10 @@
 					:data="dataList"  
 					border  
 					v-loading="dataLoad"  
-					element-loading-text="拼命加载中">
+					element-loading-text="拼命加载中"
+                    @row-click="choseRow"
+                    @selection-change="handleSelectionChange"
+                    >
 					    <el-table-column type="selection"  align="center" width="50" >
 					    </el-table-column>
 					    <el-table-column type="index" :formatter="handleIndex" width="65" align="center" label="序号" >
@@ -89,6 +92,11 @@
 	                    <el-button size="small" @click="openDialog('add')" icon="plus" type="primary">添加
 	                    </el-button>
 	                  </el-tooltip>
+
+                      <el-tooltip content="添加新的成员" placement="right">
+                        <el-button size="small" @click="openDialog('addMember')" icon="plus" type="primary">添加成员
+                        </el-button>
+                      </el-tooltip>
 					</span>
 				  </div>
 			  </el-col>
@@ -102,11 +110,57 @@
 			</el-row>
 			<!-- / toolbar -->
 
+            <el-row>
+                <el-col :span="24">
+                    <el-tabs  >
+                      <el-tab-pane label="团队成员">
+                        <el-table 
+                        :data="tableData"  
+                        empty-text="请点击小组" 
+                        border
+                        @selection-change="delSelect"
+                         >
+                          <el-table-column type="selection"  width="50" >
+                          </el-table-column>
+                          <el-table-column prop="user_id" label="员工ID" width="180" align="center">
+                          </el-table-column>
+                          <el-table-column prop="realname" label="员工姓名" width="180" align="center">
+                          </el-table-column>
+                          <el-table-column prop="type" label="员工类型" width="180" align="center">
+                          </el-table-column>
+                          <el-table-column prop="phone" label="手机" align="center">
+                          </el-table-column>
+                          <el-table-column prop="qq"   label="QQ号" align="center">
+                           <template scope="scope">
+                            {{ scope.row.qq }}
+                            <a v-if="scope.row.qq" :href="getTenct(scope.row.qq)">
+                              <img width="30"  src="__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg" alt="">
+                            </a>
+                          </template>
+                          </el-table-column>
+                          
+                        </el-table>
+                      </el-tab-pane>
+                      <!-- <el-tab-pane label="软件账号">软件账号</el-tab-pane>
+                      <el-tab-pane label="通话记录">通话记录</el-tab-pane>
+                      <el-tab-pane label="客户资料">客户资料</el-tab-pane> -->
+                    </el-tabs>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col :span="24">
+                    <el-button type="primary" size="small" @click="removeMember">移除成员</el-button>
+                </el-col>
+            </el-row>
+
+
+            
+
 		</div>
 
 		<div class="dialogWrapper" v-show="show" style="display: none">
 			<!-- 高级查询 -->
-			<include file="_search" />
+			
 			<!-- / 高级查询 -->
 
 			<!-- 添加 -->
@@ -120,6 +174,10 @@
 			<!-- 终止小组(暂时去掉) -->
 			<include file="_stop" />
 			<!-- / stop -->
+
+            <include file="_addMember" />
+
+
 			<!-- bifimg -->
 			<el-dialog  title="图片放大" :modal="false" size="small" v-model="bigimg" style="z-index:1000;">
 			  <div style="margin:0;padding:0;text-align:center;z-index:1000;">
@@ -133,6 +191,9 @@
 </block>
 <block name="scripts">
 <script>
+  page.getGroupMemberUrl = "{:U('getEmployeesByGroupId')}";
+  page.setGroupMemberUrl = "{:U('setEmployees')}";
+  page.removeMemberUrl   = "{:U('removeMember')}";
   window.defaultOption.setDatas({
   	 //传输照片上传地址
   	 pathInfo:{folder:'group'},
@@ -165,7 +226,11 @@
              ],
 	 },
      contactList:{:json_encode($contactList)},
-     namelist:{:json_encode($namelist)}
+     namelist:{:json_encode($namelist)},
+     memberList:{:json_encode($memberList)},
+     tableData:[],
+     multipleSelection:[],
+     secondSelection:[]
   }).setForm('add',{
   	id:'',
   	name:"",
@@ -187,7 +252,11 @@
 	input:"",
 	sortFiled:"id",
 	sortWay:"asc" // desc
-  }).setMethod('imgUrl',function(url){
+  }).setForm('addMember',{
+    id:0,
+    name:"",
+    user_ids:[]
+  }, true ).setMethod('imgUrl',function(url){
   	 return "__ROOT__/Upload/group/"+url
   }).setMethod('bigImg',function(url){
 
@@ -226,6 +295,85 @@
     	});
     	vmThis.dataList[vmThis.statusIndex].switch = !vmThis.dataList[vmThis.statusIndex].switch;
     });
+  }).setMethod('choseRow', function(row){
+        //赶急 这里暂时这么写
+     this.$http.get(page.getGroupMemberUrl, {params:{id:row.id}}).then(function(response){
+        response.body.forEach(function(current){
+            if (current.user_id == row.user_id) {
+                current.type = "主管";
+            } else {
+                current.type = "队员"
+            }
+        })
+        this.tableData = response.body;
+
+      }, function(response){
+        vmThis.$message({
+            message:'操作失败',
+            type:'error'
+        });
+      });
+  }).setMethod('handleSelectionChange', function(val){
+    this.multipleSelection = val;
+  }).setMethod('commonSelect',function(x){
+    var form = x;
+    var vmThis = this;
+    if (this.multipleSelection.length ==0 ||  this.multipleSelection.length>1) {
+      this.closeDialog(form);
+      this.$message.error('请先选择一个小组');
+      return false;
+    } else {
+      var  row = this.multipleSelection.pop();
+      this.row = row;
+      return row;
+    }
+  }).setMethod('beforeAddMember', function(){
+    var type = 'addMember';
+    var row = this.commonSelect(type);
+    if ( row !== false) {
+        this[FormName.getFormName(type)].id = row.id;
+        this[FormName.getFormName(type)].name = row.name;
+        
+    }
+  }).setMethod('removeMember', function(){
+    var vmThis  =this;
+    this.$confirm('确定移除选中的成员?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(function(){
+            var ids = [];
+            vmThis.secondSelection.forEach(function(current){
+                ids.push(current.user_id);
+            })
+            vmThis.$http.post(page.removeMemberUrl, {user_ids:ids}).then(function(response){
+                vmThis.$message({
+                  message: '操作成功',
+                  type: 'success'
+                });
+                // vmThis.tableData = [];
+                vmThis.choseRow(vmThis.row);
+            }, function(response){
+                vmThis.$message({
+                  message: '操作失败',
+                  type: 'error'
+                });
+            });
+
+
+          vmThis.$message({
+            type: 'success',
+            message: '移除成功!'
+          });
+        }).catch(function(){
+          vmThis.$message({
+            type: 'info',
+            message: '已取消删除'
+          }); 
+        })  
+  }).setMethod('delSelect', function(v){
+
+    this.secondSelection = v;
   });
 </script>
 </block>

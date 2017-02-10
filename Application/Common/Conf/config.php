@@ -8,9 +8,9 @@ return array(
 
 	'DB_TYPE' => 'mysql',
 	// 'DB_DSN' => 'mysql://dev_cn_crm:dev2008dev@192.168.0.12:3306/dev_cn_crm#utf8',
-	'DB_USER' => 'dev_cn_crm_01',
-	'DB_PWD' =>'dev2008dev',
-	'DB_DSN' => 'mysql:host=192.168.0.12;dbname=dev_cn_crm_01;charset=utf8',
+	'DB_USER' => 'run_cn_crm',
+	'DB_PWD' =>'run2008run',
+	'DB_DSN' => 'mysql:host=192.168.0.12;dbname=run_cn_crm;charset=utf8',
 
 
 

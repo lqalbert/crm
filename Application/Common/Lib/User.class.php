@@ -44,11 +44,11 @@ class User {
     }
 
     public function getRoleGroupContacts(){
-        return $this->roleObject->getGroupContacts();
+        return $this->roleObject->getGroupContacts($this);
     }
 
     public function getRoleGroupOrgs(){
-        return $this->roleObject->getGroupUpsOrg();
+        return $this->roleObject->getGroupUpsOrg($this);
     }
 
     /**
@@ -67,5 +67,17 @@ class User {
 
     public function setEmployQueryCondition($m){
         $this->roleObject->setEmployQueryCondition($m, $this);
+    }
+
+    public function setGroupQueryCondition($m){
+        $this->roleObject->setGroupQueryCondition($m, $this);
+    }
+
+    /**
+    * group 待选的队员
+    * (所有的队员)
+    */
+    public function getAllBenC(){
+        return $this->roleObject->getAllBenC($this);
     }
 }
