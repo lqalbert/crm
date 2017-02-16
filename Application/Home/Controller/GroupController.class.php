@@ -17,13 +17,23 @@ class GroupController extends CommonController {
 		$org = $user->getRoleGroupOrgs();
 
 		//所有队员
-		$members = $user->getAllBenC();
+		// $members = $user->getAllBenC();
 		
 		$this->assign("namelist",    $org);
 		$this->assign("contactList", $contactList);
-		$this->assign("memberList",  $members);
+		// $this->assign("memberList",  $members);
 		$this->display();
 	}
+
+	public function getMemberList(){
+		$user = new User();
+		$user->getRoleObject();
+		$members = $user->getAllBenC();
+		$this->ajaxReturn($members);
+	}
+
+
+
 
 	public function setQeuryCondition(){
 		$map=array();

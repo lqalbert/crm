@@ -5,6 +5,7 @@ use Think\Model;
 class CustomerConflictModel extends Model {
     protected $tableName = 'customers_conflict';
 
+   
     private $type = array(
         "手机",
         "qq号",

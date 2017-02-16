@@ -103,6 +103,11 @@
     		      <el-button type="warning" @click="setField('conflict')">冲突</el-button>
             </el-badge>
           </el-tooltip>
+
+
+          <el-tooltip content="导入我的客户" placement="bottom-start" style="margin-left:15px;">
+            <el-button type="warning" @click="openDialog('importc')">导入我的客户</el-button>
+          </el-tooltip>
           <!-- <el-button  >高级查询</el-button>  -->
   		  </el-form-item>
   		</el-form>
@@ -279,6 +284,8 @@
   <!-- 客户全部资料 -->
   <include file="_detail"/>
   <!-- /客户全部资料 -->
+
+  <include file="_importd" />
 </div>
 
 </div> 
@@ -501,7 +508,10 @@ function toInt(v){
     intention:'',
     source:'',
     remark:"",
-  },true).setMethod('getType', function(type, field){
+  },true).setForm('importc',{
+    c:0,
+    t:0
+  }, true).setMethod('getType', function(type, field){
       return this[field][type];
   }).setMethod('beforeList', function(data){
         data.forEach(function(currentValue){
@@ -619,8 +629,24 @@ function toInt(v){
   }).setMethod('setField', function(v){
       this[FormName.getFormName('search')].field = v;
       this.loadDatalist();
-  }).setMethod('getTenct', function(qq){
-    return "tencent://message/?uin="+ qq +"&Site=&menu=yes";
+  }).setMethod('beforeImportc', function(){
+      var vmThis = this;
+      this.$http.get('{:U("checkCucstomers")}').then(function(response){
+        vmThis.importcForm.c = response.body.c;
+        vmThis.importcForm.t = response.body.t;
+      }, function(response){
+        vmThis.$message.error("出错了");
+      })
+  }).setMethod('importMyc', function(){
+     var vmThis = this;
+     this.$http.get('{:U("importMyc")}').then(function(response){
+        vmThis.$message('由我创建的客户导入：'+ response.body.c +"条,"+ "转让给我的客户："+response.body.t+"条");
+         vmThis.searchReset();
+        /*vmThis.importcForm.c = response.body.c;
+        vmThis.importcForm.t = response.body.t;*/
+      }, function(response){
+        vmThis.$message.error("出错了");
+      })
   });
 </script>
 <script>

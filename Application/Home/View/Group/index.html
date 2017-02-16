@@ -194,6 +194,7 @@
   page.getGroupMemberUrl = "{:U('getEmployeesByGroupId')}";
   page.setGroupMemberUrl = "{:U('setEmployees')}";
   page.removeMemberUrl   = "{:U('removeMember')}";
+  page.getMemberUrl      = "{:U('getMemberList')}";
   window.defaultOption.setDatas({
   	 //传输照片上传地址
   	 pathInfo:{folder:'group'},
@@ -222,7 +223,8 @@
 	 },
      contactList:{:json_encode($contactList)},
      namelist:{:json_encode($namelist)},
-     memberList:{:json_encode($memberList)},
+     // memberList:{:json_encode($memberList)},
+     memberList:[],
      tableData:[],
      multipleSelection:[],
      secondSelection:[]
@@ -325,11 +327,24 @@
   }).setMethod('beforeAddMember', function(){
     var type = 'addMember';
     var row = this.commonSelect(type);
+    var vmThis = this;
     if ( row !== false) {
         this[FormName.getFormName(type)].id = row.id;
         this[FormName.getFormName(type)].name = row.name;
         
     }
+    // memberList
+    vmThis.$http.get(page.getMemberUrl).then(function(response){
+                
+                vmThis.memberList = response.body;
+            }, function(response){
+                vmThis.$message({
+                  message: '获取备选队员失败',
+                  type: 'error'
+                });
+            });
+
+
   }).setMethod('removeMember', function(){
     var vmThis  =this;
     this.$confirm('确定移除选中的成员?', '提示', {

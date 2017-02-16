@@ -14,7 +14,9 @@ class LoginController extends Controller {
 	}
 
 	public function loginHandle() {
+
 		if (IS_POST) {
+			
 			$userModel = D('rbac_user');
 			$where = array(
 					'account' => I('post.account'),
@@ -22,12 +24,12 @@ class LoginController extends Controller {
 				);
 
 			$result = $userModel->relation('userInfo')->where($where)->find();
-			$groupInfo=M('group_basic')->field('name')->where(array('id'=>$result['userInfo']['group_id']))->find();
-			$result['userInfo']['name']=$groupInfo['name'];
-			// $result['userInfo']['p_name']=$groupInfo['p_name'];
+
+
 			if (!$result) {
 				$this->error(L('LOGIN_ERROR'));
 			} else {
+				
 				session('account', $result);
 
 				session('uid', $result['id']);
@@ -45,6 +47,8 @@ class LoginController extends Controller {
 
 
 			}
+		} else {
+			$this->redirect('index');
 		}
 	}
 

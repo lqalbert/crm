@@ -27,7 +27,13 @@
 				margin: 0 auto;
 			}
 		</style>
+		<!--[if lte IE 9]> 
+	    <script>
+	        window.location.href="{:U('login/notsupport')}";
+	    </script>
+	    <![endif]-->
 		<script>
+
 			window.webRoot = '__ROOT__/'; // /crm  
 		</script>
 	</head>
@@ -49,9 +55,7 @@
 						</li>
 					  	<php>
 							$userInfo = session('account')['userInfo'];
-							$arr=M('group_basic')->where(array('id'=>$userInfo['group_id']))->field('name')->find();
 							
-							$userInfo['name']=$arr['name'];
 						</php>
 						<li class="layui-nav-item">
 							<a href="javascript:;" class="admin-header-user">
@@ -123,13 +127,19 @@
 
 			  function notify(option, customer){
 
-			  	option.icon="__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg";
+			  	// option.icon="__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg";
 		
 			  
 			  	if (window.Notification) {
 			  		option.icon="__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg"
 					var n = new Notification("您有一个即将到点计划",option);
 					n.addEventListener('click', showQQ);
+					n.addEventListener('close', function(e){
+						myWorker.postMessage({type:"del", data:this.customer.id});
+			  			layui.jquery.post("{:U('Customer/setPlan')}", {id:this.customer.id});
+					});
+			  	
+			
 					n.customer = customer;
 			  	} else {
 			  		if (!showList[customer.qq]) {
@@ -145,14 +155,20 @@
 					        'outEffect' :'slideBottom',
 					        'sticky'    :true,
 					        onClick:function(){
-					        	trigger.setAttribute('href', "tencent://message/?uin="+ this.diyoption.qq +"&Site=&menu=yes");
-				  				trigger.click();
-					        	myWorker.postMessage({type:"del", data:this.diyoption.qq});
-					        	layui.jquery.post("{:U('Customer/setPlan')}", {id:this.diyoption.id});
-					        	delete showList[this.diyoption.qq];
+					        	if (!!this.diyoption.qq && this.diyoption.qq.length > 0) {
+	        			        	trigger.setAttribute('href', "tencent://message/?uin="+ this.diyoption.qq +"&Site=&menu=yes");
+	        		  				trigger.click();
+	        			        	
+					        	} else {
+					        		alert("客户："+this.diyoption.name+" 计划即将到点，没有设置QQ");
+					        	}
+					        	myWorker.postMessage({type:"del", data:this.diyoption.id});
+        			        	layui.jquery.post("{:U('Customer/setPlan')}", {id:this.diyoption.id});
+        			        	delete showList[this.diyoption.id];
+					        	
 					        }
 					    });
-					    showList[customer.qq] = customer;
+					    showList[customer.id] = customer;
 			  		}
 			  		
 			  	}
@@ -161,12 +177,15 @@
 			  }
 
 			  function showQQ(){
-			  	trigger.setAttribute('href', "tencent://message/?uin="+ this.tag +"&Site=&menu=yes");
-			  	trigger.click();
+			  	
+			  	if (!!this.customer.qq && this.customer.qq.length > 0) {
+			  		trigger.setAttribute('href', "tencent://message/?uin="+ this.customer.qq +"&Site=&menu=yes");
+			  		trigger.click();
+			  		this.close();
+			  	} else {
+			  		alert("客户："+this.customer.name+" 计划即将到点，没有设置QQ");
+			  	}
 			  	this.close();
-
-			  	myWorker.postMessage({type:"del", data:this.tag});
-			  	layui.jquery.post("{:U('Customer/setPlan')}", {id:this.customer.id});
 			  }
 
 			  // var de = {body:"客户：比",tag:"837737931"};
@@ -178,8 +197,9 @@
 			  	// console.log(e);
 			  	var d = new Date();
 			  	d.setTime(e.data.time);
-			  	 notify({body:"客户："+e.data.name+"\n计划时间："+d.toLocaleString() + "\n" + e.data.remind, tag: e.data.qq }, e.data);
+			  	 notify({body:"客户："+e.data.name+"\n计划时间："+d.toLocaleString() + "\n" + e.data.remind, tag: e.data.id }, e.data);
 			  }
+
 			  // myWorker.addEventListener('message', function(e){
 			  // 	console.log(e);
 			  // 	notify({body:"客户："+e.data.name, tag: e.data.qq }, e.data);

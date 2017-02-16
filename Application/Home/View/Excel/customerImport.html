@@ -1,0 +1,109 @@
+<extend name="Common:base" />
+<block name="head">
+  
+</block>
+<block name="body">
+
+<div id="app" class="container">
+  <el-alert
+    title="如果有重复的数据，可能会导致导入失败"
+    type="warning"
+    >
+  </el-alert>
+    <el-form ref="importcForm" :rules="rules" :model="importcForm" label-width="100px" >
+      <el-form-item
+        label="选择文件"
+        prop="file"
+        >
+        <el-upload
+          action="{:U('upload')}"
+          :multiple="false"
+          :show-upload-list="true"
+          :on-success="uploadSuccess"
+          accept="application/vnd.ms-excel">
+          <el-button size="small" type="primary">点击上传</el-button>
+          <div class="el-upload__tip" slot="tip">一次只能导入一个，如果传入多个文件以最后一个为准。<br>只能上传xls文件，且不超过3MB</div>
+    </el-upload>
+      </el-form-item>
+      <el-form-item label="请选择小组" prop="group_id">
+        <el-select v-model="importcForm.group_id" placeholder="请选择">
+            <el-option
+              v-for="item in gorups"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="subExecl" :loading="upload">提交</el-button>
+
+
+      </el-form-item>
+      <el-form-item>
+      <a href="{:U('customers')}">查看导入成功的数据</a>
+      </el-form-item>
+    </el-form>
+<div style="display: none;">
+    <el-pagination
+  
+  :current-page="1"
+  layout="total, prev, pager, next, jumper"
+  :total="0"
+  :page-size="1"
+  ref="pagination"
+  >
+</el-pagination>
+</div>
+</div>
+
+
+</block>
+<block name="scripts">
+<script>
+    page.subUrl = "{:U('customerImport')}";
+    window.defaultOption.setDatas({
+      upload:false,
+      file:"",
+      gorups:{:json_encode($groups)},
+      rules:{
+        file:[
+            { required: true, message: '请选择上传文件',   trigger: 'change' }
+        ],
+        group_id:[
+            { required: true, message: '请选择对应的小组', trigger: 'change' }
+        ]
+      }
+
+    }).setForm('importc',{
+        file:"",
+        group_id:""
+    }).setMethod("subExecl",function(){
+        var vmThis = this;
+        this.importcForm.file = this.file;
+        ;
+        this.$refs.importcForm.validate(function(valid){
+            if (valid) {
+                vmThis.upload = true
+                vmThis.$http.post(page.subUrl, vmThis.importcForm).then(function(response){
+                    console.log(response.body);
+                    vmThis.$message({
+                        message: response.body.info,
+                        type: 'success'
+                    });
+                    vmThis.upload = false;
+                }, function(response){
+                    vmThis.$message({
+                        message: response.body.info,
+                        type: 'error'
+                    });
+                    vmThis.upload = false;
+                });
+            }
+        });
+        
+    }).setMethod('uploadSuccess', function(response, file, fileList){
+        this.file = response.path;
+    });
+</script>
+
+</block>

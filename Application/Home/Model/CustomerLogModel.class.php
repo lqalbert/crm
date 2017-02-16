@@ -20,14 +20,14 @@ class CustomerLogModel extends Model {
         "QQ联系",
         "Email联系",
         "微信联系",
-        "远程讲解",
-        "现场讲解",
+        // "远程讲解",
+        // "现场讲解",
         "成交总结",
         "讲师指导",
         "主管建议",
         "售前回访",
 		//"Email联系",
-		"其它方式"
+		    "其它方式"
 	);
     private $steps = array(
         "首次沟通",

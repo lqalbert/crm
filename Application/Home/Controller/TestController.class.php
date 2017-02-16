@@ -46,4 +46,12 @@ class TestController extends CommonController {
 	// 	sort($a, SORT_STRING);
 	// 	var_dump($a);
 	// }
+
+
+	public function execlTest(){
+		
+	}
+
+
+
 }

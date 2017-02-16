@@ -105,3 +105,51 @@ function arr_group($arr, $thekey){
 function UTC_to_locale_time($v){
     return Date('Y-m-d H:i:s', strtotime($v));
 }
+
+/**
+* 读取 excel 文件 并返回 array 形式的数据
+* 只支持第一个 Sheet;
+* 如果文件过大，可能会卡死 到时可以参考以下链接对代码进行重构
+* http://www.01happy.com/phpexcel-read-big-excel-file/
+* 
+* @param string $filpath
+*
+* @return array
+*/
+function getExcelArrayData($filename){
+    import('Common.Vender.PhpExcel.PHPExcel',APP_PATH,'.php');
+    // import('Common.Vender.MyReadFilter');
+    $filename = ".".__ROOT__. $filename;
+    
+    //检测文件类型
+    $inputFileType = \PHPExcel_IOFactory::identify($filename);
+    //跟据文件类型创建读取器
+    $objReader = \PHPExcel_IOFactory::createReader($inputFileType);
+    //设置过滤器
+    // $objReader->setReadFilter( new \MyReadFilter() );
+
+    // $obj = \PHPExcel_IOFactory::load($filename);
+    // var_dump($obj);
+    $obj = $objReader->load($filename);
+    $worksheet = $obj->getSheet(0);
+    // var_dump($worksheet);
+    
+    /*$row_iterator = $worksheet->getRowIterator();
+    var_dump(iterator_count($row_iterator));*/
+    //以下代码参考 文档 http://www.01happy.com/phpexcel-read-big-excel-file/
+    $startRow = 1;
+    $endRow = $worksheet->getHighestRow();// 总行数
+    // $endRow = 5;
+    $highestColumn = $worksheet->getHighestColumn();// 最后列数所对应的字母
+    // var_dump($highestColumn); 
+    $highestColumnIndex = \PHPExcel_Cell::columnIndexFromString($highestColumn);// 总列数
+    
+    $data = array();
+    for ($row = $startRow; $row <= $endRow; $row++) {
+        for ($col = 0; $col < $highestColumnIndex; $col++) {
+            $data[$row][chr(ord('A')+$col)] = (string) $worksheet->getCellByColumnAndRow($col, $row)->getValue();
+        }
+    }
+   
+    return $data;
+}

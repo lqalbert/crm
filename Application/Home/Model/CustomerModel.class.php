@@ -3,14 +3,14 @@ namespace Home\Model;
 use Think\Model;
 class CustomerModel extends Model {
 
-	const TYPE_A = 0;
-	const TYPE_B = 1;
-	const TYPE_C = 2;
-	const TYPE_D = 3;
-	const TYPE_E = 4;
-	const TYPE_N = 5;
-  const TYPE_F = 6;
-	const TYPE_V = 7;
+	const TYPE_A = 'A';
+	const TYPE_B = 'B';
+	const TYPE_C = 'C';
+	const TYPE_D = 'D';
+	const TYPE_E = 'E';
+	const TYPE_N = 'F';
+  const TYPE_F = 'N';
+	const TYPE_V = 'V';
 
 	const UNKNOW = 0;
 	const MAN    = 1;
@@ -142,11 +142,15 @@ class CustomerModel extends Model {
     protected $_validate = array(
     		array('name','require', '姓名必须！'), 
         array('phone','/^1[34578]\d{9}$/','手机号格式错误',2,'regex'),
-        array('phone','checkPhone',      '手机号已经存在！', self::VALUE_VALIDATE, 'callback', self::MODEL_INSERT), // 验证phone字段是否唯一
+        array('phone','checkPhone',      '手机号已经存在！', self::VALUE_VALIDATE, 'callback', self::MODEL_INSERT), // 插入时 验证phone字段是否唯一
+        array('phone','',                '手机号已经存在！', self::VALUE_VALIDATE, 'unique',   self::MODEL_UPDATE), // 更新时 验证phone字段是否唯一
 
-        array('qq','number','QQ号格式错误',2),
-    		array('qq',   'checkQQ',         'QQ号已经存在！',   self::VALUE_VALIDATE, 'callback', self::MODEL_INSERT), // 验证qq字段是否唯一
-    		array('weixin','checkWx',     '微信号已经存在！', self::VALUE_VALIDATE,    'callback', self::MODEL_INSERT), // 验证微信号是否唯一
+        array('qq',   'number','QQ号格式错误',2),
+    		array('qq',   'checkQQ',         'QQ号已经存在！',   self::VALUE_VALIDATE, 'callback', self::MODEL_INSERT), // 插入时 验证qq字段是否唯一
+        array('qq','',                   'QQ号已经存在！', self::VALUE_VALIDATE,   'unique',   self::MODEL_UPDATE), // 更新时 验证phone字段是否唯一
+
+    		array('weixin','checkWx',       '微信号已经存在！', self::VALUE_VALIDATE,    'callback', self::MODEL_INSERT), // 验证微信号是否唯一
+        array('weixin','',              '微信号已经存在！', self::VALUE_VALIDATE,    'unique',   self::MODEL_UPDATE), // 更新时 验证phone字段是否唯一
     );
 
     protected $_auto = array(

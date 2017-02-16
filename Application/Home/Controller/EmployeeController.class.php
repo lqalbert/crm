@@ -25,11 +25,9 @@ class EmployeeController extends CommonController {
 		        	qq,qq_nickname,realname,role_ename,role_id,sex,status,user_id,weixin,weixin_nikname')->where(array('no_authorized'=>0));
 
 
-
-
 		$user = new User;
 		$user->getRoleObject();
-		return $user->setEmployQueryCondition($this->M);
+		$user->setEmployQueryCondition($this->M);
 
 		if (isset($_GET['name'])) {
 			$this->M->where(array('account'=>array('like', I('get.name')."%")));

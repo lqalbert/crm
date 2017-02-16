@@ -32,8 +32,8 @@ return array(
 	'USER_AUTH_TYPE' => 1,       // 认证类型
 	'USER_AUTH_KEY' => 'uid',    // 认证识别号
 	//REQUIRE_AUTH_MODULE  需要认证模块
-	'NOT_AUTH_MODULE' => 'index,nav,Area',// 无需认证模块
-	'NOT_AUTH_ACTION' =>  'main,index,getList,notsupport', //无需认证操作
+	'NOT_AUTH_MODULE' => 'Index,nav,Area',// 无需认证模块
+	'NOT_AUTH_ACTION' =>  'main,index,getList', //无需认证操作
 	//USER_AUTH_GATEWAY 认证网关
 	//RBAC_DB_DSN  数据库连接DSN
 	'RBAC_ROLE_TABLE' => 'rbac_role',      //角色表名称  

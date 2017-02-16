@@ -173,6 +173,10 @@ function setCommonLogic(opt){
         });
 	})
 
+	opt.setMethod('getTenct', function(qq){
+	    return "tencent://message/?uin="+ qq +"&Site=&menu=yes";
+	})
+
 }
 
 /**

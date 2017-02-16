@@ -12,7 +12,7 @@ function remove(x){
     console.log("remove function");
     console.log(x);
     for (var i = 0, len = cusList.length; i < len ; i++) {
-        if (cusList[i].qq == x) {
+        if (cusList[i].id == x) {
             cusList.splice(i, 1);
             break;
         }

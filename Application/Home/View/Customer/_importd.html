@@ -1,0 +1,18 @@
+<el-dialog title="导入客户" v-model="importcFormDialog" @open="beforeImportc">
+  <el-form  ref="importcForm" :model="importcForm" :label-width="dialogLabelWidth">
+    <el-row>
+      <el-col :span="8">
+        由我创建的客户：{{importcForm.c}}
+      </el-col>
+      <el-col :span="8">
+        转让给我的客户：{{importcForm.t}}
+      </el-col>
+      
+    </el-row>
+   
+  </el-form>
+  <div slot="footer" class="dialog-footer">
+   <el-button @click="closeDialog('importc')">取 消</el-button>
+   <el-button type="primary" @click="importMyc">确 定</el-button>
+  </div>
+</el-dialog>

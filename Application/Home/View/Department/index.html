@@ -270,7 +270,7 @@
 		})
 		return dataList;
 	}).setMethod('typeChange', function(v){
-		var vmThis = this;
+		/*var vmThis = this;
 	    this.$http.get("{:U('getTopD')}", {params:{type:v}}).then(function(response){
 	    	vmThis.topO = response.body;
 	    });
@@ -278,7 +278,7 @@
 	    	this.computedusers = [];
 	    } else {
 	    	this.computedusers = this.userList;
-	    }
+	    }*/
 	}).setMethod('checkDown', function(v){
 		this[FormName.getFormName('search')].id = v;
 		this.dataReload();

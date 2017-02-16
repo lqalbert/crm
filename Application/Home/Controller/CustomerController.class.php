@@ -1,6 +1,7 @@
 <?php
 namespace Home\Controller;
 use Home\Model\CustomerModel;
+use Home\Model\CustomerLogModel;
 
 class CustomerController extends CommonController {
 	protected $table = "customer";
@@ -209,6 +210,10 @@ class CustomerController extends CommonController {
 			}
 		}
 
+        if( $LogM->track_type == 0 || !empty($LogM->track_type)){
+            $LogM->track_text = D('CustomerLog')->getType((int)$LogM->track_type);
+        }
+
 		if ($LogM->add()) {
 			$LogM->commit();
 			$this->success(L('ADD_SUCCESS'));
@@ -386,6 +391,31 @@ class CustomerController extends CommonController {
     	} else {
     		$this->error("操作失败");
     	}
+    }
+
+    /**
+    *  检测是否有未导入的客户数据
+    *  按真实姓名来的
+    */
+    public function checkCucstomers(){
+        $realname = session('account')['userInfo']['realname'];
+        $group_id = session('account')['userInfo']['group_id'];
+        //创建的
+        $c_count = $this->M->where(array('help_user'=> $realname,     'help_group_id'=>$group_id, 'user_id'=>0))->count();
+        //转让的
+        $t_count = $this->M->where(array('help_transfer'=> $realname, 'help_group_id'=>$group_id, 'user_id'=>0))->count();
+
+        $this->ajaxReturn(array('c'=>$c_count, 't'=>$t_count));
+    }
+
+
+    public function importMyc(){
+        $realname = session('account')['userInfo']['realname'];
+        $group_id = session('account')['userInfo']['group_id'];
+        $re = $this->M->where(array('help_user'=> $realname))->data(array('user_id'=>session('uid')))->save();
+        $re2 = $this->M->where(array('help_transfer'=> $realname))->data(array('transfer_to'=>session('uid'), 'transfer_status'=>2))->save();
+
+        $this->ajaxReturn(array('c'=>$re, 't'=>$re2));
     }
 
 }
