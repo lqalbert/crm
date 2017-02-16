@@ -1,4 +1,4 @@
-/** index.js By Beginner Emain:zheng_jinfan@126.com HomePage:http://www.zhengjinfan.cn */
+       /** index.js By Beginner Emain:zheng_jinfan@126.com HomePage:http://www.zhengjinfan.cn */
 layui.config({
 	base: window.webRoot+'Public/js/'
 }).use(['element', 'layer', 'navbar', 'tab'], function() {
@@ -36,6 +36,7 @@ layui.config({
 		data: navs
 			//url: 'datas/nav.json'
 	});
+
 	//渲染navbar
 	navbar.render();
 	//监听点击事件
@@ -80,15 +81,13 @@ layui.config({
     
     //屏幕解锁
 	$(function(){
-        
-
-
+	   //锁屏提示       
 	   $('#lock').mouseover(function(){
 	   	   layer.tips('请按Alt+L快速锁屏！', '#lock', {
 	             tips: [1, '#FF5722'],
 	             time: 1000
 	       });
-	   })
+	   });
 	   // 快捷键锁屏设置
 	    $(document).keydown(function(e){
 	         if(e.altKey && e.which == 76){
@@ -138,10 +137,10 @@ layui.config({
 	         }else if(e.which == 13){
 	         	 return false;
 	         }
-	     }).bind("contextmenu",function(e){
+	     }).bind("contextmenu",function(e){ //禁止右击
              return false; 
 	     });
-	     console.log(window.location.href);
+	     //console.log(window.location.href);
 	     // function RunOnBeforeUnload() {
 	     // 	window.onbeforeunload = function(){ 
 	     // 		return '将丢失未保存的数据!';
@@ -234,4 +233,16 @@ layui.config({
 	    });
 	    
 	});
+    //刷新提示语句
+    $('#refresh').mouseover(function(){
+   	    layer.tips('请点击我刷新！', '#refresh', {
+             tips: [1, '#FF5722'],
+             time: 1000
+        });
+    });
+
+    //点击刷新
+    $('#refresh').click(function(){
+    	window.location.reload();
+    });
 });

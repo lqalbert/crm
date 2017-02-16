@@ -1,15 +1,15 @@
-<el-dialog title="编辑修改" v-model="editFormDialog" @open="editOpen">
+<el-dialog title="编辑修改" v-model="editFormDialog" @open="editOpen(editForm.type)">
 <!-- <el-form :model="form"> -->
-<el-form :model="editForm" :label-width="dialogLabelWidth">
+<el-form ref="editForm" :rules="rules" :model="editForm" v-model="editForm" :label-width="dialogLabelWidth">
   <el-row>
     <el-col :span="12">
-      <el-form-item label="单位名" >
+      <el-form-item label="单位名" prop="name">
         <el-input v-model="editForm.name"  auto-complete="off"></el-input>
       </el-form-item>
     </el-col>
     <el-col :span="12">
-      <el-form-item label="类型" >
-        <el-select  v-model="editForm.type">
+      <el-form-item label="类型" prop="type">
+        <el-select  v-model="editForm.type"  @change="typeChange">
           <el-option  v-for='(item,key) in typeList' :label="item" :value="key"></el-option>
         </el-select>
       </el-form-item>
@@ -17,15 +17,14 @@
   </el-row>
    <el-row>
     <el-col :span="12">
-      <el-form-item label="上级组织" >
+      <el-form-item label="上级组织" prop="p_id">
         <el-select  v-model="editForm.p_id">
-        
           <el-option v-for='item in topO' :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
     </el-col>
     <el-col :span="12">
-      <el-form-item label="片区"  prop="zone" >
+      <el-form-item label="片区"  prop="zone_id" >
         <el-select  v-model="editForm.zone_id">
           <el-option v-for='(item,key) in zoneList' :label="item" :value="key"></el-option>
         </el-select>

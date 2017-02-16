@@ -53,8 +53,10 @@ function setCommonLogic(opt){
 	// 共用的 方法 处理函数
 	//重载 数据列表
 	opt.setMethod("dataReload", function(){
+		
 		this.dataLoad = true;
 		this.loadDatalist();
+		//window.location.reload();
 	})
 
 	//根据 查询条件 重载数据
@@ -108,9 +110,10 @@ function setCommonLogic(opt){
 	//查询清空
 	opt.setMethod("searchReset", function(){
 		// console.log("clear");
-		this.$refs.searchForm.resetFields();
-		this.dataLoad = true;
-		this.loadDatalist();
+		//this.$refs.searchForm.resetFields();
+		//this.dataLoad = true;
+		//this.loadDatalist();
+		window.location.reload();
 	})
 
 	
@@ -256,15 +259,13 @@ function setForm(opt, type){
 					  message: '操作成功',
 					  type: 'success'
 					});
-
 			setTimeout(function(){
 				vmThis[formDialog] = false;
 				vmThis[formStatus] = false;
 				vmThis.$refs[formName].resetFields();
-				vmThis.dataReload();
-				
+				vmThis.dataReload();	
 			}, 2000);
-
+            
         }, function(response){	
         	vmThis.$message({
 			  message: '操作失败：'+response.body.info,

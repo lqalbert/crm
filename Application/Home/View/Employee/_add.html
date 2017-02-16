@@ -13,7 +13,7 @@
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="员工姓名">
+        <el-form-item label="员工姓名" prop="realname">
           <el-input v-model="addForm.realname" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="员工职能">
@@ -69,20 +69,20 @@
 
     <el-row>
       <el-col :span="12">
-        <el-form-item label="手机">
+        <el-form-item label="固话">
           <el-input v-model="addForm.phone"  auto-complete="off"></el-input>
         </el-form-item>
       </el-col>
-     <!--  <el-col :span="12">
-        <el-form-item label="手机">
-          <el-input v-model="addForm.mphone" auto-complet="off"></el-input>
-        </el-form-item>
-      </el-col> -->
+      <el-col :span="12">
+         <el-form-item label="手机" prop="mphone">
+           <el-input v-model="addForm.mphone" auto-complet="off"></el-input>
+         </el-form-item>
+       </el-col>
     </el-row>
 
     <el-row>
       <el-col :span="12">
-        <el-form-item label="QQ号">
+        <el-form-item label="QQ号" prop="qq">
           <el-input v-model="addForm.qq" auto-complete="off"></el-input>
         </el-form-item>
       </el-col>

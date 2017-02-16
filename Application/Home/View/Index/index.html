@@ -50,12 +50,10 @@
 							<a href="javascript:;" id="lock"><i class="layui-icon">&#xf0098;</i>&nbsp;锁屏</a>
 						</li>
 						<li class="layui-nav-item">
-							<a href="javascript:;">清除缓存</a>
+							<a href="javascript:;" id='refresh'><i class="layui-icon">&#xf0008;</i>&nbsp;刷新</a>
 						</li>
 					  	<php>
 							$userInfo = session('account')['userInfo'];
-							$arr=M('group_basic')->where(array('id'=>$userInfo['group_id']))->field('name')->find();
-							$userInfo['name']=$arr['name'];
 						</php>
 						<li class="layui-nav-item">
 							<a href="javascript:;" class="admin-header-user">
@@ -67,7 +65,7 @@
 									<a data-tab="true" data-url="{:U('UserDetail/index')}"><i class="layui-icon">&#xe629;</i> <cite>个人信息</cite></a>
 								</dd>
 								<dd>
-									<a data-tab="true" data-url='javascript:;'><i class="layui-icon">&#xe620;</i> <cite>设置</cite></a>
+									<a data-tab="true" data-url="{:U('UserDetail/changepwd')}"><i class="layui-icon">&#xe620;</i> <cite>设置</cite></a>
 								</dd>
 								<dd>
 									<a href="{:U('Login/logOut')}"><i class="layui-icon">&#xe659;</i> <cite>注销</cite></a>

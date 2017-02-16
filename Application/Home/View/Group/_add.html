@@ -1,7 +1,6 @@
 <el-dialog title="添加团队小组" v-model="addFormDialog">
 <!-- <el-form :model="form"> -->
 <el-form :model="addForm" :rules="rules" ref="addForm" :label-width="dialogLabelWidth">
-
  <input type="hidden" name="img" v-model="addForm.img"/>
   <el-row>
     <el-col :span="12">
@@ -37,7 +36,7 @@
 
     <el-row>
      <el-col :span="12">
-        <el-upload action="{:U('Upload/index2')}" :data="pathInfo" :on-success="uploadImg" :thumbnail-mode="true" type="drag" :multiple="false" style="margin-left:30%;">
+        <el-upload action="{:U('Upload/index')}" :data="pathInfo" :on-success="uploadImg" :thumbnail-mode="true" type="drag" :multiple="false" style="margin-left:30%;">
           <i class="el-icon-upload" style="margin:10px 0 16px;"></i>
           <div class="el-dragger__text">将<em>形象照片</em>拖到此处，或<em>点击上传</em></div>
           <div class="el-upload__tip" slot="tip" style="margin-right:115px;">只能上传jpg/png/gif文件，且不超过2M</div>

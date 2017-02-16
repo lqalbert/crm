@@ -7,7 +7,7 @@ class RbacUserModel extends RelationModel {
 
     protected $_validate = array(
      array('account','require','账号必须！', self::MUST_VALIDATE, '' ,self::MODEL_INSERT), //默认情况下用正则进行验证
-     array('account','','账号已使用',        self::MUST_VALIDATE, 'unique'  ,self::MODEL_INSERT), //默认情况下用正则进行验证
+     array('account','','账号已存在！',        self::MUST_VALIDATE, 'unique'  ,self::MODEL_INSERT), //默认情况下用正则进行验证
      array('password','require','密码必须！', self::MUST_VALIDATE, '' ,self::MODEL_INSERT), 
    );
 

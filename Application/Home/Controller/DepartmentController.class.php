@@ -52,20 +52,18 @@ class DepartmentController extends CommonController {
 		$this->ajaxReturn($result);
 	}
 
-
-
-
-
 	public function getTopD(){
 		// $this->M->where(array('type'=>array('EQ', I('get.type')-1)));
 		$type = I('get.type');
 		switch ($type) {
 			case '1':
-				$this->M->where(array('type'=>array('EQ', $type-1)));
+				$this->M->field('id,name,level')->where(array('type'=>array('EQ', $type-1)));
 				break;
 			case '2':
+				$this->M->field('id,name,level')->where(array('type'=>array('LT', $type)));
+				break;
 			case '3':
-				$this->M->where(array('type'=>array('EQ', 1)));
+				$this->M->field('id,name,level')->where(array('type'=>array('LT', $type)));
 				break;
 			default:
 				#

@@ -1,6 +1,6 @@
 <el-dialog title="编辑员工" v-model="editFormDialog" @open='beforeEdit'>
 <!-- <el-form :model="form"> -->
-<el-form ref="editForm" :model="editForm" :label-width="dialogLabelWidth">
+<el-form ref="editForm" :rules="addRules" :model="editForm" :label-width="dialogLabelWidth">
   <el-row>
     <el-col :span="12">
       <el-form-item label="登录账号">
@@ -46,20 +46,20 @@
 
     <el-row>
       <el-col :span="12">
-        <el-form-item label="手机">
+        <el-form-item label="固话">
           <el-input v-model="editForm.phone"  auto-complete="off"></el-input>
         </el-form-item>
       </el-col>
-      <!-- <el-col :span="12">
-        <el-form-item label="手机">
+      <el-col :span="12">
+        <el-form-item label="手机" prop="mphone">
           <el-input v-model="editForm.mphone" auto-complet="off"></el-input>
         </el-form-item>
-      </el-col> -->
+      </el-col>
     </el-row>
 
     <el-row>
       <el-col :span="12">
-        <el-form-item label="QQ号">
+        <el-form-item label="QQ号" prop="qq">
           <el-input v-model="editForm.qq" auto-complete="off"></el-input>
         </el-form-item>
       </el-col>

@@ -4,6 +4,7 @@ use Common\Lib\User;
 
 class EmployeeController extends CommonController {
 	protected $table="RbacUser";
+	protected $pageSize = 13;
 
 
 	public function index (){
@@ -22,11 +23,7 @@ class EmployeeController extends CommonController {
 		        	area_province,created_at,
 		        	department_id,group_id,
 		        	head,id,mphone,no_authorized,phone,
-		        	qq,qq_nickname,realname,role_ename,role_id,sex,status,user_id,weixin,weixin_nikname')->where(array('no_authorized'=>0));
-
-
-
-
+		        	qq,qq_nickname,realname,role_ename,role_id,sex,status,user_id,weixin,weixin_nikname,address,motto,time')->where(array('no_authorized'=>0));
 		$user = new User;
 		$user->getRoleObject();
 		return $user->setEmployQueryCondition($this->M);
@@ -113,7 +110,7 @@ class EmployeeController extends CommonController {
 	* 添加
 	*/
 	public function add(){
-
+        
 		$re = $this->M->create($_POST, 1);
 		if ($re) {
 			$this->M->startTrans(); 
