@@ -73,7 +73,7 @@ class GroupController extends CommonController {
 	}
 
 	public function getEmployeesByGroupId(){
-		$re = M('user_info')->where(array('group_id'=>I('get.id')))->field('user_id,qq,realname,phone')->select();
+		$re = M('user_info')->where(array('group_id'=>I('get.id')))->field('user_id,qq,realname,mphone as phone')->select();
 		$this->ajaxReturn($re);
 	}
 

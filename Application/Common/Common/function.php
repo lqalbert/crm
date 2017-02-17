@@ -119,7 +119,7 @@ function UTC_to_locale_time($v){
 function getExcelArrayData($filename){
     import('Common.Vender.PhpExcel.PHPExcel',APP_PATH,'.php');
     // import('Common.Vender.MyReadFilter');
-    $filename = ".".__ROOT__. $filename;
+   
     
     //检测文件类型
     $inputFileType = \PHPExcel_IOFactory::identify($filename);
@@ -147,7 +147,9 @@ function getExcelArrayData($filename){
     $data = array();
     for ($row = $startRow; $row <= $endRow; $row++) {
         for ($col = 0; $col < $highestColumnIndex; $col++) {
-            $data[$row][chr(ord('A')+$col)] = (string) $worksheet->getCellByColumnAndRow($col, $row)->getValue();
+            $data[$row][chr(ord('A')+$col)] = (string) $worksheet->getCellByColumnAndRow($col, $row)->getFormattedValue();
+            // $data[$row][chr(ord('A')+$col)] = (string) $worksheet->getCellByColumnAndRow($col, $row)->getValue();
+            // 部分有格式的列 getValue会返回原始值 例 如 日期 2016/01/01 原始值 类似于42685.466099537
         }
     }
    

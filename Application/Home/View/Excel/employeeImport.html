@@ -25,10 +25,10 @@
           <div class="el-upload__tip" slot="tip">一次只能导入一个，如果传入多个文件以最后一个为准。<br>只能上传xls文件，且不超过3MB</div>
     </el-upload>
       </el-form-item>
-      <el-form-item label="请选择小组" prop="group_id">
-        <el-select v-model="importcForm.group_id" placeholder="请选择">
+       <el-form-item label="请选择部门" prop="group_id">
+        <el-select v-model="importcForm.department_id" placeholder="请选择">
             <el-option
-              v-for="item in gorups"
+              v-for="item in departments"
               :label="item.name"
               :value="item.id">
             </el-option>
@@ -38,6 +38,9 @@
         <el-button type="primary" @click="subExecl" :loading="upload">提交</el-button>
 
 
+      </el-form-item>
+      <el-form-item>
+      <a href="{:U('customers')}">查看导入成功的数据</a>
       </el-form-item>
     </el-form>
 <div style="display: none;">
@@ -57,32 +60,29 @@
 </block>
 <block name="scripts">
 <script>
-    page.subUrl = "{:U('customerImport')}";
+    page.subUrl = "{:U('employeeImport')}";
     window.defaultOption.setDatas({
       upload:false,
       file:"",
-      gorups:{:json_encode($groups)},
       rules:{
         file:[
             { required: true, message: '请选择上传文件',   trigger: 'change' }
-        ],
-        group_id:[
-            { required: true, message: '请选择对应的小组', trigger: 'change' }
         ]
-      }
+       
+      },
+      departments:{:json_encode($departments)}
 
     }).setForm('importc',{
         file:"",
-        group_id:""
+        department_id:""
     }).setMethod("subExecl",function(){
         var vmThis = this;
         this.importcForm.file = this.file;
-        ;
         this.$refs.importcForm.validate(function(valid){
             if (valid) {
                 vmThis.upload = true
                 vmThis.$http.post(page.subUrl, vmThis.importcForm).then(function(response){
-                    console.log(response.body);
+                    // console.log(response.body);
                     vmThis.$message({
                         message: response.body.info,
                         type: 'success'
@@ -97,7 +97,6 @@
                 });
             }
         });
-        
     }).setMethod('uploadSuccess', function(response, file, fileList){
         this.file = response.path;
     });
