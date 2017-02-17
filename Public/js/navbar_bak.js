@@ -1,11 +1,13 @@
 /** navbar.js By Beginner Emain:zheng_jinfan@126.com HomePage:http://www.zhengjinfan.cn */
-layui.define(['element', 'common'], function(exports) {
+
+layui.config({
+	base: window.webRoot+'Public/js/'
+}).define(['element', 'common'], function(exports) {
 	"use strict";
 	var $ = layui.jquery,
 		layer = parent.layer === undefined ? layui.layer : parent.layer,
 		element = layui.element(),
-		common = layui.common,
-		cacheName = 'tb_navbar';
+		common = layui.common;
 
 	var Navbar = function() {
 		/**
@@ -15,9 +17,7 @@ layui.define(['element', 'common'], function(exports) {
 			elem: undefined, //容器
 			data: undefined, //数据源
 			url: undefined, //数据源地址
-			type: 'GET', //读取方式
-			cached: false, //是否使用缓存
-			spreadOne:false //设置是否只展开一个二级菜单
+			type: 'GET' //读取方式
 		};
 		this.v = '0.0.1';
 	};
@@ -46,67 +46,22 @@ layui.define(['element', 'common'], function(exports) {
 			element.init();
 			_that.config.elem = $container;
 		} else {
-			if(_config.cached) {
-				var cacheNavbar = layui.data(cacheName);
-				if(cacheNavbar.navbar === undefined) {
-					$.ajax({
-						type: _config.type,
-						url: _config.url,
-						async: false, //_config.async,
-						dataType: 'json',
-						success: function(result, status, xhr) {
-							//添加缓存
-							layui.data(cacheName, {
-								key: 'navbar',
-								value: result
-							});
-							var html = getHtml(result);
-							$container.html(html);
-							element.init();
-						},
-						error: function(xhr, status, error) {
-							common.msgError('Navbar error:' + error);
-						},
-						complete: function(xhr, status) {
-							_that.config.elem = $container;
-						}
-					});
-				} else {
-					var html = getHtml(cacheNavbar.navbar);
+			$.ajax({
+				type: _config.type,
+				url: _config.url,
+				async: false, //_config.async,
+				dataType: 'json',
+				success: function(result, status, xhr) {
+					var html = getHtml(result);
 					$container.html(html);
 					element.init();
+				},
+				error: function(xhr, status, error) {
+					common.msgError('Navbar error:' + error);
+				},
+				complete: function(xhr, status) {
 					_that.config.elem = $container;
 				}
-			} else {
-				//清空缓存
-				layui.data(cacheName, null);
-				$.ajax({
-					type: _config.type,
-					url: _config.url,
-					async: false, //_config.async,
-					dataType: 'json',
-					success: function(result, status, xhr) {
-						var html = getHtml(result);
-						$container.html(html);
-						element.init();
-					},
-					error: function(xhr, status, error) {
-						common.msgError('Navbar error:' + error);
-					},
-					complete: function(xhr, status) {
-						_that.config.elem = $container;
-					}
-				});
-			}
-		}
-		
-		//只展开一个二级菜单
-		if(_config.spreadOne){
-			var $ul = $container.children('ul');
-			$ul.find('li.layui-nav-item').each(function(){
-				$(this).on('click',function(){
-					$(this).siblings().removeClass('layui-nav-itemed');
-				});
 			});
 		}
 		return _that;
@@ -117,15 +72,9 @@ layui.define(['element', 'common'], function(exports) {
 	 */
 	Navbar.prototype.set = function(options) {
 		var that = this;
-		that.config.data = undefined;
 		$.extend(true, that.config, options);
 		return that;
 	};
-	/**
-	 * 绑定事件
-	 * @param {String} events
-	 * @param {Function} callback
-	 */
 	Navbar.prototype.on = function(events, callback) {
 		var that = this;
 		var _con = that.config.elem;
@@ -179,17 +128,11 @@ layui.define(['element', 'common'], function(exports) {
 		}
 	};
 	/**
-	 * 清除缓存
-	 */
-	Navbar.prototype.cleanCached = function(){
-		layui.data(cacheName,null);
-	};
-	/**
 	 * 获取html字符串
 	 * @param {Object} data
 	 */
 	function getHtml(data) {
-		var ulHtml = '<ul class="layui-nav layui-nav-tree beg-navbar">';
+		var ulHtml = '<ul class="layui-nav layui-nav-tree">';
 		for(var i = 0; i < data.length; i++) {
 			if(data[i].spread) {
 				ulHtml += '<li class="layui-nav-item layui-nav-itemed">';

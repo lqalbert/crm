@@ -32,6 +32,8 @@ layui.config({
 
 	//设置navbar
 	navbar.set({
+		spreadOne: true,//设置只打开一个导航开启
+		cached:true,//设置缓存开启
 		elem: '#admin-navbar-side',
 		data: navs
 			//url: 'datas/nav.json'
