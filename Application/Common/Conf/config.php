@@ -19,6 +19,8 @@ return array(
 
 
 
+
+
 	//语言
 	'LANG_SWITCH_ON'   => true,   // 开启语言包功能
 	'LANG_AUTO_DETECT' => true, // 自动侦测语言 开启多语言功能后有效

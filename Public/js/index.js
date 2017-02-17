@@ -1,4 +1,4 @@
-/** index.js By Beginner Emain:zheng_jinfan@126.com HomePage:http://www.zhengjinfan.cn */
+       /** index.js By Beginner Emain:zheng_jinfan@126.com HomePage:http://www.zhengjinfan.cn */
 layui.config({
 	base: window.webRoot+'Public/js/'
 }).use(['element', 'layer', 'navbar', 'tab'], function() {
@@ -32,10 +32,13 @@ layui.config({
 
 	//设置navbar
 	navbar.set({
+		spreadOne: true,//设置只打开一个导航开启
+		cached:true,//设置缓存开启
 		elem: '#admin-navbar-side',
 		data: navs
 			//url: 'datas/nav.json'
 	});
+
 	//渲染navbar
 	navbar.render();
 	//监听点击事件
@@ -77,4 +80,171 @@ layui.config({
 	shadeMobile.on('click', function() {
 		$('body').removeClass('site-mobile');
 	});
+    
+    //屏幕解锁
+	$(function(){
+	   //锁屏提示       
+	   $('#lock').mouseover(function(){
+	   	   layer.tips('请按Alt+L快速锁屏！', '#lock', {
+	             tips: [1, '#FF5722'],
+	             time: 1000
+	       });
+	   });
+	   // 快捷键锁屏设置
+	    $(document).keydown(function(e){
+	         if(e.altKey && e.which == 76){
+	         	 lockSystem();
+	         }
+	    });
+	   function startTimer(){
+	   	    var today=new Date();
+	        var h=today.getHours();
+	        var m=today.getMinutes();
+	        var s=today.getSeconds();
+	        m = m < 10 ? '0' + m : m;
+	        s = s < 10 ? '0' + s : s;
+	        $('#time').html(h+":"+m+":"+s);
+	        var t=setTimeout(function(){startTimer()},500);
+	   }
+	   // 锁屏状态检测
+	   function checkLockStatus(locked){
+	        // 锁屏
+	        if(locked == 1){
+	        	$('.lock-screen').show(0,fordidden);
+	            $('#locker').show(0,fordidden);
+	            $('#layui_layout').hide(0,fordidden);
+	            //$('#lock_password').val('');
+	        }else{
+	        	$('.lock-screen').hide(1,allow);
+	            $('#locker').hide(1,allow);
+	            $('#layui_layout').show(1,allow);
+	        }
+	    }
+
+	   //锁屏状态下禁止刷新
+       function fordidden(){
+       	 $(window).keydown(function(e){
+	         if(e.altKey && e.which == 76){
+	         	 return false;
+	         	// checkLockStatus(1);
+	         }else if(e.which == 116){ //F5
+	         	 return false;
+	         	 //checkLockStatus(1);
+	         }else if(e.ctrlKey && e.which == 82){ // ctrl+R
+	         	 return false;
+                 //checkLockStatus(1);
+	         }else if(e.ctrlKey && e.which == 116){ //ctrl + F5
+                 return false;
+                 //checkLockStatus(1);
+	         }else if(e.which == 13){
+	         	 return false;
+	         }
+	     }).bind("contextmenu",function(e){ //禁止右击
+             return false; 
+	     });
+	     //console.log(window.location.href);
+	     // function RunOnBeforeUnload() {
+	     // 	window.onbeforeunload = function(){ 
+	     // 		return '将丢失未保存的数据!';
+	     // 	} 
+	     // }
+       }
+
+       //解锁完毕以后开启刷新
+       function allow(){
+
+       	 $(window).keydown(function(e){
+	         if(e.altKey && e.which == 76){
+	         	 return true;
+	         	// checkLockStatus(1);
+	         }else if(e.which == 116){ //F5
+	         	 return true;
+	         	 //checkLockStatus(1);
+	         }else if(e.ctrlKey && e.which == 82){ // ctrl+R
+	         	 return true;
+                 //checkLockStatus(1);
+	         }else if(e.ctrlKey && e.which == 116){ //ctrl + F5
+                 return true;
+                 //checkLockStatus(1);
+	         }else if(e.which == 13){
+	         	 return true;
+	         }
+	     }).bind("contextmenu",function(e){
+             return true; 
+	     });
+	     //window.onload();   
+       }
+         
+
+	   checkLockStatus('0');
+	   // 锁定屏幕
+	   function lockSystem(){
+	   		
+	   	   var url = indexUrl+'/lock';
+	   	   $.post(url,function(data){
+	   	   	   if(data=='1'){
+	   	   	   	  checkLockStatus(1);
+	   	   	   }else{
+	              layer.alert('锁屏失败，请稍后再试！');
+	   	   	   }
+	   	   });
+	   	   startTimer();
+	   }
+	   //解锁屏幕
+	   function unlockSystem(){
+	        // 与后台交互代码已移除，根据需求定义或删除此功能
+	   	    checkLockStatus(0);
+	    }
+	   // 点击锁屏
+	   $('#lock').click(function(){
+	   	    lockSystem();
+	   });
+	   // 解锁进入系统
+	   $('#unlock').click(function(val){
+	   	    var lockpwd=$('#lock_password').val();
+		     $.ajax({
+		       type:"post",
+		       url:indexUrl+'/checkLock',
+		       data:'lockpwd='+lockpwd,//传值给服务器端
+		       success:function(response){
+		         if(response==1){
+		          unlockSystem();
+		          allow();
+		          window.location.reload();
+		          //checkLockStatus(1)
+		         }else{
+		           //checkLockStatus(1);  
+		           layer.open({
+		           	 title:'警告',
+		           	 content:'密码错误！别想偷看，死鬼！',
+		           	 shadeClose:true,
+		           	 time:3000,
+		           });
+		         }
+		       }
+
+		     });
+	        
+	   });
+	   // 监控lock_password 键盘事件
+	   $('#lock_password').keypress(function(e){
+	        var key = e.which;
+	        if (key == 13) {
+	            unlockSystem();
+	        }
+	    });
+	    
+	});
+    //刷新提示语句
+    $('#refresh').mouseover(function(){
+   	    layer.tips('请点击我刷新！', '#refresh', {
+             tips: [1, '#FF5722'],
+             time: 1000
+        });
+    });
+
+    //点击刷新
+    $('#refresh').click(function(){
+    	window.location.reload();
+    });
 });

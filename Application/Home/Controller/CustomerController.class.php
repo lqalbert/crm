@@ -149,6 +149,7 @@ class CustomerController extends CommonController {
 	* @return boolean
 	*/
 	public function _before_edit(){
+		$this->_before_add();
 		$id = I('post.id');
 		$row = $this->M->where(array('id'=>$id, 'user_id'=>session('uid') ))->field('id,phone,qq,weixin')->find();
 		if ($row) {
@@ -156,7 +157,7 @@ class CustomerController extends CommonController {
 				$re = $this->M->where(array('phone'=> I('post.phone'), 'id'=>array('NEQ', $row['id'])))->field('id')->find();
 				if ($re) {
 					D('CustomerConflict')->addPhone($re['id']);
-					return false;
+					return $this->error('手机号已存在');
 				}
 			}
 
@@ -164,7 +165,7 @@ class CustomerController extends CommonController {
 				$re = $this->M->where(array('qq'=> I('post.qq'), 'id'=>array('NEQ', $row['id']) ))->field('id')->find();
 				if ($re) {
 					D('CustomerConflict')->addQQ($re['id']);
-					return false;
+					return $this->error('QQ号已存在');
 				}
 				
 			}
@@ -173,7 +174,7 @@ class CustomerController extends CommonController {
 				$re = $this->M->where(array('weixin'=> I('post.weixin'), 'id'=>array('NEQ', $row['id'])))->field('id')->find();
 				if ($re) {
 					D('CustomerConflict')->addWx($re['id']);
-					return false;
+					return $this->error('微信号已存在');
 				}
 			}
 
@@ -250,11 +251,11 @@ class CustomerController extends CommonController {
         $group_id=M('user_info')->where(array('user_id'=>I('post.user_id')))->field('group_id')->find();
         $groupInfo=M('group_basic')->where(array('id'=>$group_id['group_id']))->field('name')->find();
         $userName=M('user_info')->where(array('user_id'=>I('user_id')))->field('realname')->find();
-        $user='a'."-".$groupInfo['name']."-".$userName['realname'];
+        $user=$groupInfo['name']."-".$userName['realname'];
         $arr=M('customers_log')->where(array('cus_id'=>I('post.id')))->order('id desc')->select();
-        foreach ($arr as $key => $value) {
+        foreach ($arr as $key => $value){
         	$arr[$key]['type']=$type;
-        	$arr[$key]['user']=$user;
+        	$arr[$key]['user']=M('user_info')->where(array('user_id'=>$arr[$key]['user_id'],'id'=>I('post.id')))->getField('realname');
         	$arr[$key]['name']=I('post.name');
         	$arr[$key]['track_type']=D('CustomerLog')->getType((int)$arr[$key]['track_type']);
         }
@@ -318,7 +319,7 @@ class CustomerController extends CommonController {
     public function getRecUser($p_name){
     	$arr=explode('-', $p_name);
     	$pname=end($arr);
-    	$re=M('group')->where(array('p_name'=>$p_name))->field('id')->select();
+    	$re=M('group_basic')->where(array('p_name'=>$p_name))->field('id')->select();
     	$res=array();
     	foreach ($re as $k => $v) {
 
@@ -403,7 +404,7 @@ class CustomerController extends CommonController {
         //创建的
         $c_count = $this->M->where(array('help_user'=> $realname,     'help_group_id'=>$group_id, 'user_id'=>0))->count();
         //转让的
-        $t_count = $this->M->where(array('help_transfer'=> $realname, 'help_group_id'=>$group_id, 'user_id'=>0))->count();
+        $t_count = $this->M->where(array('help_transfer'=> $realname, 'help_user'=> array('neq', $realname),'help_group_id'=>$group_id, 'user_id'=>0))->count();
 
         $this->ajaxReturn(array('c'=>$c_count, 't'=>$t_count));
     }

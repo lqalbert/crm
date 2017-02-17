@@ -1,6 +1,6 @@
 <el-dialog title="编辑团队小组" v-model="editFormDialog">
 
-  <el-form ref="editForm" :model="editForm" :label-width="dialogLabelWidth">
+  <el-form ref="editForm" :rules="rules" :model="editForm" :label-width="dialogLabelWidth">
   <input type="hidden" name="img" v-model="editForm.img"/>
   <el-row>
     <el-col :span="12">
@@ -37,7 +37,7 @@
   <el-row>
     <el-col :span="12">
       <el-upload 
-      action="{:U('Upload/index2')}" 
+      action="{:U('Upload/index')}" 
       :data="pathInfo" 
       :on-success="uploadImg_E" 
       :thumbnail-mode="true" 

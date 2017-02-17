@@ -4,7 +4,7 @@
   <input type="hidden" name="img" v-model="addForm.img">
   <el-row>
     <el-col :span="12">
-      <el-form-item label="单位名"   prop="name">
+      <el-form-item label="单位名" prop="name">
         <el-input v-model="addForm.name"  auto-complete="off" placeholder="请填写单位名称"></el-input>
       </el-form-item>
     </el-col>
@@ -19,7 +19,7 @@
    <el-row>
     <el-col :span="12">
       <el-form-item label="上级组织"  prop="p_id" >
-        <el-select  v-model="addForm.p_id" placeholder="请选择">
+        <el-select  v-model="addForm.p_id" placeholder="请选择上级组织">
           <el-option v-for='item in topO' :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
@@ -49,7 +49,7 @@
       
       <el-col :span="12">
 
-        <el-form-item label="联系人"  prop="contact" >
+        <el-form-item label="联系人"  prop="contact">
           <el-select v-model='addForm.user_id'>
             <el-option v-for="user in computedusers" :label="user.realname" :value="user.user_id"></el-option>
           </el-select>
@@ -85,7 +85,7 @@
         <el-upload action="{:U('Upload/index')}" :on-success="uploadImg" :data="pathInfo" :thumbnail-mode="true" type="drag" :multiple="false" style="margin-left:30%;">
           <i class="el-icon-upload" style="margin:10px 0 16px;"></i>
           <div class="el-dragger__text">将<em>形象照片</em>拖到此处，或<em>点击上传</em></div>
-          <div class="el-upload__tip" slot="tip" style="margin-right:115px;">只能上传jpg/png/gif文件，且不超过2M</div>
+          <div class="el-upload__tip" slot="tip" style="margin-right:115px;">只能上传jpg/png/gif文件，且不超过3M</div>
         </el-upload>
 
       </el-col>

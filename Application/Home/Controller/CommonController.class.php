@@ -21,6 +21,8 @@ class CommonController extends Controller {
 		if (!session("uid")) {
 			$this->redirect('Login/index');
 		}
+        
+        
 
 		Rbac::AccessDecision() || $this->error(L('NO_AUTHORIZED'));
 

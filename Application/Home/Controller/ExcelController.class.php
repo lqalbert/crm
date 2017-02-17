@@ -11,13 +11,21 @@ class ExcelController extends CommonController {
 
 
     private function conformQQ($qq){
-        
-        $row = M('customers_basic')->field('id')->where(array('qq'=>$qq))->find();
-        if ($row) {
-            return false;
-        } else {
-            return true;
+        if (!empty($qq)) {
+
+            if (preg_match('/^\d+$/', $qq)==0) {
+                return false;
+            }
+
+
+
+            $row = M('customers_basic')->field('id')->where(array('qq'=>$qq))->find();
+            if ($row) {
+                return false;
+            } 
         }
+        return true;
+        
     }
 
     private function conformPhone($phone){
@@ -29,18 +37,14 @@ class ExcelController extends CommonController {
         }
     }
 
-    /*private function conformCheck($data, $qq, $phone){
-        
-        
+    private function conformCheck($data, $qq){
         foreach ($data as $value) {
-            if (trim($value['qq']) == trim($qq) or trim($value['phone'])==trim($phone)) {
+            if (trim($value['qq']) == trim($qq)) {
                 return false;
-            } else {
-                return true;
             }
         }
         return true;
-    }*/
+    }
 
 
     public function index(){
@@ -81,7 +85,7 @@ class ExcelController extends CommonController {
                 $fault_data = array();
                 foreach ($data as $value) {
 
-                    if (empty($value['D'])  || $value['C']=="QQ") {
+                    if (empty($value['E'])  || $value['C']=="QQ") {
                         continue;
                     }
 
@@ -93,14 +97,15 @@ class ExcelController extends CommonController {
                         $row['type'] = strtoupper(mb_substr($value['B'], 0,1));
                     }
                     // 重复测栓
-                    $row['qq'] = $value['C'];
+
+                    $row['qq'] = empty($value['C']) ? null: $value['C'];
                     $row['phone'] = $value['D'];
 
                     $row['help_salesman'] = $value['E'];
                     $row['help_transfer'] = $value['F'];
                     $row['help_user']     = $value['G'];
                     $row['help_group_id'] = $group_id;
-                    $row['created_at']    = str_replace("/","-", $value['H']);
+                    $row['created_at']    = null;//str_replace("/","-", $value['H']);
 
                     $row['weixin']        = empty($value['M']) ? null: $value['M'];
                     $row['weixin_nickname']    = empty($value['N']) ? '': $value['N'];
@@ -109,19 +114,18 @@ class ExcelController extends CommonController {
                     $row['area_province'] = null; 
                     $row['area_city'] = null; 
                     
-                    // 重复测栓
-                    if ($this->conformPhone($row['phone']) && $this->conformQQ($row['qq']) ) {
+                    // self重复测
+                    if ($this->conformPhone($row['phone']) && $this->conformQQ($row['qq']) && $this->conformCheck($insert_data, $row['qq'])) {
                         $insert_data[] = $row;
                     } else {
                         $fault_data[] = $row;
                     }
- 
                 }
                 //去重复
                 $conf = array();
                 // $insert_data = array_values(arr_to_map($insert_data, 'qq'));
                 $insert_data = array_values(arr_to_map($insert_data, 'phone'));
-
+               
                 $re  = M('customers_basic')->addAll($insert_data);
                 $det = count($data) - count($insert_data);
                 if ($re) {
@@ -129,7 +133,7 @@ class ExcelController extends CommonController {
                     if ($det==0) {
                         $this->success("导入成功");
                     } else {
-                        $this->success("导入成功,有".$det."条重复数据未导入");
+                        $this->success("导入成功,有".$det."条数据未导入");
                     }
                     
                     /*if (!empty($fault_data)) {
@@ -139,7 +143,7 @@ class ExcelController extends CommonController {
                 } else {
                     /*var_dump($insert_data);
                     echo '导入失败'.M('customers_basic')->getLastsql();*/
-                    $this->error("导入失败".M('customers_basic')->getLastSql());
+                    $this->error("导入失败");
                 }
             } else {
                 // echo '文件不存在';

@@ -139,6 +139,7 @@ function getExcelArrayData($filename){
     //以下代码参考 文档 http://www.01happy.com/phpexcel-read-big-excel-file/
     $startRow = 1;
     $endRow = $worksheet->getHighestRow();// 总行数
+
     // $endRow = 5;
     $highestColumn = $worksheet->getHighestColumn();// 最后列数所对应的字母
     // var_dump($highestColumn); 

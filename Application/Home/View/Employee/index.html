@@ -36,18 +36,18 @@
 					    </el-table-column>
 					    <el-table-column  label="序号"  width="70" :formatter="handleIndex" >
 					    </el-table-column>
- 					    <el-table-column prop="head" inline-template label="头像"  width="100">
+ 					    <el-table-column prop="head" inline-template label="头像"  width="100" align="center">
 							<div>
 								<img :src="setImgUrl(row.head)" alt="" width="50" height="50">
 							</div>
 					    </el-table-column>
 					   <!-- <el-table-column prop="id"  label="员工ID" width="100">
 					    </el-table-column> -->
-					    <el-table-column prop="account" label="登录账号" width="100">
+					    <el-table-column prop="account" label="登录账号" width="100" align="center">
 					    </el-table-column>
-						 <el-table-column prop="realname" label="员工姓名" width="150">
+						 <el-table-column prop="realname" label="员工姓名" width="150" align="center">
 					    </el-table-column>
-					    <el-table-column prop="sex"  label="性别" width="100">
+					    <el-table-column prop="sex"  label="性别" width="80" align="center">
 						    <template scope="scope">
 					          {{ getType(scope.row.sex, 'sexType') }}
 					        </template>
@@ -63,37 +63,28 @@
 					    <el-table-column prop="ishow" label="是否公示" width="100">
 					    </el-table-column>
 						 -->
-					    <el-table-column prop="phone" label="固话" width="140">
+					    <el-table-column prop="phone" label="固话" width="140" align="center">
 					    </el-table-column>
 					     
-					    <el-table-column prop="mphone" label="手机" width="140">
+					    <el-table-column prop="mphone" label="手机" width="140" align="center">
 					    </el-table-column>
 					    
-					    <el-table-column prop="qq" label="QQ号" width="100">
+					    <el-table-column prop="qq" label="QQ号" width="140" align="center">
 					    </el-table-column>
-					    <el-table-column prop="qq_nickname" label="QQ昵称" width="180">
+					    <el-table-column prop="qq_nickname" label="QQ昵称" width="180" align="center">
 					    </el-table-column>
 						
-						<el-table-column prop="weixin"  label="微信号" width="150">
+						<el-table-column prop="weixin"  label="微信号" width="160" align="center">
 					    </el-table-column>
-					    <el-table-column prop="weixin_nikname"  label="微信昵称" width="150">
+					    <el-table-column prop="weixin_nikname"  label="微信昵称" width="190" align="center">
+					    </el-table-column>
+					    <el-table-column prop="address" label="地址" width="190" align="center">
+					    </el-table-column>
+					    
+					    <el-table-column prop="created_at" label="创建时间" width="190" align="center">
 					    </el-table-column>
 
-						<!--
-					    <el-table-column prop="qqq" label="业务Q群" width="190">
-					    </el-table-column>
-					    <el-table-column prop="qqqq" label="业务业务Q群名" width="190">
-					    </el-table-column>
-					    <el-table-column prop="area" label="地区" width="150">
-					    </el-table-column>
-					    
-					    <el-table-column prop="lastlogin" label="最后登录时间" width="150">
-					    </el-table-column>
-					    -->
-					    
-					    
-
-					    <el-table-column inline-template :context="_self"  fixed="right"  label="操作" width="250">
+					    <el-table-column inline-template :context="_self"  fixed="right"  label="操作" width="220" align="center">
 					      <span>
 					        <el-button @click="handleEdit($index, row)"  size="small">编辑</el-button>
 					        <el-button @click="handleSetRoles($index, row)" type="info" size="small">职能</el-button>
@@ -181,7 +172,28 @@
 	          callback();
 	        }
 	    }
-
+        //手机号码
+		  var checkPhone=function(rule,value,callback){
+		     var phoneReg = /^1[34578]\d{9}$/;
+		     if(value==='' || value===null){
+		       callback();
+		     }else if(!phoneReg.test(value)){
+		       callback('手机号格式错误');
+		     }else{
+		       callback();
+		     }
+		  }
+		 //qq号码
+		  var checkQQ=function(rule,value,callback){
+		    var number=/^\d+$/;
+		    if(value==='' || value===null){
+		      callback();
+		    }else if(!number.test(value)){
+		      callback('QQ号格式错误');
+		    }else{
+		      callback();
+		    }
+		  }
 	</script>
 	<script>
 		page.getUserRolesUrl="{:U('getUserRoles')}";
@@ -214,7 +226,17 @@
 			addRules:{
 				account:[
 					{ required: true, message: '请输入账号', trigger: 'blur' }
-				]
+				],
+				realname:[
+                    {required: true, message: '请输入员工姓名', trigger: 'blur'},
+				],
+				mphone:[
+                    {validator: checkPhone, trigger: 'blur'},
+				],
+				qq:[
+                     {validator: checkQQ, trigger:'blur'},
+				],
+
 			}
 
 
@@ -232,7 +254,6 @@
 			area_district:"",
 			realname:"",
 			address:"",
-
 			qq:"",
 			qq_nickname:"",
 			weixin:"",
@@ -251,7 +272,6 @@
 			area_district:"",
 			realname:"",
 			address:"",
-
 			qq:"",
 			qq_nickname:"",
 			weixin:"",
