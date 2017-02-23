@@ -2,6 +2,8 @@
 namespace Home\Controller;
 use Home\Model\CustomerModel;
 use Home\Model\CustomerLogModel;
+use Home\Model\RoleModel;
+use Common\Lib\User;
 
 class CustomerController extends CommonController {
 	protected $table = "customer";
@@ -17,6 +19,13 @@ class CustomerController extends CommonController {
 
 	public function index () {
 		// $dataList = $this->getList();
+        $user = new User();
+        $searchGroup = $user->getRoleObject()
+                            ->getCustomerSearchGroup(array(array('value'=>'user_id','key'=>"本人" ) , array('value'=>'group','key'=>"团组" )));
+        $groupMemberList = M('user_info')->where(array('group_id'=>session('account')['userInfo']['group_id']))->getField("user_id,realname");
+
+        $this->assign('searchGroup',  $searchGroup);
+        $this->assign('memberList',   $groupMemberList);
 		$this->assign('customerType', $this->M->getType());
 		$this->assign('sexType',      $this->M->getSexType());
 		$this->assign('Quality',      $this->M->getQuality());
@@ -66,7 +75,24 @@ class CustomerController extends CommonController {
 	* @return null
 	*/
 	public function setQeuryCondition() {
-		$this->M->where(array("user_id"=> session('uid')));
+		// $this->M->where(array("user_id"=> session('uid')));
+
+        switch (I('get.group',"user_id")) {
+            case 'user_id':
+                $this->M->where(array("user_id"=> session('uid')));
+                break;
+            case 'group':
+                $user = new User();
+                $user->getRoleObject()->setMemberUserCondition($this->M);
+                break;
+            case 'precheck':
+
+                break;
+            default:
+                break;
+        }
+        
+
 		if (I('get.name')) {
 			$this->M->where(array("name|phone|qq|qq_nickname|weixin"=> array('like', I('get.name')."%")));
 			//var_dump($this->M->getLastSql());
@@ -105,7 +131,7 @@ class CustomerController extends CommonController {
 					));
 				break;
 			default:
-				# code...
+				
 				break;
 		}
 
@@ -115,31 +141,58 @@ class CustomerController extends CommonController {
 		// }
 	}
 
+    /**
+    * 三参 要必填一个
+    */
+    private function uniquCheck(){
+        if(I('post.phone')=='' && I('post.qq')=='' && I('post.weixin')==''){
+            $this->error('手机/QQ/微信任填其一');
+        }else if(I('post.phone')=='' && I('post.qq')==''){
+            $_POST['phone']= null;
+            $_POST['qq']= null;
+            return true;
+        }else if(I('post.phone')=='' && I('post.weixin')==''){
+            $_POST['phone'] = null;
+            $_POST['weixin']= null;
+            return true;
+        }else if(I('post.qq')=='' && I('post.weixin')==''){
+            $_POST['qq']= null;
+            $_POST['weixin']= null;
+            return true;
+        }else{
+            return true;
+        }
+    }
+
 	/**
 	* 在添加之前 加入一个参数
 	* @return true
 	*/
 	public function _before_add(){
 		$_POST['user_id'] = session('uid');
-		if(I('post.phone')=='' && I('post.qq')=='' && I('post.weixin')==''){
-		    $this->error('手机/QQ/微信任填其一');
-		}else if(I('post.phone')=='' && I('post.qq')==''){
-			$_POST['phone']= null;
-			$_POST['qq']= null;
-			return true;
-		}else if(I('post.phone')=='' && I('post.weixin')==''){
-            $_POST['phone'] = null;
-            $_POST['weixin']= null;
-            return true;
-		}else if(I('post.qq')=='' && I('post.weixin')==''){
-            $_POST['qq']= null;
-            $_POST['weixin']= null;
-            return true;
-		}else{
-			return true;
-		}
 		
+		return $this->uniquCheck();
 	}
+
+    /**
+    * 如果不是我的客户， 以及不是我团组的客户 就
+    * 反回 false
+    * 赶进度 暂时 这样写
+    */
+    private function authCheck($id){
+        $captainId = D('Role')->getIdByEname(RoleModel::CAPTAIN);
+        $userlist = array();
+        if (session('account')['userInfo']['role_id'] == $captainId ) {
+            $userlist = M('user_info')->where(array('group_id'=>session('account')['userInfo']['group_id'] ))->getField("user_id", true);
+        } else {
+            $userlist[] = session('uid');
+        }
+        // var_dump($userlist);
+        $row = $this->M->where(array('id'=>$id, 'user_id'=>array('in', $userlist) ))->field('id,phone,qq,weixin')->find();
+        if (!$row) {
+            $this->error("你没有权限");
+        } 
+    }
 
 
 	/**
@@ -149,40 +202,35 @@ class CustomerController extends CommonController {
 	* @return boolean
 	*/
 	public function _before_edit(){
-		$this->_before_add();
+		$this->uniquCheck();
 		$id = I('post.id');
-		$row = $this->M->where(array('id'=>$id, 'user_id'=>session('uid') ))->field('id,phone,qq,weixin')->find();
-		if ($row) {
-			if (I('post.phone') != $row['phone']) {
-				$re = $this->M->where(array('phone'=> I('post.phone'), 'id'=>array('NEQ', $row['id'])))->field('id')->find();
-				if ($re) {
-					D('CustomerConflict')->addPhone($re['id']);
-					return $this->error('手机号已存在');
-				}
-			}
+        $this->authCheck($id);
+        
+		
+        if (I('post.phone') != $row['phone']) {
+            $re = $this->M->where(array('phone'=> I('post.phone'), 'id'=>array('NEQ', $row['id'])))->field('id')->find();
+            if ($re) {
+                D('CustomerConflict')->addPhone($re['id']);
+                $this->error('手机号已存在');
+            }
+        }
 
-			if (I('post.qq') != $row['qq']) {
-				$re = $this->M->where(array('qq'=> I('post.qq'), 'id'=>array('NEQ', $row['id']) ))->field('id')->find();
-				if ($re) {
-					D('CustomerConflict')->addQQ($re['id']);
-					return $this->error('QQ号已存在');
-				}
-				
-			}
+        if (I('post.qq') != $row['qq']) {
+            $re = $this->M->where(array('qq'=> I('post.qq'), 'id'=>array('NEQ', $row['id']) ))->field('id')->find();
+            if ($re) {
+                D('CustomerConflict')->addQQ($re['id']);
+                $this->error('QQ号已存在');
+            }
+            
+        }
 
-			if (I('post.weixin') != $row['weixin']) {
-				$re = $this->M->where(array('weixin'=> I('post.weixin'), 'id'=>array('NEQ', $row['id'])))->field('id')->find();
-				if ($re) {
-					D('CustomerConflict')->addWx($re['id']);
-					return $this->error('微信号已存在');
-				}
-			}
-
-
-			return true;
-		} else {
-			return false;
-		}
+        if (I('post.weixin') != $row['weixin']) {
+            $re = $this->M->where(array('weixin'=> I('post.weixin'), 'id'=>array('NEQ', $row['id'])))->field('id')->find();
+            if ($re) {
+                D('CustomerConflict')->addWx($re['id']);
+                $this->error('微信号已存在');
+            }
+        }
 	}
 
 	/**
@@ -191,6 +239,7 @@ class CustomerController extends CommonController {
 	*/
 	public function addTrackLogs(){
 		// $id = I('post.id');
+        $this->authCheck(I('post.cus_id'));
 		$LogM = D('CustomerLog');
 		$to_type = I('post.to_type', '');
 		$LogM->startTrans();
@@ -230,6 +279,7 @@ class CustomerController extends CommonController {
     *
     */
     public function addPlanLogs(){
+       $this->authCheck(I('post.cus_id'));
     	if($this->M->create() && I('post.cus_id')){
            $re=$this->M->where(array('id'=>I('post.cus_id')))->save();
            if($re === false){
@@ -289,7 +339,8 @@ class CustomerController extends CommonController {
 	* @param $id int
 	*/
 	public function setPlan() {
-		$id = I("post.id");
+        $id = I("post.id");
+        $this->authCheck($id);
 		$re = $this->M->where("id=".$id)->data(array("plan"=>NULL))->save();
 		if ($re !== false) {
 			$this->success($this->M->getLastSql());
@@ -354,10 +405,11 @@ class CustomerController extends CommonController {
     * 设置提醒
     */
     public function setRemid(){
-    	$data = array();
-    	$data['remind'] = I('post.remind');
-    	$data['remark'] = I('post.remark');
-    	$data['id'] = I('post.cus_id');
+        $data = array();
+        $data['remind'] = I('post.remind');
+        $data['remark'] = I('post.remark');
+        $data['id'] = I('post.cus_id');
+        $this->authCheck($data['id']);
 
     	if (!empty($data['remind'])) {
     		$data['remind'] = D('CustomerLog')->getRemind((int)$data['remind']);
@@ -382,10 +434,11 @@ class CustomerController extends CommonController {
     *
     */
     public function setImportant(){
-    	$data = array(
-    			'important' => I('post.choose'),
-    			'id'        => I('cus_id')
-    		);
+        $data = array(
+                'important' => I('post.choose'),
+                'id'        => I('post.cus_id')
+            );
+        $this->authCheck($data['id']);
     	$re = $this->M->data($data)->save();
     	if ($re !== false) {
     		$this->success("操作成功");

@@ -36,19 +36,20 @@
   
 
 <div id="app" class="container">
+
 <div class="wrapp" id="appx" v-show="show" style="display: none;">
   <!-- <div class="a" style="border:1px solid red;"> -->
   <div class="a" id="app3">
 	<el-row>
   	<el-col :span="24">
   		<el-form :inline="true" ref="searchForm" :model="searchForm">
-  		  <el-form-item prop="name">
-  		    <el-input v-model="searchForm.name" placeholder="客户姓名|手机|qq|微信"></el-input>
+  		  <el-form-item prop="name" style="width:220px">
+  		    <el-input v-model="searchForm.name" placeholder="客户姓名|手机|qq|微信号"></el-input>
   		  </el-form-item>
         <el-form-item prop="group" style="width:80px">
           <el-select v-model="searchForm.group" placeholder="请选择">
-            <el-option label="本人" value="user_id"></el-option>
-            <el-option label="团组" value="group" :disabled="true"></el-option>
+            <el-option v-for="item in searchGroup" :label="item.key" :value="item.value" :disabled="item.disabled"></el-option>
+
           </el-select>
         </el-form-item>
         <el-form-item prop="field" v-show="false">
@@ -162,7 +163,7 @@
 	    </el-table-column>
 	    <el-table-column  prop="user_id" label="跟踪员工" align="center" width="200">
         <template scope="scope">
-          {:session('account')['userInfo']['p_name']}-{:session('account')['userInfo']['realname']}
+          {{ getType(scope.row.user_id, 'memberList') }}
         </template>
 	    </el-table-column>
 	    <el-table-column  prop="plan" label="计划跟踪时间" align="center" width="175">
@@ -361,6 +362,8 @@ function toInt(v){
     alertDesc:"",
     logType:{:json_encode($logType)},
     steps:{:json_encode($steps)},
+    searchGroup:{:json_encode($searchGroup)},
+    memberList:{:json_encode($memberList)},
     addRules:{
       name:[
         { required: true, message: '请输入客户姓名', trigger: 'blur' },
@@ -633,6 +636,7 @@ function toInt(v){
 
   }).setMethod('setField', function(v){
       this[FormName.getFormName('search')].field = v;
+      this[FormName.getFormName('search')].group = 'user_id';
       this.loadDatalist();
   }).setMethod('beforeImportc', function(){
       var vmThis = this;

@@ -128,7 +128,7 @@
                           </el-table-column>
                           <el-table-column prop="type" label="员工类型" width="180" align="center">
                           </el-table-column>
-                          <el-table-column prop="phone" label="手机" align="center">
+                          <el-table-column prop="mphone" label="手机" align="center">
                           </el-table-column>
                           <el-table-column prop="qq"   label="QQ号" align="center">
                            <template scope="scope">
@@ -329,8 +329,10 @@
     if ( row !== false) {
         this[FormName.getFormName(type)].id = row.id;
         this[FormName.getFormName(type)].name = row.name;
+        this[FormName.getFormName(type)].user_ids = [];
         
     }
+    // this.resetForm(type);
     // memberList
     vmThis.$http.get(page.getMemberUrl).then(function(response){
                 

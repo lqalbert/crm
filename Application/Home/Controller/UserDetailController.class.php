@@ -1,6 +1,6 @@
 <?php
 namespace Home\Controller;
-
+use Org\Util\Rbac;
 class UserDetailController extends CommonController {
 
 	public function user_id(){
@@ -31,6 +31,7 @@ class UserDetailController extends CommonController {
 
     //显示设置密码页面
     public function changepwd(){
+      
       $username=M('rbac_user')->where(array('id'=>$this->user_id()))->getField('account');
       $info['username']=$username;
       $this->assign('info',$info);

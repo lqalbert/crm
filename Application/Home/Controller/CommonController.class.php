@@ -126,6 +126,7 @@ class CommonController extends Controller {
 		$this->setQeuryCondition();
 		$list = $this->M->page(I('get.p',0). ','. $this->pageSize)->order('id desc')->select();
 		$result = array('list'=>$list, 'count'=>$count);
+		
 		return $result;
 	}
 
@@ -155,9 +156,9 @@ class CommonController extends Controller {
 
 
 	protected function setContactPost($user_id){
-		 $row = M('user_info')->field('phone,realname')->find($user_id);
+		 $row = M('user_info')->field('mphone,realname')->find($user_id);
 		 $_POST['contact'] = $row['realname'];
-		 $_POST['tel']     = $row['phone'];
+		 $_POST['tel']     = $row['mphone'];
 	}
 
 	/**
