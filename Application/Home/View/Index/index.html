@@ -124,9 +124,8 @@
 				</div>
 			</div>
 		</div>
-		<!-- <a href="" id="qqTrigger" style="display: none;"></a> -->
+		<a href="" id="qqTrigger" style="display: none;"></a>
 		<script type="text/javascript" src="__PUBLIC__/plugins/layui/layui.js"></script>
-		<!-- <script type="text/javascript" src="__PUBLIC__/datas/nav.js" ></script> -->
 		<script type="text/javascript" src="{:U('Nav/index')}" ></script>
 		<script src="__PUBLIC__/js/index.js"></script>
 		<script src="__PUBLIC__/js/jquery.1.11.min.js"></script>
@@ -200,7 +199,7 @@
 			  	if (!!this.customer.qq && this.customer.qq.length > 0) {
 			  		trigger.setAttribute('href', "tencent://message/?uin="+ this.customer.qq +"&Site=&menu=yes");
 			  		trigger.click();
-			  		this.close();
+			  		
 			  	} else {
 			  		alert("客户："+this.customer.name+" 计划即将到点，没有设置QQ");
 			  	}

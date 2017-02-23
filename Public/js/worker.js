@@ -17,6 +17,7 @@ function remove(x){
             break;
         }
     }
+
     
 }
 
@@ -47,7 +48,7 @@ function start(url){
                             postMessage(cusList[i]);
                         }
                     }
-                }, 1000);
+                }, 15000);
             }
             
 

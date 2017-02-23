@@ -22,7 +22,7 @@ class RoleDepartmentMaster {
     public function getGroupContacts($obj){
         $depart_id = $this->getDepartId($obj->id);
         $captainId = D('Role')->getIdByEname(RoleModel::CAPTAIN);
-        return M('user_info')->where(array('department_id'=>$depart_id, 'role_id'=>$captainId ))->select();
+        return M('user_info')->where(array('department_id'=>$depart_id, 'role_id'=>$captainId, 'group_id'=>0 ))->select();
     }
 
     public function setEmployQueryCondition($m, $obj){

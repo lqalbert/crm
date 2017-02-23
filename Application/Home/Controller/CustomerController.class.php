@@ -12,7 +12,7 @@ class CustomerController extends CommonController {
 	private function getDayBetween(){
 		$today = Date("Y-m-d")." 00:00:00" ;
 		return   array(
-					array('GT', Date("Y-m-d")." 00:00:00"), 
+					array('GT', $today), 
 					array('LT', Date("Y-m-d H:i:s", strtotime("+1 day", strtotime($today))))
 		         );
 	}
