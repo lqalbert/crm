@@ -52,6 +52,15 @@ class RoleDepartmentMaster {
         }
     }
 
+    public function setMemberUserCondition($m){
+        $subQeury = $m->field('user_id')->table('user_info')->where(array('department_id'=>session('account')['userInfo']['department_id']))->buildSql(); 
+        $m->where(array("user_id"=>array('in', $subQeury)));
+    }
+
+    public function getCustomerSearchGroup($arr){
+        return $arr;
+    }
+
 
 
 

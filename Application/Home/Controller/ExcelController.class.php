@@ -162,7 +162,7 @@ class ExcelController extends CommonController {
         $map = array(); //查询的参数
         $map['help_salesman'] = array('EXP', 'is not null');
         if (!empty(I('get.name'))) {
-            $map['name'] = array('like', I('get.name')."%");
+            $map['name|phone|qq|qq_nickname|weixin'] = array('like', I('get.name')."%");
         }
         $this->M->where($map);
     }

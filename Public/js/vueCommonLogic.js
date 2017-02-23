@@ -110,10 +110,10 @@ function setCommonLogic(opt){
 	//查询清空
 	opt.setMethod("searchReset", function(){
 		// console.log("clear");
-		//this.$refs.searchForm.resetFields();
-		//this.dataLoad = true;
-		//this.loadDatalist();
-		window.location.reload();
+		this.$refs.searchForm.resetFields();
+		this.dataLoad = true;
+		this.loadDatalist();
+		// window.location.reload();
 	})
 
 	
@@ -178,6 +178,10 @@ function setCommonLogic(opt){
 
 	opt.setMethod('getTenct', function(qq){
 	    return "tencent://message/?uin="+ qq +"&Site=&menu=yes";
+	})
+
+	opt.setMethod('resetForm', function(type){
+		this.$refs[FormName.getForm(type)].resetFields();
 	})
 
 }
@@ -282,13 +286,13 @@ function setForm(opt, type){
 	})
 
 
+
+
 }
 
 //设置重置表单
 function setResetForm(opt, type){
-	opt.setMethod('resetForm', function(type){
-		this.$refs[FormName.getForm(type)].resetFields();
-	})
+	
 	
 }
 

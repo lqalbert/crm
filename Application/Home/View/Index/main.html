@@ -18,13 +18,7 @@
 					$userInfo = session('account')['userInfo'];
 					$arr=M('user_info')->where(array('user_id'=>$userInfo['user_id']))->find(); 
 					
-					if($userInfo['user_id']==1){
-                       $role=M('rbac_role')->where(array('id'=>$userInfo['user_id']))->getField('name');
-				    }else{
-                       $role_id=M('rbac_role_user')->where(array('user_id'=>$userInfo['user_id']))->find();
-                       $role=M('rbac_role')->where(array('id'=>$role_id['role_id']))->getField('name');
-				    }
-					$arr['name']=$group['name'];
+					
 					
 				</php>
 			  	<img src="__ROOT__{$arr['head']}" class="image" width="100%" height="100%" style="width:200px;height:200px;border-radius:100%; vertical-align:middle;">
@@ -32,7 +26,7 @@
 			  	<div id="th" style="float:right;width:200px;border-left:1px solid #e2e2e2;line-height:200%">
 			  		&nbsp;&nbsp;&nbsp;<span>姓名：{$arr['realname']}</span><br>
 			  		&nbsp;&nbsp;&nbsp;<span>I  D：{$arr['user_id']}</span><br>
-			  		&nbsp;&nbsp;&nbsp;<span>类型：{$role}</span><br>
+			  		<!-- &nbsp;&nbsp;&nbsp;<span>类型：{$role}</span><br> -->
 			  		<!-- &nbsp;&nbsp;&nbsp;<span>单位：{$arr['p_name']}</span><br> -->
 			  		&nbsp;&nbsp;&nbsp;<span>Q  Q：{$arr['qq']}</span><br>
 			  		&nbsp;&nbsp;&nbsp;<span>电话：{$arr['phone']}</span><br>

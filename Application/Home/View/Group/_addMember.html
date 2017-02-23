@@ -1,4 +1,4 @@
-<el-dialog title="添加小组成员" v-model="addMemberFormDialog" @open="beforeAddMember">
+<el-dialog title="添加小组成员" v-model="addMemberFormDialog" @open="beforeAddMember" >
 <!-- <el-form :model="form"> -->
 <el-form :model="addMemberForm"  ref="addMemberForm" :label-width="dialogLabelWidth">
 <input type="hidden" v-model="addMemberForm.id">
@@ -9,7 +9,7 @@
       </el-form-item>
     </el-col>
     <el-col :span="24">
-      <el-form-item label="选择成员" prop="department_id">
+      <el-form-item label="选择成员" prop="user_ids">
         <el-select  placeholder="请选择成员" multiple v-model="addMemberForm.user_ids">
           <el-option v-for="org in memberList"  :label="org.realname" :value="org.user_id">
             <span style="float: left">{{ org.realname }}</span>

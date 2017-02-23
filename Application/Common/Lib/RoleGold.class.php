@@ -47,4 +47,12 @@ class RoleGold {
         $members = M()->query($sql);
         return $members;
     }
+
+    public function setMemberUserCondition($m){
+        
+    }
+
+    public function getCustomerSearchGroup($arr){
+        return $arr;
+    }
 }

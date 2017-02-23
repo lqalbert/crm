@@ -41,6 +41,7 @@ class User {
             $className = __NAMESPACE__.'\\'.'Role'.ucfirst($row['ename']);
             $this->roleObject = new $className;
         }
+        return $this;
     }
 
     public function getRoleGroupContacts(){
@@ -80,4 +81,16 @@ class User {
     public function getAllBenC(){
         return $this->roleObject->getAllBenC($this);
     }
+
+
+    public function setMemberUserCondition($m){
+        $this->roleObject->setMemberUserCondition($m);
+    }
+
+    public function getCustomerSearchGroup($arr){
+        
+        return $this->roleObject->getCustomerSearchGroup($arr);
+    }
+
+
 }

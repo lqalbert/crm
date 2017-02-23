@@ -30,11 +30,11 @@ return array(
 
 
 	//权限验证
-	'USER_AUTH_ON' => false,      // 是否需要认证
+	'USER_AUTH_ON' => true,      // 是否需要认证
 	'USER_AUTH_TYPE' => 1,       // 认证类型
 	'USER_AUTH_KEY' => 'uid',    // 认证识别号
 	//REQUIRE_AUTH_MODULE  需要认证模块
-	'NOT_AUTH_MODULE' => 'Index,nav,Area',// 无需认证模块
+	'NOT_AUTH_MODULE' => 'Index,nav,Area,PreCheck,Upload',// 无需认证模块
 	'NOT_AUTH_ACTION' =>  'main,index,getList,checkCucstomers,importMyc', //无需认证操作
 	//USER_AUTH_GATEWAY 认证网关
 	//RBAC_DB_DSN  数据库连接DSN

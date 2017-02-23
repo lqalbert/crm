@@ -10,12 +10,12 @@ class DepartmentController extends CommonController {
 
 	public function index(){
 		$count = $this->M->count();
-		$user = new User();
+		// $user = new User();
 		$RoleModle = D('Role');
 		$departmentRoleId = $RoleModle->getIdByEname(RoleModel::DEPARTMENTMASTER);
 
 		$type = $this->M->getType();
-		unset($type[0]);// 一定要用unset array_shift 会重建索引
+		unset($type[0]);// 一定要用unset array_shift 会重建索引,破坏了原来的键值对关系
 		$this->assign("typeList", $type);
 		// $this->assign("datalist", $datalist);
 		$this->assign("totalCount", $count);

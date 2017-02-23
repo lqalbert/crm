@@ -102,6 +102,7 @@ class Rbac {
     //检查当前操作是否需要认证
     static function checkAccess() {
         //如果项目要求认证，并且当前模块需要认证，则进行权限认证
+        
         if( C('USER_AUTH_ON') ){
 			$_module	=	array();
 			$_action	=	array();
@@ -157,6 +158,7 @@ class Rbac {
     //权限认证的过滤器方法
     static public function AccessDecision($appName=MODULE_NAME) {
         //检查是否需要认证
+
         if(self::checkAccess()) {
             //存在认证识别号，则进行进一步的访问决策
             $accessGuid   =   md5($appName.CONTROLLER_NAME.ACTION_NAME);
@@ -173,6 +175,7 @@ class Rbac {
                     //登录验证模式，比较登录后保存的权限访问列表
                     $accessList = $_SESSION['_ACCESS_LIST'];
                 }
+
                 //判断是否为组件化模式，如果是，验证其全模块名
                 if(!isset($accessList[strtoupper($appName)][strtoupper(CONTROLLER_NAME)][strtoupper(ACTION_NAME)])) {
                     $_SESSION[$accessGuid]  =   false;

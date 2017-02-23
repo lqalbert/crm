@@ -12,6 +12,7 @@ class GroupController extends CommonController {
 		$user = new User();
 		$user->getRoleObject();
 		$contactList = $user->getRoleGroupContacts();
+		var_dump(M('user_info')->getLastsql());
 
 		//上级组织
 		$org = $user->getRoleGroupOrgs();
