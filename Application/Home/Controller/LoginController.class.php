@@ -24,14 +24,19 @@ class LoginController extends Controller {
 				);
 
 			$result = $userModel->relation('userInfo')->where($where)->find();
-
-
 			if (!$result) {
 				$this->error(L('LOGIN_ERROR'));
 			} else {
-				
+				$location=new \Ip\Taobaoip\taobaoIp();//利用淘宝地址库
+				$arr=$location->getLocation();
+				$data=array(
+                   'ip'=>$arr['ip'],
+                   'location'=>$arr['country'].$arr['region'].$arr['city'].$arr['county'],
+                   'lg_time'=>time(),
+				);
+				$re=$userModel->where(array('id'=>$result['id']))->save($data);
+				$_SESSION['location']= $re===false ? '' : $data;
 				session('account', $result);
-
 				session('uid', $result['id']);
 
 				if ($result['no_authorized'] == CRM_SUPER_ADMIN) {
@@ -58,6 +63,7 @@ class LoginController extends Controller {
 		if(session("account")){
 			session("uid",null);
 			session("account",null);
+			session(null);
 			session('[destroy]');
 		}
 		$this->redirect("Login/index");

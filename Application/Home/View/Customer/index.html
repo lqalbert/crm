@@ -51,7 +51,6 @@
             <el-option label="团组" value="group" :disabled="true"></el-option>
           </el-select>
         </el-form-item>
-
         <el-form-item prop="field" v-show="false">
           <input type="hidden" v-model="searchForm.field">
         </el-form-item>
@@ -224,13 +223,14 @@
 
     </el-col>
     <el-col :span="12">
-    <div class="grid-content bg-purple-light pull-right">
+      <div class="grid-content bg-purple-light pull-right">
 
-      <!-- page -->
-      <include file="Common:_pagination" />
-      <!-- / page -->
-      
-    </div></el-col>
+        <!-- page -->
+        <include file="Common:_pagination" />
+        <!-- / page -->
+        
+      </div>
+    </el-col>
   </el-row>
    </div><!-- __________________ -->
   <!-- / toolbar -->

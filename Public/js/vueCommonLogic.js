@@ -61,6 +61,7 @@ function setCommonLogic(opt){
 
 	//根据 查询条件 重载数据
 	opt.setMethod("loadDatalist", function(){
+		
 		var vmThis = this;
 		var params = {p:this.currentPage};
 		for (var x in this.searchForm ){
@@ -113,7 +114,7 @@ function setCommonLogic(opt){
 		//this.$refs.searchForm.resetFields();
 		//this.dataLoad = true;
 		//this.loadDatalist();
-		window.location.reload();
+		 window.location.reload();
 	})
 
 	
