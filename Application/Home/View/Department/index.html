@@ -8,7 +8,7 @@
 				<el-col :span="12">
 					<el-form :inline="true"  ref="searchForm" :model="searchForm">
 					  <el-form-item style="display: none;" prop="id">
-					  	<el-input   v-model="searchForm.id">
+					  	<el-input  v-model="searchForm.id">
 					   </el-input>
 					  </el-form-item>
 					  
@@ -62,6 +62,18 @@
 					    </el-table-column>
 					    <el-table-column  label="拓展二" align="center" prop="expand2">
 					    </el-table-column>
+						<el-table-column label="是否启用" :context="_self" align="center" prop="status">
+					      <template scope="scope">
+  							<div>
+  						        <el-switch
+  								  v-model="scope.row.switch"
+  								  on-color="#13ce66"
+  								  off-color="#ff4949" 
+  								  @change="switchHandle(scope.$index, scope.row)">
+  								</el-switch>
+  							</div>
+                         </template>
+					    </el-table-column>
 					    <el-table-column  inline-template :context="_self"  align="center" label="形象照片" width="100">
 
 						    <div v-if="row.img.length">
@@ -81,8 +93,8 @@
 
 					    <el-table-column  :context="_self"  align="center" width="250" fixed="right"  label="操作"  >
 					      <template scope="scope">
-					      	<el-button v-if="scope.row.type==1" type="text"    @click="checkDown(scope.row.id)" >查看下级</el-button>
-					      	<el-button v-else type="text" @click="searchReset">返回上一级</el-button>
+<!-- 					      	<el-button v-if="scope.row.type==1" type="text"    @click="checkDown(scope.row.id)" >查看下级</el-button>
+					      	<el-button v-else type="text" @click="searchReset">返回上一级</el-button> -->
 					      	<el-button type="success" @click="handleEdit(scope.$index, scope.row)"     size="small">编辑</el-button>
 					      	<el-button type="danger"  @click="handleDelete(scope.$index, scope.row)"   size="small" >删除</el-button>
 					      </template>
@@ -158,7 +170,11 @@
         //放大图片地址
         imageUrl:'',
         topO:[],
-
+        //状态值
+        statusForm:{
+           id:0,
+           status:'1',
+        },
         //负责主管
         users:[],
 
@@ -211,7 +227,8 @@
 		address:"",
 		remark:"",
 		img:"",
-		zone:""
+		zone:"",
+		status:1,
 	}).setForm('edit', {
 		id:"",
 		name:"",
@@ -227,6 +244,7 @@
 		address:"",
 		remark:"",
 		img:"",
+		//status:0,
 	}).setForm('search', {
 		name:"",
 		id:"0",
@@ -269,6 +287,8 @@
 			// currentValue['public']   = currentValue.public == 1 ?'是':'否';
 			currentValue['typeText'] = vmThis.typeList[currentValue['type']];
 			currentValue['zone']     = vmThis.zoneList[currentValue['zone_id']];
+  		    currentValue['switch']=currentValue.status==1?true:false;
+            currentValue.status = parseInt(currentValue.status);
 		})
 		return dataList;
 	}).setMethod('typeChange', function(v){
@@ -297,7 +317,21 @@
 	    });
 		this.computedusers = this.userList;
 		console.log(this.computedusers);
-	})
+	}).setMethod('switchHandle',function(index,row){
+	    row.status=row.switch?'1':'0';
+	    this.initObject(this.statusForm, row);
+	    this.statusIndex=index;
+	    var vmThis =this;
+	    this.$http.post(page.editFormUrl,this.statusForm).then(function(response){
+	    	this.searchReset();
+	    }).catch(function(response){
+	    	vmThis.$message({
+	    		message:'状态更改失败',
+	    		type:'error'
+	    	});
+	    	vmThis.dataList[vmThis.statusIndex].switch = !vmThis.dataList[vmThis.statusIndex].switch;
+	    });
+    });
 </script>
 
 	

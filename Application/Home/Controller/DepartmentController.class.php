@@ -37,7 +37,7 @@ class DepartmentController extends CommonController {
 			$map['name'] = array('like',"%". I('get.name')."%");
 		}
 		$map['id'] = array('neq',0);
-		$map['p_id'] = array('eq', I('get.id',0));
+		//$map['p_id'] = array('eq', I('get.id',0));
 		$this->M->where($map);
 	}
 

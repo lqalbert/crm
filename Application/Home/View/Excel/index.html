@@ -3,10 +3,13 @@
   <link rel="stylesheet" href="__PUBLIC__/plugins/layui/css/layui.css" media="all" />
 </block>
 <block name="body">
- 
-<div style="padding:10px;">
-  <a class="layui-btn"  href="{:U('customerImport')}"><i class="layui-icon">&#xe65b;</i>客户数据导入(测试)</a>  <a class="layui-btn layui-btn-normal" href="{:U('customers')}"><i class="layui-icon">&#xe601;</i>查看</a><br/><br/>
-  <a class="layui-btn" href="{:U('employeeImport')}"><i class="layui-icon">&#xe65b;</i>员工数据导入(测试)</a>
+ <div id="app" class="container">
+ 	<div class="wrapp" v-show="show" style="display: none">
+		<div style="padding:10px;">
+		  <a class="layui-btn"  href="{:U('customerImport')}"><i class="layui-icon">&#xe65b;</i>客户数据导入(测试)</a>  <a class="layui-btn layui-btn-normal" href="{:U('customers')}"><i class="layui-icon">&#xe601;</i>查看</a><br/><br/>
+		  <a class="layui-btn" href="{:U('employeeImport')}"><i class="layui-icon">&#xe65b;</i>员工数据导入(测试)</a>
+		</div>
+    </div>
 </div>
 
 </block>

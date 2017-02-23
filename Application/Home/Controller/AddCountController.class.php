@@ -80,8 +80,8 @@ class AddCountController extends CommonController{
 	private function getGroupCount(){
 
 		$between_today = $this->getBetween();
-		$count = M('group_basic')->count();
-		$list = M('group_basic')->field('id, name')->page(I('get.p',0). ','. $this->pageSize)->select();
+		$count = M('group_basic')->where(array('status'=>1))->count();
+		$list = M('group_basic')->field('id, name')->where(array('status'=>1))->page(I('get.p',0). ','. $this->pageSize)->select();
 		foreach ($list as $key => $value) {
 			$userList = M('user_info')->where(array('group_id'=>$value['id']))->getField('user_id',true);
 
@@ -103,9 +103,9 @@ class AddCountController extends CommonController{
 	*/
 	private function getDepartmentCount(){
 		$between_today = $this->getBetween();
-		$count = M('department_basic')->where(array('type'=>array('in', array(DepartmentModel::CAREER, DepartmentModel::GENERALIZE))))
+		$count = M('department_basic')->where(array('type'=>array('in', array(DepartmentModel::CAREER, DepartmentModel::GENERALIZE)),'status'=>1))
 		                              ->count();
-		$list  = M('department_basic')->where(array('type'=>array('in', array(DepartmentModel::CAREER, DepartmentModel::GENERALIZE))))
+		$list  = M('department_basic')->where(array('type'=>array('in', array(DepartmentModel::CAREER, DepartmentModel::GENERALIZE)),'status'=>1))
 		                              ->field('id, name')
 		                              ->page(I('get.p',0). ','. $this->pageSize)
 		                              ->select();
