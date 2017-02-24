@@ -3,7 +3,7 @@
   <el-row>
     <el-col :span="8">
       <el-form-item label="客户姓名"  prop="name">
-        <el-input v-model="addTrackForm.name" :disabled="true">
+        <el-input v-model="addTrackForm.name" :disabled="true"></el-input>
       </el-form-item>
     </el-col>
     <el-col :span="8">
@@ -55,7 +55,6 @@
 		  :autosize="{ minRows: 2, maxRows: 4}"
 		  placeholder="请输入内容"
 		  v-model="addTrackForm.content"></el-input>
-		</el-input>
     </el-form-item>
   </el-form>
   <div slot="footer" class="dialog-footer">
