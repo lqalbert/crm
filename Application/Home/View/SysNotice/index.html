@@ -1,0 +1,624 @@
+<extend name="Common:base" />
+<block name="head"></block>
+<block name="body">
+	<div id="app" class="container">
+		<div class="wrapp" v-show="show" style="display:none">
+			<el-row>
+			  <el-col :span="12">
+			    <el-form :inline="true" ref="searchForm" :model="searchForm">
+			      <el-form-item prop="name">
+			       <el-input placeholder="请输入客户姓名关键字" v-model="searchForm.name"></el-input>
+			      </el-form-item>
+			      <el-form-item>
+			       <el-button type="primary" icon="search" @click="loadDataList">查询</el-button>
+			       <el-tooltip content="清空搜索框并刷新表格数据" placement="right">
+			        <el-button icon="close" @click="searchReset">重置</el-button>
+			       </el-tooltip>
+			      </el-form-item>
+			    </el-form>
+			  </el-col>
+
+		  </el-row>
+		  <el-row>
+		    <el-col :span="24">
+		      <el-table :data="tabledataList" border  stripe element-loading-text="{:L('DATA_LOGIN')}" ref="select">
+		        <el-table-column type="selection" align="center" width="50"></el-table-column>
+		        <el-table-column label="序号" align="center" :formatter="handleIndex" width="65"></el-table-column>
+		        <el-table-column label="标题" prop="title" align="center" ></el-table-column>
+		        <el-table-column label="内容" prop="content" align="center" ></el-table-column>
+		        <el-table-column label="发送时间" prop="time" align="center" ></el-table-column> 
+		        <el-table-column label="操作人员" prop="user" align="center" ></el-table-column> 
+		      </el-table>
+		    </el-col>
+		  </el-row>
+
+		  <el-row type="flex"  justify="space-between" align="middle"  class="row-bg">
+            <el-col :span="12">
+              <div class="grid-content bg-purple">
+              	 <el-tooltip content="多选批量删除" placement="right">
+              	   <el-button size="small" type="warning" icon="delete">批量删除
+              	   </el-button>
+              	 </el-tooltip>
+              	 <el-tooltip content="点击一键清空" placement="right">
+              	   <el-button size="small" type="danger" icon="close">一键清空
+              	   </el-button>
+              	 </el-tooltip> 
+              </div>
+            </el-col>
+            <el-col :span="12">
+              <div class="grid-content bg-purple-light pull-right">
+		        <!-- page -->
+		        <include file="Common:_pagination" />
+		        <!-- / page -->
+              </div>
+            </el-col>
+		  </el-row>
+		</div>
+	</div>
+</block>
+<block name="scripts">
+<script>
+  window.defaultOption.setDatas({
+  	loadDataList:[],
+  	dataLoad:false,
+    tabledataList:[{
+        title:'震惊了',
+        content:'10亿人看哭了',
+        time:'2017-02-24',
+        user:'花花公子',
+      },{
+        title:'震惊了',
+        content:'10亿人看哭了',
+        time:'2017-02-24',
+        user:'花花公子',
+      },{
+        title:'震惊了',
+        content:'10亿人看哭了',
+        time:'2017-02-24',
+        user:'花花公子',
+      },{
+        title:'震惊了',
+        content:'10亿人看哭了',
+        time:'2017-02-24',
+        user:'花花公子',
+      },
+    ],
+  }).setForm('search',{
+  	name:'',
+  });
+</script>
+</block><extend name="Common:base" />
+<block name="head"></block>
+<block name="body">
+  <div id="app" class="container">
+    <div class="wrapp" v-show="show" style="display:none">
+      <el-row>
+        <el-col :span="12">
+          <el-form :inline="true" ref="searchForm" :model="searchForm">
+            <el-form-item prop="name">
+             <el-input placeholder="请输入客户姓名关键字" v-model="searchForm.name"></el-input>
+            </el-form-item>
+            <el-form-item>
+             <el-button type="primary" icon="search" @click="loadDataList">查询</el-button>
+             <el-tooltip content="清空搜索框并刷新表格数据" placement="right">
+              <el-button icon="close" @click="searchReset">重置</el-button>
+             </el-tooltip>
+            </el-form-item>
+          </el-form>
+        </el-col>
+
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-table :data="tabledataList" border  stripe element-loading-text="{:L('DATA_LOGIN')}" ref="select">
+            <el-table-column type="selection" align="center" width="50"></el-table-column>
+            <el-table-column label="序号" align="center" :formatter="handleIndex" width="65"></el-table-column>
+            <el-table-column label="标题" prop="title" align="center" ></el-table-column>
+            <el-table-column label="内容" prop="content" align="center" ></el-table-column>
+            <el-table-column label="发送时间" prop="time" align="center" ></el-table-column> 
+            <el-table-column label="操作人员" prop="user" align="center" ></el-table-column> 
+          </el-table>
+        </el-col>
+      </el-row>
+
+      <el-row type="flex"  justify="space-between" align="middle"  class="row-bg">
+            <el-col :span="12">
+              <div class="grid-content bg-purple">
+                 <el-tooltip content="多选批量删除" placement="right">
+                   <el-button size="small" type="warning" icon="delete">批量删除
+                   </el-button>
+                 </el-tooltip>
+                 <el-tooltip content="点击一键清空" placement="right">
+                   <el-button size="small" type="danger" icon="close">一键清空
+                   </el-button>
+                 </el-tooltip> 
+              </div>
+            </el-col>
+            <el-col :span="12">
+              <div class="grid-content bg-purple-light pull-right">
+            <!-- page -->
+            <include file="Common:_pagination" />
+            <!-- / page -->
+              </div>
+            </el-col>
+      </el-row>
+    </div>
+  </div>
+</block>
+<block name="scripts">
+<script>
+  window.defaultOption.setDatas({
+    loadDataList:[],
+    dataLoad:false,
+    tabledataList:[{
+        title:'震惊了',
+        content:'10亿人看哭了',
+        time:'2017-02-24',
+        user:'花花公子',
+      },{
+        title:'震惊了',
+        content:'10亿人看哭了',
+        time:'2017-02-24',
+        user:'花花公子',
+      },{
+        title:'震惊了',
+        content:'10亿人看哭了',
+        time:'2017-02-24',
+        user:'花花公子',
+      },{
+        title:'震惊了',
+        content:'10亿人看哭了',
+        time:'2017-02-24',
+        user:'花花公子',
+      },
+    ],
+  }).setForm('search',{
+    name:'',
+  });
+</script>
+</block><extend name="Common:base" />
+<block name="head"></block>
+<block name="body">
+  <div id="app" class="container">
+    <div class="wrapp" v-show="show" style="display:none">
+      <el-row>
+        <el-col :span="12">
+          <el-form :inline="true" ref="searchForm" :model="searchForm">
+            <el-form-item prop="name">
+             <el-input placeholder="请输入客户姓名关键字" v-model="searchForm.name"></el-input>
+            </el-form-item>
+            <el-form-item>
+             <el-button type="primary" icon="search" @click="loadDataList">查询</el-button>
+             <el-tooltip content="清空搜索框并刷新表格数据" placement="right">
+              <el-button icon="close" @click="searchReset">重置</el-button>
+             </el-tooltip>
+            </el-form-item>
+          </el-form>
+        </el-col>
+
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-table :data="tabledataList" border  stripe element-loading-text="{:L('DATA_LOGIN')}" ref="select">
+            <el-table-column type="selection" align="center" width="50"></el-table-column>
+            <el-table-column label="序号" align="center" :formatter="handleIndex" width="65"></el-table-column>
+            <el-table-column label="标题" prop="title" align="center" ></el-table-column>
+            <el-table-column label="内容" prop="content" align="center" ></el-table-column>
+            <el-table-column label="发送时间" prop="time" align="center" ></el-table-column> 
+            <el-table-column label="操作人员" prop="user" align="center" ></el-table-column> 
+          </el-table>
+        </el-col>
+      </el-row>
+
+      <el-row type="flex"  justify="space-between" align="middle"  class="row-bg">
+            <el-col :span="12">
+              <div class="grid-content bg-purple">
+                 <el-tooltip content="多选批量删除" placement="right">
+                   <el-button size="small" type="warning" icon="delete">批量删除
+                   </el-button>
+                 </el-tooltip>
+                 <el-tooltip content="点击一键清空" placement="right">
+                   <el-button size="small" type="danger" icon="close">一键清空
+                   </el-button>
+                 </el-tooltip> 
+              </div>
+            </el-col>
+            <el-col :span="12">
+              <div class="grid-content bg-purple-light pull-right">
+            <!-- page -->
+            <include file="Common:_pagination" />
+            <!-- / page -->
+              </div>
+            </el-col>
+      </el-row>
+    </div>
+  </div>
+</block>
+<block name="scripts">
+<script>
+  window.defaultOption.setDatas({
+    loadDataList:[],
+    dataLoad:false,
+    tabledataList:[{
+        title:'震惊了',
+        content:'10亿人看哭了',
+        time:'2017-02-24',
+        user:'花花公子',
+      },{
+        title:'震惊了',
+        content:'10亿人看哭了',
+        time:'2017-02-24',
+        user:'花花公子',
+      },{
+        title:'震惊了',
+        content:'10亿人看哭了',
+        time:'2017-02-24',
+        user:'花花公子',
+      },{
+        title:'震惊了',
+        content:'10亿人看哭了',
+        time:'2017-02-24',
+        user:'花花公子',
+      },
+    ],
+  }).setForm('search',{
+    name:'',
+  });
+</script>
+</block><extend name="Common:base" />
+<block name="head"></block>
+<block name="body">
+  <div id="app" class="container">
+    <div class="wrapp" v-show="show" style="display:none">
+      <el-row>
+        <el-col :span="12">
+          <el-form :inline="true" ref="searchForm" :model="searchForm">
+            <el-form-item prop="name">
+             <el-input placeholder="请输入客户姓名关键字" v-model="searchForm.name"></el-input>
+            </el-form-item>
+            <el-form-item>
+             <el-button type="primary" icon="search" @click="loadDataList">查询</el-button>
+             <el-tooltip content="清空搜索框并刷新表格数据" placement="right">
+              <el-button icon="close" @click="searchReset">重置</el-button>
+             </el-tooltip>
+            </el-form-item>
+          </el-form>
+        </el-col>
+
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-table :data="tabledataList" border  stripe element-loading-text="{:L('DATA_LOGIN')}" ref="select">
+            <el-table-column type="selection" align="center" width="50"></el-table-column>
+            <el-table-column label="序号" align="center" :formatter="handleIndex" width="65"></el-table-column>
+            <el-table-column label="标题" prop="title" align="center" ></el-table-column>
+            <el-table-column label="内容" prop="content" align="center" ></el-table-column>
+            <el-table-column label="发送时间" prop="time" align="center" ></el-table-column> 
+            <el-table-column label="操作人员" prop="user" align="center" ></el-table-column> 
+          </el-table>
+        </el-col>
+      </el-row>
+
+      <el-row type="flex"  justify="space-between" align="middle"  class="row-bg">
+            <el-col :span="12">
+              <div class="grid-content bg-purple">
+                 <el-tooltip content="多选批量删除" placement="right">
+                   <el-button size="small" type="warning" icon="delete">批量删除
+                   </el-button>
+                 </el-tooltip>
+                 <el-tooltip content="点击一键清空" placement="right">
+                   <el-button size="small" type="danger" icon="close">一键清空
+                   </el-button>
+                 </el-tooltip> 
+              </div>
+            </el-col>
+            <el-col :span="12">
+              <div class="grid-content bg-purple-light pull-right">
+            <!-- page -->
+            <include file="Common:_pagination" />
+            <!-- / page -->
+              </div>
+            </el-col>
+      </el-row>
+    </div>
+  </div>
+</block>
+<block name="scripts">
+<script>
+  window.defaultOption.setDatas({
+    loadDataList:[],
+    dataLoad:false,
+    tabledataList:[{
+        title:'震惊了',
+        content:'10亿人看哭了',
+        time:'2017-02-24',
+        user:'花花公子',
+      },{
+        title:'震惊了',
+        content:'10亿人看哭了',
+        time:'2017-02-24',
+        user:'花花公子',
+      },{
+        title:'震惊了',
+        content:'10亿人看哭了',
+        time:'2017-02-24',
+        user:'花花公子',
+      },{
+        title:'震惊了',
+        content:'10亿人看哭了',
+        time:'2017-02-24',
+        user:'花花公子',
+      },
+    ],
+  }).setForm('search',{
+    name:'',
+  });
+</script>
+</block><extend name="Common:base" />
+<block name="head"></block>
+<block name="body">
+  <div id="app" class="container">
+    <div class="wrapp" v-show="show" style="display:none">
+      <el-row>
+        <el-col :span="12">
+          <el-form :inline="true" ref="searchForm" :model="searchForm">
+            <el-form-item prop="name">
+             <el-input placeholder="请输入客户姓名关键字" v-model="searchForm.name"></el-input>
+            </el-form-item>
+            <el-form-item>
+             <el-button type="primary" icon="search" @click="loadDataList">查询</el-button>
+             <el-tooltip content="清空搜索框并刷新表格数据" placement="right">
+              <el-button icon="close" @click="searchReset">重置</el-button>
+             </el-tooltip>
+            </el-form-item>
+          </el-form>
+        </el-col>
+
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-table :data="tabledataList" border  stripe element-loading-text="{:L('DATA_LOGIN')}" ref="select">
+            <el-table-column type="selection" align="center" width="50"></el-table-column>
+            <el-table-column label="序号" align="center" :formatter="handleIndex" width="65"></el-table-column>
+            <el-table-column label="标题" prop="title" align="center" ></el-table-column>
+            <el-table-column label="内容" prop="content" align="center" ></el-table-column>
+            <el-table-column label="发送时间" prop="time" align="center" ></el-table-column> 
+            <el-table-column label="操作人员" prop="user" align="center" ></el-table-column> 
+          </el-table>
+        </el-col>
+      </el-row>
+
+      <el-row type="flex"  justify="space-between" align="middle"  class="row-bg">
+            <el-col :span="12">
+              <div class="grid-content bg-purple">
+                 <el-tooltip content="多选批量删除" placement="right">
+                   <el-button size="small" type="warning" icon="delete">批量删除
+                   </el-button>
+                 </el-tooltip>
+                 <el-tooltip content="点击一键清空" placement="right">
+                   <el-button size="small" type="danger" icon="close">一键清空
+                   </el-button>
+                 </el-tooltip> 
+              </div>
+            </el-col>
+            <el-col :span="12">
+              <div class="grid-content bg-purple-light pull-right">
+            <!-- page -->
+            <include file="Common:_pagination" />
+            <!-- / page -->
+              </div>
+            </el-col>
+      </el-row>
+    </div>
+  </div>
+</block>
+<block name="scripts">
+<script>
+  window.defaultOption.setDatas({
+    loadDataList:[],
+    dataLoad:false,
+    tabledataList:[{
+        title:'震惊了',
+        content:'10亿人看哭了',
+        time:'2017-02-24',
+        user:'花花公子',
+      },{
+        title:'震惊了',
+        content:'10亿人看哭了',
+        time:'2017-02-24',
+        user:'花花公子',
+      },{
+        title:'震惊了',
+        content:'10亿人看哭了',
+        time:'2017-02-24',
+        user:'花花公子',
+      },{
+        title:'震惊了',
+        content:'10亿人看哭了',
+        time:'2017-02-24',
+        user:'花花公子',
+      },
+    ],
+  }).setForm('search',{
+    name:'',
+  });
+</script>
+</block><extend name="Common:base" />
+<block name="head"></block>
+<block name="body">
+  <div id="app" class="container">
+    <div class="wrapp" v-show="show" style="display:none">
+      <el-row>
+        <el-col :span="12">
+          <el-form :inline="true" ref="searchForm" :model="searchForm">
+            <el-form-item prop="name">
+             <el-input placeholder="请输入客户姓名关键字" v-model="searchForm.name"></el-input>
+            </el-form-item>
+            <el-form-item>
+             <el-button type="primary" icon="search" @click="loadDataList">查询</el-button>
+             <el-tooltip content="清空搜索框并刷新表格数据" placement="right">
+              <el-button icon="close" @click="searchReset">重置</el-button>
+             </el-tooltip>
+            </el-form-item>
+          </el-form>
+        </el-col>
+
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-table :data="tabledataList" border  stripe element-loading-text="{:L('DATA_LOGIN')}" ref="select">
+            <el-table-column type="selection" align="center" width="50"></el-table-column>
+            <el-table-column label="序号" align="center" :formatter="handleIndex" width="65"></el-table-column>
+            <el-table-column label="标题" prop="title" align="center" ></el-table-column>
+            <el-table-column label="内容" prop="content" align="center" ></el-table-column>
+            <el-table-column label="发送时间" prop="time" align="center" ></el-table-column> 
+            <el-table-column label="操作人员" prop="user" align="center" ></el-table-column> 
+          </el-table>
+        </el-col>
+      </el-row>
+
+      <el-row type="flex"  justify="space-between" align="middle"  class="row-bg">
+            <el-col :span="12">
+              <div class="grid-content bg-purple">
+                 <el-tooltip content="多选批量删除" placement="right">
+                   <el-button size="small" type="warning" icon="delete">批量删除
+                   </el-button>
+                 </el-tooltip>
+                 <el-tooltip content="点击一键清空" placement="right">
+                   <el-button size="small" type="danger" icon="close">一键清空
+                   </el-button>
+                 </el-tooltip> 
+              </div>
+            </el-col>
+            <el-col :span="12">
+              <div class="grid-content bg-purple-light pull-right">
+            <!-- page -->
+            <include file="Common:_pagination" />
+            <!-- / page -->
+              </div>
+            </el-col>
+      </el-row>
+    </div>
+  </div>
+</block>
+<block name="scripts">
+<script>
+  window.defaultOption.setDatas({
+    loadDataList:[],
+    dataLoad:false,
+    tabledataList:[{
+        title:'震惊了',
+        content:'10亿人看哭了',
+        time:'2017-02-24',
+        user:'花花公子',
+      },{
+        title:'震惊了',
+        content:'10亿人看哭了',
+        time:'2017-02-24',
+        user:'花花公子',
+      },{
+        title:'震惊了',
+        content:'10亿人看哭了',
+        time:'2017-02-24',
+        user:'花花公子',
+      },{
+        title:'震惊了',
+        content:'10亿人看哭了',
+        time:'2017-02-24',
+        user:'花花公子',
+      },
+    ],
+  }).setForm('search',{
+    name:'',
+  });
+</script>
+</block><extend name="Common:base" />
+<block name="head"></block>
+<block name="body">
+  <div id="app" class="container">
+    <div class="wrapp" v-show="show" style="display:none">
+      <el-row>
+        <el-col :span="12">
+          <el-form :inline="true" ref="searchForm" :model="searchForm">
+            <el-form-item prop="name">
+             <el-input placeholder="请输入内容关键字" v-model="searchForm.name"></el-input>
+            </el-form-item>
+            <el-form-item>
+             <el-button type="primary" icon="search" @click="loadDataList">查询</el-button>
+             <el-tooltip content="清空搜索框并刷新表格数据" placement="right">
+              <el-button icon="close" @click="searchReset">重置</el-button>
+             </el-tooltip>
+            </el-form-item>
+          </el-form>
+        </el-col>
+
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-table :data="tabledataList" border  stripe element-loading-text="{:L('DATA_LOGIN')}" ref="select">
+            <el-table-column type="selection" align="center" width="50"></el-table-column>
+            <el-table-column label="序号" align="center" :formatter="handleIndex" width="65"></el-table-column>
+            <el-table-column label="标题" prop="title" align="center" ></el-table-column>
+            <el-table-column label="内容" prop="content" align="center" ></el-table-column>
+            <el-table-column label="发送时间" prop="time" align="center" ></el-table-column> 
+            <el-table-column label="操作人员" prop="user" align="center" ></el-table-column> 
+          </el-table>
+        </el-col>
+      </el-row>
+
+      <el-row type="flex"  justify="space-between" align="middle"  class="row-bg">
+            <el-col :span="12">
+              <div class="grid-content bg-purple">
+                 <el-tooltip content="多选批量删除" placement="right">
+                   <el-button size="small" type="warning" icon="delete">批量删除
+                   </el-button>
+                 </el-tooltip>
+                 <el-tooltip content="点击一键清空" placement="right">
+                   <el-button size="small" type="danger" icon="close">一键清空
+                   </el-button>
+                 </el-tooltip> 
+              </div>
+            </el-col>
+            <el-col :span="12">
+              <div class="grid-content bg-purple-light pull-right">
+            <!-- page -->
+            <include file="Common:_pagination" />
+            <!-- / page -->
+              </div>
+            </el-col>
+      </el-row>
+    </div>
+  </div>
+</block>
+<block name="scripts">
+<script>
+  window.defaultOption.setDatas({
+    loadDataList:[],
+    dataLoad:false,
+    tabledataList:[{
+        title:'震惊了',
+        content:'10亿人看哭了',
+        time:'2017-02-24',
+        user:'花花公子',
+      },{
+        title:'震惊了',
+        content:'10亿人看哭了',
+        time:'2017-02-24',
+        user:'花花公子',
+      },{
+        title:'震惊了',
+        content:'10亿人看哭了',
+        time:'2017-02-24',
+        user:'花花公子',
+      },{
+        title:'震惊了',
+        content:'10亿人看哭了',
+        time:'2017-02-24',
+        user:'花花公子',
+      },
+    ],
+  }).setForm('search',{
+    name:'',
+  });
+</script>
+</block>

@@ -43,48 +43,58 @@
 	<el-row>
   	<el-col :span="24">
   		<el-form :inline="true" ref="searchForm" :model="searchForm">
+
   		  <el-form-item prop="name" style="width:220px">
   		    <el-input v-model="searchForm.name" placeholder="客户姓名|手机|qq|微信号"></el-input>
   		  </el-form-item>
+
         <el-form-item prop="group" style="width:80px">
           <el-select v-model="searchForm.group" placeholder="请选择">
             <el-option v-for="item in searchGroup" :label="item.key" :value="item.value" :disabled="item.disabled"></el-option>
-
           </el-select>
         </el-form-item>
+
         <el-form-item prop="field" v-show="false">
           <input type="hidden" v-model="searchForm.field">
         </el-form-item>
+
         <el-form-item>
           <el-button type="info" icon="search" @click="loadDatalist">查询</el-button> 
+
           <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start">
             <el-button @click="searchReset">重置</el-button>
           </el-tooltip>
+
           <el-tooltip content="本人跟踪的客户" placement="bottom-start">
             <el-badge :value="{$aggregation.log}" :max="9" style="margin-left:15px;">
               <el-button type="info"  @click="setField('log')">跟踪</el-button>
             </el-badge>
           </el-tooltip>
+
           <el-tooltip content="本人没有跟踪的客户" placement="bottom-start">
             <el-badge :value="{$aggregation.unlog}" :max="9" style="margin-left:15px;">
               <el-button type="info" @click="setField('unlog')">未跟踪</el-button>
             </el-badge>
           </el-tooltip>
+
           <el-tooltip content="本人计划跟踪的客户" placement="bottom-start">
             <el-badge :value="{$aggregation.plan}" :max="9" style="margin-left:15px;">
               <el-button type="info" @click="setField('plan')" >计划</el-button>
             </el-badge>
           </el-tooltip>
+
           <el-tooltip content="本人把客户转给他人的客户(分成)" placement="bottom-start">
             <el-badge :value="{$aggregation.transfto}" :max="9" style="margin-left:15px;">
               <el-button type="info" @click="setField('transfto')">转让</el-button>
             </el-badge>
           </el-tooltip>
+
           <el-tooltip content="他人把客户转给本人的客户(分成)" placement="bottom-start">
             <el-badge :value="{$aggregation.transfin}" :max="9" style="margin-left:15px;">
               <el-button type="info" @click="setField('transfin')">转入</el-button>
             </el-badge>
           </el-tooltip>
+
           <!-- <el-tooltip content="本人单独跟踪的客户(不分成)" placement="bottom-start">
             <el-badge :value="1" :max="9" style="margin-left:15px;">
               <el-button type="info"  @click="setField('')">锁定</el-button>
@@ -95,134 +105,146 @@
               <el-button type="success" @click="setField('type')">服务</el-button>
             </el-badge>
           </el-tooltip>
+
           <el-tooltip content="对客户进行筛选后重点跟踪" placement="bottom-start">
             <el-badge :value="{$aggregation.important}" :max="9" style="margin-left:15px;">
               <el-button type="info" @click="setField('important')">自选</el-button>
             </el-badge>
           </el-tooltip>
+
           <el-tooltip content="他人的客户与您的客户有冲突" placement="bottom-start">
             <el-badge :value="{$aggregation.conflict}" :max="9" style="margin-left:15px;">
     		      <el-button type="warning" @click="setField('conflict')">冲突</el-button>
             </el-badge>
           </el-tooltip>
 
-
           <el-tooltip content="导入我的客户" placement="bottom-start" style="margin-left:15px;">
-            <el-button type="warning" @click="openDialog('importc')">导入我的客户</el-button>
+            <el-button type="warning" @click="openDialog('importc')" >导入我的客户</el-button>
           </el-tooltip>
+
           <!-- <el-button  >高级查询</el-button>  -->
   		  </el-form-item>
   		</el-form>
   	</el-col>
   </el-row>
   <!-- max-height="500" -->
+
   <el-row>
-  <el-col :span="24">
-  	<el-table 
-    :data="dataList" 
-    border  
-    id="he"
-    v-loading="dataLoad" 
-    element-loading-text="{:L('DATA_LOGIN')}"
-    @selection-change="handleSelectionChange"
-    @row-click="trackLog"  ref="select" @row-dblclick="userInfo">
-	    <el-table-column type="selection"  width="50" >
-	    </el-table-column>
-	    <el-table-column   label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  >
-	    </el-table-column>
-	    <el-table-column prop="name"  label="客户姓名" width="140" align="center">
-	    </el-table-column>
-      <el-table-column prop="sex"  label="性别" width="80" align="center">
-        <template scope="scope">
-          {{ getType(scope.row.sex, 'sexType') }}
-        </template>
-      </el-table-column>
-	    <el-table-column prop="type" label="客户类型" width="180" align="center">
-        <template scope="scope">
-          {{ getType(scope.row.type, 'customerType') }}
-        </template>
-	    </el-table-column>
-	    <el-table-column prop="phone" label="手机" align="center" width="140">
-	    </el-table-column>
-		  <el-table-column prop="qq" label="QQ号" align="center" width="160">
-        
+    <el-col :span="24">
+    	<el-table 
+      :data="dataList" 
+      border  
+      id="he"
+      v-loading="dataLoad" 
+      element-loading-text="{:L('DATA_LOGIN')}"
+      @selection-change="handleSelectionChange"
+      @row-click="trackLog"  ref="select" @row-dblclick="userInfo">
+
+  	    <el-table-column type="selection"  width="50" ></el-table-column>
+
+  	    <el-table-column   label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  ></el-table-column>
+
+  	    <el-table-column prop="name"  label="客户姓名" width="140" align="center"></el-table-column>
+
+        <el-table-column prop="sex"  label="性别" width="80" align="center">
           <template scope="scope">
-            {{ scope.row.qq }}
-            <a v-if="scope.row.qq" :href="getTenct(scope.row.qq)">
-              <img width="30"  src="__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg" alt="">
-            </a>
+            {{ getType(scope.row.sex, 'sexType') }}
           </template>
-        
-	    </el-table-column>
-	    <el-table-column prop="qq_nickname" label="QQ昵称" align="center" width="140">
-	    </el-table-column>
-	    <el-table-column  label="地区" align="center" width="135">
-        <template scope="scope">
-           {{ scope.row.province_name+"-"+scope.row.city_name }}
-        </template>
-	    </el-table-column>
-	    <el-table-column  prop="user_id" label="跟踪员工" align="center" width="200">
-        <template scope="scope">
-          {{ getType(scope.row.user_id, 'memberList') }}
-        </template>
-	    </el-table-column>
-	    <el-table-column  prop="plan" label="计划跟踪时间" align="center" width="175">
-	    </el-table-column>
-	    <!-- <el-table-column  prop="lock_track" label="锁定方最后跟踪时间" align="center" width="175">
-	    </el-table-column> 
-      <el-table-column  prop="ser_track" label="服务方最后跟踪时间" align="center" width="175">
-      </el-table-column>  -->
-      <el-table-column  prop="commission" label="跟踪方比例" align="center" width="110">
-      </el-table-column> 
-      <el-table-column  prop="conflict" label="最后冲突时间" align="center" width="175">
-      </el-table-column> 
-	    <el-table-column inline-template :context="_self"  fixed="right"  align="center" label="操作" width="160">
-	      <span>
-	        <el-button @click="handleEdit($index, row)"  size="small">编辑</el-button>
-	        <el-button @click="handleDelete($index, row)"  size="small" type="danger">删除</el-button>
-	      </span>
-	    </el-table-column>
-    </el-table>
-  </el-col>
+        </el-table-column>
+
+  	    <el-table-column prop="type" label="客户类型" width="180" align="center">
+          <template scope="scope">
+            {{ getType(scope.row.type, 'customerType') }}
+          </template>
+  	    </el-table-column>
+
+  	    <el-table-column prop="phone" label="手机" align="center" width="140"></el-table-column>
+
+  		  <el-table-column prop="qq" label="QQ号" align="center" width="160">
+            <template scope="scope">
+              {{ scope.row.qq }}
+              <a v-if="scope.row.qq" :href="getTenct(scope.row.qq)">
+                <img width="30"  src="__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg" alt="">
+              </a>
+            </template> 
+  	    </el-table-column>
+
+  	    <el-table-column prop="qq_nickname" label="QQ昵称" align="center" width="140"></el-table-column>
+
+  	    <el-table-column  label="地区" align="center" width="135">
+          <template scope="scope">
+             {{ scope.row.province_name+"-"+scope.row.city_name }}
+          </template>
+  	    </el-table-column>
+
+  	    <el-table-column  prop="user_id" label="跟踪员工" align="center" width="200">
+          <template scope="scope">
+            {{ getType(scope.row.user_id, 'memberList') }}
+          </template>
+  	    </el-table-column>
+
+  	    <el-table-column  prop="plan" label="计划跟踪时间" align="center" width="175"></el-table-column>
+
+  	    <!-- <el-table-column  prop="lock_track" label="锁定方最后跟踪时间" align="center" width="175">
+  	    </el-table-column> 
+        <el-table-column  prop="ser_track" label="服务方最后跟踪时间" align="center" width="175">
+        </el-table-column>  -->
+        <el-table-column  prop="commission" label="跟踪方比例" align="center" width="110"></el-table-column> 
+
+        <el-table-column  prop="conflict" label="最后冲突时间" align="center" width="175"></el-table-column> 
+
+  	    <el-table-column inline-template :context="_self"  fixed="right"  align="center" label="操作" width="160">
+  	      <span>
+  	        <el-button @click="handleEdit($index, row)"  size="small">编辑</el-button>
+  	        <el-button @click="handleDelete($index, row)"  size="small" type="danger">删除</el-button>
+  	      </span>
+  	    </el-table-column>
+
+      </el-table>
+    </el-col>
   </el-row>
 
   <!-- toolbar -->
   <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
     <el-col :span="12">
-    <div class="grid-content bg-purple">
-          <span class="wrapper">
-            <el-tooltip content="录入新的客户" placement="right">
-              <el-button size="small"  @click="openDialog('add')" icon="plus" type="primary">{:L('ADD')}</el-button>
-            </el-tooltip>
-            <el-tooltip content="选择客户录入跟踪信息" placement="right">
-              <el-button size="small" @click="openDialog('addTrack')" type="primary" style="margin-left:10px;">录入跟踪</el-button>
-            </el-tooltip>
-            <el-tooltip content="选择客户录入对其跟踪计划" placement="right">
-              <el-button size="small" @click="openDialog('addPlan')" type="primary" style="margin-left:10px;">计划</el-button>
-            </el-tooltip>
-            <el-tooltip content="选择客户对其转让给他人(暂未实现)" placement="right">
-              <el-button size="small" @click="openDialog('addTransfer')" :disabled="true" type="warning" style="margin-left:10px;">转让</el-button>
-            </el-tooltip>
-            <el-tooltip content="选择客户录入其提醒事项及内容" placement="right">
-              <el-button size="small" @click="openDialog('addRemind')" type="info" style="margin-left:10px;">提醒</el-button>
-            </el-tooltip>
-            <el-tooltip content="筛选客户重点跟踪" placement="right">
-              <el-button size="small" @click="openDialog('addChoice')" type="primary" style="margin-left:10px;">自选</el-button>
-            </el-tooltip>
-            <!-- <el-tooltip content="选择客户对其拨打电话" placement="right">
-              <el-button size="small" type="primary" style="margin-left:10px;">拨打电话</el-button>
-            </el-tooltip>
-            <el-tooltip content="选择客户显示客户的详细资料" placement="right">
-              <el-button size="small" @click="openDialog('showDetail')" type="success" style="margin-left:10px;">客户资料</el-button>
-            </el-tooltip> -->
-            <el-tooltip content="点击刷新当前页面" placement="right">
-              <el-button size="small" @click="refresh" type="danger" style="margin-left:10px;">刷新</el-button>
-            </el-tooltip>
-          </span>
-          
-    </div>
+      <div class="grid-content bg-purple">
+            <span class="wrapper">
+              <el-tooltip content="录入新的客户" placement="right">
+                <el-button size="small"  @click="openDialog('add')" icon="plus" type="primary">{:L('ADD')}</el-button>
+              </el-tooltip>
 
+              <el-tooltip content="选择客户录入跟踪信息" placement="right">
+                <el-button size="small" @click="openDialog('addTrack')" type="primary" style="margin-left:10px;">录入跟踪</el-button>
+              </el-tooltip>
+
+              <el-tooltip content="选择客户录入对其跟踪计划" placement="right">
+                <el-button size="small" @click="openDialog('addPlan')" type="primary" style="margin-left:10px;">计划</el-button>
+              </el-tooltip>
+
+              <el-tooltip content="选择客户对其转让给他人(暂未实现)" placement="right">
+                <el-button size="small" @click="openDialog('addTransfer')" :disabled="true" type="warning" style="margin-left:10px;">转让</el-button>
+              </el-tooltip>
+
+              <el-tooltip content="选择客户录入其提醒事项及内容" placement="right">
+                <el-button size="small" @click="openDialog('addRemind')" type="info" style="margin-left:10px;">提醒</el-button>
+              </el-tooltip>
+
+              <el-tooltip content="筛选客户重点跟踪" placement="right">
+                <el-button size="small" @click="openDialog('addChoice')" type="primary" style="margin-left:10px;">自选</el-button>
+              </el-tooltip>
+              <!-- <el-tooltip content="选择客户对其拨打电话" placement="right">
+                <el-button size="small" type="primary" style="margin-left:10px;">拨打电话</el-button>
+              </el-tooltip>
+              <el-tooltip content="选择客户显示客户的详细资料" placement="right">
+                <el-button size="small" @click="openDialog('showDetail')" type="success" style="margin-left:10px;">客户资料</el-button>
+              </el-tooltip> -->
+              <el-tooltip content="点击刷新当前页面" placement="right">
+                <el-button size="small" @click="refresh" type="danger" style="margin-left:10px;">刷新</el-button>
+              </el-tooltip>
+            </span>    
+      </div>
     </el-col>
+
     <el-col :span="12">
       <div class="grid-content bg-purple-light pull-right">
 
@@ -232,9 +254,10 @@
         
       </div>
     </el-col>
+
   </el-row>
-   </div><!-- __________________ -->
-  <!-- / toolbar -->
+  </div>
+
   <div id="app2" class="b" style="margin:5px -10px 5px;">
     <el-row>
      <el-col :span="24">
@@ -265,6 +288,7 @@
 </div>
 
 <div class="dialogWrapper" v-show="show" style="display: none">
+
   <!-- 录入客户 -->
   <include file="_add" />
   <!-- / 录入客户 -->
@@ -290,11 +314,13 @@
   <!-- 客户全部资料 -->
   <include file="_detail"/>
   <!-- /客户全部资料 -->
-
   <include file="_importd" />
+  
+
 </div>
 
-</div> 
+</div>
+
 </block>
 <block name="scripts">
 <script>

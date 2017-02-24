@@ -1,8 +1,7 @@
 <?php
 namespace Home\Controller;
-use Home\Model\CustomerLogModel;
 
-class MsgBoxController extends CommonController{
+class SysNoticeController extends CommonController{
   protected $pageSize = 11;
   
   public function index(){

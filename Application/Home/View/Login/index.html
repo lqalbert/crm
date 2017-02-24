@@ -8,6 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <link href="__PUBLIC__/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/plugins/layui/css/layui.css" media="all">
     <link href="__PUBLIC__/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link href="__PUBLIC__/css/animate.css" rel="stylesheet">
     <link href="__PUBLIC__/css/style.css" rel="stylesheet">
@@ -57,14 +58,14 @@
                 </div>
             </div>
             <div class="col-sm-5">
-                <form method="post" action="{:U('Login/loginHandle')}">
+                <form class="layui-form" method="post" action="">
                     <a class="no-margins" style="font-size:18px;color:#fff;font-weight:bold;">登录：</a>
                     <p class="m-t-md" style="font-size:16px;">登录到客户管理系统中心</p>
                     
                     <input type="text" class="form-control uname" name="account" value="" autocomplete="off" placeholder="请输入用户名" />
                     <input type="password" class="form-control pword m-b" name="password" value="" autocomplete="off" placeholder="请输入密码" />
                     <!--<a href="">忘记密码了？</a>-->
-                    <button class="btn btn-success btn-block" style="font-size:16px;font-weight:bold;">登录</button>
+                    <button class="btn btn-success btn-block" lay-submit="" lay-filter="go" style="font-size:16px;font-weight:bold;">登录</button>
                 </form>
             </div>
         </div>
@@ -74,6 +75,36 @@
             </div>
         </div>
     </div>
+
+<script type="text/javascript" src="__PUBLIC__/plugins/layui/layui.js"></script>
+<script type="text/javascript">
+    layui.use(['form','upload','layer'],function(){
+         var form = layui.form();
+         var layer=layui.layer;
+         var $=layui.jquery;
+          //监听提交
+         form.on('submit(go)', function(data){
+                $.ajax({
+                   url:"{:U('Login/loginHandle')}",
+                   type:'post',
+                   data:data.field,
+                   dataType:'json',
+                   success:function(res){
+                     if(res.code===-1){
+                          layer.msg(res.msg,{time:3000});
+                     }else{
+                          layer.load(0, {time: 3000});
+                          setTimeout(function url(){
+                            window.location.href = "{:U('Index/index')}";
+                          },2000);   
+                     }
+                   }
+               });
+               return false; 
+         });
+
+    });
+</script>
 </body>
 
 </html>
