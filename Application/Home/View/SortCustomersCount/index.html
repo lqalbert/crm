@@ -1,0 +1,88 @@
+<extend name="Common:base"/>
+<block name="head"></block>
+<block name="body">
+    <div id="app" class="container">
+        <div class="wrapp" v-show="show" style="display:none;">
+            <el-row>
+        <el-col :span="24">
+          <el-form :inline="true" ref="searchForm" :model="searchForm">
+            <el-form-item prop="dist">
+                <el-date-picker 
+                  v-model="searchForm.start" 
+                  placeholder="请选择起日期" 
+                  @change="startDateChange"
+                  >
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item prop="dist">
+                <el-date-picker 
+                  v-model="searchForm.end" 
+                  placeholder="请选择止日期" 
+                  @change="endDateChange"
+                  >
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item prop="object">
+              <el-select v-model="searchForm.object" placeholder="请选择对象" >
+                <el-option label="部门" value="department"></el-option>
+                <el-option label="小组" value="group"></el-option>
+                <el-option label="个人" value="user"></el-option>
+              </el-select>
+            </el-form-item>
+            
+            <el-form-item>
+              <el-button type="info" icon="search" @click="loadDatalist">查询</el-button>
+              <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start">
+                <el-button @click="searchReset">重置</el-button>
+              </el-tooltip>
+            </el-form-item>
+          </el-form>
+        </el-col>
+          </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-table 
+          :data="dataList" 
+          border 
+          v-loading="dataLoad" 
+          element-loading-text="{:L('DATA_LOGIN')}">
+                    <el-table-column label="序号"  align="center" width="65" :formatter="handleIndex"  >
+                    </el-table-column>
+                    <el-table-column prop="name"  label="名称"  align="center">
+                    </el-table-column>
+                    
+                    <el-table-column prop="count"  label="客户数(个)"  align="center">
+                    </el-table-column>
+          </el-table>
+        </el-col>
+      </el-row>
+      <el-row type="type" justify="start" align="middle" class="row-bg">
+        <el-col :span="12">
+              <div class="grid-content bg-purple-light pull-right">
+
+                <!-- page -->
+                <include file="Common:_pagination" />
+                <!-- / page -->
+                
+              </div>
+        </el-col>
+      </el-row>
+        </div>
+    </div>
+</block>
+<block name="scripts">
+    <script>
+      window.defaultOption.setDatas({
+      }).setForm('search',{
+        start:'',
+        end:'',
+        object:'user'
+      }).setMethod('startDateChange', function(v){
+        
+        this.searchForm.start = v;
+      }).setMethod('endDateChange', function(v){
+        this.searchForm.end = v;
+       
+      });
+    </script>
+</block>

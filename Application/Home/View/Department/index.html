@@ -316,14 +316,14 @@
 	    	vmThis.topO = response.body;
 	    });
 		this.computedusers = this.userList;
-		console.log(this.computedusers);
+		
 	}).setMethod('switchHandle',function(index,row){
 	    row.status=row.switch?'1':'0';
 	    this.initObject(this.statusForm, row);
 	    this.statusIndex=index;
 	    var vmThis =this;
 	    this.$http.post(page.editFormUrl,this.statusForm).then(function(response){
-	    	this.searchReset();
+	    	
 	    }).catch(function(response){
 	    	vmThis.$message({
 	    		message:'状态更改失败',
