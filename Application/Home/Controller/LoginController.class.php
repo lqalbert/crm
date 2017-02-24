@@ -14,18 +14,15 @@ class LoginController extends Controller {
 	}
 
 	public function loginHandle() {
-
 		if (IS_POST) {
-			
 			$userModel = D('rbac_user');
 			$where = array(
 					'account' => I('post.account'),
 					'password' => md5(I('post.password'))
 				);
-
 			$result = $userModel->relation('userInfo')->where($where)->find();
 			if (!$result) {
-				$this->error(L('LOGIN_ERROR'));
+                $this->ajaxReturn(array('msg'=>L('LOGIN_ERROR'),'code'=>-1),'JSON');
 			} else {
 				$location=new \Ip\Taobaoip\taobaoIp();//利用淘宝地址库
 				$arr=$location->getLocation();
@@ -45,12 +42,8 @@ class LoginController extends Controller {
 				}
 				//将权限写入session
 				Rbac::saveAccessList();
-
-				//$this->success(L('LOGIN_SUCCESS'), U('Index/index'));
-				$this->redirect('Index/index');
-
-
-
+				//$this->redirect('Index/index');
+				$this->ajaxReturn(array('msg'=>L('LOGIN_SUCCESS'),'code'=>1),'JSON');
 			}
 		} else {
 			$this->redirect('index');
