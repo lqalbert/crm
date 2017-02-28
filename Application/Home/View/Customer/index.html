@@ -62,7 +62,7 @@
           <el-button type="info" icon="search" @click="loadDatalist">查询</el-button> 
 
           <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start">
-            <el-button @click="searchReset">重置</el-button>
+            <el-button icon="loading" @click="searchReset">重置</el-button>
           </el-tooltip>
 
           <el-tooltip content="本人跟踪的客户" placement="bottom-start">
@@ -239,7 +239,7 @@
                 <el-button size="small" @click="openDialog('showDetail')" type="success" style="margin-left:10px;">客户资料</el-button>
               </el-tooltip> -->
               <el-tooltip content="点击刷新当前页面" placement="right">
-                <el-button size="small" @click="refresh" type="danger" style="margin-left:10px;">刷新</el-button>
+                <el-button icon="loading" size="small" @click="refresh" type="danger" style="margin-left:10px;">刷新</el-button>
               </el-tooltip>
             </span>    
       </div>

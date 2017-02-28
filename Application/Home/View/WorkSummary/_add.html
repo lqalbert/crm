@@ -1,0 +1,37 @@
+<el-dialog title="录入总结" v-model="addFormDialog">
+<el-form ref="addForm" :rules="addRules" :model="addForm"  :label-width="dialogLabelWidth">
+ <el-row>
+   <el-col :span="12">
+     <el-form-item label="总结标题">
+       <el-input v-model="addForm.title" auto-complete="off" placeholder="请填写标题"></el-input>
+     </el-form-item>
+   </el-col>
+ </el-row>
+ <el-row>
+   <el-col>
+      <el-form-item label="总结类型">
+        <el-select v-model="addForm.type" placeholder="请选择总结类型">
+          <el-option label="每日总结" value="0"></el-option>
+          <el-option label="每周总结" value="1"></el-option>
+          <el-option label="每月总结" value="2"></el-option>
+          <el-option label="季度总结" value="3"></el-option>
+          <el-option label="年度总结" value="4"></el-option>
+          <el-option label="月度计划" value="4"></el-option>
+          <el-option label="主管建议" value="4"></el-option>
+        </el-select>
+      </el-form-item>
+   </el-col>
+ </el-row>
+ <el-row>
+   <el-col :span="20">
+     <el-form-item label="总结内容">
+        <el-input v-model="addForm.content" type="textarea" :autosize="{ minRows: 4, maxRows: 4}" placeholder="请填写总结内容"></el-input>
+     </el-form-item>
+   </el-col>
+ </el-row>
+</el-form>
+  <div slot="footer" class="dialog-footer">
+    <include file="Common:_add" />
+  </div>
+</el-dialog>
+

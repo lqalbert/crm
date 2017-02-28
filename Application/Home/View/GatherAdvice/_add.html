@@ -1,0 +1,34 @@
+<el-dialog title="发表建议" v-model="addFormDialog">
+<el-form ref="addForm" :rules="addRules" :model="addForm"  :label-width="dialogLabelWidth">
+ <el-row>
+   <el-col :span="12">
+     <el-form-item label="标题">
+       <el-input v-model="addForm.title" auto-complete="off" placeholder="请填写标题"></el-input>
+     </el-form-item>
+   </el-col>
+ </el-row>
+ <el-row>
+   <el-col>
+      <el-form-item label="类型">
+        <el-select v-model="addForm.type" placeholder="请选择建议类型">
+          <el-option label="技术建议" value="0"></el-option>
+          <el-option label="OA问题反馈" value="1"></el-option>
+          <el-option label="系统制度" value="2"></el-option>
+          <el-option label="其他建议" value="3"></el-option>
+          <el-option label="软件功能" value="4"></el-option>
+        </el-select>
+      </el-form-item>
+   </el-col>
+ </el-row>
+ <el-row>
+   <el-col :span="20">
+     <el-form-item label="建议内容">
+        <el-input v-model="addForm.advice" type="textarea" :autosize="{ minRows: 4, maxRows: 4}" placeholder="请填写建议内容"></el-input>
+     </el-form-item>
+   </el-col>
+ </el-row>
+</el-form>
+  <div slot="footer" class="dialog-footer">
+    <include file="Common:_add" />
+  </div>
+</el-dialog>
