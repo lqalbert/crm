@@ -41,7 +41,7 @@
             <el-col :span="12">
               <div class="grid-content bg-purple">
                  <el-tooltip content="发表总结或日志" placement="right">
-                   <el-button size="small" type="info" @click="openDialog('add')" icon="edit">录入总结
+                   <el-button size="small" type="info" @click="openDialog('add')" icon="edit">填写总结
                    </el-button>
                  </el-tooltip>
                  <el-tooltip content="选择一条总结并回复" placement="right">
@@ -143,7 +143,7 @@
     var vmThis = this;
     if (this.multipleSelection.length ==0 ||  this.multipleSelection.length>1) {
       this.closeDialog(form);
-      this.$message.error('请先选择一位客户');
+      this.$message.error('请先选择一条总结');
       return false;
     } else {
       var  row = this.multipleSelection.pop();

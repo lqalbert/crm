@@ -21,15 +21,16 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-table :data="tabledataList" border  stripe element-loading-text="{:L('DATA_LOGIN')}" ref="select">
+          <el-table :data="tabledataList" border  stripe element-loading-text="{:L('DATA_LOGIN')}" ref="select" 
+           @selection-change="handleSelectionChange">
             <el-table-column type="selection" align="center" width="50"></el-table-column>
             <el-table-column label="序号" align="center" :formatter="handleIndex" width="65"></el-table-column>
             <el-table-column label="类型" prop="type" align="center" ></el-table-column>
             <el-table-column label="标题" prop="title" align="center" ></el-table-column>
             <el-table-column label="建议内容" prop="advice" align="center"></el-table-column> 
+            <el-table-column label="发表人" prop="ad_user" align="center" ></el-table-column> 
             <el-table-column label="时间" prop="time" align="center" ></el-table-column> 
             <el-table-column label="回复内容" prop="reply" align="center" ></el-table-column> 
-            <el-table-column label="发表人" prop="ad_user" align="center" ></el-table-column> 
             <el-table-column label="回复人" prop="re_user" align="center" ></el-table-column> 
             <el-table-column label="回复时间" prop="re_time" align="center" ></el-table-column>  
           </el-table>
@@ -44,7 +45,7 @@
                    </el-button>
                  </el-tooltip>
                  <el-tooltip content="选择一条建议并回复" placement="right">
-                   <el-button size="small" type="success" icon="plus">回复建议
+                   <el-button size="small" type="success" @click="openDialog('reply')" icon="plus">建议回复
                    </el-button>
                  </el-tooltip>
               </div>
@@ -64,7 +65,9 @@
       <!-- 录入客户 -->
       <include file="_add" />
       <!-- / 录入客户 -->
-      
+      <!-- 主管回复 -->
+      <include file="_reply" />
+      <!-- /主管回复 -->
 
     </div>
 
@@ -122,12 +125,34 @@
         re_time:'2017-02-24',
       },  
     ],
+    multipleSelection:[],
+    replyFormDialog:false,//单纯页面 后端逻辑时候去掉
   }).setForm('search',{
     name:'',
   }).setForm('add',{
     title:'',
     type:'',
     advice:'',
+  }).setForm('reply',{
+    reply:'',
+  }).setMethod('handleSelectionChange',function(val){
+    this.multipleSelection = val;
+  }).setMethod('commonSelect',function(x){
+    var form = x;
+    var vmThis = this;
+    if (this.multipleSelection.length ==0 ||  this.multipleSelection.length>1) {
+      this.closeDialog(form);
+      this.$message.error('请先选择一条建议');
+      return false;
+    } else {
+      var  row = this.multipleSelection.pop();
+      this[FormName.getForm(x)].name = row.name;
+      this[FormName.getForm(x)].id   = row.id;
+      this.row=row;
+      return row;
+    }
+  }).setMethod('beforeReply', function(){
+    this.commonSelect('reply');
   });
 </script>
 </block>

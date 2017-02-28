@@ -37,7 +37,7 @@
             <el-col :span="12">
               <div class="grid-content bg-purple">
                  <el-tooltip content="点击填写公告并发布" placement="right">
-                   <el-button size="small" type="success" icon="edit">发布公告
+                   <el-button size="small" type="success" @click="openDialog('add')" icon="edit">发布公告
                    </el-button>
                  </el-tooltip>
               </div>
@@ -51,6 +51,15 @@
             </el-col>
       </el-row>
     </div>
+
+    <div class="dialogWrapper" v-show="show" style="display: none">
+
+      <!-- 录入客户 -->
+      <include file="_add" />
+      <!-- / 录入客户 -->
+
+    </div>
+
   </div>
 </block>
 <block name="scripts">
@@ -92,6 +101,11 @@
     ],
   }).setForm('search',{
     name:'',
+  }).setForm('add',{
+    type:'',
+    title:'',
+    start:'',
+    end:'',
   });
 </script>
 </block>
