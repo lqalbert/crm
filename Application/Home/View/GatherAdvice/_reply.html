@@ -1,16 +1,23 @@
 <el-dialog title="建议回复" v-model="replyFormDialog"  @open="beforeReply">
-<el-form ref="replyForm" :rules="replyRules" :model="replyForm"  :label-width="dialogLabelWidth">
+<el-form ref="replyForm"   :rules="replyRules" :model="replyForm" :label-width="dialogLabelWidth">
  <el-row>
    <el-col :span="20">
-     <el-form-item label="回复内容">
-        <el-input v-model="replyForm.reply" type="textarea" :autosize="{ minRows: 4, maxRows: 4}" placeholder="请填写回复内容"></el-input>
+     <el-form-item label="id" v-show="false">
+        <el-input v-model="replyForm.id" type="text" ></el-input>
+     </el-form-item>
+   </el-col>
+ </el-row>
+    <el-row>
+   <el-col :span="20">
+     <el-form-item label="回复内容" prop="reply">
+        <el-input v-model="replyForm.reply"  auto-complete="off" type="textarea" :autosize="{ minRows: 4, maxRows: 4}" placeholder="请填写回复内容"></el-input>
      </el-form-item>
    </el-col>
  </el-row>
 </el-form>
   <div slot="footer" class="dialog-footer">
     <el-button @click="closeDialog('reply')">取 消</el-button>
-    <el-button type="primary" v-show="!replyFormSubmitStatus" @click="replyFormSubmit(page.replyFormUrl, 'reply')" >确 定</el-button>
+    <el-button type="primary" v-show="!replyFormSubmitStatus" @click="replyFormSubmit(page.replyFormUrl,'reply')" >确 定</el-button>
     <el-button type="primary" v-show="replyFormSubmitStatus" :loading="true" >回复中</el-button>
   </div>
 </el-dialog>

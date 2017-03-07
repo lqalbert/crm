@@ -15,7 +15,6 @@ class EmployeeController extends CommonController {
 	}
 
 	public function setQeuryCondition() {
-
 		// $this->M->relation(true)->field('password',true)->where(array('no_authorized'=>0));
 		$this->M->join('user_info ON rbac_user.id = user_info.user_id')
 		        ->field('account,address,

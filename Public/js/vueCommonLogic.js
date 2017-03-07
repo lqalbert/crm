@@ -142,6 +142,7 @@ function setCommonLogic(opt){
 	*/
 	opt.setAdd();
 	opt.setEdit();
+
 	//删除
 	opt.setMethod("handleDelete", function(index, row, url){
 		if (!arguments[2]) {

@@ -21,17 +21,29 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-table :data="tabledataList" border  stripe element-loading-text="{:L('DATA_LOGIN')}" ref="select" 
+          <el-table :data="dataList" border  v-loading="dataLoad" element-loading-text="{:L('DATA_LOGIN')}" ref="select"
            @selection-change="handleSelectionChange">
             <el-table-column type="selection" align="center" width="50"></el-table-column>
             <el-table-column label="序号" align="center" :formatter="handleIndex" width="65"></el-table-column>
-            <el-table-column label="类型" prop="type" align="center" ></el-table-column>
+            <el-table-column label="类型" prop="type" align="center" >
+              <template scope="scope">
+                {{ getType(scope.row.type, 'typeList') }}
+              </template>
+            </el-table-column>
             <el-table-column label="标题" prop="title" align="center" ></el-table-column>
             <el-table-column label="建议内容" prop="advice" align="center"></el-table-column> 
-            <el-table-column label="发表人" prop="ad_user" align="center" ></el-table-column> 
+            <el-table-column label="发表人" prop="ad_user" align="center" >
+              <template scope="scope">
+                {{ getType(scope.row.ad_user, 'realnames') }}
+              </template>
+            </el-table-column>
             <el-table-column label="时间" prop="time" align="center" ></el-table-column> 
             <el-table-column label="回复内容" prop="reply" align="center" ></el-table-column> 
-            <el-table-column label="回复人" prop="re_user" align="center" ></el-table-column> 
+            <el-table-column label="回复人" prop="re_user" align="center" >
+              <template scope="scope">
+                {{ getType(scope.row.re_user, 'realnames') }}
+              </template>
+            </el-table-column>
             <el-table-column label="回复时间" prop="re_time" align="center" ></el-table-column>  
           </el-table>
         </el-col>
@@ -75,57 +87,29 @@
 </block>
 <block name="scripts">
 <script>
+
+  page.replyFormUrl = "{:U(reply)}";
   window.defaultOption.setDatas({
+    typeList:{:json_encode($typeList)},
+    realnames:{:json_encode($realnames)},
     loadDataList:[],
-    dataLoad:false,
-    tabledataList:[{
-        type:'测试数据',
-        title:'惊呆了',
-        advice:'买买买',
-        time:'2017-02-27',
-        reply:'好好好',
-        ad_user:'鳄鱼先生',
-        re_user:'鲨鱼恶霸',
-        re_time:'2017-02-24',
-      },{
-        type:'测试数据',
-        title:'惊呆了',
-        advice:'买买买',
-        time:'2017-02-27',
-        reply:'好好好',
-        ad_user:'鳄鱼先生',
-        re_user:'鲨鱼恶霸',
-        re_time:'2017-02-24',
-      },{
-        type:'测试数据',
-        title:'惊呆了',
-        advice:'买买买',
-        time:'2017-02-27',
-        reply:'好好好',
-        ad_user:'鳄鱼先生',
-        re_user:'鲨鱼恶霸',
-        re_time:'2017-02-24',
-      },{
-        type:'测试数据',
-        title:'惊呆了',
-        advice:'买买买',
-        time:'2017-02-27',
-        reply:'好好好',
-        ad_user:'鳄鱼先生',
-        re_user:'鲨鱼恶霸',
-        re_time:'2017-02-24',
-      },{
-        type:'测试数据',
-        title:'惊呆了',
-        advice:'买买买',
-        time:'2017-02-27',
-        reply:'好好好',
-        ad_user:'鳄鱼先生',
-        re_user:'鲨鱼恶霸',
-        re_time:'2017-02-24',
-      },  
-    ],
     multipleSelection:[],
+    addRules:{
+      title:[
+        { required: true, message: '请输入标题', trigger: 'blur' }
+      ],
+      type:[
+        { required: true, message: '请选择类型', trigger: 'blur' }
+      ],
+      advice:[
+        { required: true, message: '请输入内容', trigger: 'blur' }
+      ],
+    },
+    replyRules:{
+      reply:[
+        { required: true, message: '请输入内容', trigger: 'blur' }
+      ],
+    },
     replyFormDialog:false,//单纯页面 后端逻辑时候去掉
   }).setForm('search',{
     name:'',
@@ -140,9 +124,13 @@
   }).setMethod('commonSelect',function(x){
     var form = x;
     var vmThis = this;
-    if (this.multipleSelection.length ==0 ||  this.multipleSelection.length>1) {
+    if (this.multipleSelection.length ==0){
       this.closeDialog(form);
       this.$message.error('请先选择一条建议');
+      return false;
+    } else if(this.multipleSelection.length>1) {
+      this.closeDialog(form);
+      this.$message.error('只能选择一条建议');
       return false;
     } else {
       var  row = this.multipleSelection.pop();
@@ -151,8 +139,12 @@
       this.row=row;
       return row;
     }
+  }).setMethod('getType', function(type, field){
+    return this[field][type];
   }).setMethod('beforeReply', function(){
     this.commonSelect('reply');
+  }).setMethod('replyFormSubmit',function(url ,form){
+    this.commonSubmitLogic(url, form);
   });
 </script>
 </block>
