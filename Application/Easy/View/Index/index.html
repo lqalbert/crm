@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>CRM</title>
+    <link rel="stylesheet" href="__PUBLIC__/easyui/themes/default/easyui.css">
+    <style>
+        html,body{
+            padding: 0px;
+            margin: 0px;
+
+            width: 100%;
+            height: 100%;
+        }
+        
+        #main-content .tabs-panels>.panel>.panel-body {  
+            overflow: hidden;  
+        }
+        
+    </style>
+</head>
+<body id="main-body" class="easyui-layout">
+<div region="north">
+    CRM客户关系管理
+</div>
+
+<div region="west" split="true"  title="Navigator" style="width:200px;">
+    <div class="easyui-panel" title="Picture Tasks" collapsible="true" style="width:200px;height:auto;padding:10px;">
+        View as a slide show<br/>
+        Order prints online<br/>
+        Print pictures
+    </div>
+    <br/>
+    <div class="easyui-panel" title="File and Folder Tasks" collapsible="true" style="width:200px;height:auto;padding:10px;">
+        Make a new folder<br/>
+        Publish this folder to the Web<br/>
+        Share this folder
+    </div>
+    <br/>
+    <div class="easyui-panel" title="Other Places" collapsible="true" collapsed="true" style="width:200px;height:auto;padding:10px;">
+        New York<br/>
+        My Pictures<br/>
+        My Computer<br/>
+        My Network Places
+    </div>
+    <br/>
+    <div class="easyui-panel" title="Details" collapsible="true" style="width:200px;height:auto;padding:10px;">
+        My documents<br/>
+        File folder<br/><br/>
+        Date modified: Oct.3rd 2010
+    </div>
+</div>
+<div region="center" border="false">
+    <div id="main-content" class="easyui-tabs"   fit="true"   >
+        <div title="Home">
+            <div id="p" class="easyui-panel" title="My Panel" 
+                    style="width:500px;height:150px;padding:10px;background:#fafafa;"
+                    >
+                <p>panel content.</p>
+                <p>panel content.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    
+
+<script src="__PUBLIC__/easyui/jquery.min.js"></script>
+<script src="__PUBLIC__/easyui/jquery.easyui.min.js"></script>
+<script src="__PUBLIC__/easyui/easyloader.js"></script>
+<!-- <script>
+    $(function(){
+        
+    })
+</script> -->
+
+<script>
+window.status = true;
+function b(){
+    if (status) {$(".layout-button-left").trigger("click")}
+    else {$(".layout-button-right").trigger('click')}
+    window.status = !window.status;
+    
+}
+
+
+    function addTab(title, url){
+    if ($('#main-content').tabs('exists', title)){
+        $('#main-content').tabs('select', title);
+    } else {
+        var content = '<iframe scrolling="auto" frameborder="0"  src="'+url+'" style="width:100%;height:100%"></iframe>';
+        $('#main-content').tabs('add',{
+            title:title,
+            content:content,
+            closable:true
+        });
+    }
+}
+
+
+</script>
+</body>
+</html>

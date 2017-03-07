@@ -144,7 +144,7 @@
 
   	    <el-table-column   label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  ></el-table-column>
 
-  	    <el-table-column prop="name"  label="客户姓名" width="140" align="center"></el-table-column>
+  	    <el-table-column :prop="ddprops"  label="客户姓名" width="140" align="center"></el-table-column>
 
         <el-table-column prop="sex"  label="性别" width="80" align="center">
           <template scope="scope">
@@ -232,6 +232,10 @@
               <el-tooltip content="筛选客户重点跟踪" placement="right">
                 <el-button size="small" @click="openDialog('addChoice')" type="primary" style="margin-left:10px;">自选</el-button>
               </el-tooltip>
+
+            
+
+
               <!-- <el-tooltip content="选择客户对其拨打电话" placement="right">
                 <el-button size="small" type="primary" style="margin-left:10px;">拨打电话</el-button>
               </el-tooltip>
@@ -355,6 +359,7 @@ function toInt(v){
     }
   }
   window.defaultOption.setDatas({
+    ddprops:'name',
     dialogVisible:false,
     sb:[],
     tableData: [{'name':'',
