@@ -30,6 +30,9 @@
     .el-tabs--border-card{
       border: none;
     }
+    .el-table__body tr.current-row>td{
+      background: #9dc3e8;
+    }
   </style>
 </block>
 <block name="body">
@@ -45,53 +48,53 @@
   		<el-form :inline="true" ref="searchForm" :model="searchForm">
 
   		  <el-form-item prop="name" style="width:220px">
-  		    <el-input v-model="searchForm.name" placeholder="客户姓名|手机|qq|微信号"></el-input>
+  		    <el-input v-model="searchForm.name" size="small" placeholder="客户姓名|手机|qq|微信号"></el-input>
   		  </el-form-item>
 
         <el-form-item prop="group" style="width:80px">
-          <el-select v-model="searchForm.group" placeholder="请选择">
+          <el-select v-model="searchForm.group" size="small" placeholder="请选择">
             <el-option v-for="item in searchGroup" :label="item.key" :value="item.value" :disabled="item.disabled"></el-option>
           </el-select>
         </el-form-item>
 
         <el-form-item prop="field" v-show="false">
-          <input type="hidden" v-model="searchForm.field">
+          <input type="hidden" size="small" v-model="searchForm.field">
         </el-form-item>
 
         <el-form-item>
-          <el-button type="info" icon="search" @click="loadDatalist">查询</el-button> 
+          <el-button type="info" size="small" icon="search" @click="loadDatalist">查询</el-button> 
 
           <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start">
-            <el-button icon="loading" @click="searchReset">重置</el-button>
+            <el-button icon="loading" size="small" @click="searchReset">重置</el-button>
           </el-tooltip>
 
           <el-tooltip content="本人跟踪的客户" placement="bottom-start">
             <el-badge :value="{$aggregation.log}" :max="9" style="margin-left:15px;">
-              <el-button type="info"  @click="setField('log')">跟踪</el-button>
+              <el-button type="info" size="small" @click="setField('log')">跟踪</el-button>
             </el-badge>
           </el-tooltip>
 
           <el-tooltip content="本人没有跟踪的客户" placement="bottom-start">
             <el-badge :value="{$aggregation.unlog}" :max="9" style="margin-left:15px;">
-              <el-button type="info" @click="setField('unlog')">未跟踪</el-button>
+              <el-button type="info" size="small" @click="setField('unlog')">未跟踪</el-button>
             </el-badge>
           </el-tooltip>
 
           <el-tooltip content="本人计划跟踪的客户" placement="bottom-start">
             <el-badge :value="{$aggregation.plan}" :max="9" style="margin-left:15px;">
-              <el-button type="info" @click="setField('plan')" >计划</el-button>
+              <el-button type="info" size="small" @click="setField('plan')" >计划</el-button>
             </el-badge>
           </el-tooltip>
 
-          <el-tooltip content="本人把客户转给他人的客户(分成)" placement="bottom-start">
+<!--           <el-tooltip content="本人把客户转给他人的客户(分成)" placement="bottom-start">
             <el-badge :value="{$aggregation.transfto}" :max="9" style="margin-left:15px;">
               <el-button type="info" @click="setField('transfto')">转让</el-button>
             </el-badge>
-          </el-tooltip>
+          </el-tooltip> -->
 
           <el-tooltip content="他人把客户转给本人的客户(分成)" placement="bottom-start">
             <el-badge :value="{$aggregation.transfin}" :max="9" style="margin-left:15px;">
-              <el-button type="info" @click="setField('transfin')">转入</el-button>
+              <el-button type="info" size="small" @click="setField('transfin')">转入</el-button>
             </el-badge>
           </el-tooltip>
 
@@ -102,24 +105,24 @@
           </el-tooltip> -->
           <el-tooltip content="本人跟踪且成交了的客户" placement="bottom-start">
             <el-badge :value="{$aggregation.type}" :max="9" style="margin-left:15px;">
-              <el-button type="success" @click="setField('type')">服务</el-button>
+              <el-button type="success" size="small" @click="setField('type')">服务</el-button>
             </el-badge>
           </el-tooltip>
 
           <el-tooltip content="对客户进行筛选后重点跟踪" placement="bottom-start">
             <el-badge :value="{$aggregation.important}" :max="9" style="margin-left:15px;">
-              <el-button type="info" @click="setField('important')">自选</el-button>
+              <el-button type="info" size="small" @click="setField('important')">自选</el-button>
             </el-badge>
           </el-tooltip>
 
           <el-tooltip content="他人的客户与您的客户有冲突" placement="bottom-start">
             <el-badge :value="{$aggregation.conflict}" :max="9" style="margin-left:15px;">
-    		      <el-button type="warning" @click="setField('conflict')">冲突</el-button>
+    		      <el-button type="warning" size="small" @click="setField('conflict')">冲突</el-button>
             </el-badge>
           </el-tooltip>
 
           <el-tooltip content="导入我的客户" placement="bottom-start" style="margin-left:15px;">
-            <el-button type="warning" @click="openDialog('importc')" >导入我的客户</el-button>
+            <el-button type="warning" size="small" @click="openDialog('importc')" >客户导入</el-button>
           </el-tooltip>
 
           <!-- <el-button  >高级查询</el-button>  -->
@@ -137,10 +140,11 @@
       id="he"
       v-loading="dataLoad" 
       element-loading-text="{:L('DATA_LOGIN')}"
+      highlight-current-row
       @selection-change="handleSelectionChange"
-      @row-click="trackLog"  ref="select" @row-dblclick="userInfo">
+        @row-click="trackLog"  ref="select" @row-dblclick="userInfo">
 
-  	    <el-table-column type="selection"  width="50" ></el-table-column>
+  	    <el-table-column width="50" align="center" type="selection"></el-table-column>
 
   	    <el-table-column   label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  ></el-table-column>
 
@@ -186,19 +190,19 @@
   	    <el-table-column  prop="plan" label="计划跟踪时间" align="center" width="175"></el-table-column>
 
   	    <!-- <el-table-column  prop="lock_track" label="锁定方最后跟踪时间" align="center" width="175">
-  	    </el-table-column> 
-        <el-table-column  prop="ser_track" label="服务方最后跟踪时间" align="center" width="175">
-        </el-table-column>  -->
+  	    </el-table-column>   -->
+        <el-table-column  prop="ser_track" label="最后跟踪时间" align="center" width="175">
+        </el-table-column>
         <el-table-column  prop="commission" label="跟踪方比例" align="center" width="110"></el-table-column> 
 
         <el-table-column  prop="conflict" label="最后冲突时间" align="center" width="175"></el-table-column> 
 
-  	    <el-table-column inline-template :context="_self"  fixed="right"  align="center" label="操作" width="160">
+<!--   	    <el-table-column inline-template :context="_self"  fixed="right"  align="center" label="操作" width="160">
   	      <span>
   	        <el-button @click="handleEdit($index, row)"  size="small">编辑</el-button>
   	        <el-button @click="handleDelete($index, row)"  size="small" type="danger">删除</el-button>
   	      </span>
-  	    </el-table-column>
+  	    </el-table-column> -->
 
       </el-table>
     </el-col>
@@ -209,8 +213,13 @@
     <el-col :span="12">
       <div class="grid-content bg-purple">
             <span class="wrapper">
+
+              <el-tooltip content="选择全部客户" placement="right">
+                <el-button size="small" >全选</el-button>
+              </el-tooltip>
+
               <el-tooltip content="录入新的客户" placement="right">
-                <el-button size="small"  @click="openDialog('add')" icon="plus" type="primary">{:L('ADD')}</el-button>
+                <el-button size="small"  @click="openDialog('add')" icon="plus" type="primary" style="margin-left:10px;">{:L('ADD')}</el-button>
               </el-tooltip>
 
               <el-tooltip content="选择客户录入跟踪信息" placement="right">
@@ -221,9 +230,9 @@
                 <el-button size="small" @click="openDialog('addPlan')" type="primary" style="margin-left:10px;">计划</el-button>
               </el-tooltip>
 
-              <el-tooltip content="选择客户对其转让给他人(暂未实现)" placement="right">
+<!--               <el-tooltip content="选择客户对其转让给他人(暂未实现)" placement="right">
                 <el-button size="small" @click="openDialog('addTransfer')" :disabled="true" type="warning" style="margin-left:10px;">转让</el-button>
-              </el-tooltip>
+              </el-tooltip> -->
 
               <el-tooltip content="选择客户录入其提醒事项及内容" placement="right">
                 <el-button size="small" @click="openDialog('addRemind')" type="info" style="margin-left:10px;">提醒</el-button>
@@ -323,6 +332,7 @@
 
 </block>
 <block name="scripts">
+  <script src="__PUBLIC__/js/jquery.1.11.min.js"></script>
 <script>
 function toInt(v){
   return parseInt(v);
@@ -390,6 +400,7 @@ function toInt(v){
     steps:{:json_encode($steps)},
     searchGroup:{:json_encode($searchGroup)},
     memberList:{:json_encode($memberList)},
+    curCheckedItem:{},
     addRules:{
       name:[
         { required: true, message: '请输入客户姓名', trigger: 'blur' },
@@ -561,7 +572,8 @@ function toInt(v){
           currentValue.attitude = currentValue.attitude == 0?"":currentValue.attitude;      
           currentValue.profession = currentValue.profession == 0?"":currentValue.profession;      
           currentValue.intention = currentValue.intention == 0?"":currentValue.intention;      
-          currentValue.source = currentValue.source == 0?"":currentValue.source;          
+          currentValue.source = currentValue.source == 0?"":currentValue.source; 
+          
           //console.log(typeof(currentValue.quality));
 
        })
@@ -590,7 +602,18 @@ function toInt(v){
       this.provinceChange(this.editForm.area_province);
     }
   }).setMethod('handleSelectionChange', function(val){
-    this.multipleSelection = val;
+
+    //this.multipleSelection = val;
+    this.multipleSelection = [];
+    if(val.length >= 2){
+       if(val.length == this.dataList.length){
+         this.multipleSelection = val;
+       }else{
+         this.multipleSelection.push(val.shift());
+       }
+    } else {
+      this.multipleSelection = val;
+    }
   }).setMethod('commonSelect',function(x){
     var form = x;
     var vmThis = this;
@@ -649,7 +672,7 @@ function toInt(v){
 
     this.dialogLabelWidth = "100px";
   }).setMethod('trackLog',function(row,event,column){
-        this.$refs.select.toggleRowSelection(row);
+        //this.$refs.select.toggleRowSelection(row);
         this.$http.post('{:U(trackInfo)}',row).then(function(response){
           this.tableData = response.body;
         },function(response){
@@ -658,8 +681,7 @@ function toInt(v){
   }).setMethod('userInfo',function(row,event){
       this.dialogVisible=true;
       this.sb=row;
-      this.$refs.select.toggleRowSelection(row);
-
+      //this.$refs.select.toggleRowSelection(row);
   }).setMethod('setField', function(v){
       this[FormName.getFormName('search')].field = v;
       this[FormName.getFormName('search')].group = 'user_id';
@@ -684,7 +706,6 @@ function toInt(v){
       })
   }).setMethod('refresh',function(){
     window.location.reload();
-
   });
 </script>
 <script>
@@ -694,5 +715,13 @@ function toInt(v){
     //console.log(sb);
     //sb.style.height=h/2+'px';  max-height="400"
     //he.setAttribute("max-height",h*0.6);
+
+
+      //   this.multipleSelection = [];
+      // if(val.length >= 2){
+      //    this.multipleSelection.push(val.shift());
+      // } else {
+      //   this.multipleSelection = val;
+      // }
 </script>
 </block>
