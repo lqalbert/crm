@@ -17,10 +17,11 @@
   </el-row>
    <el-row>
     <el-col :span="12">
-      <el-form-item label="上级组织" prop="p_id">
-        <el-select  v-model="editForm.p_id">
+      <el-form-item label="事业/财富区"  prop="division_id" >
+        <el-select  v-model="editForm.division_id" placeholder="请选择事业/财富区">
           <el-option v-for='item in topO' :label="item.name" :value="item.id"></el-option>
         </el-select>
+      </el-form-item>
       </el-form-item>
     </el-col>
     <el-col :span="12">

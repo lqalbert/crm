@@ -50,7 +50,7 @@
 					    </el-table-column>
 					    <el-table-column label="类型" align="center" prop="typeText" >
 					    </el-table-column>
-						<el-table-column label="上级组织" align="center" prop="p_name" width="110">
+						<el-table-column label="事业/财富区" align="center" prop="p_name" width="110">
 					    </el-table-column>
 					    <el-table-column label="片区" align="center" prop="zone">
 					    </el-table-column>
@@ -188,18 +188,13 @@
              type:[
                 { required: true, message: '请选择类型', trigger: 'blur' },
              ],
-             p_id:[
-                { required: true, message: '请选择上级', trigger: 'blur' },
+             division_id:[
+                { required: true, message: '请选择事业/财富区', trigger: 'blur' },
              ],
              zone_id:[
                 { required: true, message: '请选择片区', trigger: 'blur' },
              ],
-             // contact:[
-             //    { required: true, message: '请填写联系人', trigger: 'blur' },
-             // ],
-             // tel:[
-             //    { required: true, message: '请填写联系电话', trigger: 'blur' },
-             // ],
+
              public:[
                 { required: true, message: '请选择是否公示', trigger: 'blur' },
              ],
@@ -217,8 +212,7 @@
 		name:"",
 		// public:"",
 		type:"",
-		p_id:"",
-		p_name:'',
+        division_id:"",
 		zone_id:"",
 		expand1:"",
 		expand2:"",
@@ -234,8 +228,7 @@
 		name:"",
 		public:"",
 		type:"",
-		p_id:"",
-		p_name:'',
+        division_id:"",
 		zone_id:"",
 		expand1:"",
 		expand2:"",
@@ -273,11 +266,9 @@
 		this.openDialog(type);
 
 	}).setMethod('organization', function(){
-		/*return this.dataList.filter(function (value) {
-	      return value.p_id == 0 ;
-	    })*/
+
 	    var vmThis = this;
-	    this.$http.get("{:U('getTopD')}").then(function(response){
+	    this.$http.get("{:U('getDivision')}").then(function(response){
 	    	vmThis.topO = response.body;
 	    })
 
@@ -287,36 +278,19 @@
 			// currentValue['public']   = currentValue.public == 1 ?'是':'否';
 			currentValue['typeText'] = vmThis.typeList[currentValue['type']];
 			currentValue['zone']     = vmThis.zoneList[currentValue['zone_id']];
-  		    currentValue['switch']=currentValue.status==1?true:false;
+  		    currentValue['switch']   = currentValue.status==1?true:false;
             currentValue.status = parseInt(currentValue.status);
 		})
 		return dataList;
-	}).setMethod('typeChange', function(v){
-		/*var vmThis = this;
-		var vmThis = this;
-		//console.log(vmThis.editForm);
-	    this.$http.get("{:U('getTopD')}", {params:{type:v}}).then(function(response){
-	    	vmThis.topO = response.body;
-	    });
-	    if (v == 1) {
-	    	this.computedusers = [];
-	    } else {
-	    	this.computedusers = this.userList;
-	    }*/
 	}).setMethod('checkDown', function(v){
 		this[FormName.getFormName('search')].id = v;
 		this.dataReload();
 	}).setMethod('editOpen', function(v){
-		// 加载上级组织选项
-		
-		//this.organization(v);
 		var vmThis = this;
-		//console.log(vmThis.editForm);
-	    this.$http.get("{:U('getTopD')}", {params:{type:v}}).then(function(response){
+	    this.$http.get("{:U('getDivision')}").then(function(response){
 	    	vmThis.topO = response.body;
 	    });
 		this.computedusers = this.userList;
-		
 	}).setMethod('switchHandle',function(index,row){
 	    row.status=row.switch?'1':'0';
 	    this.initObject(this.statusForm, row);

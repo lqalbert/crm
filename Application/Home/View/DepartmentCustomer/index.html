@@ -1,0 +1,599 @@
+<extend name="Common:base" />
+<block name="head">
+  <style>
+    .el-tabs__header{
+      border-top:2px solid #1AA094;
+      border-bottom: 1px solid #1aa094;
+    }
+    .el-tabs--border-card .el-tabs__item{
+      border-left: none;
+    }
+    .el-tabs--border-card .el-tabs__item.is-active {
+      background-color: #fff;
+      border-right-color: #d3dce6;
+      background: #544b8f;
+      color: #fff;
+    }
+    .el-tabs--border-card .el-tabs__header {
+      background-color: #fff;
+      margin: 0;
+    }
+    .container > .wrapp > .a > .el-row {
+      margin-bottom: 6px;
+    }
+    .el-tabs--border-card .el-tabs__content{
+      padding:0 9px 5px 9px;
+    }
+    .el-card, .el-menu--horizontal .el-submenu>.el-menu, .el-tabs--border-card{
+      box-shadow: none;
+    }
+    .el-tabs--border-card{
+      border: none;
+    }
+  </style>
+</block>
+<block name="body">
+  
+
+<div id="app" class="container">
+
+<div class="wrapp" id="appx" v-show="show" style="display: none;">
+  <div class="a" id="app3">
+    <el-row>
+    <el-col :span="24">
+        <el-form :inline="true" ref="searchForm" :model="searchForm">
+
+          <el-form-item prop="name" style="width:220px">
+            <el-input v-model="searchForm.name" placeholder="客户姓名|手机|qq|微信号"></el-input>
+          </el-form-item>
+
+          <el-form-item prop="group" style="width:80px">
+            <el-select v-model="searchForm.group" placeholder="请选择">
+              <el-option v-for="item in searchGroup" :label="item.id" :value="item.name" ></el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item prop="field" v-show="false">
+            <input type="hidden" v-model="searchForm.field">
+          </el-form-item>
+
+
+          <el-button type="info" icon="search" @click="loadDatalist">查询</el-button> 
+
+          <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start">
+            <el-button @click="searchReset">重置</el-button>
+          </el-tooltip>
+
+          <el-tooltip content="本人跟踪的客户" placement="bottom-start">
+            <el-button type="info"  @click="setField('log')">跟踪</el-button>
+          </el-tooltip>
+
+          <el-tooltip content="本人没有跟踪的客户" placement="bottom-start">
+            <el-button type="info" @click="setField('unlog')">未跟踪</el-button>
+          </el-tooltip>
+
+          <el-tooltip content="本人计划跟踪的客户" placement="bottom-start">
+           <el-button type="info" @click="setField('plan')" >计划</el-button>
+          </el-tooltip>
+
+          <el-tooltip content="把客户转给其它部门的客户" placement="bottom-start">
+            <el-button type="info" @click="setField('transfto')">转让</el-button>
+          </el-tooltip>
+
+          <el-tooltip content="他人把客户转给本部门的客户" placement="bottom-start">
+            <el-button type="info" @click="setField('transfin')">转入</el-button>
+          </el-tooltip>
+
+          <el-tooltip content="成交了的客户" placement="bottom-start">
+            <el-button type="success" @click="setField('type')">服务</el-button>
+          </el-tooltip>
+
+          <el-tooltip content="被冲突" placement="bottom-start">
+            <el-button type="warning" @click="setField('conflict')">冲突</el-button>
+          </el-tooltip>
+
+        </el-form>
+    </el-col>
+  </el-row>
+
+  <el-row>
+    <el-col :span="24">
+        <el-table 
+      :data="dataList" 
+      border  
+      id="he"
+      v-loading="dataLoad" 
+      element-loading-text="{:L('DATA_LOGIN')}"
+      @selection-change="handleSelectionChange"
+      @row-click="trackLog"  ref="select" @row-dblclick="userInfo">
+
+        <el-table-column type="selection"  width="50" ></el-table-column>
+
+        <el-table-column   label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  ></el-table-column>
+
+        <el-table-column prop="name"  label="客户姓名" width="140" ></el-table-column>
+
+        <el-table-column prop="sex"  label="性别" width="80" >
+          <template scope="scope">
+            {{ getType(scope.row.sex, 'sexType') }}
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="type" label="客户类型" width="180" >
+          <template scope="scope">
+            {{ getType(scope.row.type, 'customerType') }}
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="phone" label="手机" align="center" width="140"></el-table-column>
+
+          <el-table-column prop="qq" label="QQ号"  width="160">
+            <template scope="scope">
+              {{ scope.row.qq }}
+              <a v-if="scope.row.qq" :href="getTenct(scope.row.qq)">
+                <img width="20"  src="__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg" alt="">
+              </a>
+            </template> 
+        </el-table-column>
+
+        <el-table-column prop="qq_nickname" label="QQ昵称"  width="140"></el-table-column>
+
+        <el-table-column  label="地区"  width="135">
+          <template scope="scope">
+             {{ scope.row.province_name+"-"+scope.row.city_name }}
+          </template>
+        </el-table-column>
+
+        <el-table-column  prop="user_id" label="跟踪员工" align="center" width="200">
+          
+        </el-table-column>
+        <el-table-column  prop="plan" label="计划跟踪时间" align="center" width="175"></el-table-column>
+        <el-table-column  prop="lock_track" label="最后跟踪时间" align="center" width="175">
+        </el-table-column> 
+        <el-table-column  prop="commission" label="跟踪方比例" align="center" width="110"></el-table-column> 
+        <el-table-column  prop="conflict" label="最后冲突时间" align="center" width="175"></el-table-column> 
+        <el-table-column inline-template :context="_self"  fixed="right"  align="center" label="操作" width="160">
+          <span>
+            <el-button @click="handleDelete($index, row)"  size="small" type="danger">放入回收站</el-button>
+          </span>
+        </el-table-column>
+      </el-table>
+    </el-col>
+  </el-row>
+
+  <!-- toolbar -->
+  <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
+    <el-col :span="12">
+      <div class="grid-content bg-purple">
+            <span class="wrapper">
+              
+
+              <el-tooltip content="选择客户录入跟踪信息" placement="right">
+                <el-button size="small" @click="openDialog('addTrack')" type="primary" style="margin-left:10px;">录入跟踪</el-button>
+              </el-tooltip>
+
+              
+              <el-tooltip content="选择客户对其转让给他人(暂未实现)" placement="right">
+                <el-button size="small" @click="openDialog('addTransfer')"  type="warning" style="margin-left:10px;">转让</el-button>
+              </el-tooltip>
+
+              <el-tooltip content="点击刷新当前页面" placement="right">
+                <el-button size="small" @click="refresh" type="danger" style="margin-left:10px;">刷新</el-button>
+              </el-tooltip>
+            </span>    
+      </div>
+    </el-col>
+
+    <el-col :span="12">
+      <div class="grid-content bg-purple-light pull-right">
+
+        <!-- page -->
+        <include file="Common:_pagination" />
+        <!-- / page -->
+        
+      </div>
+    </el-col>
+
+  </el-row>
+  </div>
+
+  <div id="app2" class="b" style="margin:5px -10px 5px;">
+    <el-row>
+     <el-col :span="24">
+        <el-tabs type="border-card">
+          <el-tab-pane label="跟踪记录">
+            <el-table :data="tableData"  empty-text="请点击客户显示跟踪信息" border style="width: 100%" >
+              <el-table-column prop="user" label="操作员工" align="center">
+              </el-table-column>
+              <el-table-column prop="user" label="客户类型" align="center">
+              </el-table-column>
+              <el-table-column prop="name" label="客户姓名" width="180" align="center">
+              </el-table-column>
+              <el-table-column prop="content"   label="跟踪内容" align="center">
+              </el-table-column>
+              <el-table-column prop="created_at" label="跟踪时间" width="180" align="center">
+              </el-table-column>
+              <el-table-column prop="track_text" label="跟踪类型" align="center">
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
+        </el-tabs>
+     </el-col>
+    </el-row>
+  </div>
+</div>
+
+<div class="dialogWrapper" v-show="show" style="display: none">
+
+ 
+  <!-- 编辑 -->
+  <include file="_edit" />
+  <!-- 显示客户一般资料 -->
+  <include file="_userInfo"/>
+  <!-- 录入跟踪  -->
+  <include file="_track" />
+  <!-- / 录入跟踪 -->
+
+  <!-- 录入转让 -->
+  <include file="_transfer"/>
+  <!-- /录入转让 -->
+
+
+  <!-- 客户全部资料 -->
+  <include file="_detail"/>
+  <!-- /客户全部资料 -->
+
+
+  
+
+</div>
+
+</div>
+
+</block>
+<block name="scripts">
+<script>
+function toInt(v){
+  return parseInt(v);
+}
+//表单验证
+var checkPhone=function(rule,value,callback){
+   var phoneReg = /^1[34578]\d{9}$/;
+   if(value==='' || value===null){
+     callback();
+   }else if(!phoneReg.test(value)){
+     callback('手机号格式错误');
+   }else{
+     callback();
+   }
+}
+var checkQQ=function(rule,value,callback){
+  var number=/^\d+$/;
+  if(value==='' || value===null){
+    callback();
+  }else if(!number.test(value)){
+    callback('QQ号格式错误');
+  }else{
+    callback();
+  }
+}
+</script>
+<script>
+  page.addTrackFormUrl = "{:U('addTrackLogs')}";
+  page.addPlanFormUrl = "{:U('addPlanLogs')}";
+  page.addRemindFormUrl = "{:U('setRemid')}";
+  page.addChoiceFormUrl = "{:U('setImportant')}";
+  
+  window.defaultOption.setDatas({
+    ddprops:'name',
+    dialogVisible:false,
+    sb:[],
+    tableData: [{'name':'',
+                 'created_at':'',
+                 'type':'',
+                 'track_type':'',
+                 'content':'',
+                 'user':''
+    }],
+    customerType:{:json_encode($customerType)},
+    sexType:{:json_encode($sexType)},
+    Quality:{:json_encode($Quality)},
+    Year:{:json_encode($Year)},
+    Income:{:json_encode($Income)},
+    Sty:{:json_encode($Sty)},
+    Money:{:json_encode($Money)},
+    Energy:{:json_encode($Energy)},
+    Problem:{:json_encode($Problem)},
+    Mode:{:json_encode($Mode)},
+    Attitude:{:json_encode($Attitude)},
+    Profession:{:json_encode($Profession)},
+    Intention:{:json_encode($Intention)},
+    Source:{:json_encode($Source)},
+    Proportion:{:json_encode($Proportion)},
+    Remind:{:json_encode($Remind)},
+    provinces:[],
+    cities:[],
+    deps:[],//
+    reUsers:[],//
+    multipleSelection: [],
+    alertDesc:"",
+    logType:{:json_encode($logType)},
+    steps:{:json_encode($steps)},
+    searchGroup:{:json_encode($searchGroup)},
+    memberList:{:json_encode($memberList)},
+    addRules:{
+      name:[
+        { required: true, message: '请输入客户姓名', trigger: 'blur' },
+        
+      ],
+      phone:[
+        //{ required: true, message: '请输入客户手机', trigger: 'blur' },
+        //{ type: 'number', message: '手机必须为数字'},
+        { validator: checkPhone, trigger: 'blur' }
+      ],
+      qq:[
+        //{ type: 'number', message: 'QQ号必须为数字'},
+        { validator: checkQQ, trigger:'blur' },
+      ],
+      type:[
+        { required:true, message:'请选择客户类型',trigger:'blur'},
+      ],
+    },
+    editRules:{
+      name:[
+        { required: true, message: '请输入客户姓名', trigger: 'blur' },
+      ],
+      phone:[
+        //{ required: true, message: '请输入客户手机', trigger: 'blur' },
+        //{ type: 'number', message: '手机必须为数字'},
+        { validator: checkPhone, trigger: 'blur' }
+      ],
+      qq:[
+        //{ type: 'number', message: 'QQ号必须为数字'},
+        { validator: checkQQ, trigger:'blur' },
+      ],
+      type:[
+        { required:true, message:'请选择客户类型',trigger:'blur'},
+      ],
+    },
+  }).setForm('search', {
+    name:'',
+    field: '',
+    group:'user_id'
+  }).setForm('add',{
+    name:"",
+    type:"",
+    phone:'',
+    phone2:"",
+    qq:'',
+    qq2:"",
+    qq_nickname:"",
+    qq_nickname2:"",
+    sex:0,
+    weixin:null,
+    weixin_nickname:"",
+    area_province:null,
+    area_city:null,
+    quality:'',
+    year:'',
+    re_income:'',
+    style:'',
+    money:'',
+    energy:'',
+    problem:'',
+    mode:'',
+    attitude:'',
+    profession:'',
+    intention:'',
+    source:'',
+    remark:"",
+  }).setForm('edit',{
+    id:"",
+    name:"",
+    type:"",
+    phone:"",
+    phone2:"",
+    qq:"",
+    qq2:"",
+    qq_nickname:"",
+    qq_nickname2:"",
+    sex:0,
+    weixin:"",
+    weixin_nickname:"",
+    area_province:null,
+    area_city:null,
+    quality:'',
+    year:'',
+    re_income:'',
+    style:'',
+    money:'',
+    energy:'',
+    problem:'',
+    mode:'',
+    attitude:'',
+    profession:'',
+    intention:'',
+    source:'',
+    remark:"",
+  }).setForm('addTrack',{
+    cus_id:"",
+    next_datetime:'',
+    track_type:'',
+    to_type:"",
+    content:'',
+    name:"",
+    step:"",
+    track_type:'',
+  },true).setForm('addPlan',{
+     cus_id:'',
+     name:'',
+     plan:'',
+  },true).setForm('addTransfer',{
+     cus_id:'',
+     name:'',
+     rec_dep:'',
+     rec_user:'',
+     proportion:'',
+  },true).setForm('addRemind',{
+     cus_id:'',
+     name:'',
+     remind:'',
+     remark:'',
+  },true).setForm('addChoice',{
+     cus_id:'',
+     name:'',
+     remark:'',
+     choose:1,
+     type:'',
+  },true).setForm('showDetail',{
+    id:"",
+    name:"",
+    type:"",
+    phone:"",
+    phone2:"",
+    qq:"",
+    qq2:"",
+    qq_nickname:"",
+    qq_nickname2:"",
+    sex:0,
+    weixin:"",
+    weixin_nickname:"",
+    area_province:null,
+    area_city:null,
+    quality:'',
+    year:'',
+    re_income:'',
+    style:'',
+    money:'',
+    energy:'',
+    problem:'',
+    mode:'',
+    attitude:'',
+    profession:'',
+    intention:'',
+    source:'',
+    remark:"",
+  },true).setForm('importc',{
+    c:0,
+    t:0
+  }, true).setMethod('getType', function(type, field){
+      return this[field][type];
+  }).setMethod('beforeList', function(data){
+        data.forEach(function(currentValue){
+          //将string类型转换为number和为0的变为空
+          currentValue.quality = currentValue.quality == 0?"":currentValue.quality;      
+          currentValue.year = currentValue.year == 0?"":currentValue.year;      
+          currentValue.re_income = currentValue.re_income == 0?"":currentValue.re_income;      
+          currentValue.style = currentValue.style == 0?"":currentValue.style;      
+          currentValue.money = currentValue.money == 0?"":currentValue.money;      
+          currentValue.energy = currentValue.energy == 0?"":currentValue.energy;      
+          currentValue.problem = currentValue.problem == 0?"":currentValue.problem;      
+          currentValue.mode = currentValue.mode == 0?"":currentValue.mode;      
+          currentValue.attitude = currentValue.attitude == 0?"":currentValue.attitude;      
+          currentValue.profession = currentValue.profession == 0?"":currentValue.profession;      
+          currentValue.intention = currentValue.intention == 0?"":currentValue.intention;      
+          currentValue.source = currentValue.source == 0?"":currentValue.source;          
+          //console.log(typeof(currentValue.quality));
+
+       })
+     return data;
+  }).setMethod('provinceChange', function(v){
+    var vmThis = this;
+    this.$http.get('{:U("Area/getAreasByPid")}', {params:{pid:v} }).then(function(response){
+      var cities = [];
+       response.body.forEach(function(currentValue,index){
+        cities.push({id: currentValue.id, name: currentValue.name});
+       })
+       vmThis.$set(vmThis, 'cities', cities);
+    });
+  }).setMethod('depChange',function(v){
+     //console.log(v);
+     var vmThis=this;
+     this.$http.get('{:U("getRecUser")}', {params:{p_name:v}}).then(function(response){
+       var reUsers = [];
+       response.body.forEach(function(currentValue,index){
+         reUsers.push({value:currentValue.value,name:currentValue.value});
+       })
+       vmThis.$set(vmThis,'reUsers',reUsers);
+     });
+  }).setMethod('beforeEdit',function(){
+    if (!this.$refs['editselect']) {
+      this.provinceChange(this.editForm.area_province);
+    }
+  }).setMethod('handleSelectionChange', function(val){
+    this.multipleSelection = val;
+  }).setMethod('commonSelect',function(x){
+    var form = x;
+    var vmThis = this;
+    if (this.multipleSelection.length ==0 ||  this.multipleSelection.length>1) {
+      this.closeDialog(form);
+      this.$message.error('请先选择一位客户');
+      return false;
+    } else {
+      var  row = this.multipleSelection.pop();
+      this[FormName.getForm(x)].name = row.name;
+      this[FormName.getForm(x)].cus_id   = row.id;
+      this.row=row;
+      return row;
+    }
+  }).setMethod('beforeAddTrack', function(){
+    this.commonSelect('addTrack');
+  }).setMethod('beforeAddPlan',function(){
+    this.commonSelect('addPlan');
+    this.dialogLabelWidth = "140px";
+  }).setMethod('beforeAddTransfer',function(){
+    this.commonSelect('addTransfer');  
+  }).setMethod('beforeAddRemind',function(){      
+    this.commonSelect('addRemind'); 
+  }).setMethod('beforeAddChoice',function(){
+    //this.commonSelect('addChoice');
+    var re = this.commonSelect('addChoice');
+    if(re !== false){
+      this.addChoiceForm.type = this.customerType[re.type];
+      this.addChoiceForm.choose = parseInt(re.important);
+    }   
+  }).setMethod('beforeShowDetail',function(){
+    if(this.commonSelect('showDetail') !== false){
+      this.showDetailForm = this.row; 
+    }
+  }).setAdvancedSearch().setVueHook('mounted', function(){
+    var vmThis = this;
+    this.$http.get('{:U("Area/getAreasByPid")}', {params:{pid:1} }).then(function(response){
+      var provinces = [];
+      response.body.forEach(function(currentValue,index){
+        provinces.push({id: currentValue.id, name: currentValue.name});
+      })
+      vmThis.$set(vmThis, 'provinces', provinces);
+    });
+
+    this.dialogLabelWidth = "100px";
+  }).setMethod('trackLog',function(row,event,column){
+        this.$refs.select.toggleRowSelection(row);
+        this.$http.post('{:U(trackInfo)}',row).then(function(response){
+          this.tableData = response.body;
+        },function(response){
+          console.log("操作失败");
+        });
+  }).setMethod('userInfo',function(row,event){
+      this.dialogVisible=true;
+      this.sb=row;
+      this.$refs.select.toggleRowSelection(row);
+
+  }).setMethod('setField', function(v){
+      this[FormName.getFormName('search')].field = v;
+      this[FormName.getFormName('search')].group = 'user_id';
+      this.loadDatalist();
+  }).setMethod('refresh',function(){
+    window.location.reload();
+
+  });
+</script>
+<script>
+     //console.log({:json_encode($Sty)});
+   // var he=document.getElementById('he');
+    //var h=document.body.scrollHeight;
+    //console.log(sb);
+    //sb.style.height=h/2+'px';  max-height="400"
+    //he.setAttribute("max-height",h*0.6);
+</script>
+</block>
