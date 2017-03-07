@@ -95,6 +95,15 @@ function arr_group($arr, $thekey){
 	return $result;
 }
 
+
+//格式化输出数组
+function va_dump($arr){
+    echo '<pre style="font-size: 2em;color:red;">';
+    var_dump($arr);
+    echo '</pre>';
+}
+
+
 /**
  * 将UTC时间转换为当地时间
  * @param  string "2017-02-07T05:40:24.558Z"

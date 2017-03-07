@@ -1,0 +1,16 @@
+<el-dialog title="主管回复" v-model="replyFormDialog"  @open="beforeReply">
+<el-form ref="replyForm" :model="replyForm"  :label-width="dialogLabelWidth">
+ <el-row>
+   <el-col :span="20">
+     <el-form-item label="回复内容">
+        <el-input v-model="replyForm.reply" type="textarea" :autosize="{ minRows: 4, maxRows: 4}" placeholder="请填写回复内容,最多填写150字"></el-input>
+     </el-form-item>
+   </el-col>
+ </el-row>
+</el-form>
+  <div slot="footer" class="dialog-footer">
+    <el-button @click="closeDialog('reply')">取 消</el-button>
+    <el-button type="primary" v-show="!replyFormSubmitStatus" @click="replyFormSubmit(page.replyFormUrl, 'reply')" >确 定</el-button>
+    <el-button type="primary" v-show="replyFormSubmitStatus" :loading="true" >回复中</el-button>
+  </div>
+</el-dialog>

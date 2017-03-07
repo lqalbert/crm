@@ -1,0 +1,121 @@
+<extend name="Common:base" />
+<block name="head"></block>
+<block name="body">
+  <div id="app" class="container">
+    <div class="wrapp" v-show="show" style="display:none">
+      <el-row>
+        <el-col :span="12">
+          <el-form :inline="true" ref="searchForm" :model="searchForm">
+            <el-form-item prop="name">
+             <el-input placeholder="请输入总结关键字" v-model="searchForm.name"></el-input>
+            </el-form-item>
+            <el-form-item>
+             <el-button type="primary" icon="search" @click="loadDatalist">查询</el-button>
+             <el-tooltip content="清空搜索框并刷新表格数据" placement="right">
+              <el-button icon="loading" @click="searchReset">重置</el-button>
+             </el-tooltip>
+            </el-form-item>
+          </el-form>
+        </el-col>
+
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-table :data="dataList" v-loading="dataLoad" border stripe element-loading-text="{:L('DATA_LOGIN')}"
+           @selection-change="handleSelectionChange" ref="select">
+            <el-table-column type="selection" align="center" width="50"></el-table-column>
+            <el-table-column label="序号" align="center" :formatter="handleIndex" width="65"></el-table-column>
+            <el-table-column label="总结标题" prop="title" align="center" ></el-table-column>
+            <el-table-column label="总结内容" prop="content" align="center"></el-table-column> 
+            <el-table-column label="总结类型" prop="type" align="center" >
+               <template scope="scope">
+                  {{ getType(scope.row.type, 'SummaryType') }}
+               </template>
+            </el-table-column> 
+            <el-table-column label="总结员工" prop="su_user" align="center" ></el-table-column> 
+            <el-table-column label="总结时间" prop="su_time" align="center" ></el-table-column> 
+            <el-table-column label="回复员工" prop="re_user" align="center" ></el-table-column> 
+            <el-table-column label="回复时间" prop="re_time" align="center" ></el-table-column>  
+            <el-table-column label="回复内容" prop="reply" align="center" ></el-table-column>  
+          </el-table>
+        </el-col>
+      </el-row>
+
+      <el-row type="flex"  justify="space-between" align="middle"  class="row-bg">
+            <el-col :span="12">
+              <div class="grid-content bg-purple">
+                 <el-tooltip content="发表总结或日志" placement="right">
+                   <el-button size="small" @click="openDialog('add')" type="info"  icon="edit">填写总结
+                   </el-button>
+                 </el-tooltip>
+                 <el-tooltip content="选择一条总结并回复" placement="right">
+                   <el-button size="small" @click="openDialog('reply')" type="success"  icon="plus">主管回复
+                   </el-button>
+                 </el-tooltip>
+              </div>
+            </el-col>
+            <el-col :span="12">
+              <div class="grid-content bg-purple-light pull-right">
+            <!-- page -->
+            <include file="Common:_pagination" />
+            <!-- / page -->
+              </div>
+            </el-col>
+      </el-row>
+    </div>
+
+    <div class="dialogWrapper" v-show="show" style="display: none">
+
+      <!-- 录入客户 -->
+      <include file="_add" />
+      <!-- / 录入客户 -->
+      <!-- 主管回复 -->
+      <include file="_reply" />
+      <!-- /主管回复 -->
+
+    </div>
+
+  </div>
+</block>
+<block name="scripts">
+<script>
+  page.replyFormUrl = "{:U('addReply')}";
+  window.defaultOption.setDatas({
+    SummaryType:{:json_encode($SummaryType)},
+    multipleSelection:[],
+    addRules:{
+      title:[{required: true, message: '请输入总结标题', trigger: 'blur'}],
+      type:[{required: true, message: '请选择总结类型', trigger: 'blur'}],
+      content:[{required: true, message: '请输入总结内容', trigger: 'blur'}],
+    }
+  }).setForm('search',{
+    name:'',
+  }).setForm('add',{
+    title:'',
+    type:'',
+    content:'',
+  }).setForm('reply',{
+    reply:'',
+  },true).setMethod('getType',function(type,field){
+      return this[field][type];
+  }).setMethod('handleSelectionChange',function(val){
+    this.multipleSelection = val;
+  }).setMethod('commonSelect',function(x){
+    var form = x;
+    var vmThis = this;
+    if (this.multipleSelection.length ==0 ||  this.multipleSelection.length>1) {
+      this.closeDialog(form);
+      this.$message.error('请先选择一条总结');
+      return false;
+    } else {
+      var  row = this.multipleSelection.pop();
+      this[FormName.getForm(x)].su_user = row.su_user;
+      this[FormName.getForm(x)].id   = row.id;
+      this.row=row;
+      return row;
+    }
+  }).setMethod('beforeReply', function(){
+    this.commonSelect('reply');
+  });
+</script>
+</block>

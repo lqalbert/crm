@@ -2,19 +2,29 @@
 namespace Home\Controller;
 
 class IndexController extends CommonController {
+
+	protected $pageSize = 4;
+
+
 	public function index() {
 		$this->display ();
 	}
 
 	public function main() {
-		$this->assign("pageSize", 0);
-		$this->display ();
+		$this->assign("pageSize", $this->pageSize);
+		$this->assign('NoticeType', D('sys_notice')->getType());
+		$this->display();
 	}
 
-	
+
 	public function getList(){
-		$this->ajaxReturn(array());
+	    $count = (int)M('sys_notice')->count();
+	    $list = M('sys_notice')->page(I('get.p',0). ','. $this->pageSize)->order('id desc')->field('type,title,time')->select();
+	    $result = array('list'=>$list, 'count'=>$count);
+		$this->ajaxReturn($result);
 	}
+
+
 
 	//屏幕解锁
 	public function lock(){

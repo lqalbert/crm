@@ -10,7 +10,7 @@
     </el-col>
     <el-col :span="12">
       <el-form-item label="类型"  prop="type">
-        <el-select  v-model="addForm.type" placeholder="请选择类型"  >
+        <el-select  v-model="addForm.type" @change="typeChange"  placeholder="请选择类型"  >
          <el-option  v-for='(item,key) in typeList' :label="item" :value="key"></el-option>
         </el-select>
       </el-form-item>
@@ -28,7 +28,6 @@
       <el-form-item label="片区"  prop="zone_id" >
         <el-select  v-model="addForm.zone_id" placeholder="请选择片区">
           <el-option v-for='(item,key) in zoneList' :label="item" :value="key"></el-option>
-          
         </el-select>
       </el-form-item>
     </el-col>

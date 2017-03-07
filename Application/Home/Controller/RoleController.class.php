@@ -12,7 +12,6 @@ class RoleController extends CommonController{
 
 
 	public function index(){
-		
 		$this->assign('pageSize', $this->M->count());
 		$this->assign('nodeList', $this->getNodes());
 		$this->assign('enames',   $this->M->getEnames());
@@ -30,8 +29,10 @@ class RoleController extends CommonController{
 	public function getNodes(){
 		$nodeM = D('rbac_node');
 		$nodeList = $nodeM->order("sort asc")->select();
-		// var_dump(arr_to_map($nodeList, 'id'));
+		 /*va_dump(arr_to_map($nodeList, 'id'));
+		die;*/
 		$nodeList = arr_to_tree(arr_to_map($nodeList, 'id'), 'pid');
+
 		return array_values(array_values($nodeList)[0]['sons']) ;
 	}
 

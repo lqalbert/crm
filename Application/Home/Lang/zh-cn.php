@@ -17,6 +17,8 @@ return array(
 	'INDEX'          => '序号',
 	'OPERATION'      => '操作',
 
+	'ADVANCED_QUERY'      => '高级查询',
+
 
 
 

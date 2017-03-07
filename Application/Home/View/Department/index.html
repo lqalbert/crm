@@ -282,6 +282,7 @@
             currentValue.status = parseInt(currentValue.status);
 		})
 		return dataList;
+
 	}).setMethod('checkDown', function(v){
 		this[FormName.getFormName('search')].id = v;
 		this.dataReload();

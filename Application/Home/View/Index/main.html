@@ -5,7 +5,7 @@
 	    padding: 15px 20px;
 	    border-bottom: 1px solid #D3DCE6;
 	    box-sizing: border-box;
-	    background: #5FB878;
+	    background: #3fc3e2;
 	    color: #ffffff;
 	}
   </style>
@@ -50,10 +50,14 @@
 					系统公告
 				</div>
 				<div style="margin:-20px;">
-					<el-table :data="sysData" style="width: 100%;border:none;">
-				      <el-table-column prop="sys_type" label="类型" width="180" align="center"></el-table-column>
+					<el-table :data="dataList" v-loading="dataLoad"  border  stripe element-loading-text="{:L('DATA_LOGIN')}" ref="select">
+				      <el-table-column prop="type" label="类型" width="180" align="center">
+			               <template scope="scope">
+			                  {{ getType(scope.row.type, 'NoticeType') }}
+			               </template>
+			          </el-table-column>
 				      <el-table-column prop="title" label="标题" align="center"></el-table-column>
-				      <el-table-column prop="date" label="日期" width="180" align="center"></el-table-column>
+				      <el-table-column prop="time" label="日期" width="180" align="center"></el-table-column>
 				    </el-table>
 				    <el-col :span="24">
 					     <div class="grid-content bg-purple-light pull-right" style="padding:2px;">
@@ -147,9 +151,6 @@
 					</el-table> 
 				</div>
 			</el-card>
-			<div style="display: none;">
-  		  	  <include file="Common:_pagination"/>
-  		  </div>
 		</el-col>
 	</el-row>
 </div>
@@ -202,29 +203,8 @@
       	}
 
 	}).setDatas({
-		sysData:[
-				{
-					sys_type:'测试数据',
-					title:'新功能XXXX上线了',
-					date:'2017-01-01 12:12'
-				},
-				{
-					sys_type:'测试数据',
-					title:'新功能XXXX上线了',
-					date:'2017-01-01 12:12'
-				},
-				{
-					sys_type:'测试数据',
-					title:'新功能XXXX上线了',
-					date:'2017-01-01 12:12'
-				},
-				{
-					sys_type:'测试数据',
-					title:'新功能XXXX上线了',
-					date:'2017-01-01 12:12'
-				},
-
-		],
+		NoticeType:{:json_encode($NoticeType)},
+		
 		sysReport:[
 				{
 					date:'2016-12-01',
@@ -292,9 +272,9 @@
 					xq:'1',
 				}
 		]
-	});
+	}).setMethod('getType', function(type, field){
+       return this[field][type];
+    });
 	</script>
-	<script>
-      	
-	</script>
+
 </block>
