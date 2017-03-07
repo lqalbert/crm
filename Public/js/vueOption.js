@@ -109,6 +109,7 @@ VueOption.prototype.setAdd = function(){
 	return this;
 }
 
+
 VueOption.prototype.setEdit = function(){
 	setForm(this, "edit");
 	//初始化 
@@ -124,6 +125,7 @@ VueOption.prototype.setEdit = function(){
 	})
 	return this;
 }
+
 
 VueOption.prototype.setForm = function(name, obj){
 	this.setData(FormName.getFormName(name), obj);
