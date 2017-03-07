@@ -1,4 +1,4 @@
-       /** index.js By Beginner Emain:zheng_jinfan@126.com HomePage:http://www.zhengjinfan.cn */
+/** index.js By Beginner Emain:zheng_jinfan@126.com HomePage:http://www.zhengjinfan.cn */
 layui.config({
 	base: window.webRoot+'Public/js/'
 }).use(['element', 'layer', 'navbar', 'tab'], function() {

@@ -69,6 +69,7 @@ layui.config({
 		});
 		return tabIndex;
 	};
+
 	/**
 	 * 添加选择卡，如果选择卡存在则获取焦点
 	 * @param {Object} data

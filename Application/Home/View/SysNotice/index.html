@@ -10,7 +10,7 @@
              <el-input placeholder="请输入标题关键字" v-model="searchForm.name"></el-input>
             </el-form-item>
             <el-form-item>
-             <el-button type="primary" icon="search" @click="loadDataList">查询</el-button>
+             <el-button type="primary" icon="search" @click="loadDatalist">查询</el-button>
              <el-tooltip content="清空搜索框并刷新表格数据" placement="right">
               <el-button icon="loading" @click="searchReset">重置</el-button>
              </el-tooltip>
@@ -21,10 +21,14 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-table :data="tabledataList" border  stripe element-loading-text="{:L('DATA_LOGIN')}" ref="select">
+          <el-table :data="dataList" v-loading="dataLoad"  border  stripe element-loading-text="{:L('DATA_LOGIN')}" ref="select">
             <el-table-column type="selection" align="center" width="50"></el-table-column>
             <el-table-column label="序号" align="center" :formatter="handleIndex" width="65"></el-table-column>
-            <el-table-column label="公告类型" prop="type" align="center" ></el-table-column>
+            <el-table-column label="公告类型" prop="type" align="center" >
+               <template scope="scope">
+                  {{ getType(scope.row.type, 'NoticeType') }}
+               </template>
+            </el-table-column>
             <el-table-column label="公告标题" prop="title" align="center" ></el-table-column>
             <el-table-column label="开始日期" prop="start" align="center" ></el-table-column> 
             <el-table-column label="截止日期" prop="end" align="center" ></el-table-column> 
@@ -65,40 +69,15 @@
 <block name="scripts">
 <script>
   window.defaultOption.setDatas({
-    loadDataList:[],
-    dataLoad:false,
-    tabledataList:[{
-        type:'测试数据',
-        title:'惊呆了',
-        start:'2017-02-24',
-        end:'2017-02-24',
-        user:'红蜻蜓',
-      },{
-        type:'测试数据',
-        title:'惊呆了',
-        start:'2017-02-24',
-        end:'2017-02-24',
-        user:'红蜻蜓',
-      },{
-        type:'测试数据',
-        title:'惊呆了',
-        start:'2017-02-24',
-        end:'2017-02-24',
-        user:'红蜻蜓',
-      },{
-        type:'测试数据',
-        title:'惊呆了',
-        start:'2017-02-24',
-        end:'2017-02-24',
-        user:'红蜻蜓',
-      },{
-        type:'测试数据',
-        title:'惊呆了',
-        start:'2017-02-24',
-        end:'2017-02-24',
-        user:'红蜻蜓',
-      },  
-    ],
+    NoticeType:{:json_encode($NoticeType)},
+    addRules:{
+      title:[
+         { required: true, message: '请输入公告标题', trigger: 'blur'},
+      ],
+      type:[
+         { required: true, message: '请选择公告类型', trigger: 'blur'},
+      ],
+    }
   }).setForm('search',{
     name:'',
   }).setForm('add',{
@@ -106,6 +85,8 @@
     title:'',
     start:'',
     end:'',
+  }).setMethod('getType', function(type, field){
+     return this[field][type];
   });
 </script>
 </block>

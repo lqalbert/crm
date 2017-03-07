@@ -10,7 +10,7 @@
              <el-input placeholder="请输入总结关键字" v-model="searchForm.name"></el-input>
             </el-form-item>
             <el-form-item>
-             <el-button type="primary" icon="search" @click="loadDataList">查询</el-button>
+             <el-button type="primary" icon="search" @click="loadDatalist">查询</el-button>
              <el-tooltip content="清空搜索框并刷新表格数据" placement="right">
               <el-button icon="loading" @click="searchReset">重置</el-button>
              </el-tooltip>
@@ -21,13 +21,17 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-table :data="tabledataList" border  stripe element-loading-text="{:L('DATA_LOGIN')}" ref="select" 
-            @selection-change="handleSelectionChange">
+          <el-table :data="dataList" v-loading="dataLoad" border stripe element-loading-text="{:L('DATA_LOGIN')}"
+           @selection-change="handleSelectionChange" ref="select">
             <el-table-column type="selection" align="center" width="50"></el-table-column>
             <el-table-column label="序号" align="center" :formatter="handleIndex" width="65"></el-table-column>
             <el-table-column label="总结标题" prop="title" align="center" ></el-table-column>
             <el-table-column label="总结内容" prop="content" align="center"></el-table-column> 
-            <el-table-column label="总结类型" prop="type" align="center" ></el-table-column> 
+            <el-table-column label="总结类型" prop="type" align="center" >
+               <template scope="scope">
+                  {{ getType(scope.row.type, 'SummaryType') }}
+               </template>
+            </el-table-column> 
             <el-table-column label="总结员工" prop="su_user" align="center" ></el-table-column> 
             <el-table-column label="总结时间" prop="su_time" align="center" ></el-table-column> 
             <el-table-column label="回复员工" prop="re_user" align="center" ></el-table-column> 
@@ -41,11 +45,11 @@
             <el-col :span="12">
               <div class="grid-content bg-purple">
                  <el-tooltip content="发表总结或日志" placement="right">
-                   <el-button size="small" type="info" @click="openDialog('add')" icon="edit">填写总结
+                   <el-button size="small" @click="openDialog('add')" type="info"  icon="edit">填写总结
                    </el-button>
                  </el-tooltip>
                  <el-tooltip content="选择一条总结并回复" placement="right">
-                   <el-button size="small" type="success" @click="openDialog('reply')" icon="plus">主管回复
+                   <el-button size="small" @click="openDialog('reply')" type="success"  icon="plus">主管回复
                    </el-button>
                  </el-tooltip>
               </div>
@@ -75,59 +79,15 @@
 </block>
 <block name="scripts">
 <script>
-  page.replyFormUrl = "";
+  page.replyFormUrl = "{:U('addReply')}";
   window.defaultOption.setDatas({
-    loadDataList:[],
-    dataLoad:false,
-    replyFormDialog:false,//单纯页面 后端逻辑时候去掉
-    tabledataList:[{
-        title:'intel颤抖了',
-        content:'AMD360度翻身',
-        type:'每日总结',
-        su_user:'丘吉尔',
-        su_time:'2017-02-27',
-        re_user:'隆美尔',
-        re_time:'2017-02-27',
-        reply:'牙膏厂换一管牙膏挤',
-      },{
-        title:'intel颤抖了',
-        content:'AMD360度翻身',
-        type:'每日总结',
-        su_user:'丘吉尔',
-        su_time:'2017-02-27',
-        re_user:'隆美尔',
-        re_time:'2017-02-27',
-        reply:'牙膏厂换一管牙膏挤',
-      },{
-        title:'intel颤抖了',
-        content:'AMD360度翻身',
-        type:'每日总结',
-        su_user:'丘吉尔',
-        su_time:'2017-02-27',
-        re_user:'隆美尔',
-        re_time:'2017-02-27',
-        reply:'牙膏厂换一管牙膏挤',
-      },{
-        title:'intel颤抖了',
-        content:'AMD360度翻身',
-        type:'每日总结',
-        su_user:'丘吉尔',
-        su_time:'2017-02-27',
-        re_user:'隆美尔',
-        re_time:'2017-02-27',
-        reply:'牙膏厂换一管牙膏挤',
-      },{
-        title:'intel颤抖了',
-        content:'AMD360度翻身',
-        type:'每日总结',
-        su_user:'丘吉尔',
-        su_time:'2017-02-27',
-        re_user:'隆美尔',
-        re_time:'2017-02-27',
-        reply:'牙膏厂换一管牙膏挤',
-      },  
-    ],
+    SummaryType:{:json_encode($SummaryType)},
     multipleSelection:[],
+    addRules:{
+      title:[{required: true, message: '请输入总结标题', trigger: 'blur'}],
+      type:[{required: true, message: '请选择总结类型', trigger: 'blur'}],
+      content:[{required: true, message: '请输入总结内容', trigger: 'blur'}],
+    }
   }).setForm('search',{
     name:'',
   }).setForm('add',{
@@ -136,6 +96,8 @@
     content:'',
   }).setForm('reply',{
     reply:'',
+  },true).setMethod('getType',function(type,field){
+      return this[field][type];
   }).setMethod('handleSelectionChange',function(val){
     this.multipleSelection = val;
   }).setMethod('commonSelect',function(x){
@@ -147,7 +109,7 @@
       return false;
     } else {
       var  row = this.multipleSelection.pop();
-      this[FormName.getForm(x)].name = row.name;
+      this[FormName.getForm(x)].su_user = row.su_user;
       this[FormName.getForm(x)].id   = row.id;
       this.row=row;
       return row;
