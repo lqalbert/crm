@@ -1,0 +1,16 @@
+<el-dialog title="索取统计" v-model="exactsConFormDialog">
+    <el-form ref="exactsConForm"  :model="exactsConForm" :label-width="dialogLabelWidth">
+        <el-row>
+            <el-col :span="20">
+                <el-form-item label="回复内容" prop="reply">
+                    <el-input v-model="exactsConForm.reply"  auto-complete="off" type="textarea" :autosize="{ minRows: 4, maxRows: 4}" placeholder="请填写回复内容"></el-input>
+                </el-form-item>
+            </el-col>
+        </el-row>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+        <el-button @click="closeDialog('exactsCon')">取 消</el-button>
+        <el-button type="primary" v-show="!exactsConFormSubmitStatus" @click="exactsConFormSubmit(page.exactsConFormUrl,'exactsCon')" >确 定</el-button>
+        <el-button type="primary" v-show="exactsConFormSubmitStatus" :loading="true" >回复中</el-button>
+    </div>
+</el-dialog>
