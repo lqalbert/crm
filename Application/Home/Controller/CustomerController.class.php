@@ -17,6 +17,14 @@ class CustomerController extends CommonController {
 		         );
 	}
 
+	private function getThreeMonthDays(){
+		$today = Date("Y-m-d")." 00:00:00" ;
+		return   array(
+					array('GT', Date("Y-m-d H:i:s", strtotime("-90 day", strtotime($today)))),
+					array('LT', $today)
+		         );
+	}
+
 	public function index () {
 		// $dataList = $this->getList();
         $user = new User();
@@ -100,7 +108,7 @@ class CustomerController extends CommonController {
 
 		// $today = Date("Y-m-d")." 00:00:00" ;
 		$between_today =  $this->getDayBetween();
-
+		$three_month_days = $this->getThreeMonthDays();
 		switch (I('get.field')) {
 			case 'plan':
 				$this->M->where(array(
@@ -134,11 +142,10 @@ class CustomerController extends CommonController {
 				
 				break;
 		}
+		$this->M->where(array(
+				'created_at'=> $three_month_days
+		));
 
-		// if (I('get.plan', false)) {
-			
-			
-		// }
 	}
 
     /**

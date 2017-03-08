@@ -96,7 +96,12 @@ function arr_group($arr, $thekey){
 }
 
 
-//格式化输出数组
+/**
+ * 格式化输出数组
+ * @var arr 目标数组
+ * @return 竖向排列数组
+ * @example:
+ */
 function va_dump($arr){
     echo '<pre style="font-size: 2em;color:red;">';
     var_dump($arr);
