@@ -1,7 +1,15 @@
 <extend name="Common:base" />
 <block name="head">
   <style>
-    .b .el-tabs__header{
+    .superaddition{
+      height:44px;
+      width:400px;
+      position: relative;
+      top : 12px;
+      z-index: 50;
+      left:90px;
+    }
+    .el-tabs__header{
       border-top:2px solid #1AA094;
       border-bottom: 1px solid #1aa094;
     }
@@ -46,12 +54,12 @@
 <div class="wrapp" id="appx" v-show="show" style="display: none;">
   <!-- <div class="a" style="border:1px solid red;"> -->
   <div class="a" id="app3">
-  <el-row>
-    <el-col :span="24">
-      <el-form :inline="true" ref="searchForm" :model="searchForm">
-        <el-form-item prop="name" style="width:170px">
-          <el-input v-model="searchForm.name" size="small" placeholder="客户姓名|手机|qq|微信号"></el-input>
-        </el-form-item>
+	<el-row>
+  	<el-col :span="24">
+  		<el-form :inline="true" ref="searchForm" :model="searchForm">
+  		  <el-form-item prop="name" style="width:170px">
+  		    <el-input v-model="searchForm.name" size="small" placeholder="客户姓名|手机|qq|微信号"></el-input>
+  		  </el-form-item>
 
 <!--         <el-form-item prop="group" style="width:80px">
           <el-select v-model="searchForm.group" size="small" placeholder="请选择">
@@ -129,7 +137,7 @@
 
           <el-tooltip content="他人的客户与您的客户有冲突" placement="bottom-start">
             <el-badge :value="{$aggregation.conflict}" :max="9" style="margin-left:15px;">
-              <el-button type="warning" size="small" @click="setField('conflict')">冲突</el-button>
+    		      <el-button size="small" type="warning" @click="setField('conflict')">冲突</el-button>
             </el-badge>
           </el-tooltip>
 
@@ -137,19 +145,27 @@
             <el-button type="warning" size="small" @click="openDialog('importc')" >客户导入</el-button>
           </el-tooltip>
 
-          <el-tooltip content="点击刷新当前页面" placement="bottom-start"  style="margin-left:10px;">
-            <el-button icon="loading" size="small" @click="refresh" type="danger">刷新</el-button>
+          <el-tooltip content="客户预查" placement="right"  style="margin-left:10px;">
+            <el-button size="small"  @click="openDialog('preCheck')" type="primary">{:L('CUSTOMER_PRE_CHECK')}</el-button>
           </el-tooltip>
 
-        </el-form-item>
-      </el-form>
+          <el-tooltip content="索取统计" placement="right"  style="margin-left:10px;">
+            <el-button size="small"  @click="openDialog('exactsCon')" type="primary">{:L('EXACTS_CON')}</el-button>
+          </el-tooltip>
+
+          <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:10px;">
+            <el-button size="small" icon="loading" @click="refresh" type="danger">刷新</el-button>
+          </el-tooltip>
+
+  		  </el-form-item>
+  		</el-form>
       </el-col>
   </el-row>
   <!-- max-height="500" -->
 
   <el-row>
     <el-col :span="24">
-      <el-table 
+    	<el-table 
       :data="dataList" 
       border  
       id="he"
@@ -159,18 +175,18 @@
       @selection-change="handleSelectionChange"
         @row-click="trackLog"  ref="select" @row-dblclick="userInfo">
 
-        <el-table-column width="50" align="center" type="selection"></el-table-column>
+  	    <el-table-column width="50" align="center" type="selection"></el-table-column>
 
-        <el-table-column   label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  ></el-table-column>
+  	    <el-table-column   label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  ></el-table-column>
+  	    <el-table-column align="left" prop="name"  label="客户姓名" width="110">
 
-        <el-table-column align="left" prop="name"  label="客户姓名" width="110">
         </el-table-column>
 
-        <el-table-column align="left" prop="type" label="客户类型" width="140">
+  	    <el-table-column align="left" prop="type" label="客户类型" width="140">
           <template scope="scope">
             {{ getType(scope.row.type, 'customerType') }}
           </template>
-        </el-table-column>
+  	    </el-table-column>
 
           <el-table-column align="left"  prop="user_id" label="跟踪员工" width="110">
             <template scope="scope">
@@ -189,7 +205,7 @@
 
           <el-table-column align="left" prop="qq_nickname" label="QQ昵称"  width="170"></el-table-column>
 
-          <el-table-column prop="phone" label="手机" align="center" width="130"></el-table-column>
+  	      <el-table-column prop="phone" label="手机" align="center" width="130"></el-table-column>
 
           <el-table-column align="left" prop="weixin" label="微信号" align="left" width="170">
             <template scope="scope">
@@ -219,12 +235,12 @@
             {{ getType(scope.row.sex, 'sexType') }}
           </template>
         </el-table-column>
-<!--        <el-table-column inline-template :context="_self"  fixed="right"  align="center" label="操作" width="160">
-          <span>
-            <el-button @click="handleEdit($index, row)"  size="small">编辑</el-button>
-            <el-button @click="handleDelete($index, row)"  size="small" type="danger">删除</el-button>
-          </span>
-        </el-table-column> -->
+<!--   	    <el-table-column inline-template :context="_self"  fixed="right"  align="center" label="操作" width="160">
+  	      <span>
+  	        <el-button @click="handleEdit($index, row)"  size="small">编辑</el-button>
+  	        <el-button @click="handleDelete($index, row)"  size="small" type="danger">删除</el-button>
+  	      </span>
+  	    </el-table-column> -->
 
       </el-table>
     </el-col>
@@ -232,36 +248,7 @@
 
   <!-- toolbar -->
   <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
-    <el-col :span="12">
-      <div class="grid-content bg-purple">
-            <span class="wrapper">
-              <el-tooltip content="选择客户录入跟踪信息" placement="right">
-                <el-button size="small" @click="openDialog('addTrack')" type="primary">录入跟踪</el-button>
-              </el-tooltip>
-              <el-tooltip content="选择客户录入对其跟踪计划" placement="right">
-                <el-button size="small" @click="openDialog('addPlan')" type="primary" style="margin-left:10px;">计划</el-button>
-              </el-tooltip>
 
-              <el-tooltip content="选择客户对其转让给他人(暂未实现)" placement="right">
-                <el-button size="small" @click="openDialog('addTransfer')" :disabled="true" type="warning" style="margin-left:10px;">转让</el-button>
-              </el-tooltip>
-
-              <el-tooltip content="选择客户录入其提醒事项及内容" placement="right">
-                <el-button size="small" @click="openDialog('addRemind')" type="info" style="margin-left:10px;">提醒</el-button>
-              </el-tooltip>
-
-              <el-tooltip content="筛选客户重点跟踪" placement="right">
-                <el-button size="small" @click="openDialog('addChoice')" type="primary" style="margin-left:10px;">自选</el-button>
-              </el-tooltip>
-              <!-- <el-tooltip content="选择客户对其拨打电话" placement="right">
-                <el-button size="small" type="primary" style="margin-left:10px;">拨打电话</el-button>
-              </el-tooltip>
-              <el-tooltip content="选择客户显示客户的详细资料" placement="right">
-                <el-button size="small" @click="openDialog('showDetail')" type="success" style="margin-left:10px;">客户资料</el-button>
-              </el-tooltip> -->
-            </span>    
-      </div>
-    </el-col>
     <el-col :span="12">
       <div class="grid-content bg-purple-light pull-right">
 
@@ -277,6 +264,28 @@
 
   <div id="app2" class="b" style="margin:5px -10px 5px;">
     <el-row>
+    <div class="superaddition">
+      <el-tooltip content="选择客户录入跟踪信息" placement="right">
+        <el-button size="small" @click="openDialog('addTrack')" type="primary" style="margin-left:10px;">录入跟踪</el-button>
+      </el-tooltip>
+
+      <el-tooltip content="选择客户录入对其跟踪计划" placement="right">
+        <el-button size="small" @click="openDialog('addPlan')" type="primary" style="margin-left:10px;">计划</el-button>
+      </el-tooltip>
+
+      <el-tooltip content="选择客户对其转让给他人(暂未实现)" placement="right">
+        <el-button size="small" @click="openDialog('addTransfer')" :disabled="true" type="warning" style="margin-left:10px;">转让</el-button>
+      </el-tooltip>
+
+      <el-tooltip content="选择客户录入其提醒事项及内容" placement="right">
+        <el-button size="small" @click="openDialog('addRemind')" type="info" style="margin-left:10px;">提醒</el-button>
+      </el-tooltip>
+
+      <el-tooltip content="筛选客户重点跟踪" placement="right">
+        <el-button size="small" @click="openDialog('addChoice')" type="primary" style="margin-left:10px;">自选</el-button>
+      </el-tooltip>
+    </div>
+    <el-row style="position: relative;top:-40px;">
      <el-col :span="24">
         <el-tabs  type="border-card">
           <el-tab-pane label="跟踪记录">
@@ -299,7 +308,6 @@
               <el-table-column prop="track_text" label="跟踪类型" align="center">
               </el-table-column>
 
-
             </el-table>
           </el-tab-pane>
 
@@ -320,6 +328,10 @@
   <!-- / 录入客户 -->
   <!-- 录入高级查询条件 -->
   <include file="_advancedQuery" />
+  <!-- 客户预查 -->
+  <include file="_preCheck" />
+  <!-- 索取统计 -->
+  <include file="_exactsCon" />
   <!-- 编辑 -->
   <include file="_edit" />
   <!-- 显示客户一般资料 -->
@@ -380,6 +392,8 @@ function toInt(v){
     }
   }
   window.defaultOption.setDatas({
+    gridData:[],
+    ddprops:'name',
     dialogVisible:false,
     sb:[],
     tableData: [{'name':'',
@@ -498,6 +512,10 @@ function toInt(v){
     type:'',
     object:'user',
     ctrl:'advance',
+  },true).setForm('exactsCon',{
+    reply:'',
+  },true).setForm('preCheck',{
+    reply:'',
   },true).setForm('edit',{
     id:"",
     name:"",
@@ -589,6 +607,18 @@ function toInt(v){
     t:0
   }, true).setMethod('getType', function(type, field){
       return this[field][type];
+  }).setMethod('searchCustomer', function(){
+    var vmThis = this;
+    vmThis.$http.get(page.searchUrl, {params:{name:this.searchForm.name}}).then(function(response){
+      vmThis.$set(vmThis, 'dataList', response.body.list);
+      if (vmThis.dataList.length==0) {
+        vmThis.$alert('该客户还未锁定', '消息', {
+          confirmButtonText: '确定',
+        });
+      }
+    }, function(response){
+      vmThis.$message.error('错了哦，这是一条错误消息');
+    })
   }).setMethod('beforeList', function(data){
         data.forEach(function(currentValue){
           //将string类型转换为number和为0的变为空
