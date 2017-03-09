@@ -28,8 +28,8 @@ class CustomerController extends CommonController {
 	public function index () {
 		// $dataList = $this->getList();
         $user = new User();
-        // $searchGroup = $user->getRoleObject()
-        //                     ->getCustomerSearchGroup(array(array('value'=>'user_id','key'=>"本人" ) , array('value'=>'group','key'=>"团组" )));
+        $searchGroup = $user->getRoleObject()
+                            ->getCustomerSearchGroup(array(array('value'=>'user_id','key'=>"本人" ) , array('value'=>'group','key'=>"团组" )));
         $groupMemberList = M('user_info')->where(array('group_id'=>session('account')['userInfo']['group_id']))->getField("user_id,realname");
 
         $this->assign('searchGroup',  $searchGroup);
