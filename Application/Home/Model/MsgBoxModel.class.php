@@ -26,18 +26,7 @@ class SysNoticeModel extends Model{
     	}
     }
 
-    /**
-    * 返回类型 或 所有的类型
-    * 
-    * @return string|array
-    */
-    public function getType($index=NULL){
-    	if (!empty($index)) {
-    		return $this->NoticeType[$index];
-    	} else {
-    		return $this->NoticeType;
-    	}
-    }
+
 
 
 
