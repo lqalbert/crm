@@ -132,7 +132,7 @@ class SortCustomersCountController extends CommonController{
     select sum(cc.c) as `count`,gb.department_id  from group_basic as gb  inner join (
         select count(cb.id) as c , ui.group_id from customers_basic as cb inner join user_info as ui on cb.user_id = ui.user_id where '. $this->getDayBetween().'  group by ui.group_id
     ) as cc on gb.id=cc.group_id group by gb.department_id
-) as dc on db.id=dc.department_id where db.`type` in('.DepartmentModel::CAREER.', '.DepartmentModel::GENERALIZE.') order by `count` desc limit '. $this->getOffset().','.$this->pageSize);
+) as dc on db.id=dc.department_id where db.`type` in('.DepartmentModel::CAREER.', '.DepartmentModel::GENERALIZE.') and db.status=1 order by `count` desc limit '. $this->getOffset().','.$this->pageSize);
 
 
         

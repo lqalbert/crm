@@ -46,12 +46,12 @@
 <div class="wrapp" id="appx" v-show="show" style="display: none;">
   <!-- <div class="a" style="border:1px solid red;"> -->
   <div class="a" id="app3">
-	<el-row>
-  	<el-col :span="24">
-  		<el-form :inline="true" ref="searchForm" :model="searchForm">
-  		  <el-form-item prop="name" style="width:170px">
-  		    <el-input v-model="searchForm.name" size="small" placeholder="客户姓名|手机|qq|微信号"></el-input>
-  		  </el-form-item>
+  <el-row>
+    <el-col :span="24">
+      <el-form :inline="true" ref="searchForm" :model="searchForm">
+        <el-form-item prop="name" style="width:170px">
+          <el-input v-model="searchForm.name" size="small" placeholder="客户姓名|手机|qq|微信号"></el-input>
+        </el-form-item>
 
 <!--         <el-form-item prop="group" style="width:80px">
           <el-select v-model="searchForm.group" size="small" placeholder="请选择">
@@ -129,7 +129,7 @@
 
           <el-tooltip content="他人的客户与您的客户有冲突" placement="bottom-start">
             <el-badge :value="{$aggregation.conflict}" :max="9" style="margin-left:15px;">
-    		      <el-button type="warning" size="small" @click="setField('conflict')">冲突</el-button>
+              <el-button type="warning" size="small" @click="setField('conflict')">冲突</el-button>
             </el-badge>
           </el-tooltip>
 
@@ -141,15 +141,15 @@
             <el-button icon="loading" size="small" @click="refresh" type="danger">刷新</el-button>
           </el-tooltip>
 
-  		  </el-form-item>
-  		</el-form>
+        </el-form-item>
+      </el-form>
       </el-col>
   </el-row>
   <!-- max-height="500" -->
 
   <el-row>
     <el-col :span="24">
-    	<el-table 
+      <el-table 
       :data="dataList" 
       border  
       id="he"
@@ -159,18 +159,18 @@
       @selection-change="handleSelectionChange"
         @row-click="trackLog"  ref="select" @row-dblclick="userInfo">
 
-  	    <el-table-column width="50" align="center" type="selection"></el-table-column>
+        <el-table-column width="50" align="center" type="selection"></el-table-column>
 
-  	    <el-table-column   label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  ></el-table-column>
+        <el-table-column   label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  ></el-table-column>
 
-  	    <el-table-column align="left" prop="name"  label="客户姓名" width="110">
+        <el-table-column align="left" prop="name"  label="客户姓名" width="110">
         </el-table-column>
 
-  	    <el-table-column align="left" prop="type" label="客户类型" width="140">
+        <el-table-column align="left" prop="type" label="客户类型" width="140">
           <template scope="scope">
             {{ getType(scope.row.type, 'customerType') }}
           </template>
-  	    </el-table-column>
+        </el-table-column>
 
           <el-table-column align="left"  prop="user_id" label="跟踪员工" width="110">
             <template scope="scope">
@@ -189,7 +189,7 @@
 
           <el-table-column align="left" prop="qq_nickname" label="QQ昵称"  width="170"></el-table-column>
 
-  	      <el-table-column prop="phone" label="手机" align="center" width="130"></el-table-column>
+          <el-table-column prop="phone" label="手机" align="center" width="130"></el-table-column>
 
           <el-table-column align="left" prop="weixin" label="微信号" align="left" width="170">
             <template scope="scope">
@@ -219,12 +219,12 @@
             {{ getType(scope.row.sex, 'sexType') }}
           </template>
         </el-table-column>
-<!--   	    <el-table-column inline-template :context="_self"  fixed="right"  align="center" label="操作" width="160">
-  	      <span>
-  	        <el-button @click="handleEdit($index, row)"  size="small">编辑</el-button>
-  	        <el-button @click="handleDelete($index, row)"  size="small" type="danger">删除</el-button>
-  	      </span>
-  	    </el-table-column> -->
+<!--        <el-table-column inline-template :context="_self"  fixed="right"  align="center" label="操作" width="160">
+          <span>
+            <el-button @click="handleEdit($index, row)"  size="small">编辑</el-button>
+            <el-button @click="handleDelete($index, row)"  size="small" type="danger">删除</el-button>
+          </span>
+        </el-table-column> -->
 
       </el-table>
     </el-col>

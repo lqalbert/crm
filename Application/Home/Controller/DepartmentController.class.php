@@ -16,6 +16,7 @@ class DepartmentController extends CommonController {
 
 		$type = $this->M->getType();
 		unset($type[0]);// 一定要用unset array_shift 会重建索引,破坏了原来的键值对关系
+		unset($type[1]);// 一定要用unset array_shift 会重建索引,破坏了原来的键值对关系
 		$this->assign("typeList", $type);
 		// $this->assign("datalist", $datalist);
 		$this->assign("totalCount", $count);
@@ -42,7 +43,7 @@ class DepartmentController extends CommonController {
 	}
 
 
-	public function getList(){
+	/*public function getList(){
 		$result  = $this->_getList();
 		$list = $result['list'];
 		foreach ($list as $key => $value) {
@@ -50,8 +51,11 @@ class DepartmentController extends CommonController {
 		}
 		$result['list'] = $list;
 		$this->ajaxReturn($result);
-	}
+	}*/
 
+	/**
+	* 标记为废弃
+	*/
 	public function getTopD(){
 		// $this->M->where(array('type'=>array('EQ', I('get.type')-1)));
 		$type = I('get.type');
@@ -73,6 +77,11 @@ class DepartmentController extends CommonController {
 			$this->M->field('id,name,level')->order('level asc ,id asc')->select()
 		);
 	}
+
+	public function getDivision(){
+		$this->ajaxReturn( D('DepartmentDivision')->getAll('id,name') );
+	}
+
 
 	/**
 	* 用user_id 得到 phone realname
