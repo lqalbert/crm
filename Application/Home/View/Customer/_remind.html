@@ -1,7 +1,7 @@
 <el-dialog title="客户提醒" v-model="addRemindFormDialog" @open="beforeAddRemind">
   <el-form  ref="addRemindForm" :label-width="dialogLabelWidth" :model="addRemindForm">
   <el-row>
-    <el-col :span="8">
+    <el-col :span="12">
       <el-form-item label="客户姓名"  prop="name">
         <el-input v-model="addRemindForm.name" :disabled="true"></el-input>
       </el-form-item>
@@ -21,14 +21,14 @@
 
   <el-row>
 
-   <el-col >
+   <el-col :span="14">
     <el-form-item label="备注"  prop="remark">
       <el-input
       type="textarea"
       :autosize="{ minRows: 2, maxRows: 4}"
       placeholder="请输入内容,限200个字哦"
       v-model="addRemindForm.remark">
-    </el-input>
+      </el-input>
     </el-form-item>
    </el-col>
 

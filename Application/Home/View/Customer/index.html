@@ -3,7 +3,7 @@
   <style>
     .superaddition{
       height:44px;
-      widht:200px;
+      width:400px;
       position: relative;
       top : 12px;
       z-index: 50;
@@ -12,6 +12,9 @@
     .el-tabs__header{
       border-top:2px solid #1AA094;
       border-bottom: 1px solid #1aa094;
+    }
+    .el-dialog .el-tabs__header{
+      border-top:none;
     }
     .el-tabs--border-card .el-tabs__item{
       border-left: none;
@@ -54,15 +57,15 @@
 	<el-row>
   	<el-col :span="24">
   		<el-form :inline="true" ref="searchForm" :model="searchForm">
-  		  <el-form-item prop="name" style="width:220px">
+  		  <el-form-item prop="name" style="width:170px">
   		    <el-input v-model="searchForm.name" size="small" placeholder="客户姓名|手机|qq|微信号"></el-input>
   		  </el-form-item>
 
-        <el-form-item prop="group" style="width:80px">
+<!--         <el-form-item prop="group" style="width:80px">
           <el-select v-model="searchForm.group" size="small" placeholder="请选择">
             <el-option v-for="item in searchGroup" :label="item.key" :value="item.value" :disabled="item.disabled"></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
 
         <el-form-item prop="field" v-show="false">
           <input type="hidden" size="small" v-model="searchForm.field">
@@ -70,14 +73,21 @@
 
         <el-form-item>
           <el-button type="info" size="small" icon="search" @click="loadDatalist">查询</el-button> 
+          
+          <el-tooltip content="录入高级查询条件"  style="margin-left:10px;">
+            <el-button  @click="openDialog('advancedQuery')" size="small" type="primary">{:L('ADVANCED_QUERY')}</el-button>
+          </el-tooltip>
 
-          <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start">
+          <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
             <el-button icon="loading" size="small" @click="searchReset">重置</el-button>
           </el-tooltip>
 
+          <el-tooltip content="录入新的客户" placement="bottom-start"  style="margin-left:10px;">
+            <el-button  @click="openDialog('add')" size="small" icon="plus" type="primary">{:L('ADD')}</el-button>
+          </el-tooltip>
 
           <el-tooltip content="本人跟踪的客户" placement="bottom-start">
-            <el-badge :value="{$aggregation.log}" :max="9" style="margin-left:15px;">
+            <el-badge :value="{$aggregation.log}" :max="9" style="margin-left:10px;">
               <el-button type="info" size="small" @click="setField('log')">跟踪</el-button>
             </el-badge>
           </el-tooltip>
@@ -97,7 +107,7 @@
 
          <el-tooltip content="本人把客户转给他人的客户(分成)" placement="bottom-start">
             <el-badge :value="{$aggregation.transfto}" :max="9" style="margin-left:15px;">
-              <el-button size="small" type="info" @click="setField('transfto')">转让</el-button>
+              <el-button type="info" size="small" @click="setField('transfto')">转让</el-button>
             </el-badge>
           </el-tooltip>
 
@@ -115,7 +125,7 @@
           </el-tooltip> -->
           <el-tooltip content="本人跟踪且成交了的客户" placement="bottom-start">
             <el-badge :value="{$aggregation.type}" :max="9" style="margin-left:15px;">
-              <el-button type="success" size="small" @click="setField('type')">服务</el-button>
+              <el-button type="info" size="small" @click="setField('type')">服务</el-button>
             </el-badge>
           </el-tooltip>
 
@@ -135,21 +145,12 @@
             <el-button type="warning" size="small" @click="openDialog('importc')" >客户导入</el-button>
           </el-tooltip>
 
-
-          <el-tooltip content="录入高级查询条件"  style="margin-left:10px;">
-            <el-button size="small"  @click="openDialog('advancedQuery')"  type="primary">{:L('ADVANCED_QUERY')}</el-button>
-          </el-tooltip>
-
           <el-tooltip content="客户预查" placement="right"  style="margin-left:10px;">
             <el-button size="small"  @click="openDialog('preCheck')" type="primary">{:L('CUSTOMER_PRE_CHECK')}</el-button>
           </el-tooltip>
 
           <el-tooltip content="索取统计" placement="right"  style="margin-left:10px;">
             <el-button size="small"  @click="openDialog('exactsCon')" type="primary">{:L('EXACTS_CON')}</el-button>
-          </el-tooltip>
-
-          <el-tooltip content="录入新的客户" placement="right"  style="margin-left:10px;">
-            <el-button size="small"  @click="openDialog('add')" icon="plus" type="primary">{:L('ADD')}</el-button>
           </el-tooltip>
 
           <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:10px;">
@@ -202,17 +203,17 @@
             </template>
           </el-table-column>
 
-          <el-table-column align="left" prop="qq_nickname" label="QQ昵称"  width="140"></el-table-column>
+          <el-table-column align="left" prop="qq_nickname" label="QQ昵称"  width="170"></el-table-column>
 
   	      <el-table-column prop="phone" label="手机" align="center" width="130"></el-table-column>
 
-          <el-table-column align="left" prop="weixin" label="微信号" align="left" width="140">
+          <el-table-column align="left" prop="weixin" label="微信号" align="left" width="170">
             <template scope="scope">
               {{ scope.row.weixin }}
             </template>
           </el-table-column>
 
-          <el-table-column align="left" prop="weixin_nickname" label="微信昵称" align="left" width="140">
+          <el-table-column align="left" prop="weixin_nickname" label="微信昵称" align="left" width="170">
             <template scope="scope">
               {{ scope.row.weixin_nickname }}
             </template>
@@ -248,7 +249,6 @@
   <!-- toolbar -->
   <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
 
-
     <el-col :span="12">
       <div class="grid-content bg-purple-light pull-right">
 
@@ -263,6 +263,7 @@
   </div>
 
   <div id="app2" class="b" style="margin:5px -10px 5px;">
+    <el-row>
     <div class="superaddition">
       <el-tooltip content="选择客户录入跟踪信息" placement="right">
         <el-button size="small" @click="openDialog('addTrack')" type="primary" style="margin-left:10px;">录入跟踪</el-button>
@@ -289,24 +290,30 @@
         <el-tabs  type="border-card">
           <el-tab-pane label="跟踪记录">
             <el-table :data="tableData"  empty-text="请点击客户显示跟踪信息" border style="width: 100%" >
-              <el-table-column type="selection"  width="50" >
+              <el-table-column prop="user" label="操作员工" align="center">
               </el-table-column>
-              <el-table-column prop="name" label="客户姓名" width="180" align="left">
+
+              <el-table-column prop="type" label="客户类型" align="center">
               </el-table-column>
+
+              <el-table-column prop="name" label="客户姓名" width="180" align="center">
+              </el-table-column>
+
+              <el-table-column prop="content"   label="内容" align="center">
+              </el-table-column>
+
               <el-table-column prop="created_at" label="跟踪时间" width="180" align="center">
               </el-table-column>
-              <el-table-column prop="track_text" label="跟踪类型" align="left">
+
+              <el-table-column prop="track_text" label="跟踪类型" align="center">
               </el-table-column>
-              <el-table-column prop="content"   label="内容" align="left">
-              </el-table-column>
-              <el-table-column prop="user" label="操作员工" align="left">
-              </el-table-column>
+
             </el-table>
           </el-tab-pane>
 
           <!-- <el-tab-pane label="软件账号">软件账号</el-tab-pane>
-          <el-tab-pane label="通话记录">通话记录</el-tab-pane>
-          <el-tab-pane label="客户资料">客户资料</el-tab-pane> -->
+          <el-tab-pane label="通话记录">通话记录</el-tab-pane> -->
+          <el-tab-pane label="客户资料">客户资料</el-tab-pane>
         </el-tabs>
      </el-col>
     </el-row>
@@ -328,7 +335,7 @@
   <!-- 编辑 -->
   <include file="_edit" />
   <!-- 显示客户一般资料 -->
-  <include file="_userInfo"/>
+ <!--  <include file="_userInfo"/> -->
   <!-- 录入跟踪  -->
   <include file="_track" />
   <!-- / 录入跟踪 -->
@@ -348,13 +355,11 @@
   <include file="_detail"/>
   <!-- /客户全部资料 -->
   <include file="_importd" />
-
-
 </div>
+
 </div>
 </block>
 <block name="scripts">
-  <script src="__PUBLIC__/js/jquery.1.11.min.js"></script>
 <script>
 function toInt(v){
   return parseInt(v);
@@ -387,6 +392,7 @@ function toInt(v){
     }
   }
   window.defaultOption.setDatas({
+    gridData:[],
     ddprops:'name',
     dialogVisible:false,
     sb:[],
@@ -430,42 +436,52 @@ function toInt(v){
         
       ],
       phone:[
-        //{ required: true, message: '请输入客户手机', trigger: 'blur' },
+        { required: true, message: '请输入客户手机', trigger: 'blur' },
         //{ type: 'number', message: '手机必须为数字'},
+        { validator: checkPhone, trigger: 'blur' }
+      ],
+      phone2:[
         { validator: checkPhone, trigger: 'blur' }
       ],
       qq:[
         //{ type: 'number', message: 'QQ号必须为数字'},
         { validator: checkQQ, trigger:'blur' },
       ],
+      qq2:[
+        { validator: checkQQ, trigger:'blur' },
+      ],
       type:[
         { required:true, message:'请选择客户类型',trigger:'blur'},
+      ],
+      money:[
+        { required:true, message:'请选择客户资料量',trigger:'blur'},  
       ],
     },
     editRules:{
       name:[
         { required: true, message: '请输入客户姓名', trigger: 'blur' },
       ],
-      phone:[
-        //{ required: true, message: '请输入客户手机', trigger: 'blur' },
-        //{ type: 'number', message: '手机必须为数字'},
+      phone2:[
         { validator: checkPhone, trigger: 'blur' }
       ],
-      qq:[
-        //{ type: 'number', message: 'QQ号必须为数字'},
+      qq2:[
         { validator: checkQQ, trigger:'blur' },
       ],
       type:[
         { required:true, message:'请选择客户类型',trigger:'blur'},
       ],
+      money:[
+        { required:true, message:'请选择客户资料量',trigger:'blur'},
+      ],
     },
   }).setForm('search', {
     name:'',
     field: '',
-    group:'user_id'
+    group:'user_id',
+    ctrl:'search',
   }).setForm('add',{
     name:"",
-    type:"",
+    type:"C",
     phone:'',
     phone2:"",
     qq:'',
@@ -490,14 +506,16 @@ function toInt(v){
     intention:'',
     source:'',
     remark:"",
-  }).setForm('exactsCon',{
+  }).setForm('advancedQuery',{
+    start:'',
+    end:'',
+    type:'',
+    object:'user',
+    ctrl:'advance',
+  },true).setForm('exactsCon',{
     reply:'',
   },true).setForm('preCheck',{
     reply:'',
-  },true).setForm('advancedQuery',{
-    dist:'',
-    type:'',
-    object:'',
   },true).setForm('edit',{
     id:"",
     name:"",
@@ -526,7 +544,7 @@ function toInt(v){
     intention:'',
     source:'',
     remark:"",
-  }).setForm('addTrack',{
+  },true).setForm('addTrack',{
     cus_id:"",
     next_datetime:'',
     track_type:'',
@@ -715,16 +733,18 @@ function toInt(v){
 
     this.dialogLabelWidth = "100px";
   }).setMethod('trackLog',function(row,event,column){
-        //this.$refs.select.toggleRowSelection(row);
+        this.$refs.select.toggleRowSelection(row);
         this.$http.post('{:U(trackInfo)}',row).then(function(response){
           this.tableData = response.body;
         },function(response){
           console.log("操作失败");
         });
   }).setMethod('userInfo',function(row,event){
-      this.dialogVisible=true;
-      this.sb=row;
-      //this.$refs.select.toggleRowSelection(row);
+      var index = this.dataList.indexOf(row);
+      this.handleEdit(index, row);
+      //this.dialogVisible=true;
+      //this.sb=row;
+      this.$refs.select.toggleRowSelection(row);
   }).setMethod('setField', function(v){
       this[FormName.getFormName('search')].field = v;
       this[FormName.getFormName('search')].group = 'user_id';
@@ -753,6 +773,35 @@ function toInt(v){
     this.advancedQueryForm.start = v;
   }).setMethod('endDateChange', function(v){
     this.advancedQueryForm.end = v;
+  }).setMethod('advancedQueryReset',function(){
+    this.$refs.advancedQueryForm.resetFields();
+  }).setMethod('advanceSearch',function(){
+
+      var vmThis = this;
+      var params = {p:this.currentPage};
+      for (var x in this.advancedQueryForm ){
+        if (this.advancedQueryForm[x]!="") {
+          params[x] = this.advancedQueryForm[x];
+        }
+      }
+      this.$http.get(page.listUrl, {params:params}).then(function(response){
+        vmThis.advancedQueryFormDialog = false;
+        // 在显示之前 对数据进行处理
+        if (this.beforeList) {
+          vmThis.$set(vmThis, 'dataList', this.beforeList(response.body.list));
+        } else {
+          vmThis.$set(vmThis, 'dataList', response.body.list);
+        }
+        vmThis.$set(vmThis, 'total',    parseInt(response.body.count));
+
+      }, function(response) {
+        vmThis.$message({
+          message: '获取数据失败：'+ response.body.info,
+          type: 'error'
+        });
+      }).finally(function(){
+        vmThis.$set(vmThis, 'dataLoad', false);
+    })
   });
 </script>
 <script>
