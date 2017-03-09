@@ -54,59 +54,50 @@
 </block>
 <block name="scripts">
 <script>
-  var selectedId ;
-  var selectedIds = new Array();
   window.defaultOption.setDatas({
 	  loadDataList:[],
   }).setForm('search',{
   	name:'',
-  }).setMethod("handleDeletes", function(ids, url){
-	  if (!arguments[2]) {
-		  url= this.page.deleteUrl;
-	  }
-	  var vmThis = this;
-	  this.$confirm('确定删除?', '提示', {
-		  confirmButtonText: '确定',
-		  cancelButtonText: '取消',
-		  type: 'warning'
-	  }).then(function(){
-		  /*console.log(  );
-		  return false;*/
-		  vmThis.$http.post(url, {ids:selectedIds}).then(function(response){
+  }).setMethod("handleDeletes", function(url){
+	  if(this.multipleSelection.length <= 0){
+		  this.$message.error('请先选择消息');
+		  return false;
+	  }else{
+		  if (!arguments[2]) {
+			  url= this.page.deleteUrl;
+		  }
+		  var selectedIds = new Array();
+		  for(var i=0; i<this.multipleSelection.length; i++){
+			  selectedIds[i] = this.multipleSelection[i].id;
+		  }
+		  var vmThis = this;
+		  this.$confirm('确定删除?', '提示', {
+			  confirmButtonText: '确定',
+			  cancelButtonText: '取消',
+			  type: 'warning'
+		  }).then(function(){
+			  vmThis.$http.post(url, {ids:selectedIds}).then(function(response){
+				  vmThis.$message({
+					  type: 'success',
+					  message: '删除成功!'
+				  });
+				  vmThis.loadDatalist();
+			  }, function(response){
+				  vmThis.$message({
+					  type: 'error',
+					  message: '删除失败'
+				  });
+			  })
+		  }).catch(function() {
 			  vmThis.$message({
-				  type: 'success',
-				  message: '删除成功!'
+				  type: 'info',
+				  message: '已取消删除'
 			  });
-
-			  // vmThis.dataList.splice(index, 1);
-
-			  vmThis.loadDatalist();
-			  //this.dataLoad = true;
-			  // this.loadDatalist();
-
-		  }, function(response){
-			  vmThis.$message({
-				  type: 'error',
-				  message: '删除失败'
-			  });
-		  })
-	  }).catch(function() {
-		  vmThis.$message({
-			  type: 'info',
-			  message: '已取消删除'
 		  });
-	  });
+	  }
+
   }).setMethod('handleSelectionChange',function(val){
 	  this.multipleSelection = val;
-	  selectedId = this.multipleSelection;
-	  for(var i=0; i<selectedId.length; i++){
-		  selectedIds[i] = selectedId[i].id;
-	  }
-	  if(selectedId.length < selectedIds.length){
-		  selectedIds.pop();
-	  }
-//	  console.log( selectedIds );
-	  return selectedIds;
   });
 </script>
 </block>
