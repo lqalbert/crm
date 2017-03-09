@@ -141,16 +141,7 @@ class CustomerModel extends Model {
 
     protected $_validate = array(
     		array('name','require', '姓名必须！'), 
-        array('phone','/^1[34578]\d{9}$/','手机号格式错误',2,'regex'),
-        array('phone','checkPhone',      '手机号已经存在！', self::VALUE_VALIDATE, 'callback', self::MODEL_INSERT), // 插入时 验证phone字段是否唯一
-        array('phone','',                '手机号已经存在！', self::VALUE_VALIDATE, 'unique',   self::MODEL_UPDATE), // 更新时 验证phone字段是否唯一
 
-        array('qq',   'number','QQ号格式错误',2),
-    		array('qq',   'checkQQ',         'QQ号已经存在！',   self::VALUE_VALIDATE, 'callback', self::MODEL_INSERT), // 插入时 验证qq字段是否唯一
-        array('qq','',                   'QQ号已经存在！', self::VALUE_VALIDATE,   'unique',   self::MODEL_UPDATE), // 更新时 验证phone字段是否唯一
-
-    		array('weixin','checkWx',       '微信号已经存在！', self::VALUE_VALIDATE,    'callback', self::MODEL_INSERT), // 验证微信号是否唯一
-        array('weixin','',              '微信号已经存在！', self::VALUE_VALIDATE,    'unique',   self::MODEL_UPDATE), // 更新时 验证phone字段是否唯一
     );
 
     protected $_auto = array(
@@ -165,51 +156,44 @@ class CustomerModel extends Model {
       }
     }
 
-    /**
-    * 检查手机有没有重复
-    * 如果有 则要添加重复记录
-    *
-    */
-    public function checkPhone($data){
-      $re = $this->field('id')->where(array('phone'=>$data))->find();
-      if ($re) {
-        D('CustomerConflict')->addPhone($re['id']);
+    
+
+    public function add(){
+      //开启事务
+      $this->startTrans();
+      $id = parent::add();
+      if ($id == false) {
+        $this->rollback();
         return false;
-      } else {
-        return true;
       }
+
+
+      $d = D('CustomerContact')->create();
+      if ($d == false) {
+        $this->rollback();
+        $this->error = D('CustomerContact')->getError();
+        return false;
+      }
+
+      $d->is_main = 1;
+      if (D('CustomerContact')->add($d)) {
+        $this->commit();
+        return true;
+      }else{
+        $this->error = D('CustomerContact')->getError();
+        $this->rollback();
+        return false;
+      }
+
+
+
+      /*$this->rollback();
+
+
+      $this->commit();*/
     }
 
 
-    /**
-    * 检查QQ有没有重复
-    * 如果有 则要添加重复记录
-    *
-    */
-    public function checkQQ($data){
-      $re = $this->field('id')->where(array('qq'=>$data))->find();
-      if ($re) {
-        D('CustomerConflict')->addQQ($re['id']);
-        return false;
-      } else {
-        return true;
-      }
-    }
-
-    /**
-    * 检查weixin有没有重复
-    * 如果有 则要添加重复记录
-    *
-    */
-    public function checkWx($data){
-      $re = $this->field('id')->where(array('weixin'=>$data))->find();
-      if ($re) {
-        D('CustomerConflict')->addWx($re['id']);
-        return false;
-      } else {
-        return true;
-      }
-    }
 
 
     /**
@@ -379,5 +363,72 @@ class CustomerModel extends Model {
       } else {
         return $this->source;
       }
-    }         
+    } 
+
+    /**
+    * 用于索取
+    * 改变服务的员工即改变 salesman_id 
+    * 重置service_time 为当前的时间戳
+    * 添加一条被索取的纪录
+    * 通知被索取的员工
+    * （后面两点可以用异步来实现的）
+    *
+    * @param cus_id int 客户id
+    * @param user_id int 索取的员工id
+    *
+    * @return boolean true false
+    */
+    public function changeSalesman($cus_id, $user_id) {
+      $condition = array('id'=>$cus_id);
+      $old_userid = $this->where($condition)->getField('salesman_id');
+
+      if ($old_userid == $user_id) {
+        $this->error = "不能索取你自己的客户";
+        return false;
+      }
+
+      $this->startTrans();
+
+      //索取
+      $data = array(
+        'salesman_id'=>$user_id,
+        '重置service_time'=>time()
+      );
+      $re = $this->data($data)->where($condition)->save();
+      if (!$re) {
+        $this->rollback();
+        $this->error = "索取失败";
+        return false;
+      }
+
+      //添加记录 感觉下面的操作在这个事务以外也可以，似乎更合理
+      // 赶时间 先这样了
+      $logData = array(
+          'from_id'=>$old_userid,
+          'to_id'  =>$user_id,
+          'cus_id' =>$cus_id
+      );
+      $re = M('customers_pulls')->data($logData)->add();
+
+      if (!$re) {
+        $this->rollback();
+        $this->error = "索取日志添加失败";
+        return false;
+      }
+      //通知被索取的员工
+      /*$re = D('MsgBox')->add(array(
+          'title'=>"索取通知",
+          'content'=>'您有一名客户被 索取',
+          'to_id'  => $old_userid,
+          'from_id'=> $user_id
+        ));
+      if (!$re) {
+        $this->rollback();
+        $this->error = "索取通知发送失败";
+        return false;
+      }*/
+      $this->commit();
+
+      return true;
+    }    
 }

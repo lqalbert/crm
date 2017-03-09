@@ -10,7 +10,7 @@
                 <el-col :span="24">
                     <el-form :inline="true"  ref="searchForm" :model="searchForm">
                       <el-form-item prop="name" style="width:280px">
-                       <el-input v-model="searchForm.name"  placeholder="QQ|手机号|微信号|座机号|姓名|身份证" >
+                       <el-input v-model="searchForm.name"  placeholder="QQ|手机号|微信号|姓名" >
                        </el-input>
                       </el-form-item>
                       <el-form-item> 
@@ -18,6 +18,7 @@
                       </el-form-item>
                     </el-form>
                 </el-col>
+
             </el-row>
             <!-- / search form -->
 
@@ -26,52 +27,28 @@
                 <el-col :span="24">
                     <el-table 
                   :data="dataList" 
-                  border  
-                  id="he"
+                  border
                   v-loading="dataLoad" 
                   element-loading-text="{:L('DATA_LOGIN')}"
                   >
-            
-
-                    <el-table-column prop="name"  label="客户姓名" width="140" align="center">
+                    <el-table-column prop="name"  label="客户姓名" width="140">
                     </el-table-column>
-                    <el-table-column prop="sex"  label="性别" width="80" align="center">
-                      <template scope="scope">
-                        {{ getType(scope.row.sex, 'sexType') }}
-                      </template>
-                    </el-table-column>
-                    <el-table-column prop="type" label="客户类型" width="180" align="center">
+                    
+                    <el-table-column prop="type" label="客户类型"  :context="_self">
                       <template scope="scope">
                         {{ getType(scope.row.type, 'customerType') }}
                       </template>
                     </el-table-column>
-                    <el-table-column prop="phone" label="手机" align="center" width="140">
+                    <el-table-column  prop="user_name" label="跟踪员工" align="center" >
                     </el-table-column>
-                    <el-table-column prop="qq" label="QQ号" align="center" width="160">
-                      
-                        <template scope="scope">
-                          {{ scope.row.qq }}
-                          <a v-if="scope.row.qq" :href="getTenct(scope.row.qq)">
-                            <img width="30"  src="__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg" alt="">
-                          </a>
-                        </template>
-                      
-                    </el-table-column>
-                    <el-table-column prop="qq_nickname" label="QQ昵称" align="center" width="140">
-                    </el-table-column>
-                    <el-table-column  label="地区" align="center" width="135">
+
+                    <el-table-column  label="操作" align="center" :context="_self">
                       <template scope="scope">
-                         {{ scope.row.province_name+"-"+scope.row.city_name }}
+                       <el-button type="primary" size="small" v-if="scope.row.s<=0" @click="getCustomer(scope.row.id)">索取</el-button>
                       </template>
+                    
                     </el-table-column>
-                    <el-table-column  prop="user_name" label="跟踪员工" align="center" width="200">
-                      
-                    </el-table-column>
-                   
-                     <el-table-column  prop="lock_track" label="最后跟踪时间" align="center" >
-                    </el-table-column> 
-                    <!--<el-table-column  prop="ser_track" label="服务方最后跟踪时间" align="center" width="175">
-                    </el-table-column>  -->
+
 
                   </el-table>
                 </el-col>
@@ -82,10 +59,6 @@
                 <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
                   <el-col :span="12">
                   <div class="grid-content bg-purple">
-                    <el-button-group>
-                        
-
-                    </el-button-group>
                     
                   </div>
                   </el-col>
@@ -108,37 +81,37 @@
 
     <script>
         page.searchUrl="{:U('serach')}";
+        page.getUserUrl = "{:U('getUser')}";
         window.defaultOption.setDatas({
           customerType:{:json_encode($customerType)},
-          sexType:{:json_encode($sexType)},
+          isShow:false
         }).setForm('search',{
             name:""
         }).setMethod('searchCustomer', function(){
            var vmThis = this;
+           this.dataLoad = true;
            vmThis.$http.get(page.searchUrl, {params:{name:this.searchForm.name}}).then(function(response){
               vmThis.$set(vmThis, 'dataList', response.body.list);
               if (vmThis.dataList.length==0) {
-                vmThis.$alert('该客户还未锁定', '消息', {
-                    confirmButtonText: '确定',
-                  });
+                  this.$message('该客户还未锁定');
               }
+              vmThis.dataLoad  = false;
            }, function(response){
               vmThis.$message.error('错了哦，这是一条错误消息');
+               vmThis.dataLoad  = false;
            })
         }).setMethod('getType', function(type, field){
             return this[field][type];
+        }).setMethod('getCustomer', function(id){
+          var vmThis = this;
+           
+           vmThis.$http.post(page.getUserUrl, {id:id}).then(function(response){
+              vmThis.$message.success(response.body.info);
+           }, function(response){
+              vmThis.$message.error(response.body.info);
+           })
+        }).setMethod('closeAlert', function(){
+          this.isShow = false;
         })
-    </script>
-    <script>
-
-
-        // window.vmMethods.set("handleClick", function(index, row){
-        //  this.dialogEditID = true;
-        // })
-
-        // window.vmMethods.set("handleCurrentChange", function(page){
-            
-        // })
-        
     </script>
 </block>

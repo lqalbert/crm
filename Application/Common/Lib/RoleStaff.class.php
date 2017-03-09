@@ -4,7 +4,7 @@ namespace Common\Lib;
 class RoleStaff {
     
     public function setMemberUserCondition($m){
-        $m->where(array("user_id"=> session('uid')));
+        $m->where(array("salesman_id"=> session('uid')));
     }
 
 

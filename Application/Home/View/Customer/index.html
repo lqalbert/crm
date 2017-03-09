@@ -3,7 +3,7 @@
   <style>
     .superaddition{
       height:44px;
-      widht:200px;
+      width:400px;
       position: relative;
       top : 54px;
       z-index: 50;
@@ -72,7 +72,7 @@
           <el-button type="info" size="small" icon="search" @click="loadDatalist">查询</el-button> 
 
           <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start">
-            <el-button icon="loading" size="small" @click="searchReset">重置</el-button>
+            <el-button  size="small" @click="searchReset">重置</el-button>
           </el-tooltip>
 
 
@@ -108,11 +108,6 @@
             </el-badge>
           </el-tooltip>
 
-          <!-- <el-tooltip content="本人单独跟踪的客户(不分成)" placement="bottom-start">
-            <el-badge :value="1" :max="9" style="margin-left:15px;">
-              <el-button type="info"  @click="setField('')">锁定</el-button>
-            </el-badge>
-          </el-tooltip> -->
           <el-tooltip content="本人跟踪且成交了的客户" placement="bottom-start">
             <el-badge :value="{$aggregation.type}" :max="9" style="margin-left:15px;">
               <el-button type="success" size="small" @click="setField('type')">服务</el-button>
@@ -132,7 +127,7 @@
           </el-tooltip>
 
           <el-tooltip content="导入我的客户" placement="bottom-start" style="margin-left:15px;">
-            <el-button type="warning" size="small" @click="openDialog('importc')" >客户导入</el-button>
+            <el-button type="warning" size="small" @click="openDialog('importc')" :disabled="true">客户导入</el-button>
 
             <el-badge :value="{$aggregation.conflict}" :max="9" style="margin-left:10px;">
     		      <el-button type="warning" @click="setField('conflict')">冲突</el-button>
@@ -149,7 +144,7 @@
           </el-tooltip>
 
           <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:10px;">
-            <el-button icon="loading" @click="refresh" type="danger">刷新</el-button>
+            <el-button @click="refresh" type="danger">刷新</el-button>
           </el-tooltip>
 
   		  </el-form-item>

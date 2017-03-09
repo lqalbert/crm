@@ -6,15 +6,17 @@ class PreCheckController extends CommonController {
 
     public function index(){
         $this->assign('customerType', $this->M->getType());
-        $this->assign('sexType',      $this->M->getSexType());
+        $this->assign('s_time', 6*30*86400); //6个月
         $this->display();
     }
 
 
 
+
+
     public function serach(){
         $result = $this->_getList();
-        $this->setUserName($result['list']);
+        // var_dump($this->M->getLastSql());
         if (IS_AJAX) {
             $this->ajaxReturn($result); 
         }  else {
@@ -23,22 +25,31 @@ class PreCheckController extends CommonController {
     }
 
 
-    public function setUserName(&$list){
-        foreach ($list as $key => $value) {
-            if ($value['user_id']) {
-                $list[$key]['user_name'] = M('user_info')->where(array('user_id'=>$value['user_id']))->getField('realname');
-            } else {
-                $list[$key]['user_name'] = "";
-            }
-        }
-    }
-
     public function setQeuryCondition(){
-        if (I('get.name', null)) {
-            $this->M->where(array("name|phone|qq|phone2|weixin"=> array('like', I('get.name')."%")));
+        $queryName = I('get.name', null);
+
+        $sixMonthAgo = time()-15552000;
+
+        $this->M->field('customers_basic.id,customers_basic.name,customers_basic.type, (customers_basic.service_time-'.$sixMonthAgo.') as s, ui.realname as user_name')
+                ->join('inner join customers_contacts as cc1 on customers_basic.id = cc1.cus_id')
+                ->join('left join user_info as ui on customers_basic.salesman_id = ui.user_id');
+
+        if (!empty($queryName)) {
+            $this->M->where(array("cc1.phone|cc1.qq|cc1.weixin|name"=> array('like', I('get.name')."%")));
             //var_dump($this->M->getLastSql());
         } else {
-            $this->M->where(array("phone"=> '00000000000000000000000'));
+            $this->M->where(array("name"=> '00000000000000000000000'));
+        }           
+    }
+
+
+    public function getUser(){
+        $id = I("post.id");
+        $re = $this->M->changeSalesman($id, session('uid'));
+        if ($re) {
+            $this->success('索取成功');
+        } else {
+            $this->error('索取失败'. $this->M->getError());
         }
     }
 

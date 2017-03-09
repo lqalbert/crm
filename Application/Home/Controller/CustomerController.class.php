@@ -79,7 +79,7 @@ class CustomerController extends CommonController {
 
         switch (I('get.group',"user_id")) {
             case 'user_id':
-                $this->M->where(array("user_id"=> session('uid')));
+                // $this->M->where(array("salesman_id"=> session('uid')));
                 break;
             case 'group':
                 $user = new User();
@@ -135,32 +135,28 @@ class CustomerController extends CommonController {
 				break;
 		}
 
-		// if (I('get.plan', false)) {
-			
-			
-		// }
+        $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id and cc.is_main=1');
 	}
+
+    protected function _getList(){
+        $this->setQeuryCondition();
+        $count = (int)$this->M->count();
+        $this->setQeuryCondition();
+        $list = $this->M->page(I('get.p',0). ','. $this->pageSize)->select();
+
+        $result = array('list'=>$list, 'count'=>$count);
+        
+        return $result;
+    }
+
+
 
     /**
     * 三参 要必填一个
     */
     private function uniquCheck(){
-        if(I('post.phone')=='' && I('post.qq')=='' && I('post.weixin')==''){
-            $this->error('手机/QQ/微信任填其一');
-        }else if(I('post.phone')=='' && I('post.qq')==''){
-            $_POST['phone']= null;
-            $_POST['qq']= null;
-            return true;
-        }else if(I('post.phone')=='' && I('post.weixin')==''){
-            $_POST['phone'] = null;
-            $_POST['weixin']= null;
-            return true;
-        }else if(I('post.qq')=='' && I('post.weixin')==''){
-            $_POST['qq']= null;
-            $_POST['weixin']= null;
-            return true;
-        }else{
-            return true;
+        if (I('post.qq')=='' && I('post.weixin')=='') {
+            $this->error('QQ/微信必填其一');
         }
     }
 
@@ -170,6 +166,10 @@ class CustomerController extends CommonController {
 	*/
 	public function _before_add(){
 		$_POST['user_id'] = session('uid');
+
+        //
+        $_POST['salesman_id'] = $_POST['user_id'];
+        $_POST['service_time'] = time();
 		
 		return $this->uniquCheck();
 	}
@@ -188,7 +188,7 @@ class CustomerController extends CommonController {
             $userlist[] = session('uid');
         }
         // var_dump($userlist);
-        $row = $this->M->where(array('id'=>$id, 'user_id'=>array('in', $userlist) ))->field('id,phone,qq,weixin')->find();
+        $row = $this->M->where(array('id'=>$id, 'salesman_id'=>array('in', $userlist) ))->field('id,phone,qq,weixin')->find();
         if (!$row) {
             $this->error("你没有权限");
         } 
@@ -202,35 +202,8 @@ class CustomerController extends CommonController {
 	* @return boolean
 	*/
 	public function _before_edit(){
-		$this->uniquCheck();
 		$id = I('post.id');
-        $this->authCheck($id);
-        
-		
-        if (I('post.phone') != $row['phone']) {
-            $re = $this->M->where(array('phone'=> I('post.phone'), 'id'=>array('NEQ', $row['id'])))->field('id')->find();
-            if ($re) {
-                D('CustomerConflict')->addPhone($re['id']);
-                $this->error('手机号已存在');
-            }
-        }
-
-        if (I('post.qq') != $row['qq']) {
-            $re = $this->M->where(array('qq'=> I('post.qq'), 'id'=>array('NEQ', $row['id']) ))->field('id')->find();
-            if ($re) {
-                D('CustomerConflict')->addQQ($re['id']);
-                $this->error('QQ号已存在');
-            }
-            
-        }
-
-        if (I('post.weixin') != $row['weixin']) {
-            $re = $this->M->where(array('weixin'=> I('post.weixin'), 'id'=>array('NEQ', $row['id'])))->field('id')->find();
-            if ($re) {
-                D('CustomerConflict')->addWx($re['id']);
-                $this->error('微信号已存在');
-            }
-        }
+        $this->authCheck($id);	
 	}
 
 	/**
