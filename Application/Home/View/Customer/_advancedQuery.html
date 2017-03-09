@@ -1,46 +1,41 @@
-<el-dialog title="录入高级查询条件" v-model="advancedQueryFormDialog">
-<!-- <el-form :model="form"> -->
+<el-dialog title="高级查询" v-model="advancedQueryFormDialog">
 <el-form ref="advancedQueryForm"  :model="advancedQueryForm"  :label-width="dialogLabelWidth">
     <el-row>
-        <el-col :span="24">
-            <el-form :inline="true" ref="advancedQueryForm" :model="advancedQueryForm">
-                <el-form-item prop="dist">
-                    <el-date-picker
-                            v-model="advancedQueryForm.start"
-                            placeholder="请选择起日期"
-                            @change="startDateChange"
-                    >
-                    </el-date-picker>
-                </el-form-item>
-                <el-form-item prop="dist">
-                    <el-date-picker
-                            v-model="advancedQueryForm.end"
-                            placeholder="请选择止日期"
-                            @change="endDateChange"
-                    >
-                    </el-date-picker>
-                </el-form-item>
-
-                <el-form-item prop="type" style="width:160px;">
-                    <el-select v-model="advancedQueryForm.type" placeholder="请选择客户类型" >
-                        <el-option v-for="(type, key) in customerType" :label="type" :value="key" ></el-option>
-                    </el-select>
-                </el-form-item>
-
-                <el-form-item prop="object" style="width:160px;">
-                    <el-select v-model="advancedQueryForm.object" placeholder="请选择对象" >
-                        <el-option label="部门" value="department"></el-option>
-                        <el-option label="小组" value="group"></el-option>
-                        <el-option label="个人" value="user"></el-option>
-                    </el-select>
-                </el-form-item>
-            </el-form>
-        </el-col>
+      <el-col :span="10">
+        <el-form-item prop="start" label="起始时间">
+            <el-date-picker v-model="advancedQueryForm.start" placeholder="请选择起日期" @change="startDateChange">
+            </el-date-picker>
+        </el-form-item>
+      </el-col>
+      <el-col :span="12">
+        <el-form-item prop="end" label="截止时间">
+            <el-date-picker v-model="advancedQueryForm.end" placeholder="请选择止日期" @change="endDateChange">
+            </el-date-picker>
+        </el-form-item>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="10">
+        <el-form-item prop="type" label="客户类型">
+            <el-select v-model="advancedQueryForm.type" placeholder="请选择客户类型" >
+                <el-option v-for="(type, key) in customerType" :label="type" :value="key" ></el-option>
+            </el-select>
+        </el-form-item>
+      </el-col>
+      <el-col :span="12">
+        <el-form-item prop="object" label="组织对象">
+            <el-select v-model="advancedQueryForm.object" placeholder="请选择对象" >
+                <el-option label="个人" value="user"></el-option>
+                <el-option label="小组" value="group"></el-option>
+                <el-option label="部门" value="department"></el-option>         
+            </el-select>
+        </el-form-item>
+      </el-col>
     </el-row>
 </el-form>
     <div slot="footer" class="dialog-footer">
-        <el-button @click="closeDialog('advancedQuery')">取 消</el-button>
-        <el-button type="primary" v-show="!advancedQueryFormSubmitStatus" @click="advancedQueryFormSubmit(page.advancedQueryFormUrl,'advancedQuery')" >确 定</el-button>
-        <el-button type="primary" v-show="advancedQueryFormSubmitStatus" :loading="true" >回复中</el-button>
+        <el-button @click="advancedQueryReset">清空</el-button>
+        <el-button type="primary" v-show="!advancedQueryFormSubmitStatus" @click="advanceSearch" >查询</el-button>
+        <el-button type="primary" v-show="advancedQueryFormSubmitStatus" :loading="true" >查询中</el-button>
     </div>
 </el-dialog>

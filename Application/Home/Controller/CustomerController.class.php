@@ -20,8 +20,8 @@ class CustomerController extends CommonController {
 	public function index () {
 		// $dataList = $this->getList();
         $user = new User();
-        $searchGroup = $user->getRoleObject()
-                            ->getCustomerSearchGroup(array(array('value'=>'user_id','key'=>"本人" ) , array('value'=>'group','key'=>"团组" )));
+        // $searchGroup = $user->getRoleObject()
+        //                     ->getCustomerSearchGroup(array(array('value'=>'user_id','key'=>"本人" ) , array('value'=>'group','key'=>"团组" )));
         $groupMemberList = M('user_info')->where(array('group_id'=>session('account')['userInfo']['group_id']))->getField("user_id,realname");
 
         $this->assign('searchGroup',  $searchGroup);
@@ -68,6 +68,59 @@ class CustomerController extends CommonController {
 		$this->assign('aggregation', $aggregation);
 		$this->display();
 	}
+    
+    /**
+    *
+    * 设置高级查询条件
+    */
+    public function advanceSearch(){
+        switch (I('get.object')) {
+            case 'user':
+                if(I('get.start')=='' && I('get.end')=='' && I('get.type')==''){
+                    $this->M->where(array("user_id"=> session('uid')));
+                }else if(I('get.start')=='' && I('get.end')==''){
+                    $this->M->where(array('type'=>I('get.type'),"user_id"=> session('uid'))); 
+                }else if(I('get.end')=='' && I('get.type')==''){
+                    $start=I('get.start')." 00:00:00";
+                    $this->M->where(array("user_id"=> session('uid'),'created_at'=>array('EGT',$start)));
+                }else if(I('get.start')=='' && I('get.type')==''){
+                    $end=I('get.end')." 23:59:59";
+                    $this->M->where(array("user_id"=> session('uid'),'created_at'=>array('ELT',$start)));
+                }else if(I('get.type')==''){
+                    $start=I('get.start')." 00:00:00";
+                    $end=I('get.end')." 23:59:59";
+                    $this->M->where(array("user_id"=> session('uid'),'created_at'=>array('BETWEEN',array($start,$end))));
+                }else if(I('get.end')==''){
+                    $start=I('get.start')." 00:00:00";
+                    $this->M->where(array('type'=>I('get.type'),"user_id"=> session('uid'),'created_at'=>array('EGT',$start)));
+                }else if(I('get.start')==''){
+                    $end=I('get.end')." 23:59:59";
+                    $this->M->where(array('type'=>I('get.type'),"user_id"=> session('uid'),'created_at'=>array('ELT',$start))); 
+                }else{
+                    $start=I('get.start')." 00:00:00";
+                    $end=I('get.end')." 23:59:59";
+                    $this->M->where(array('type'=>I('get.type'),"user_id"=> session('uid'),'created_at'=>array('BETWEEN',array($start,$end))));    
+                }
+                break;
+            case 'group':
+                $group_id=M('user_info')->where(array('user_id'=>session('uid')))->getField('group_id');
+                $user_id=M('user_info')->where(array('group_id'=>$group_id))->getField('user_id',true);
+                $start=I('get.start')." 00:00:00";
+                $end=I('get.end')." 23:59:59";
+                $this->M->where(array('type'=>I('get.type'),'group_id'=>$group_id,'user_id'=>array('IN',$user_id),'created_at'=>array('BETWEEN',array($start,$end))));
+                break;
+            case 'department':
+                $start=I('get.start')." 00:00:00";
+                $end=I('get.end')." 23:59:59";
+                $department_id=M('user_info')->where(array('user_id'=>session('uid')))->getField('department_id');
+                $user_id=M('user_info')->where(array('department_id'=>$department_id))->getField('user_id',true);
+                $this->M->where(array('type'=>I('get.type'),'department_id'=>$department_id,'user_id'=>array('IN',$user_id),'created_at'=>array('BETWEEN',array($start,$end))));
+                break;
+            default:
+                $this->M->where(array("user_id"=> session('uid')));
+                break;
+        }
+    }
 
 	/**
 	* 设置查询参数
@@ -75,88 +128,83 @@ class CustomerController extends CommonController {
 	* @return null
 	*/
 	public function setQeuryCondition() {
-		// $this->M->where(array("user_id"=> session('uid')));
-
-        switch (I('get.group',"user_id")) {
-            case 'user_id':
-                $this->M->where(array("user_id"=> session('uid')));
-                break;
-            case 'group':
-                $user = new User();
-                $user->getRoleObject()->setMemberUserCondition($this->M);
-                break;
-            case 'precheck':
-
-                break;
-            default:
-                break;
-        }
         
+        if(I('get.ctrl') == 'advance'){   
+           $this->advanceSearch();
+        }else{  
 
-		if (I('get.name')) {
-			$this->M->where(array("name|phone|qq|qq_nickname|weixin"=> array('like', I('get.name')."%")));
-			//var_dump($this->M->getLastSql());
-		}
+            $timeCondition=date("Y-m-d H:i:s",strtotime("-3 month",time()));
+            $this->M->where(array("created_at"=>array('EGT',$timeCondition)));
 
-		// $today = Date("Y-m-d")." 00:00:00" ;
-		$between_today =  $this->getDayBetween();
+            switch (I('get.group',"user_id")) {
+                case 'user_id':
+                    $this->M->where(array("user_id"=> session('uid')));
+                    break;
+                case 'group':
+                    $user = new User();
+                    $user->getRoleObject()->setMemberUserCondition($this->M);
+                    break;
+                case 'precheck':
 
-		switch (I('get.field')) {
-			case 'plan':
-				$this->M->where(array(
-					'plan'=> $between_today
-					));
-				break;
-			case 'log':
-				$this->M->where(array('log_count'=> array('NEQ',0)));
-				break;
-			case 'unlog':
-				$this->M->where(array('log_count'=> 0));
-				break;
-			case 'transfto':
-				$this->M->where(array('transfer_status'=>1, 'transfer_to'=>array('NEQ', 0)));
-				break;
-			case 'transfin':
-				$this->M->where(array('transfer_status'=>array( array('EQ', 1), array('EQ', 2), 'or'), 'transfer_to'=>session('uid')));
-				break;
-			case 'type':
-				$this->M->where(array('type'=>CustomerModel::TYPE_V));
-				break;
-			case 'important':
-				$this->M->where(array('important'=>1));
-				break;
-			case 'conflict':
-				$this->M->where(array(
-					'conflict'=> $between_today
-					));
-				break;
-			default:
-				
-				break;
-		}
+                    break;
+                default:
+                    break;
+            }
 
-		// if (I('get.plan', false)) {
-			
-			
-		// }
+            if (I('get.name')) {
+                $this->M->where(array("name|phone|qq|qq_nickname|weixin"=> array('like', I('get.name')."%")));
+            }
+
+            $between_today =  $this->getDayBetween();
+
+            switch (I('get.field')) {
+                case 'plan':
+                    $this->M->where(array(
+                        'plan'=> $between_today
+                        ));
+                    break;
+                case 'log':
+                    $this->M->where(array('log_count'=> array('NEQ',0)));
+                    break;
+                case 'unlog':
+                    $this->M->where(array('log_count'=> 0));
+                    break;
+                case 'transfto':
+                    $this->M->where(array('transfer_status'=>1, 'transfer_to'=>array('NEQ', 0)));
+                    break;
+                case 'transfin':
+                    $this->M->where(array('transfer_status'=>array( array('EQ', 1), array('EQ', 2), 'or'), 'transfer_to'=>session('uid')));
+                    break;
+                case 'type':
+                    $this->M->where(array('type'=>CustomerModel::TYPE_V));
+                    break;
+                case 'important':
+                    $this->M->where(array('important'=>1));
+                    break;
+                case 'conflict':
+                    $this->M->where(array(
+                        'conflict'=> $between_today
+                        ));
+                    break;
+                default:
+                    
+                    break;
+            }
+        }
+
+        
 	}
 
     /**
     * 三参 要必填一个
     */
     private function uniquCheck(){
-        if(I('post.phone')=='' && I('post.qq')=='' && I('post.weixin')==''){
-            $this->error('手机/QQ/微信任填其一');
-        }else if(I('post.phone')=='' && I('post.qq')==''){
-            $_POST['phone']= null;
+        if(I('post.qq')=='' && I('post.weixin')==''){
+            $this->error('QQ1/微信1二者必填一');
+        }else if(I('post.qq')==''){
             $_POST['qq']= null;
             return true;
-        }else if(I('post.phone')=='' && I('post.weixin')==''){
-            $_POST['phone'] = null;
-            $_POST['weixin']= null;
-            return true;
-        }else if(I('post.qq')=='' && I('post.weixin')==''){
-            $_POST['qq']= null;
+        }else if(I('post.weixin')==''){
             $_POST['weixin']= null;
             return true;
         }else{
