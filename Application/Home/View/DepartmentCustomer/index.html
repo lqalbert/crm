@@ -1,6 +1,14 @@
 <extend name="Common:base" />
 <block name="head">
   <style>
+    .superaddition{
+      height:44px;
+      widht:200px;
+      position: relative;
+      top : 12px;
+      z-index: 50;
+      left:90px;
+    }
     .el-tabs__header{
       border-top:2px solid #1AA094;
       border-bottom: 1px solid #1aa094;
@@ -92,6 +100,18 @@
             <el-button type="warning" @click="setField('conflict')">冲突</el-button>
           </el-tooltip>
 
+          <el-tooltip content="录入高级查询条件"  style="margin-left:10px;">
+            <el-button  @click="openDialog('advancedQuery')"  type="primary">{:L('ADVANCED_QUERY')}</el-button>
+          </el-tooltip>
+
+          <el-tooltip content="客户预查" placement="right"  style="margin-left:10px;">
+            <el-button  @click="openDialog('preCheck')" type="primary">{:L('CUSTOMER_PRE_CHECK')}</el-button>
+          </el-tooltip>
+
+          <el-tooltip content="点击刷新当前页面" placement="right">
+            <el-button @click="refresh" type="danger" style="margin-left:10px;">刷新</el-button>
+          </el-tooltip>
+
         </el-form>
     </el-col>
   </el-row>
@@ -113,45 +133,46 @@
 
         <el-table-column prop="name"  label="客户姓名" width="140" ></el-table-column>
 
-        <el-table-column prop="sex"  label="性别" width="80" >
-          <template scope="scope">
-            {{ getType(scope.row.sex, 'sexType') }}
-          </template>
-        </el-table-column>
+
 
         <el-table-column prop="type" label="客户类型" width="180" >
           <template scope="scope">
             {{ getType(scope.row.type, 'customerType') }}
           </template>
         </el-table-column>
+        <el-table-column  prop="user_id" label="跟踪员工"  width="200">
+
+        </el-table-column>
+        <el-table-column prop="qq" label="QQ号"  width="160">
+          <template scope="scope">
+            {{ scope.row.qq }}
+            <a v-if="scope.row.qq" :href="getTenct(scope.row.qq)">
+              <img width="20"  src="__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg" alt="">
+            </a>
+          </template>
+        </el-table-column>
+        <el-table-column prop="qq_nickname" label="QQ昵称"  width="140"></el-table-column>
 
         <el-table-column prop="phone" label="手机" align="center" width="140"></el-table-column>
 
-          <el-table-column prop="qq" label="QQ号"  width="160">
-            <template scope="scope">
-              {{ scope.row.qq }}
-              <a v-if="scope.row.qq" :href="getTenct(scope.row.qq)">
-                <img width="20"  src="__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg" alt="">
-              </a>
-            </template> 
-        </el-table-column>
-
-        <el-table-column prop="qq_nickname" label="QQ昵称"  width="140"></el-table-column>
-
+        <el-table-column  prop="lock_track" label="最后跟踪时间" align="center" width="175">
+        </el-table-column> 
+        <el-table-column  prop="commission" label="跟踪方比例"  width="110"></el-table-column>
+        <el-table-column  prop="plan" label="计划跟踪时间" align="center" width="175"></el-table-column>
+        <el-table-column  prop="conflict" label="最后冲突时间" align="center" width="175"></el-table-column>
         <el-table-column  label="地区"  width="135">
           <template scope="scope">
-             {{ scope.row.province_name+"-"+scope.row.city_name }}
+            {{ scope.row.province_name+"-"+scope.row.city_name }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="sex"  label="性别" width="80" >
+          <template scope="scope">
+            {{ getType(scope.row.sex, 'sexType') }}
           </template>
         </el-table-column>
 
-        <el-table-column  prop="user_id" label="跟踪员工" align="center" width="200">
-          
-        </el-table-column>
-        <el-table-column  prop="plan" label="计划跟踪时间" align="center" width="175"></el-table-column>
-        <el-table-column  prop="lock_track" label="最后跟踪时间" align="center" width="175">
-        </el-table-column> 
-        <el-table-column  prop="commission" label="跟踪方比例" align="center" width="110"></el-table-column> 
-        <el-table-column  prop="conflict" label="最后冲突时间" align="center" width="175"></el-table-column> 
+
+
         <el-table-column inline-template :context="_self"  fixed="right"  align="center" label="操作" width="160">
           <span>
             <el-button @click="handleDelete($index, row)"  size="small" type="danger">放入回收站</el-button>
@@ -163,26 +184,6 @@
 
   <!-- toolbar -->
   <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
-    <el-col :span="12">
-      <div class="grid-content bg-purple">
-            <span class="wrapper">
-              
-
-              <el-tooltip content="选择客户录入跟踪信息" placement="right">
-                <el-button size="small" @click="openDialog('addTrack')" type="primary" style="margin-left:10px;">录入跟踪</el-button>
-              </el-tooltip>
-
-              
-              <el-tooltip content="选择客户对其转让给他人(暂未实现)" placement="right">
-                <el-button size="small" @click="openDialog('addTransfer')"  type="warning" style="margin-left:10px;">转让</el-button>
-              </el-tooltip>
-
-              <el-tooltip content="点击刷新当前页面" placement="right">
-                <el-button size="small" @click="refresh" type="danger" style="margin-left:10px;">刷新</el-button>
-              </el-tooltip>
-            </span>    
-      </div>
-    </el-col>
 
     <el-col :span="12">
       <div class="grid-content bg-purple-light pull-right">
@@ -198,22 +199,32 @@
   </div>
 
   <div id="app2" class="b" style="margin:5px -10px 5px;">
-    <el-row>
+    <div class="superaddition">
+      <el-tooltip content="选择客户录入跟踪信息" placement="right">
+        <el-button size="small" @click="openDialog('addTrack')" type="primary" style="margin-left:10px;">录入跟踪</el-button>
+      </el-tooltip>
+
+
+      <el-tooltip content="选择客户对其转让给他人(暂未实现)" placement="right">
+        <el-button size="small" @click="openDialog('addTransfer')"  type="warning" style="margin-left:10px;">转让</el-button>
+      </el-tooltip>
+    </div>
+    <el-row style="position: relative;top:-40px;">
      <el-col :span="24">
         <el-tabs type="border-card">
           <el-tab-pane label="跟踪记录">
             <el-table :data="tableData"  empty-text="请点击客户显示跟踪信息" border style="width: 100%" >
-              <el-table-column prop="user" label="操作员工" align="center">
+              <el-table-column prop="user" label="操作员工" >
               </el-table-column>
-              <el-table-column prop="user" label="客户类型" align="center">
+              <el-table-column prop="user" label="客户类型" >
               </el-table-column>
-              <el-table-column prop="name" label="客户姓名" width="180" align="center">
+              <el-table-column prop="name" label="客户姓名" width="180">
               </el-table-column>
-              <el-table-column prop="content"   label="跟踪内容" align="center">
+              <el-table-column prop="content"   label="跟踪内容" >
               </el-table-column>
               <el-table-column prop="created_at" label="跟踪时间" width="180" align="center">
               </el-table-column>
-              <el-table-column prop="track_text" label="跟踪类型" align="center">
+              <el-table-column prop="track_text" label="跟踪类型" >
               </el-table-column>
             </el-table>
           </el-tab-pane>
@@ -242,6 +253,10 @@
   <!-- 客户全部资料 -->
   <include file="_detail"/>
   <!-- /客户全部资料 -->
+  <!-- 录入高级查询条件 -->
+  <include file="_advancedQuery" />
+  <!-- 客户预查 -->
+  <include file="_preCheck" />
 
 
   
@@ -415,7 +430,13 @@ var checkQQ=function(rule,value,callback){
     intention:'',
     source:'',
     remark:"",
-  }).setForm('addTrack',{
+  }).setForm('advancedQuery',{
+    dist:'',
+    type:'',
+    object:'',
+  },true).setForm('preCheck',{
+
+  },true).setForm('addTrack',{
     cus_id:"",
     next_datetime:'',
     track_type:'',
@@ -586,6 +607,22 @@ var checkQQ=function(rule,value,callback){
   }).setMethod('refresh',function(){
     window.location.reload();
 
+  }).setMethod('startDateChange', function(v){
+    this.advancedQueryForm.start = v;
+  }).setMethod('endDateChange', function(v){
+    this.advancedQueryForm.end = v;
+  }).setMethod('searchCustomer', function(){
+    var vmThis = this;
+    vmThis.$http.get(page.searchUrl, {params:{name:this.searchForm.name}}).then(function(response){
+      vmThis.$set(vmThis, 'dataList', response.body.list);
+      if (vmThis.dataList.length==0) {
+        vmThis.$alert('该客户还未锁定', '消息', {
+          confirmButtonText: '确定',
+        });
+      }
+    }, function(response){
+      vmThis.$message.error('错了哦，这是一条错误消息');
+    })
   });
 </script>
 <script>
