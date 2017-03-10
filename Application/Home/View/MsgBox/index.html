@@ -10,7 +10,7 @@
 			       <el-input placeholder="请输入标题关键字" v-model="searchForm.name"></el-input>
 			      </el-form-item>
 			      <el-form-item>
-			       <el-button type="primary" icon="search" @click="loadDataList">查询</el-button>
+			       <el-button type="primary" icon="search" @click="dataReload">查询</el-button>
 			       <el-tooltip content="清空搜索框并刷新表格数据" placement="right">
 			        <el-button icon="loading" @click="searchReset">重置</el-button>
 			       </el-tooltip>
@@ -27,7 +27,8 @@
 		        <el-table-column label="标题" prop="title" align="center" ></el-table-column>
 		        <el-table-column label="内容" prop="content" align="center" ></el-table-column>
 		        <el-table-column label="发送时间" prop="time" align="center" ></el-table-column> 
-		        <el-table-column label="操作人员" prop="from_id" align="center" ></el-table-column>
+		        <el-table-column label="操作人员" prop="from_id" align="center" >
+				</el-table-column>
 		      </el-table>
 		    </el-col>
 		  </el-row>
