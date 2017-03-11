@@ -2,30 +2,36 @@
 namespace Home\Controller;
 use Think\Model;
 use Home\Model\GatherAdviceModel;
-class GatherAdviceController extends CommonController
-{
+class GatherAdviceController extends CommonController{
   protected $table = 'advices_basic';
   protected $pageSize = 11;
-
-
-  public function index()
-  {
-    $gatherAdvice = M('advices_basic');
-    $advices = $gatherAdvice->select();
-
-    $realnames = M('user_info')->where(array('role_id' => 1))->getField("user_id,realname");
-
-    $type = array(
-        "技术建议",
-        "OA问题反馈",
-        "系统制度",
-        "其它建议",
-        "软件功能"
-    );
-    $this->assign('adviceList', $advices);
-    $this->assign('typeList', $type);
-    $this->assign('realnames', $realnames);
+  public function index(){
+    $this->assign('AdviceType', D('GatherAdvice')->getAdviceType());
     $this->display();
+
+  }
+  
+  //表格数据获取
+  public function getList(){
+    $this->setQeuryCondition();
+    $count = (int)$this->M->count();
+    $this->setQeuryCondition();
+    $list = $this->M->page(I('get.p',0). ','. $this->pageSize)->order('id desc')->select();
+    foreach ($list as $k => $v) {
+      $list[$k]['ad_user']=M('user_info')->where(array('user_id'=>$v['ad_user']))->getField('realname');
+      $list[$k]['re_user']=M('user_info')->where(array('user_id'=>$v['re_user']))->getField('realname');
+    }
+    $result = array('list'=>$list, 'count'=>$count);
+    $this->ajaxReturn($result);
+
+  }
+
+  //设置查询
+  public function setQeuryCondition(){
+    if (I('get.name')) {
+      $this->M->where(array("title"=> array('like', "%".I('get.name')."%")));
+    }
+
   }
 
   /**
