@@ -4,16 +4,29 @@ use Home\Model\CustomerModel;
 use Home\Model\CustomerLogModel;
 use Home\Model\RoleModel;
 use Common\Lib\User;
+use Think\Model;
 
 class CustomerController extends CommonController {
+
+    const THREE_MONTH_AGE = 7776000;
+
+
 	protected $table = "customer";
 	protected $pageSize = 11;
 
-	private function getDayBetween(){
+	public function getDayBetween(){
 		$today = Date("Y-m-d")." 00:00:00" ;
 		return   array(
 					array('GT', $today), 
 					array('LT', Date("Y-m-d H:i:s", strtotime("+1 day", strtotime($today))))
+		         );
+	}
+
+	private function getThreeMonthDays(){
+		$today = Date("Y-m-d")." 00:00:00" ;
+		return   array(
+					array('GT', Date("Y-m-d H:i:s", strtotime("-90 day", strtotime($today)))),
+					array('LT', $today)
 		         );
 	}
 
@@ -40,10 +53,15 @@ class CustomerController extends CommonController {
 		$this->assign('Profession',   $this->M->getProfession());
 		$this->assign('Intention',    $this->M->getIntention());
 		$this->assign('Source',       $this->M->getSource());
+
+
+
 		$this->assign('logType',      D('CustomerLog')->getType());
 		$this->assign('steps',        D('CustomerLog')->getSteps());
 		$this->assign('Proportion',   D('CustomerLog')->getProportion());
 		$this->assign('Remind',       D('CustomerLog')->getRemind());
+
+
 
 
 		//统计
@@ -66,8 +84,75 @@ class CustomerController extends CommonController {
 			$aggregation[$value] = $this->M->count();
 		}
 		$this->assign('aggregation', $aggregation);
+        $this->assign('pulled',      $this->getBeenPulld());
 		$this->display();
 	}
+
+    
+    public function setGroupCondition($condition){
+        switch ($condition) {
+                case 'user_id':
+                    $this->M->where(array("salesman_id"=> session('uid')));
+                    break;
+                case 'group':
+                    $user = new User();
+                    $user->getRoleObject()->setMemberUserCondition($this->M);
+                    break;
+                case 'precheck':
+
+                    break;
+                default:
+                    break;
+            }
+    }
+
+    /**
+    * 被索取的数量 
+    * 默认为3个月时间
+    */
+    public function getBeenPulld(){
+        $date = Date("Y-m-d H:i:s", time()-THREE_MONTH_AGE);
+        $c = D('customers_pulls')->where(array('from_id'=> session('uid'), 'created_at'=>array('GT', $date )   ))->count();
+        if ($this->IS_AJAX) {
+            $this->ajaxReturn($c);
+        } else {
+            return $c;
+        }
+    }
+
+
+    /**
+    *
+    * 设置高级查询条件
+    */
+    public function advanceSearch(){
+        $this->setGroupCondition(I('get.group',"user_id"));
+
+        if (I('get.name')) {
+            $this->M->where(array("name"=> array('like', I('get.name')."%")));
+        }
+
+        if (I('get.phone')) {
+            $this->M->where(array("cc.phone"=> array('like', I('get.name')."%")));
+        }
+
+        if(I('get.start')){
+            $this->M->where(array("created_at"=> array('GT', I('get.start'))));
+        }
+
+        if(I('get.end')){
+            $this->M->where(array("created_at"=> array('LT', I('get.end'))));
+        }
+
+
+        if(I('get.track_start')){
+            $this->M->where(array("last_track"=> array('GT', str_replace('/','-',I('get.track_start')))));
+        }
+
+        if(I('get.track_start')){
+            $this->M->where(array("last_track"=> array('LT', str_replace('/','-',I('get.track_start')))));
+        }
+    }
 
 	/**
 	* 设置查询参数
@@ -75,72 +160,84 @@ class CustomerController extends CommonController {
 	* @return null
 	*/
 	public function setQeuryCondition() {
-		// $this->M->where(array("user_id"=> session('uid')));
-
-        switch (I('get.group',"user_id")) {
-            case 'user_id':
-                // $this->M->where(array("salesman_id"=> session('uid')));
-                break;
-            case 'group':
-                $user = new User();
-                $user->getRoleObject()->setMemberUserCondition($this->M);
-                break;
-            case 'precheck':
-
-                break;
-            default:
-                break;
-        }
         
+        if(I('get.ctrl') == 'advance'){   
+           $this->advanceSearch();
+        }else{  
 
-		if (I('get.name')) {
-			$this->M->where(array("name|phone|qq|qq_nickname|weixin"=> array('like', I('get.name')."%")));
-			//var_dump($this->M->getLastSql());
-		}
+            $timeCondition=date("Y-m-d H:i:s",strtotime("-3 month",time()));
+            $this->M->where(array("created_at"=>array('EGT',$timeCondition)));
 
-		// $today = Date("Y-m-d")." 00:00:00" ;
-		$between_today =  $this->getDayBetween();
+            $this->setGroupCondition(I('get.group',"user_id")); ;
 
-		switch (I('get.field')) {
-			case 'plan':
-				$this->M->where(array(
-					'plan'=> $between_today
-					));
-				break;
-			case 'log':
-				$this->M->where(array('log_count'=> array('NEQ',0)));
-				break;
-			case 'unlog':
-				$this->M->where(array('log_count'=> 0));
-				break;
-			case 'transfto':
-				$this->M->where(array('transfer_status'=>1, 'transfer_to'=>array('NEQ', 0)));
-				break;
-			case 'transfin':
-				$this->M->where(array('transfer_status'=>array( array('EQ', 1), array('EQ', 2), 'or'), 'transfer_to'=>session('uid')));
-				break;
-			case 'type':
-				$this->M->where(array('type'=>CustomerModel::TYPE_V));
-				break;
-			case 'important':
-				$this->M->where(array('important'=>1));
-				break;
-			case 'conflict':
-				$this->M->where(array(
-					'conflict'=> $between_today
-					));
-				break;
-			default:
-				
-				break;
-		}
+            if (I('get.name')) {
+                $this->M->where(array("name|cc.phone|cc.qq|cc.qq_nickname|cc.weixin"=> array('like', I('get.name')."%")));
+                // $this->M->where(array("phone"=> array('like', I('get.name')."%")));
+            }
 
-        $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id and cc.is_main=1');
+            $between_today =  $this->getDayBetween();
+
+            switch (I('get.field')) {
+                case 'plan':
+                    $this->M->where(array(
+                        'plan'=> $between_today
+                        ));
+                    break;
+                case 'log':
+                    $this->M->where(array('log_count'=> array('NEQ',0)));
+                    break;
+                case 'unlog':
+                    $this->M->where(array('log_count'=> 0));
+                    break;
+                case 'transfto':
+                    $this->M->where(array('transfer_status'=>1, 'transfer_to'=>array('NEQ', 0)));
+                    break;
+                case 'transfin':
+                    $this->M->where(array('transfer_status'=>array( array('EQ', 1), array('EQ', 2), 'or'), 'transfer_to'=>session('uid')));
+                    break;
+                case 'type':
+                    $this->M->where(array('type'=>CustomerModel::TYPE_V));
+                    break;
+                case 'important':
+                    $this->M->where(array('important'=>1));
+                    break;
+                case 'conflict':
+                    $this->M->where(array(
+                        'conflict'=> $between_today
+                        ));
+                    break;
+                default:
+                    
+                    break;
+            }
+        }
+
+
+       /* $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id and cc.is_main=1');
+                ->join('left join customers_contacts as cc2 on customers_basic.id =  cc2.cus_id and cc2.is_main!=1')
+                ->field('customers_basic.*,cc.qq,cc.phone,cc.weixin,cc.qq_nickname,cc.weixin_nickname,cc2.qq as qq2,cc2.phone as phone2,cc2.weixin as wexin2,cc2.qq_nickname as qq_nickname2,cc2.weixin_nickname as weixin_nickname2');*/
+
 	}
 
     protected function _getList(){
         $this->setQeuryCondition();
+        $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id ');
         $count = (int)$this->M->count();
+        $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id and cc.is_main=1')
+                ->join('left join customers_contacts as cc2 on customers_basic.id =  cc2.cus_id and cc2.is_main!=1')
+                ->field('customers_basic.*,cc.qq,cc.phone,cc.weixin,cc.qq_nickname,cc.weixin_nickname,cc2.qq as qq2,cc2.phone as phone2,cc2.weixin as weixin2,cc2.qq_nickname as qq_nickname2,cc2.weixin_nickname as weixin_nickname2');
+
+
+        if (I('get.sort_field', null)) {
+            $this->M->order(I('get.sort_field')." ". I('get.sort_order'));
+        }
+        if(I('get.ctrl') != 'advance'){ 
+            if (I('get.name')) {
+                $this->M->where(array("cc2.phone|cc2.qq|cc2.qq_nickname|cc2.weixin"=> array('like', I('get.name')."%")));
+            }
+        }
+
+        
         $this->setQeuryCondition();
         $list = $this->M->page(I('get.p',0). ','. $this->pageSize)->select();
 
@@ -151,12 +248,21 @@ class CustomerController extends CommonController {
 
 
 
-    /**
+    /** 
     * 三参 要必填一个
     */
     private function uniquCheck(){
-        if (I('post.qq')=='' && I('post.weixin')=='') {
-            $this->error('QQ/微信必填其一');
+        if(I('post.qq')=='' && I('post.weixin')==''){
+            $this->error('QQ1/微信1二者必填一');
+        }else if(I('post.qq')==''){
+            $_POST['qq']= null;
+            return true;
+        }else if(I('post.weixin')==''){
+            $_POST['weixin']= null;
+            return true;
+        }else{
+            return true;
+
         }
     }
 
@@ -175,6 +281,17 @@ class CustomerController extends CommonController {
 	}
 
     /**
+    * 
+    */
+    /*public function add() { 
+        if (!empty($_POST) && $this->M->create($_POST, Model::MODEL_INSERT) && $this->M->add()) {
+            $this->success(L('ADD_SUCCESS'));
+        } else {
+            $this->error($this->M->getError());
+        }
+    }*/
+
+    /**
     * 如果不是我的客户， 以及不是我团组的客户 就
     * 反回 false
     * 赶进度 暂时 这样写
@@ -188,7 +305,7 @@ class CustomerController extends CommonController {
             $userlist[] = session('uid');
         }
         // var_dump($userlist);
-        $row = $this->M->where(array('id'=>$id, 'salesman_id'=>array('in', $userlist) ))->field('id,phone,qq,weixin')->find();
+        $row = $this->M->where(array('id'=>$id, 'salesman_id'=>array('in', $userlist) ))->field('id')->find();
         if (!$row) {
             $this->error("你没有权限");
         } 
@@ -205,6 +322,59 @@ class CustomerController extends CommonController {
 		$id = I('post.id');
         $this->authCheck($id);	
 	}
+
+
+    /**
+    * 编辑
+    *
+    * 知道 丑丑丑丑丑丑丑丑丑丑丑丑  
+    * if 超过三层了 fuck customerContact 的逻辑需要重构封装 
+    */
+    public function edit() {
+        $this->M->startTrans();
+        if ($this->M->create($_POST, Model::MODEL_UPDATE) && ($this->M->save() !== false) )  {
+            $D_cc  = D('CustomerContact');
+            $D_cc->where(array('is_main'=>1, 'cus_id'=>$_POST['id']))->find();
+            $re = $D_cc->edit($D_cc->getMainPost());
+            if ($re === false) {
+                $this->M->rollback();
+                $this->error($D_cc->getError());
+            }
+
+            $data2 = $D_cc->getSecondPost();
+
+            if ($D_cc->where(array('is_main'=>0, 'cus_id'=>$_POST['id']))->find()) {
+                $re = $D_cc->edit($data2, true);
+                if ($re !== false) {
+                    $this->M->commit();
+                    $this->success('编辑成功1');
+                } else {
+                     $this->M->rollback();
+                    $this->error($D_cc->getError());
+                }
+            } else {
+                // 
+                if ((empty($data2['phone']) && empty($data2['qq']) && empty($data2['weixin']))) {
+                    $this->M->commit();
+                    $this->success('编辑成功2');
+                }
+                $data2['cus_id'] = $_POST['id'];
+                if ( $D_cc->create($data2) && $D_cc->add()  ) {
+                    $this->M->commit();
+                    $this->success('编辑成功3_'.$D_cc->getLastSql());
+                } else {
+                    $this->M->rollback();
+                    $this->error($D_cc->getError());
+                }
+            }
+            $this->M->commit();
+            $this->success('编辑成功4');
+            //$this->success(L('EDIT_SUCCESS'));
+        } else {
+            $this->M->rollback();
+            $this->error($this->M->getError());
+        }
+    }
 
 	/**
 	* 添加跟踪纪录

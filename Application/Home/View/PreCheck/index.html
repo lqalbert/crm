@@ -39,7 +39,9 @@
                         {{ getType(scope.row.type, 'customerType') }}
                       </template>
                     </el-table-column>
-                    <el-table-column  prop="user_name" label="跟踪员工" align="center" >
+                    <el-table-column  prop="user_name" label="跟踪员工"  >
+                    </el-table-column>
+                    <el-table-column  prop="created_at" label="录入时间" align="center" >
                     </el-table-column>
 
                     <el-table-column  label="操作" align="center" :context="_self">
@@ -72,9 +74,6 @@
                 </el-row>
             <!-- / toolbar -->
         </div>
-        
-        
-
     </div>
 </block>
 <block name="scripts">

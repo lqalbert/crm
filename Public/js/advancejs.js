@@ -27,7 +27,7 @@ if (typeof Object.assign != 'function') {
 * 会修改 target
 */
 function Oassign(target, source) {
-	Object.assign(target, source);
+	return Object.assign(target, source);
 }
 // Map 放在这以后用
 if (!window.Map) {

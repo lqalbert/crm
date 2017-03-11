@@ -37,6 +37,22 @@ class DepartmentModel extends Model {
     	}
     }
 
+
+    /**
+    * @param int|array  department_id 
+    *
+    * @return []
+    */
+    public function getAllDepartments($field=null){
+        $this->where(array('status'=>1));
+
+        if (!empty($field)) {
+            $this->field($field);
+        }
+        
+        return $this->select();
+    }
+
     
 
 }

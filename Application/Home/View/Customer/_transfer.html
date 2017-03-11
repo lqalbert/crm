@@ -1,24 +1,24 @@
 <el-dialog title="客户转让" v-model="addTransferFormDialog" @open="beforeAddTransfer">
   <el-form  ref="addTransferForm" :label-width="dialogLabelWidth" :model="addTransferForm">
   <el-row>
-    <el-col :span="8">
+    <!--< el-col :span="8">
       <el-form-item label="客户姓名"  prop="name">
         <el-input v-model="addTransferForm.name" :disabled="true"></el-input>
       </el-form-item>
-    </el-col>
+    </el-col> -->
 
     <el-col :span="8">
       <el-form-item label="接收单位" prop="rec_dep">
-        <el-select v-model="addTransferForm.rec_dep" filterable @change="depChange" placeholder="请选择接收单位">
+        <el-select v-model="addTransferForm.rec_dep"   placeholder="请选择接收单位">
           <el-option
-            v-for="dep in deps"
+            v-for="dep in Departments"
             :label="dep.name"
-            :value="dep.value">
+            :value="dep.id">
           </el-option>
         </el-select>
       </el-form-item>
     </el-col>
-    <el-col :span="8">
+    <!-- <el-col :span="8">
       <el-form-item label="接收员工" prop="rec_user">
         <el-select v-model="addTransferForm.rec_user" filterable placeholder="请选择接收员工">
           <el-option
@@ -28,12 +28,12 @@
           </el-option>
         </el-select>
       </el-form-item>
-    </el-col>
+    </el-col> -->
   </el-row>
-  <el-row>
+  <el-row v-show="false">
     <el-col :span="10">
-      <el-form-item label="服务方比例" prop="step">
-        <el-select v-model="addTransferForm.proportion" placeholder="请选择服务比例">
+      <el-form-item label="比例" prop="step">
+        <el-select v-model="addTransferForm.proportion" :disabled="true" placeholder="请选择服务比例">
           <el-option
             v-for="(proportion, key) in Proportion"
             :label="proportion"
@@ -42,17 +42,6 @@
         </el-select>
       </el-form-item>
     </el-col>
-   	<el-col :span="14">
-   		<el-form-item label="计划跟踪时间" prop="next_datetime">
-		    <el-date-picker
-		      v-model="addTransferForm.next_datetime"
-		      type="datetime"
-		      placeholder="选择日期时间"
-          :editable="false"
-		      >
-		    </el-date-picker>
-    	</el-form-item>
-   	</el-col>
   </el-row>
     <el-form-item label="备注"  prop="content">
       <el-input

@@ -20,12 +20,14 @@ class CustomerLogModel extends Model {
         "QQ联系",
         "Email联系",
         "微信联系",
-        // "远程讲解",
+        //"远程讲解",
         // "现场讲解",
         "成交总结",
         "讲师指导",
         "主管建议",
         "售前回访",
+        "风控建议",
+        "经理建议",
 		//"Email联系",
 		    "其它方式"
 	);
@@ -46,7 +48,7 @@ class CustomerLogModel extends Model {
     
     //服务比例
     private $proportion = array(
-      '0'=>'0',
+      // '0'=>'0',
       '1'=>'10',
       '2'=>'20',
       '3'=>'30',
@@ -56,6 +58,7 @@ class CustomerLogModel extends Model {
       '7'=>'70',
       '8'=>'80',
       '9'=>'90',
+      '10'=>'100',
     );
     
     //提醒事项

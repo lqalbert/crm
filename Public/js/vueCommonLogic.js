@@ -155,9 +155,13 @@ function setCommonLogic(opt){
           type: 'warning'
         }).then(function(){
         	vmThis.$http.post(url, {ids:[row.id]}).then(function(response){
+        		var message = '删除成功!';
+        		if (response.body.info) {
+        			message = response.body.info;
+        		}
         		vmThis.$message({
 		            type: 'success',
-		            message: '删除成功!'
+		            message: message
 		          });
 
         		// vmThis.dataList.splice(index, 1);
@@ -167,6 +171,10 @@ function setCommonLogic(opt){
 		       // this.loadDatalist();
 
         	}, function(response){
+        		var message = '删除失败';
+        		if (response.body.info) {
+        			message = response.body.info;
+        		}
         		vmThis.$message({
 		            type: 'error',
 		            message: '删除失败'

@@ -18,6 +18,8 @@ return array(
 	'OPERATION'      => '操作',
 
 	'ADVANCED_QUERY'      => '高级查询',
+	'CUSTOMER_PRE_CHECK'      => '客户预查',
+	'EXACTS_CON'      => '索取统计',
 
 
 

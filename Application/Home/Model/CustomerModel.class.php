@@ -146,6 +146,7 @@ class CustomerModel extends Model {
 
     protected $_auto = array(
         array('plan', 'transfer', 1, 'callback'),
+        array('last_track', 'getDate', 1, 'callback'),
     );
     //UTC时间转换
     public function transfer($v){
@@ -156,10 +157,15 @@ class CustomerModel extends Model {
       }
     }
 
+    public function getDate(){
+      return Date("Y-m-d H:i:s");
+    }
+
     
 
     public function add(){
       //开启事务
+      // die('asdf');
       $this->startTrans();
       $id = parent::add();
       if ($id == false) {
@@ -167,16 +173,30 @@ class CustomerModel extends Model {
         return false;
       }
 
-
-      $d = D('CustomerContact')->create();
+      $D_contact = D('CustomerContact');
+      $mainData = $D_contact->getMainPost();
+      $d = $D_contact->create($mainData, self::MODEL_INSERT);
       if ($d == false) {
         $this->rollback();
-        $this->error = D('CustomerContact')->getError();
+        $this->error = $D_contact->getError();
         return false;
       }
 
-      $d->is_main = 1;
-      if (D('CustomerContact')->add($d)) {
+      $d['is_main'] = 1;
+      $d['cus_id'] = $id;
+      if ($D_contact->data($d)->add()) {
+
+        //第二套手机 qq 和 微信
+        $data = $D_contact->getSecondPost();
+        if (!empty($data['phone']) || !empty($data['qq']) || !empty($data['weixin'])) {
+          $data['cus_id'] = $id;
+          if ( !($D_contact->create($data) && $D_contact->add())) {
+            $this->rollback();
+            $this->error = $D_contact->getError();
+            return false;
+          }
+        }
+
         $this->commit();
         return true;
       }else{
@@ -184,16 +204,9 @@ class CustomerModel extends Model {
         $this->rollback();
         return false;
       }
-
-
-
-      /*$this->rollback();
-
-
-      $this->commit();*/
     }
 
-
+    
 
 
     /**
@@ -416,7 +429,7 @@ class CustomerModel extends Model {
         return false;
       }
       //通知被索取的员工
-      /*$re = D('MsgBox')->add(array(
+      $re = D('MsgBox')->add(array(
           'title'=>"索取通知",
           'content'=>'您有一名客户被 索取',
           'to_id'  => $old_userid,
@@ -426,9 +439,38 @@ class CustomerModel extends Model {
         $this->rollback();
         $this->error = "索取通知发送失败";
         return false;
-      }*/
+      }
       $this->commit();
 
       return true;
-    }    
+    }
+
+
+    public function setStart($field, $value){
+      $this->where(array($field=>array('EGT', $value." 00:00:00")));
+    }
+
+    public function setEnd($field, $value){
+      $this->where(array($field=>array('ELT', $value." 00:00:00")));
+    }  
+
+    /**
+    * salesman_id
+    */
+    public function setSalesman($value){
+      $this->where(array('salesman_id'=>$value));
+    }
+
+
+    public function setShowCondition(){
+      $this->where(array('status'=>1));
+    }
+
+    public function setTransf($id){
+      return $this->data(array('transfer_status'=>1))->where(array('id'=>$id))->save();
+    }
+
+
+
+
 }
