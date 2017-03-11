@@ -250,7 +250,6 @@
   </el-row>
   </div>
 
-<<<<<<< HEAD
   <div id="app2" class="b" style="margin:5px -17px;">
       <div class="superaddition">
         <el-tooltip content="选择客户录入跟踪信息" placement="right">
@@ -273,31 +272,7 @@
           <el-button size="small" @click="openDialog('addChoice')" type="primary" style="margin-left:10px;">自选</el-button>
         </el-tooltip>
       </div>
-=======
-  <div id="app2" class="b" style="margin:5px -10px 5px;">
 
-    <div class="superaddition">
-      <el-tooltip content="选择客户录入跟踪信息" placement="right">
-        <el-button size="small" @click="openDialog('addTrack')" type="primary" style="margin-left:10px;">录入跟踪</el-button>
-      </el-tooltip>
-
-      <el-tooltip content="选择客户录入对其跟踪计划" placement="right">
-        <el-button size="small" @click="openDialog('addPlan')" type="primary" style="margin-left:10px;">计划</el-button>
-      </el-tooltip>
-
-      <el-tooltip content="选择客户对其转让给他人(暂未实现)" placement="right">
-        <el-button size="small" @click="openDialog('addTransfer')" :disabled="true" type="warning" style="margin-left:10px;">转让</el-button>
-      </el-tooltip>
-
-      <el-tooltip content="选择客户录入其提醒事项及内容" placement="right">
-        <el-button size="small" @click="openDialog('addRemind')" type="info" style="margin-left:10px;">提醒</el-button>
-      </el-tooltip>
-
-      <el-tooltip content="筛选客户重点跟踪" placement="right">
-        <el-button size="small" @click="openDialog('addChoice')" type="primary" style="margin-left:10px;">自选</el-button>
-      </el-tooltip>
-    </div>
->>>>>>> step01_01
     <el-row style="position: relative;top:-40px;">
      <el-col :span="24">
         <el-tabs  type="border-card">
@@ -564,15 +539,12 @@ function toInt(v){
     type:'',
     group:'user_id',
     ctrl:'advance',
-<<<<<<< HEAD
     name:"",
     phone:"",
     track_start:"",
     track_end:"",
-=======
   },true).setForm('traceContent',{
     content:'',
->>>>>>> step01_01
   },true).setForm('exactsCon',{
     reply:'',
   },true).setForm('preCheck',{
@@ -999,14 +971,10 @@ function toInt(v){
     }else{ 
        this.addTrackFormSubmit(url, form);
     } 
-<<<<<<< HEAD
-=======
-  }).setComputed('isTypeV',function(){
-     return this.editForm.type=='V';
   }).setMethod('viewtraceContents',function(row,event){
-    var index = this.tableData.indexOf(row);
+    // var index = this.tableData.indexOf(row);
     this.traceContentFormDialog = true;
->>>>>>> step01_01
+    this.traceContentForm.content = row.content;
   });
 </script>
 </block>
