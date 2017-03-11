@@ -1,0 +1,50 @@
+<el-dialog title="'V'类客户资料填写" v-model="realInfoFormDialog">
+	<el-form ref="realInfoForm" :rules="realInfoRules" :model="realInfoForm" v-model="realInfoForm" :label-width="dialogLabelWidth">
+	    <input type="hidden" name="cus_id" v-model="realInfoForm.cus_id">
+	    <el-row>
+	      <el-col :span="10">
+	        <el-form-item label="身份证" prop="identity">
+            <el-input v-model="realInfoForm.identity" placeholder="请填写客户身份证号"></el-input>
+	        </el-form-item>
+	      </el-col>
+	      <el-col :span="12">
+	        <el-form-item label="产品类型" prop="type">
+            <el-select v-model="realInfoForm.type"   placeholder="请选择客户产品类型">
+              <el-option v-for="(type,key) in GoodsType" :label="type"  :value="key"></el-option>
+            </el-select>
+	        </el-form-item>
+	      </el-col>
+	    </el-row>
+	    <el-row>
+	      <el-col :span="10">
+	        <el-form-item label="产品金额" prop="expense">
+            <el-input v-model.number="realInfoForm.expense" placeholder="纯数字金额例如'88888'"></el-input>
+	        </el-form-item>
+	      </el-col>
+	      <el-col :span="12">
+	        <el-form-item label="服务周期" prop="cycle">
+            <el-select v-model="realInfoForm.cycle"   placeholder="请选择服务周期">
+              <el-option v-for="(cycle,key) in ServiceCycle" :label="cycle"  :value="key"></el-option>
+            </el-select>
+	        </el-form-item>
+	      </el-col>
+	    </el-row>
+	    <el-row>
+        <el-col :span="14">
+          <el-form-item label="通讯地址" prop="address">
+            <el-input
+              v-model="realInfoForm.address"
+              type="textarea"
+              :autosize="{ minRows: 2, maxRows: 2}"
+              placeholder="填写客户真实通讯地址">
+            </el-input>
+          </el-form-item>
+        </el-col>
+	    </el-row>
+	</el-form> 
+  <span slot="footer" class="dialog-footer">
+    <el-button @click="closeDialog('realInfo')">取 消</el-button>
+    <el-button type="primary" v-show="!realInfoFormSubmitStatus" @click="addRealInfo(page.addRealInfoUrl)">确 定</el-button>
+    <el-button type="primary" v-show="realInfoFormSubmitStatus" :loading="true">保存中</el-button>
+  </span>
+</el-dialog>

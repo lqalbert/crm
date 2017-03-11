@@ -124,7 +124,6 @@ function setCommonLogic(opt){
 	// //打开关闭对话框
 
 	opt.setMethod("openDialog", function(dialog){
-        
 		this[FormName.getDialog(dialog)] = true;
         //console.log(FormName.getDialog(dialog));
 		this.currentForm = FormName.getForm(dialog);
@@ -266,7 +265,6 @@ function setForm(opt, type){
 
 	opt.setMethod('commonSubmitLogic', function(url, form){
 		FormName.type = form;
-
 		var  vmThis   = this;
 		var  formName    =  FormName.getFormName();       //form+"Form";
 		var  formStatus  =  FormName.getSubmitStatus();  // formName+"FormSubmitStatus";

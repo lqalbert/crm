@@ -75,7 +75,32 @@ class CustomerLogModel extends Model {
       '10'=>'请跟踪方同事反馈情况',
       '11'=>'客户一直在咨询股票，请联系远程',
     );
-
+ 
+    //产品类型
+    private $goodsType = array(
+       '1'=>'点金手高端版(体验版)',
+       '2'=>'点金手高端版(季度)',
+       '3'=>'点金手高端版(半年)',
+       '4'=>'点金手高端版(一年)',
+       '5'=>'点金手黄金版(半年)',
+       '6'=>'点金手黄金版(一年)',
+       '7'=>'点金手至尊版(一年)',
+       '8'=>'点金手至尊版(两年)',
+       '9'=>'企业投资理财大全(中小企业板)',
+       '10'=>'企业投资理财大全(小微企业版)',
+    );
+    
+    //服务周期
+    private $serviceCycle = array(
+      '1'=>'1个月',
+      '2'=>'2个月',
+      '3'=>'1季度',
+      '4'=>'半年',
+      '5'=>'9个月',
+      '6'=>'1年',
+      '7'=>'1年半',
+      '8'=>'两年',
+    );
 	/**
     * 返回类型 或 所有的类型
     * 
@@ -123,7 +148,24 @@ class CustomerLogModel extends Model {
           return $this->remind;
        }
     }
+    
+    //获得产品类型
+    public function getGoodsType($index){
+       if(is_int($index)){
+          return $this->goodsType[$index];
+       }else{
+          return $this->goodsType;
+       }
+    }
 
+    //获得服务周期
+    public function getServiceCycle($index){
+       if(is_int($index)){
+          return $this->serviceCycle[$index];
+       }else{
+          return $this->serviceCycle;
+       }
+    }
     public function contentSetChangeType($from, $to){
         $C = D('Customer');
         $this->content = $C ->getType($from)."=>".$C->getType($to)."\r\n". $this->content;

@@ -3,6 +3,7 @@ namespace Home\Controller;
 use Home\Model\CustomerModel;
 use Home\Model\CustomerLogModel;
 use Home\Model\RoleModel;
+use Home\Model\RealInfoModel;
 use Common\Lib\User;
 use Think\Model;
 
@@ -19,14 +20,6 @@ class CustomerController extends CommonController {
 		return   array(
 					array('GT', $today), 
 					array('LT', Date("Y-m-d H:i:s", strtotime("+1 day", strtotime($today))))
-		         );
-	}
-
-	private function getThreeMonthDays(){
-		$today = Date("Y-m-d")." 00:00:00" ;
-		return   array(
-					array('GT', Date("Y-m-d H:i:s", strtotime("-90 day", strtotime($today)))),
-					array('LT', $today)
 		         );
 	}
 
@@ -52,16 +45,16 @@ class CustomerController extends CommonController {
 		$this->assign('Attitude',     $this->M->getAttitude());
 		$this->assign('Profession',   $this->M->getProfession());
 		$this->assign('Intention',    $this->M->getIntention());
+
 		$this->assign('Source',       $this->M->getSource());
 
-
+        $this->assign('GoodsType',    D('CustomerLog')->getGoodsType());
+		$this->assign('ServiceCycle', D('CustomerLog')->getServiceCycle());
 
 		$this->assign('logType',      D('CustomerLog')->getType());
 		$this->assign('steps',        D('CustomerLog')->getSteps());
 		$this->assign('Proportion',   D('CustomerLog')->getProportion());
 		$this->assign('Remind',       D('CustomerLog')->getRemind());
-
-
 
 
 		//统计
@@ -86,6 +79,7 @@ class CustomerController extends CommonController {
 		$this->assign('aggregation', $aggregation);
         $this->assign('pulled',      $this->getBeenPulld());
 		$this->display();
+
 	}
 
     
@@ -170,10 +164,11 @@ class CustomerController extends CommonController {
 
             $this->setGroupCondition(I('get.group',"user_id")); ;
 
-            if (I('get.name')) {
+            /*if (I('get.name')) {
                 $this->M->where(array("name|cc.phone|cc.qq|cc.qq_nickname|cc.weixin"=> array('like', I('get.name')."%")));
                 // $this->M->where(array("phone"=> array('like', I('get.name')."%")));
-            }
+            }*/
+
 
             $between_today =  $this->getDayBetween();
 
@@ -219,10 +214,20 @@ class CustomerController extends CommonController {
 
 	}
 
+    private function setNamelike(){
+        if(I('get.ctrl') != 'advance'){ 
+            if (I('get.name')) {
+                $this->M->where(array("name|cc.phone|cc.qq|cc.qq_nickname|cc.weixin"=> array('like', I('get.name')."%")));
+            }
+        }
+    }
+
     protected function _getList(){
         $this->setQeuryCondition();
+        $this->setNamelike();
         $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id ');
         $count = (int)$this->M->count();
+
         $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id and cc.is_main=1')
                 ->join('left join customers_contacts as cc2 on customers_basic.id =  cc2.cus_id and cc2.is_main!=1')
                 ->field('customers_basic.*,cc.qq,cc.phone,cc.weixin,cc.qq_nickname,cc.weixin_nickname,cc2.qq as qq2,cc2.phone as phone2,cc2.weixin as weixin2,cc2.qq_nickname as qq_nickname2,cc2.weixin_nickname as weixin_nickname2');
@@ -231,16 +236,31 @@ class CustomerController extends CommonController {
         if (I('get.sort_field', null)) {
             $this->M->order(I('get.sort_field')." ". I('get.sort_order'));
         }
-        if(I('get.ctrl') != 'advance'){ 
+
+        /*if(I('get.ctrl') != 'advance'){ 
             if (I('get.name')) {
                 $this->M->where(array("cc2.phone|cc2.qq|cc2.qq_nickname|cc2.weixin"=> array('like', I('get.name')."%")));
+            }
+        }*/
+
+        if(I('get.ctrl') != 'advance'){ 
+            if (I('get.name')) {
+                $this->M->where(array('_complex'=> 
+                            array(
+                                "cc2.phone|cc2.qq|cc2.qq_nickname|cc2.weixin"=> array('like', I('get.name')."%"),
+                                "name|cc.phone|cc.qq|cc.qq_nickname|cc.weixin"=> array('like', I('get.name')."%"),
+                                '_logic'=>'OR'
+                            )
+                        )
+                    );
             }
         }
 
         
         $this->setQeuryCondition();
-        $list = $this->M->page(I('get.p',0). ','. $this->pageSize)->select();
 
+        $list = $this->M->page(I('get.p',0). ','. $this->pageSize)->select();
+        // echo $this->M->getLastSql();
         $result = array('list'=>$list, 'count'=>$count);
         
         return $result;
@@ -613,6 +633,34 @@ class CustomerController extends CommonController {
         $re2 = $this->M->where(array('help_transfer'=> $realname))->data(array('transfer_to'=>session('uid'), 'transfer_status'=>2))->save();
 
         $this->ajaxReturn(array('c'=>$re, 't'=>$re2));
+    }
+    
+    /**
+    *  添加客户真实资料
+    *  
+    */
+    public function realInfo(){ 
+        $ob=D('RealInfo');
+        $_POST['user_id']=session('uid'); 
+        if($ob->where(array('cus_id'=>I('post.cus_id'),'identity'=>I('post.identity')))->find()){
+            $ob->where(array('cus_id'=>I('post.cus_id')))->save(I('post.'));
+        }else{
+            if($ob->create($_POST) && $ob->add()){
+                $this->success(L('真实资料添加成功'));
+            }else{
+                $this->error($ob->getError());    
+                
+            }
+        }
+    }
+    
+    public function findRealInfo($cus_id){
+       $arr=M('deal_info')->where(array('cus_id'=>$cus_id))->find();
+       if($arr){
+         $this->ajaxReturn($arr);
+       }else{
+         return $arr; 
+       }
     }
 
 }

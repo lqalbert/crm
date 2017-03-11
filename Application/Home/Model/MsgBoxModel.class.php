@@ -21,11 +21,4 @@ class MsgBoxModel extends Model {
     	}
     }
 
-   
-
-
-
-
-
-
 }

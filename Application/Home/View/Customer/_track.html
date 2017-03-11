@@ -62,7 +62,7 @@
 
   <div slot="footer" class="dialog-footer">
    <el-button @click="closeDialog('addTrack')">取 消</el-button>
-   <el-button type="primary" v-show="!addTrackFormSubmitStatus" @click="addTrackFormSubmit(page.addTrackFormUrl, 'addTrack')" >确 定</el-button>
+   <el-button type="primary" v-show="!addTrackFormSubmitStatus" @click="addTrackSubmit(page.addTrackFormUrl, 'addTrack')" >确 定</el-button>
    <el-button type="primary" v-show="addTrackFormSubmitStatus" :loading="true" >添加中</el-button>
   </div>
 

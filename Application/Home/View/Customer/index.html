@@ -140,7 +140,7 @@
             <el-button type="warning" size="small" @click="openDialog('importc')" :disabled="true">客户导入</el-button>
           </el-tooltip>
 
-          <el-tooltip content="客户预查" placement="right"  style="margin-left:10px;">
+          <el-tooltip content="客户预查" placement="bottom-start"  style="margin-left:10px;">
             <el-button size="small"  @click="openDialog('preCheck')" type="primary">{:L('CUSTOMER_PRE_CHECK')}</el-button>
           </el-tooltip>
 
@@ -151,7 +151,7 @@
           </el-tooltip>
 
           <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:10px;">
-            <el-button @click="refresh" type="danger">刷新</el-button>
+            <el-button @click="refresh" size="small" type="danger">刷新</el-button>
           </el-tooltip>
 
   		  </el-form-item>
@@ -176,71 +176,60 @@
 
   	    <el-table-column width="50" align="center" type="selection"></el-table-column>
 
-  	    <el-table-column   label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  ></el-table-column>
-  	    <el-table-column  align="left" prop="name"  label="客户姓名" width="110">
-
-        </el-table-column>
-
-  	    <el-table-column sortable='customer' align="left" prop="type" label="客户类型" width="140">
+  	    <el-table-column label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  ></el-table-column>
+  	    <el-table-column  header-align="center" prop="name"  label="客户姓名" width="110"></el-table-column>
+  	    <el-table-column  header-align="center" prop="type" label="客户类型" sortable width="140">
           <template scope="scope">
             {{ getType(scope.row.type, 'customerType') }}
           </template>
   	    </el-table-column>
 
-          <el-table-column align="left" sortable='customer' prop="user_id" label="跟踪员工" width="190">
+        <el-table-column  header-align="center"  prop="user_id" label="跟踪员工" sortable width="190">
             <template scope="scope">
               {{ getType(scope.row.user_id, 'memberList') }}
             </template>
           </el-table-column>
 
-          <el-table-column align="left" prop="qq" label="QQ号"  width="170">
+          <el-table-column  header-align="center" prop="qq" label="QQ号"  width="170">
             <template scope="scope">
               {{ scope.row.qq }}
               <a v-if="scope.row.qq" :href="getTenct(scope.row.qq)">
-                <img width="20"  src="__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg" alt="">
+                <img width="25"  src="__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg" alt="">
               </a>
             </template>
           </el-table-column>
 
-          <el-table-column align="left" prop="qq_nickname" label="QQ昵称"  width="170"></el-table-column>
+          <el-table-column  header-align="center" prop="qq_nickname" label="QQ昵称"  width="170"></el-table-column>
 
   	      <el-table-column prop="phone" label="手机" align="center" width="130"></el-table-column>
 
-          <el-table-column align="left" prop="weixin" label="微信号" align="left" width="170">
+          <el-table-column  header-align="center" prop="weixin" label="微信号" align="left" width="170">
             <template scope="scope">
               {{ scope.row.weixin }}
             </template>
           </el-table-column>
 
-          <el-table-column align="left" prop="weixin_nickname" label="微信昵称" align="left" width="170">
+          <el-table-column  header-align="center" prop="weixin_nickname" label="微信昵称" align="left" width="170">
             <template scope="scope">
               {{ scope.row.weixin_nickname }}
             </template>
           </el-table-column>
 
-          <el-table-column  prop="last_track" sortable='customer' label="最后跟踪时间" align="center" width="175">
-          </el-table-column>
+          <el-table-column  prop="last_track" sortable='customer' label="最后跟踪时间" align="center" width="175"></el-table-column>
 
-        <el-table-column  prop="commission" label="跟踪方比例" align="left" width="110"></el-table-column>
+        <el-table-column  prop="commission" label="跟踪方比例"  header-align="center" width="110"></el-table-column>
         <el-table-column  prop="plan" label="计划跟踪时间" align="center" width="175"></el-table-column>
         <el-table-column  prop="conflict" label="最后冲突时间" align="center" width="175"></el-table-column>
-        <el-table-column align="left"  label="地区" width="135">
+        <el-table-column  header-align="center"  label="地区" width="135">
           <template scope="scope">
             {{ scope.row.province_name+"-"+scope.row.city_name }}
           </template>
         </el-table-column>
-        <el-table-column prop="sex"  label="性别" width="80" align="left">
+        <el-table-column prop="sex"  label="性别" width="80"  header-align="center">
           <template scope="scope">
             {{ getType(scope.row.sex, 'sexType') }}
           </template>
         </el-table-column>
-<!--   	    <el-table-column inline-template :context="_self"  fixed="right"  align="center" label="操作" width="160">
-  	      <span>
-  	        <el-button @click="handleEdit($index, row)"  size="small">编辑</el-button>
-  	        <el-button @click="handleDelete($index, row)"  size="small" type="danger">删除</el-button>
-  	      </span>
-  	    </el-table-column> -->
-
       </el-table>
     </el-col>
   </el-row>
@@ -248,7 +237,7 @@
   <!-- toolbar -->
   <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
 
-    <el-col :span="12">
+    <el-col :span="12" :offset="12">
       <div class="grid-content bg-purple-light pull-right">
 
         <!-- page -->
@@ -333,16 +322,14 @@
   <!-- 编辑 -->
   <include file="_edit" />
   <!-- 显示客户一般资料 -->
- <!--  <include file="_userInfo"/> -->
+  <include file="_userInfo"/>
   <!-- 录入跟踪  -->
   <include file="_track" />
   <!-- / 录入跟踪 -->
   <!-- 录入计划 -->
   <include file="_plan"/>
   <!-- /录入计划 -->
-  <!-- 录入转让 -->
-  <include file="_transfer"/>
-  <!-- /录入转让 -->
+  
   <!-- 录入提醒 -->
   <include file="_remind"/>
   <!-- /录入提醒 -->
@@ -352,7 +339,12 @@
   <!-- 客户全部资料 -->
   <include file="_detail"/>
   <!-- /客户全部资料 -->
+  <!-- 客户资料导入 -->
   <include file="_importd" />
+  <!-- /客户资料导入 -->
+  <!-- V类客户资料 -->
+  <include file="_realInfo" />
+  <!-- /V类客户资料 -->
 </div>
 
 </div>
@@ -368,6 +360,7 @@ function toInt(v){
   page.addPlanFormUrl = "{:U('addPlanLogs')}";
   page.addRemindFormUrl = "{:U('setRemid')}";
   page.addChoiceFormUrl = "{:U('setImportant')}";
+  page.addRealInfoUrl = "{:U('realInfo')}";
   //表单验证
   var checkPhone=function(rule,value,callback){
      var phoneReg = /^1[34578]\d{9}$/;
@@ -389,7 +382,17 @@ function toInt(v){
       callback();
     }
   }
+  var checkIdNum=function(rule,value,callback){
+    var number=/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+    if(!number.test(value)){
+      callback('身份证号格式错误');
+    }else{
+      callback();
+    }
+  }
+
   window.defaultOption.setDatas({
+    realInfo:false,
     gridData:[],
     ddprops:'name',
     dialogVisible:false,
@@ -417,6 +420,8 @@ function toInt(v){
     Source:{:json_encode($Source)},
     Proportion:{:json_encode($Proportion)},
     Remind:{:json_encode($Remind)},
+    GoodsType:{:json_encode($GoodsType)},
+    ServiceCycle:{:json_encode($ServiceCycle)},
     provinces:[],
     cities:[],
     deps:[],//
@@ -472,11 +477,27 @@ function toInt(v){
         { required:true, message:'请选择客户资料量',trigger:'blur'},
       ],
     },
+
     qq_disabled:false,
     weixin_disabled:false,
     phone2_disabled:false,
     qq2_disabled:false,
     weixin2_disabled:false,
+
+    realInfoRules:{
+      identity:[
+         { required: true, message: '请输入身份证号', trigger: 'blur' },
+         { validator: checkIdNum, trigger:'blur' },
+      ],
+      type:[{ required: true, message: '请选择产品类型', trigger: 'blur' },],
+      expense:[
+        { required: true, message: '请输入产品金额', trigger: 'blur' },
+        { type: 'number', message: '请输入产品金额', trigger: 'blur' },
+      ],
+      cycle:[{ required: true, message: '请选择服务周期', trigger: 'blur' },],
+      address:[{ required: true, message: '请输入通讯地址', trigger: 'blur' },],
+    },
+
   }).setForm('search', {
     name:'',
     field: '',
@@ -614,7 +635,15 @@ function toInt(v){
   },true).setForm('importc',{
     c:0,
     t:0
-  }, true).setMethod('getType', function(type, field){
+  },true).setForm('realInfo',{
+    identity:'',
+    type:'',
+    expense:'',
+    cycle:'',
+    address:'',
+    cus_id:'',
+    fm:'',
+  },true).setMethod('getType', function(type, field){
       return this[field][type];
   }).setMethod('searchCustomer', function(){
     var vmThis = this;
@@ -713,7 +742,8 @@ function toInt(v){
     } else {
       var  row = this.multipleSelection.pop();
       this[FormName.getForm(x)].name = row.name;
-      this[FormName.getForm(x)].cus_id   = row.id;
+      this[FormName.getForm(x)].cus_id = row.id;
+      this.realInfoForm.cus_id = row.id;
       this.row=row;
       return row;
     }
@@ -769,7 +799,16 @@ function toInt(v){
         });
   }).setMethod('userInfo',function(row,event){
       var index = this.dataList.indexOf(row);
-      console.log(row);
+      this.realInfoForm.cus_id = row.id;
+    this.$http.get('{:U("findRealInfo")}', {params:{cus_id:row.id} }).then(function(response){
+       this.realInfoForm.identity = response.body.identity;
+       this.realInfoForm.type = response.body.type;
+       this.realInfoForm.expense = response.body.expense;
+       this.realInfoForm.cycle = response.body.cycle;
+       this.realInfoForm.address = response.body.address;
+       this.realInfoForm.cus_id = response.body.cus_id;
+    });
+
       this.handleEdit(index, row);
   }).setMethod('setField', function(v){
       this[FormName.getFormName('search')].field = v;
@@ -803,6 +842,7 @@ function toInt(v){
     // this.$refs.advancedQueryForm.resetFields();
     this.closeDialog('advancedQuery');
   }).setMethod('advanceSearch',function(){
+
        for (var x  in  this.advancedQueryForm) {
          if (this.advancedQueryForm[x] instanceof  Date) {
           this.advancedQueryForm[x] = this.advancedQueryForm[x].toLocaleDateString();
@@ -845,22 +885,87 @@ function toInt(v){
 
   }).setVueHook('created', function(){
       this._search = Oassign({}, this.searchForm) ; //this.searchForm;
+
+     /* var vmThis = this;
+      var params = {p:this.currentPage};
+      for (var x in this.advancedQueryForm ){
+        if (this.advancedQueryForm[x]!="") {
+          params[x] = this.advancedQueryForm[x];
+        }
+      }
+      this.$http.get(page.listUrl, {params:params}).then(function(response){
+        vmThis.advancedQueryFormDialog = false;
+        // 在显示之前 对数据进行处理
+        if (this.beforeList) {
+          vmThis.$set(vmThis, 'dataList', this.beforeList(response.body.list));
+        } else {
+          vmThis.$set(vmThis, 'dataList', response.body.list);
+        }
+        vmThis.$set(vmThis, 'total',    parseInt(response.body.count));
+
+      }, function(response) {
+        vmThis.$message({
+          message: '获取数据失败：'+ response.body.info,
+          type: 'error'
+        });
+      }).finally(function(){
+        vmThis.$set(vmThis, 'dataLoad', false);
+    })*/
+  }).setMethod('editSubmit',function(url, form){
+    FormName.type = form;
+    var  formName    =  FormName.getFormName();  //form+"Form"; 
+    if(this[formName].type=='V'){
+       this.realInfoFormDialog=true;
+       this.realInfoForm.fm = 'edit'; 
+    }else{ 
+       this.editFormSubmit(url, form);
+    }   
+  }).setMethod('addRealInfo',function(url){
+      var  vmThis   = this;
+      this.$http.post(url,this.realInfoForm).then(function (response) {
+        vmThis.$message({
+              message: '操作成功',
+              type: 'success'
+            });
+        setTimeout(function(){
+          vmThis.realInfoFormDialog = false;
+          vmThis.realInfoFormSubmitStatus = false;
+          vmThis.$refs.realInfoForm.resetFields(); 
+          if(vmThis.realInfoForm.fm=='edit'){
+             vmThis.editFormSubmit(page.editFormUrl, 'edit');
+          }else if(vmThis.realInfoForm.fm=='add'){
+             vmThis.addFormSubmit(page.addFormUrl, 'add'); 
+          }else{
+             vmThis.addTrackFormSubmit(page.addTrackFormUrl, 'addTrack'); 
+          } 
+        }, 2000);  
+      }, function(response){  
+          vmThis.$message({
+            message: '操作失败：'+response.body.info,
+            type: 'error'
+          });
+          setTimeout(function(){
+            vmThis.realInfoFormSubmitStatus = false;
+          },2000);
+      });
+  }).setMethod('addSubmit',function(url, form){
+    FormName.type = form;
+    var  formName    =  FormName.getFormName(); 
+    if(this[formName].type=='V'){
+       this.realInfoFormDialog=true;
+       this.realInfoForm.fm = 'add'; 
+    }else{ 
+       this.addFormSubmit(url, form);
+    } 
+  }).setMethod('addTrackSubmit',function(url,form){
+    FormName.type = form;
+    var  formName    =  FormName.getFormName(); 
+    if(this[formName].to_type=='V'){
+       this.realInfoFormDialog=true;
+       this.realInfoForm.fm = 'addTrack'; 
+    }else{ 
+       this.addTrackFormSubmit(url, form);
+    } 
   });
-</script>
-<script>
-     //console.log({:json_encode($Sty)});
-   // var he=document.getElementById('he');
-    //var h=document.body.scrollHeight;
-    //console.log(sb);
-    //sb.style.height=h/2+'px';  max-height="400"
-    //he.setAttribute("max-height",h*0.6);
-
-
-      //   this.multipleSelection = [];
-      // if(val.length >= 2){
-      //    this.multipleSelection.push(val.shift());
-      // } else {
-      //   this.multipleSelection = val;
-      // }
 </script>
 </block>

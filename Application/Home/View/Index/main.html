@@ -50,14 +50,15 @@
 					系统公告
 				</div>
 				<div style="margin:-20px;">
-					<el-table :data="dataList" v-loading="dataLoad"  border  stripe element-loading-text="{:L('DATA_LOGIN')}" ref="select">
-				      <el-table-column prop="type" label="类型" width="180" align="center">
+					<el-table :data="dataList" v-loading="dataLoad"  border  
+					stripe element-loading-text="{:L('DATA_LOGIN')}" @row-click="showContent" ref="select">
+				      <el-table-column prop="type" label="公告类型"  align="center">
 			               <template scope="scope">
 			                  {{ getType(scope.row.type, 'NoticeType') }}
 			               </template>
 			          </el-table-column>
-				      <el-table-column prop="title" label="标题" align="center"></el-table-column>
-				      <el-table-column prop="time" label="日期" width="180" align="center"></el-table-column>
+				      <el-table-column prop="title" label="公告标题" align="center"></el-table-column>
+				      <el-table-column prop="start" label="开始日期" align="center"></el-table-column>
 				    </el-table>
 				    <el-col :span="24">
 					     <div class="grid-content bg-purple-light pull-right" style="padding:2px;">
@@ -154,8 +155,12 @@
 		</el-col>
 	</el-row>
 </div>
+<div class="dialogWrapper" v-show="show" style="display: none">
+  <!-- 显示系统公告内容 -->
+  <include file="_showContent" />
+  <!-- / 显示系统公告内容 -->
 </div>
-
+</div>
 </block>
 <block name="scripts">
 <script src="__PUBLIC__/js/echarts.min.js"></script>
@@ -204,7 +209,8 @@
 
 	}).setDatas({
 		NoticeType:{:json_encode($NoticeType)},
-		
+		contentDialog:false,
+		noticeInfo:[],
 		sysReport:[
 				{
 					date:'2016-12-01',
@@ -274,6 +280,9 @@
 		]
 	}).setMethod('getType', function(type, field){
        return this[field][type];
+    }).setMethod('showContent',function(row,event,column){
+       this.contentDialog = true;
+       this.noticeInfo = row;
     });
 	</script>
 
