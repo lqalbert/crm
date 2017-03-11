@@ -3,6 +3,7 @@ namespace Home\Controller;
 use Home\Model\CustomerModel;
 use Home\Model\CustomerLogModel;
 use Home\Model\RoleModel;
+use Home\Model\RealInfoModel;
 use Common\Lib\User;
 
 class CustomerController extends CommonController {
@@ -14,14 +15,6 @@ class CustomerController extends CommonController {
 		return   array(
 					array('GT', $today), 
 					array('LT', Date("Y-m-d H:i:s", strtotime("+1 day", strtotime($today))))
-		         );
-	}
-
-	private function getThreeMonthDays(){
-		$today = Date("Y-m-d")." 00:00:00" ;
-		return   array(
-					array('GT', Date("Y-m-d H:i:s", strtotime("-90 day", strtotime($today)))),
-					array('LT', $today)
 		         );
 	}
 
@@ -47,12 +40,13 @@ class CustomerController extends CommonController {
 		$this->assign('Attitude',     $this->M->getAttitude());
 		$this->assign('Profession',   $this->M->getProfession());
 		$this->assign('Intention',    $this->M->getIntention());
-		$this->assign('Source',       $this->M->getSource());
+        $this->assign('Source',       $this->M->getSource());
+        $this->assign('GoodsType',    D('CustomerLog')->getGoodsType());
+		$this->assign('ServiceCycle', D('CustomerLog')->getServiceCycle());
 		$this->assign('logType',      D('CustomerLog')->getType());
 		$this->assign('steps',        D('CustomerLog')->getSteps());
 		$this->assign('Proportion',   D('CustomerLog')->getProportion());
 		$this->assign('Remind',       D('CustomerLog')->getRemind());
-
 
 		//统计
 		//条件的数组
@@ -75,6 +69,7 @@ class CustomerController extends CommonController {
 		}
 		$this->assign('aggregation', $aggregation);
 		$this->display();
+
 	}
     
     /**
@@ -526,6 +521,34 @@ class CustomerController extends CommonController {
         $re2 = $this->M->where(array('help_transfer'=> $realname))->data(array('transfer_to'=>session('uid'), 'transfer_status'=>2))->save();
 
         $this->ajaxReturn(array('c'=>$re, 't'=>$re2));
+    }
+    
+    /**
+    *  添加客户真实资料
+    *  
+    */
+    public function realInfo(){ 
+        $ob=D('RealInfo');
+        $_POST['user_id']=session('uid'); 
+        if($ob->where(array('cus_id'=>I('post.cus_id'),'identity'=>I('post.identity')))->find()){
+            $ob->where(array('cus_id'=>I('post.cus_id')))->save(I('post.'));
+        }else{
+            if($ob->create($_POST) && $ob->add()){
+                $this->success(L('真实资料添加成功'));
+            }else{
+                $this->error($ob->getError());    
+                
+            }
+        }
+    }
+    
+    public function findRealInfo($cus_id){
+       $arr=M('deal_info')->where(array('cus_id'=>$cus_id))->find();
+       if($arr){
+         $this->ajaxReturn($arr);
+       }else{
+         return $arr; 
+       }
     }
 
 }

@@ -30,6 +30,7 @@
                </template>
             </el-table-column>
             <el-table-column label="公告标题" prop="title" align="center" ></el-table-column>
+            <el-table-column label="公告内容" prop="content" header-align="center"></el-table-column>
             <el-table-column label="开始日期" prop="start" align="center" ></el-table-column> 
             <el-table-column label="截止日期" prop="end" align="center" ></el-table-column> 
             <el-table-column label="发布人" prop="user" align="center" ></el-table-column> 
@@ -41,7 +42,7 @@
             <el-col :span="12">
               <div class="grid-content bg-purple">
                  <el-tooltip content="点击填写公告并发布" placement="right">
-                   <el-button size="small" type="success" @click="openDialog('add')" icon="edit">发布公告
+                   <el-button size="small" type="info" @click="openDialog('add')" icon="edit">发布公告
                    </el-button>
                  </el-tooltip>
               </div>
@@ -83,6 +84,7 @@
   }).setForm('add',{
     type:'',
     title:'',
+    content:'',
     start:'',
     end:'',
   }).setMethod('getType', function(type, field){

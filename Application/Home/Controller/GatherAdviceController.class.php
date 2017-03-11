@@ -22,8 +22,6 @@ class GatherAdviceController extends CommonController
         "其它建议",
         "软件功能"
     );
-
-
     $this->assign('adviceList', $advices);
     $this->assign('typeList', $type);
     $this->assign('realnames', $realnames);

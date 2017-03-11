@@ -10,7 +10,7 @@
              <el-input placeholder="请输入建议关键字" v-model="searchForm.name"></el-input>
             </el-form-item>
             <el-form-item>
-             <el-button type="primary" icon="search" @click="loadDataList">查询</el-button>
+             <el-button type="primary" icon="search" @click="loadDatalist">查询</el-button>
              <el-tooltip content="清空搜索框并刷新表格数据" placement="right">
               <el-button icon="loading" @click="searchReset">重置</el-button>
              </el-tooltip>
@@ -57,7 +57,7 @@
                    </el-button>
                  </el-tooltip>
                  <el-tooltip content="选择一条建议并回复" placement="right">
-                   <el-button size="small" type="success" @click="openDialog('reply')" icon="plus">建议回复
+                   <el-button size="small" type="primary" @click="openDialog('reply')" icon="plus">建议回复
                    </el-button>
                  </el-tooltip>
               </div>
@@ -92,7 +92,6 @@
   window.defaultOption.setDatas({
     typeList:{:json_encode($typeList)},
     realnames:{:json_encode($realnames)},
-    loadDataList:[],
     multipleSelection:[],
     addRules:{
       title:[
@@ -110,7 +109,6 @@
         { required: true, message: '请输入内容', trigger: 'blur' }
       ],
     },
-    replyFormDialog:false,//单纯页面 后端逻辑时候去掉
   }).setForm('search',{
     name:'',
   }).setForm('add',{
@@ -119,7 +117,8 @@
     advice:'',
   }).setForm('reply',{
     reply:'',
-  }).setMethod('handleSelectionChange',function(val){
+    id:'',
+  },true).setMethod('handleSelectionChange',function(val){
     this.multipleSelection = val;
   }).setMethod('commonSelect',function(x){
     var form = x;

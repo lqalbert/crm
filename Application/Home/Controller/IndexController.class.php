@@ -19,7 +19,7 @@ class IndexController extends CommonController {
 
 	public function getList(){
 	    $count = (int)M('sys_notice')->count();
-	    $list = M('sys_notice')->page(I('get.p',0). ','. $this->pageSize)->order('id desc')->field('type,title,time')->select();
+	    $list = M('sys_notice')->page(I('get.p',0). ','. $this->pageSize)->order('id desc')->select();
 	    $result = array('list'=>$list, 'count'=>$count);
 		$this->ajaxReturn($result);
 	}
