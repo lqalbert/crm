@@ -10,7 +10,7 @@ use Home\Model\CustomerModel;
 class DepartmentCustomerController extends CommonController {
 
 
-    private $depart_id = 51;
+    private $depart_id = 0;
 
 
     protected $table="Customer";
@@ -18,7 +18,7 @@ class DepartmentCustomerController extends CommonController {
 
     public function _initialize(){
         parent::_initialize();
-        // $this->depart_id = $this->getDepartMentID();
+        $this->depart_id = $this->getDepartMentID();
     }
 
     private function getDepartMentID(){
@@ -213,7 +213,7 @@ class DepartmentCustomerController extends CommonController {
             $this->M->setSalesman(I('get.user_id'));
         } else {
             //部门还是小组
-            if (strpos(I('get.fiedl'),'transf') === false) {
+            if (strpos(I('get.field'),'transf') === false) {
                 $this->setGroupField();
             }   
         }

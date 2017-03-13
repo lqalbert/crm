@@ -65,7 +65,7 @@ class GroupController extends CommonController {
 		$user_id = I('post.user_id',0);
 		$id = I('post.id');
 		$old_row = $this->M->find($id);
-		if ($old_row['user_id'] != $user_id) {
+		if ($old_row['user_id'] != $user_id && $user_id!=0 ) {
 			$this->setContactPost($user_id);
 		}
 

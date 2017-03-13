@@ -187,7 +187,8 @@ class ExcelController extends CommonController {
             
             if (file_exists(".".__ROOT__.$filename)) {
                 $data = getExcelArrayData(".".__ROOT__.$filename);
-                $groups = M('group_basic')->getField('name,id');
+                $groups = M('group_basic')->where(array('department_id'=>$department_id))
+                                          ->getField('name,id');
                 $gorups_name = array_keys($groups);
                 // var_dump(count($data));
                 $fault_data = array();
@@ -204,7 +205,7 @@ class ExcelController extends CommonController {
 
                     //rbac_user
                     $user = array();
-                    $user['account'] = $value['C'];
+                    $user['account'] = trim($value['C']);
                     $user['password'] = md5('111111');
                     M('rbac_user')->create($user);
                     $user_id = M('rbac_user')->add();
@@ -216,7 +217,7 @@ class ExcelController extends CommonController {
                     //user_info
                     $info = array();
                     $info['user_id']   = $user_id;
-                    $info['realname']  = $value['D'];
+                    $info['realname']  = trim($value['D']);
                     $info['qq']        = $value['I'];
                     $info['mphone']    = $value['H'];
                     $info['id_card']   = $value['J'];

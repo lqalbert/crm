@@ -134,21 +134,31 @@ class CustomerController extends CommonController {
             $this->M->where(array("cc.type"=> I('get.type')));
         }
 
-        if(I('get.start')){
-            $this->M->where(array("created_at"=> array('GT', I('get.start'))));
+        $start = I('get.start') ;
+        $end   = I('get.end');
+        if( $start || $end ){
+            if ( $start && $end ) {
+                $this->M->where(array("created_at"=> array(array('GT', $start), array('LT', $end)) ));
+            } else if( $start ){
+                 $this->M->where(array("created_at"=> array('GT', $start)));
+            } else if($end) {
+                $this->M->where(array("created_at"=> array('LT', $end)));
+            }
+            
         }
 
-        if(I('get.end')){
-            $this->M->where(array("created_at"=> array('LT', I('get.end'))));
-        }
 
 
-        if(I('get.track_start')){
-            $this->M->where(array("last_track"=> array('GT', str_replace('/','-',I('get.track_start')))));
-        }
-
-        if(I('get.track_start')){
-            $this->M->where(array("last_track"=> array('LT', str_replace('/','-',I('get.track_start')))));
+        $track_start   = str_replace('/','-',I('get.track_start')) ;
+        $track_end   = str_replace('/','-',I('get.track_end'));
+        if( $track_start || $track_end ){
+            if ( $track_start && $track_end ) {
+                $this->M->where(array("last_track"=> array(array('GT', $track_start), array('LT', $track_end)) ));
+            } else if( $track_start ){
+                 $this->M->where(array("last_track"=> array('GT', $track_start)));
+            } else if($track_end) {
+                $this->M->where(array("last_track"=> array('LT', $track_end)));
+            }
         }
     }
 
@@ -493,8 +503,9 @@ class CustomerController extends CommonController {
 	public function getTodays(){
 		$between_today =  $this->getDayBetween();
 		$this->M->where(array('plan'=>$between_today))
-		        ->where(array("user_id"=> session('uid')))
-		        ->field('id,qq,name,plan,remind');
+		        ->where(array("salesman_id"=> session('uid')))
+                ->join('customers_contacts as cc on customers_basic.id=cc.cus_id and cc.is_main = 1')
+		        ->field('customers_basic.id,qq,name,plan,remind');
 		$re = $this->M->select();
 		foreach ($re as $key => $value) {
 			$re[$key]['time'] = strtotime($value['plan']) * 1000;
