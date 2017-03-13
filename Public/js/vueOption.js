@@ -4,6 +4,7 @@ function VueOption(){
 
 	this.hooks    = new VueHooks()//Object.create(VueHooks.prototype); //new VueHooks();
 	this.computed = new VueMethods(); {}; //Object.create(Object.prototype); //{};
+	this.filters  = new VueMethods(); {}; //Object.create(Object.prototype); //{};
 }
 
 VueOption.prototype.setData = function(field, value) {
@@ -20,6 +21,12 @@ VueOption.prototype.setMethod = function(name, callback) {
 	this.methods.set(name, callback);
 	return this;
 };
+
+VueOption.prototype.setFilter = function(name, callback) {
+	this.filters.set(name, callback);
+	return this;
+};
+
 
 VueOption.prototype.setComputed = function(name, callback) {
 	this.computed.set(name, callback);
