@@ -177,18 +177,14 @@
   	    <el-table-column width="50" align="center" type="selection"></el-table-column>
 
   	    <el-table-column label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  ></el-table-column>
-  	    <el-table-column  header-align="center" prop="name"  label="客户姓名" width="110"></el-table-column>
-  	    <el-table-column  header-align="center" prop="type" label="客户类型" sortable width="140">
+        <el-table-column  header-align="center"  prop="realname" label="跟踪员工" sortable width="190"> </el-table-column>
+        <el-table-column  header-align="center" prop="name"  label="客户姓名" width="110"></el-table-column>
+        <el-table-column  header-align="center" prop="type" label="客户类型" sortable width="140">
           <template scope="scope">
             {{ getType(scope.row.type, 'customerType') }}
           </template>
-  	    </el-table-column>
+        </el-table-column>
 
-        <el-table-column  header-align="center"  prop="user_id" label="跟踪员工" sortable width="190">
-            <template scope="scope">
-              {{ getType(scope.row.user_id, 'memberList') }}
-            </template>
-          </el-table-column>
 
           <el-table-column  header-align="center" prop="qq" label="QQ号"  width="170">
             <template scope="scope">
