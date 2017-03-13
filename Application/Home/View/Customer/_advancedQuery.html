@@ -29,13 +29,13 @@
     <el-row>
       <el-col :span="12">
         <el-form-item prop="start" label="锁定起始时间">
-            <el-date-picker v-model="advancedQueryForm.start" size="small" placeholder="请选择起日期" @change="startDateChange">
+            <el-date-picker v-model="advancedQueryForm.start" size="small" placeholder="请选择起日期">
             </el-date-picker>
         </el-form-item>
       </el-col>
       <el-col :span="12">
         <el-form-item prop="end" label="锁定截止时间">
-            <el-date-picker v-model="advancedQueryForm.end" size="small" placeholder="请选择止日期" @change="endDateChange">
+            <el-date-picker v-model="advancedQueryForm.end" size="small" placeholder="请选择止日期">
             </el-date-picker>
         </el-form-item>
       </el-col>
