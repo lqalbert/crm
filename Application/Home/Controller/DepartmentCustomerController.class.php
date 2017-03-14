@@ -6,7 +6,6 @@ namespace Home\Controller;
 
 use Common\Lib\User;
 use Home\Model\CustomerModel;
-use Home\Model\CustomerLogModel;
 
 class DepartmentCustomerController extends CommonController {
 
@@ -25,7 +24,7 @@ class DepartmentCustomerController extends CommonController {
     private function getDepartMentID(){
         $re =  M('department_basic')->where(array('user_id'=>session('uid')))->getField('id');
         if (is_numeric($re)) {
-            return $depart_id;
+            return $re;
         } else {
             return 0;
         }
@@ -37,6 +36,7 @@ class DepartmentCustomerController extends CommonController {
         // 又重复了 赶进度 暂时先这样。后面再优化
         $depart_id = $this->depart_id;
         if ($depart_id) {
+           
             return D("Group")->getAllGoups($depart_id, 'id,name');
         } else {
             return array();
@@ -70,9 +70,8 @@ class DepartmentCustomerController extends CommonController {
         $this->assign('Proportion',   D('CustomerLog')->getProportion());
         $this->assign('Remind',       D('CustomerLog')->getRemind());
 
-        $this->assign('Departments',  D('Department')->getAllDepartments('id,name'));
-        $this->assign('GoodsType',    D('CustomerLog')->getGoodsType());
-        $this->assign('ServiceCycle', D('CustomerLog')->getServiceCycle());
+         $this->assign('Departments',  D('Department')->getAllDepartments('id,name'));
+
         $this->assign('searchGroup', $searchGroup);
         $this->display();
     }
@@ -89,29 +88,48 @@ class DepartmentCustomerController extends CommonController {
 
 
     private function setCreatedField(){
-        if(I('get.start')){
+        /*if(I('get.start')){
             $this->M->setStart('created_at', I('get.start'));
         } 
 
 
         if(I('get.end')){
             $this->M->setEnd('created_at', I('get.end'));
-        } 
+        } */
+
+        $this->M->setTimeDiv('created_at', I('get.start'), I('get.end'));
     }
 
 
     private function setTrackField(){
-        if(I('get.track_start')){
+        /*if(I('get.track_start')){
             $this->M->setStart('last_track', I('get.track_start'));
         } 
 
 
         if(I('get.track_end')){
             $this->M->setEnd('last_track', I('get.track_end'));
-        } 
+        } */
+        $this->M->setTimeDiv('last_track', I('get.track_start'), I('get.track_end'));
 
         
     }
+
+
+    private function setTimeDiv($field, $start, $end){
+        if( $start || $end ){
+            if ( $start && $end ) {
+                $this->M->where(array($field=> array(array('GT', $start), array('LT', $end)) ));
+            } else if( $start ){
+                 $this->M->where(array($field=> array('GT', $start)));
+            } else if($end) {
+                $this->M->where(array($field=> array('LT', $end)));
+            }
+            
+        }
+    }
+
+
 
     private function setGroupField(){
         $group_id = I('get.group',0);
