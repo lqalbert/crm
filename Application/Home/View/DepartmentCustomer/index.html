@@ -9,7 +9,7 @@
       z-index: 50;
       left:90px;
     }
-    .el-tabs__header{
+    #app2 .el-tabs__header{
       border-top:2px solid #1AA094;
       border-bottom: 1px solid #1aa094;
     }
@@ -37,6 +37,9 @@
     }
     .el-tabs--border-card{
       border: none;
+    }
+     .el-table__body tr.current-row>td{
+      background: rgba(157, 195, 232, 0.7);
     }
   </style>
 </block>
@@ -170,11 +173,13 @@
     <el-col :span="24">
         <el-table 
       :data="dataList" 
+      highlight-current-row
       border  
       v-loading="dataLoad" 
       element-loading-text="{:L('DATA_LOGIN')}"
       @selection-change="handleSelectionChange"
-      @row-click="trackLog"  ref="select" @row-dblclick="userInfo">
+      @row-click="trackLog"  ref="select" 
+      @row-dblclick="userInfo">
 
         <el-table-column type="selection"  width="50" ></el-table-column>
 
@@ -615,8 +620,10 @@ var checkQQ=function(rule,value,callback){
           console.log("操作失败");
         });
   }).setMethod('userInfo',function(row,event){
-      this.dialogVisible=true;
-      this.sb=row;
+      /*this.dialogVisible=true;
+      this.sb=row;*/
+      this.handleEdit(this.dataList.indexOf(row), row);
+
   }).setMethod('setField', function(v){
       this[FormName.getFormName('search')].field = v;
       this[FormName.getFormName('search')].group = 'user_id';
@@ -648,14 +655,15 @@ var checkQQ=function(rule,value,callback){
     }, function(response){
       this.$message.error('出错了');
     })
+  }).setMethod('addTrackSubmit',function(url,form){
+    FormName.type = form;
+    var  formName    =  FormName.getFormName(); 
+    if(this[formName].to_type=='V'){
+       this.realInfoFormDialog=true;
+       this.realInfoForm.fm = 'addTrack'; 
+    }else{ 
+       this.addTrackFormSubmit(url, form);
+    } 
   });
-</script>
-<script>
-     //console.log({:json_encode($Sty)});
-   // var he=document.getElementById('he');
-    //var h=document.body.scrollHeight;
-    //console.log(sb);
-    //sb.style.height=h/2+'px';  max-height="400"
-    //he.setAttribute("max-height",h*0.6);
 </script>
 </block>

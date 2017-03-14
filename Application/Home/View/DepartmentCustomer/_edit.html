@@ -11,7 +11,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="客户类型" prop="type">
-              <el-select v-model="editForm.type" placeholder="请选择客户类型" :disabled="isTypeV">
+              <el-select v-model="editForm.type" placeholder="请选择客户类型" :disabled="editForm.type=='V'">
                 <el-option v-for="(type, key) in customerType" :label="type" :value="key" :disabled="key=='V'"></el-option>
               </el-select>
             </el-form-item>
@@ -28,7 +28,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="QQ号1">
-              <el-input v-model="editForm.qq" auto-complete="off" placeholder="请填写QQ号" :disabled="qq_disabled" ></el-input>
+              <el-input v-model="editForm.qq" auto-complete="off" placeholder="请填写QQ号"  ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -41,7 +41,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="微信号1" >
-              <el-input v-model.lazy="editForm.weixin"  auto-complete="off" placeholder="请填写微信号" :disabled="weixin_disabled"></el-input>
+              <el-input v-model.lazy="editForm.weixin"  auto-complete="off" placeholder="请填写微信号" ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -54,7 +54,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="手机号2" prop="phone2">
-              <el-input v-model="editForm.phone2" auto-complete="off" placeholder="请填写手机号" :disabled="phone2_disabled"></el-input>
+              <el-input v-model="editForm.phone2" auto-complete="off" placeholder="请填写手机号" ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -62,7 +62,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="QQ号2" prop="qq2">
-              <el-input v-model.number="editForm.qq2" auto-complete="off" placeholder="请填写QQ号" :disabled="qq2_disabled"></el-input>
+              <el-input v-model.number="editForm.qq2" auto-complete="off" placeholder="请填写QQ号" ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -75,7 +75,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="微信号2" >
-              <el-input v-model="editForm.weixin2"  auto-complete="off" placeholder="请填写微信号" :disabled="weixin2_disabled"></el-input>
+              <el-input v-model="editForm.weixin2"  auto-complete="off" placeholder="请填写微信号" ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -219,8 +219,10 @@
     </el-tabs>
   </el-form>
   <div slot="footer" class="dialog-footer">
-    <el-button @click="closeDialog('edit')">取 消</el-button>
+    <!-- <el-button @click="closeDialog('edit')">取 消</el-button>
     <el-button type="primary" v-show="!editFormSubmitStatus" @click="editSubmit(page.editFormUrl, 'edit')" >确 定</el-button>
-    <el-button type="primary" v-show="editFormSubmitStatus" :loading="true" >修改中</el-button>
+    <el-button type="primary" v-show="editFormSubmitStatus" :loading="true" >修改中</el-button> -->
+
+      <include file="Common::_edit" />
   </div>
 </el-dialog>

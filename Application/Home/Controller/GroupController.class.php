@@ -2,7 +2,7 @@
 namespace Home\Controller;
 use Common\Lib\User;
 class GroupController extends CommonController {
-	protected $table="group_basic";
+	protected $table="Group";
 
 	
 	public function index (){
@@ -46,7 +46,10 @@ class GroupController extends CommonController {
 		$user->getRoleObject();
 		$contactList = $user->setGroupQueryCondition($this->M);
 		
-		$this->M->where($map);
+		$this->M->where($map)
+		        ->where(array('status'=> array('EGT', 0)))
+		        ->join('left join user_info as ui on group_basic.user_id = ui.user_id')
+		        ->field('group_basic.* , ui.realname,ui.mphone as phone');
 	}
 
 	public function _before_add(){
@@ -61,17 +64,15 @@ class GroupController extends CommonController {
 	}
 
 
-	public function _before_edit(){
+	/*public function _before_edit(){
 		$user_id = I('post.user_id',0);
 		$id = I('post.id');
 		$old_row = $this->M->find($id);
 		if ($old_row['user_id'] != $user_id && $user_id!=0 ) {
 			$this->setContactPost($user_id);
 		}
-
-		
 		return true;
-	}
+	}*/
 
 	public function getEmployeesByGroupId(){
 		$re = M('user_info')->where(array('group_id'=>I('get.id')))->field('user_id,qq,realname,mphone as phone')->select();

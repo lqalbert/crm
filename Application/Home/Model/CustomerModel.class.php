@@ -405,7 +405,7 @@ class CustomerModel extends Model {
       //索取
       $data = array(
         'salesman_id'=>$user_id,
-        '重置service_time'=>time()
+        'service_time'=>time()
       );
       $re = $this->data($data)->where($condition)->save();
       if (!$re) {

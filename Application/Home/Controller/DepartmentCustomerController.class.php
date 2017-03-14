@@ -88,48 +88,13 @@ class DepartmentCustomerController extends CommonController {
 
 
     private function setCreatedField(){
-        /*if(I('get.start')){
-            $this->M->setStart('created_at', I('get.start'));
-        } 
-
-
-        if(I('get.end')){
-            $this->M->setEnd('created_at', I('get.end'));
-        } */
-
         $this->M->setTimeDiv('created_at', I('get.start'), I('get.end'));
     }
 
 
     private function setTrackField(){
-        /*if(I('get.track_start')){
-            $this->M->setStart('last_track', I('get.track_start'));
-        } 
-
-
-        if(I('get.track_end')){
-            $this->M->setEnd('last_track', I('get.track_end'));
-        } */
         $this->M->setTimeDiv('last_track', I('get.track_start'), I('get.track_end'));
-
-        
     }
-
-
-    private function setTimeDiv($field, $start, $end){
-        if( $start || $end ){
-            if ( $start && $end ) {
-                $this->M->where(array($field=> array(array('GT', $start), array('LT', $end)) ));
-            } else if( $start ){
-                 $this->M->where(array($field=> array('GT', $start)));
-            } else if($end) {
-                $this->M->where(array($field=> array('LT', $end)));
-            }
-            
-        }
-    }
-
-
 
     private function setGroupField(){
         $group_id = I('get.group',0);
@@ -141,7 +106,7 @@ class DepartmentCustomerController extends CommonController {
                 $userIds = M("user_info")->where(array('group_id'=>$group_id))->getField('user_id', true);
                 break;
         }
-        // var_dump($group_id);
+        
         if ($userIds) {
             $this->M->where(array('salesman_id'=>array('IN', $userIds)));
         }
@@ -229,10 +194,12 @@ class DepartmentCustomerController extends CommonController {
 
         
         //个人
+
         if (I('get.user_id')) {
             $this->M->setSalesman(I('get.user_id'));
         } else {
             //部门还是小组
+
             if (strpos(I('get.field'),'transf') === false) {
                 $this->setGroupField();
             }   
@@ -264,10 +231,12 @@ class DepartmentCustomerController extends CommonController {
     }
 
     public function _getList(){
+
         $this->setQeuryCondition();
         //没有 is_main
         $this->M->join('customers_contacts as cc on customers_basic.id = cc.cus_id');
         $count = (int)$this->M->count();
+        
         $this->setQeuryCondition();
         $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id and cc.is_main=1')
                 ->join('left join customers_contacts as cc2 on customers_basic.id =  cc2.cus_id and cc2.is_main!=1')
@@ -280,6 +249,7 @@ class DepartmentCustomerController extends CommonController {
         }
 
         $list = $this->M->page(I('get.p',0). ','. $this->pageSize)->select();
+
         $result = array('list'=>$list, 'count'=>$count);
         
         return $result;

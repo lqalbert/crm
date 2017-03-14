@@ -33,9 +33,9 @@ class UpgradeController extends CommonController {
 
 
         // 初始化 service_time 
-        $all2 = M('customers_basic')->field('id,created_at')->where('service_time=0')->select();
+        $all2 = M('customers_basic')->field('id,created_at,user_id')->where('service_time=0')->select();
         foreach ($all2 as $key => $value) {
-            M('customers_basic')->where(array('id'=>$value['id']))->save(array('service_time'=> strtotime($value['created_at'])));     
+            M('customers_basic')->where(array('id'=>$value['id']))->save(array('service_time'=> strtotime($value['created_at']), 'salesman_id'=>$value['user_id']));     
         }
         echo "\r\n";
         echo 'done2';
