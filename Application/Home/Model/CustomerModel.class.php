@@ -452,7 +452,19 @@ class CustomerModel extends Model {
 
     public function setEnd($field, $value){
       $this->where(array($field=>array('ELT', $value." 00:00:00")));
-    }  
+    } 
+
+    public function setTimeDiv($field, $start, $end){
+      if( $start || $end ){
+            if ( $start && $end ) {
+                $this->where(array($field=> array(array('EGT', $start), array('ELT', $end)) ));
+            } else if( $start ){
+                 $this->where(array($field=> array('EGT', $start)));
+            } else if($end) {
+                $this->where(array($field=> array('ELT', $end)));
+            }
+        }
+    } 
 
     /**
     * salesman_id

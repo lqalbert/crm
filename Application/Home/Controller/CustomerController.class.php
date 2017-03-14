@@ -131,12 +131,13 @@ class CustomerController extends CommonController {
         }
 
         if (I('get.type')) {
-            $this->M->where(array("cc.type"=> I('get.type')));
+            $this->M->where(array("type"=> I('get.type')));
         }
 
         $start = I('get.start') ;
         $end   = I('get.end');
-        if( $start || $end ){
+        $this->M->setTimeDiv('created_at', $start, $end);
+        /*if( $start || $end ){
             if ( $start && $end ) {
                 $this->M->where(array("created_at"=> array(array('GT', $start), array('LT', $end)) ));
             } else if( $start ){
@@ -145,13 +146,16 @@ class CustomerController extends CommonController {
                 $this->M->where(array("created_at"=> array('LT', $end)));
             }
             
-        }
+        }*/
+
+        
 
 
 
         $track_start   = str_replace('/','-',I('get.track_start')) ;
         $track_end   = str_replace('/','-',I('get.track_end'));
-        if( $track_start || $track_end ){
+        $this->M->setTimeDiv('last_track', $track_start, $track_end);
+        /*if( $track_start || $track_end ){
             if ( $track_start && $track_end ) {
                 $this->M->where(array("last_track"=> array(array('GT', $track_start), array('LT', $track_end)) ));
             } else if( $track_start ){
@@ -159,7 +163,7 @@ class CustomerController extends CommonController {
             } else if($track_end) {
                 $this->M->where(array("last_track"=> array('LT', $track_end)));
             }
-        }
+        }*/
     }
 
 	/**
