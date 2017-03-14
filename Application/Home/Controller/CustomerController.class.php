@@ -137,33 +137,11 @@ class CustomerController extends CommonController {
         $start = I('get.start') ;
         $end   = I('get.end');
         $this->M->setTimeDiv('created_at', $start, $end);
-        /*if( $start || $end ){
-            if ( $start && $end ) {
-                $this->M->where(array("created_at"=> array(array('GT', $start), array('LT', $end)) ));
-            } else if( $start ){
-                 $this->M->where(array("created_at"=> array('GT', $start)));
-            } else if($end) {
-                $this->M->where(array("created_at"=> array('LT', $end)));
-            }
-            
-        }*/
 
         
-
-
-
         $track_start   = str_replace('/','-',I('get.track_start')) ;
         $track_end   = str_replace('/','-',I('get.track_end'));
         $this->M->setTimeDiv('last_track', $track_start, $track_end);
-        /*if( $track_start || $track_end ){
-            if ( $track_start && $track_end ) {
-                $this->M->where(array("last_track"=> array(array('GT', $track_start), array('LT', $track_end)) ));
-            } else if( $track_start ){
-                 $this->M->where(array("last_track"=> array('GT', $track_start)));
-            } else if($track_end) {
-                $this->M->where(array("last_track"=> array('LT', $track_end)));
-            }
-        }*/
     }
 
 	/**

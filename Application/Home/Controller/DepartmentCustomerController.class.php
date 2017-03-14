@@ -273,7 +273,13 @@ class DepartmentCustomerController extends CommonController {
                 ->join('left join customers_contacts as cc2 on customers_basic.id =  cc2.cus_id and cc2.is_main!=1')
                 ->join('left join user_info as ui on customers_basic.salesman_id = ui.user_id')
                 ->field('customers_basic.*,cc.qq,cc.phone,cc.weixin,cc.qq_nickname,cc.weixin_nickname,cc2.qq as qq2,cc2.phone as phone2,cc2.weixin as weixin2,cc2.qq_nickname as qq_nickname2,cc2.weixin_nickname as weixin_nickname2, ui.realname');
-        $list = $this->M->page(I('get.p',0). ','. $this->pageSize)->order('id desc')->select();
+
+
+        if (I('get.sort_field', null)) {
+            $this->M->order(I('get.sort_field')." ". I('get.sort_order'));
+        }
+
+        $list = $this->M->page(I('get.p',0). ','. $this->pageSize)->select();
         $result = array('list'=>$list, 'count'=>$count);
         
         return $result;
