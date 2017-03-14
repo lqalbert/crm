@@ -6,6 +6,7 @@ namespace Home\Controller;
 
 use Common\Lib\User;
 use Home\Model\CustomerModel;
+use Home\Model\CustomerLogModel;
 
 class DepartmentCustomerController extends CommonController {
 
@@ -69,8 +70,9 @@ class DepartmentCustomerController extends CommonController {
         $this->assign('Proportion',   D('CustomerLog')->getProportion());
         $this->assign('Remind',       D('CustomerLog')->getRemind());
 
-         $this->assign('Departments',  D('Department')->getAllDepartments('id,name'));
-
+        $this->assign('Departments',  D('Department')->getAllDepartments('id,name'));
+        $this->assign('GoodsType',    D('CustomerLog')->getGoodsType());
+        $this->assign('ServiceCycle', D('CustomerLog')->getServiceCycle());
         $this->assign('searchGroup', $searchGroup);
         $this->display();
     }
