@@ -299,11 +299,11 @@
 
  
   <!-- 编辑 -->
-  <include file="Customer::_edit" />
+  <include file="_edit" />
   <!-- 显示客户一般资料 -->
   <include file="_userInfo"/>
   <!-- 录入跟踪  -->
-  <include file="Customer::_track" />
+  <include file="_track" />
   <!-- / 录入跟踪 -->
 
   <!-- 录入转让 -->
@@ -377,7 +377,7 @@ Vue.filter("handleString", function(v) {
   page.addRemindFormUrl = "{:U('setRemid')}";
   page.addChoiceFormUrl = "{:U('setImportant')}";
   page.getGroupMemberListUrl = "{:U('getGroupMemberList')}";
-  page.getTrackLogUrl = "{:U('Customer/trackInfo')}";
+  page.getTrackLogUrl = "{:U('trackInfo')}";
   page.addTransferFormUrl = "{:U('trasnfCustomers')}";
   window.defaultOption.setDatas({
     advanchShow:false,

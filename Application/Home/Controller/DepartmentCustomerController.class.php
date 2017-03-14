@@ -372,4 +372,82 @@ class DepartmentCustomerController extends CommonController {
         
     }
 
+    /**
+    * 编辑
+    *
+    * 知道 丑丑丑丑丑丑丑丑丑丑丑丑  
+    * if 超过三层了 fuck customerContact 的逻辑需要重构封装 
+    */
+    public function edit() {
+        $this->M->startTrans();
+        if ($this->M->create($_POST, Model::MODEL_UPDATE) && ($this->M->save() !== false) )  {
+            $D_cc  = D('CustomerContact');
+            $D_cc->where(array('is_main'=>1, 'cus_id'=>$_POST['id']))->find();
+            $re = $D_cc->edit($D_cc->getMainPost());
+            if ($re === false) {
+                $this->M->rollback();
+                $this->error($D_cc->getError());
+            }
+
+            $data2 = $D_cc->getSecondPost();
+
+            if ($D_cc->where(array('is_main'=>0, 'cus_id'=>$_POST['id']))->find()) {
+                $re = $D_cc->edit($data2, true);
+                if ($re !== false) {
+                    $this->M->commit();
+                    $this->success('编辑成功1');
+                } else {
+                     $this->M->rollback();
+                    $this->error($D_cc->getError());
+                }
+            } else {
+                // 
+                if ((empty($data2['phone']) && empty($data2['qq']) && empty($data2['weixin']))) {
+                    $this->M->commit();
+                    $this->success('编辑成功2');
+                }
+                $data2['cus_id'] = $_POST['id'];
+                if ( $D_cc->create($data2) && $D_cc->add()  ) {
+                    $this->M->commit();
+                    $this->success('编辑成功3_'.$D_cc->getLastSql());
+                } else {
+                    $this->M->rollback();
+                    $this->error($D_cc->getError());
+                }
+            }
+            $this->M->commit();
+            $this->success('编辑成功4');
+            //$this->success(L('EDIT_SUCCESS'));
+        } else {
+            $this->M->rollback();
+            $this->error($this->M->getError());
+        }
+    }
+
+    /**
+    *   获取跟踪信息
+    *
+    */
+    public function trackInfo(){
+        $type=$this->M->getType(I('post.type'));
+        $group_id=M('user_info')->where(array('user_id'=>I('post.user_id')))->field('group_id')->find();
+        $groupInfo=M('group_basic')->where(array('id'=>$group_id['group_id']))->field('name')->find();
+        $userName=M('user_info')->where(array('user_id'=>I('user_id')))->field('realname')->find();
+        $user=$groupInfo['name']."-".$userName['realname'];
+        $arr=M('customers_log')->where(array('cus_id'=>I('post.id')))->order('id desc')->select();
+        foreach ($arr as $key => $value){
+            $arr[$key]['type']=$type;
+            $arr[$key]['user']=M('user_info')->where(array('user_id'=>$arr[$key]['user_id'],'id'=>I('post.id')))->getField('realname');
+            $arr[$key]['name']=I('post.name');
+            $arr[$key]['track_type']=D('CustomerLog')->getType((int)$arr[$key]['track_type']);
+        }
+        if (IS_AJAX) {
+            $this->ajaxReturn($arr);
+
+        }  else {
+            
+            return $arr;
+        }
+    }
+
 }
