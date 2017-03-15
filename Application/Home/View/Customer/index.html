@@ -427,7 +427,7 @@ function toInt(v){
     ServiceCycle:{:json_encode($ServiceCycle)},
     provinces:[],
     cities:[],
-    deps:[],//
+    // deps:[],//
     reUsers:[],//
     multipleSelection: [],
     alertDesc:"",
@@ -810,15 +810,15 @@ function toInt(v){
       vmThis.$set(vmThis, 'provinces', provinces);
     });
     //接收单位、员工
-    this.$http.get('{:U("getRecDep")}',{params:{id:0}}).then(
+    /*this.$http.get('{:U("getRecDep")}',{params:{id:0}}).then(
       function(response){
       var deps=[];
       response.body.forEach(function(currentValue,index){
         deps.push({value:currentValue.value,name:currentValue.dep_name});
       })
       vmThis.$set(vmThis,'deps',deps);
-      //console.log(deps);
-    });
+      
+    });*/
 
     this.dialogLabelWidth = "100px";
   }).setMethod('trackLog',function(row,event,column){

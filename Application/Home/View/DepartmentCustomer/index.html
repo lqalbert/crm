@@ -503,10 +503,7 @@ var checkQQ=function(rule,value,callback){
     intention:'',
     source:'',
     remark:"",
-  },true).setForm('importc',{
-    c:0,
-    t:0
-  }, true).setMethod('getType', function(type, field){
+  },true).setMethod('getType', function(type, field){
       return this[field][type];
   }).setMethod('beforeList', function(data){
         data.forEach(function(currentValue){
@@ -675,13 +672,5 @@ var checkQQ=function(rule,value,callback){
       this.$message.error('出错了');
     })
   });
-</script>
-<script>
-     //console.log({:json_encode($Sty)});
-   // var he=document.getElementById('he');
-    //var h=document.body.scrollHeight;
-    //console.log(sb);
-    //sb.style.height=h/2+'px';  max-height="400"
-    //he.setAttribute("max-height",h*0.6);
 </script>
 </block>

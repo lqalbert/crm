@@ -221,7 +221,7 @@ class CustomerController extends CommonController {
         // $this->setNamelike();
         // $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id ');
         $count = (int)$this->M->count();
-
+        $this->setQeuryCondition();
         $this->M->join('left join customers_contacts as cc2 on customers_basic.id =  cc2.cus_id and cc2.id!=cc.id')
                 ->join('left join user_info as ui on customers_basic.salesman_id = ui.user_id')
                 ->field('customers_basic.*,cc.qq,cc.phone,cc.weixin,cc.qq_nickname,cc.weixin_nickname,cc.is_main as cc_main,cc2.qq as qq2,cc2.phone as phone2,cc2.weixin as weixin2,cc2.qq_nickname as qq_nickname2,cc2.weixin_nickname as weixin_nickname2,ui.realname');
@@ -232,7 +232,7 @@ class CustomerController extends CommonController {
             $this->M->order(I('get.sort_field')." ". I('get.sort_order'));
         }
         
-        $this->setQeuryCondition();
+        
 
         $list = $this->M->page(I('get.p',0). ','. $this->pageSize)->select();
         // echo $this->M->getLastSql();
@@ -463,8 +463,9 @@ class CustomerController extends CommonController {
 	public function getTodays(){
 		$between_today =  $this->getDayBetween();
 		$this->M->where(array('plan'=>$between_today))
-		        ->where(array("user_id"=> session('uid')))
-		        ->field('id,qq,name,plan,remind');
+		        ->where(array("salesman_id"=> session('uid')))
+                ->join('customers_contacts as cc on customers_basic.id = cc.cus_id and cc.is_main=1')
+		        ->field('customers_basic.id,qq,name,plan,remind');
 		$re = $this->M->select();
 		foreach ($re as $key => $value) {
 			$re[$key]['time'] = strtotime($value['plan']) * 1000;
