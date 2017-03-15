@@ -57,13 +57,6 @@ class DepartmentController extends CommonController {
 
 
 
-	public function delete(){
-		if ($this->M->where(array('id'=>array('in', implode(",", I("post.ids")))) )->data(array('status'=>-1, 'user_id'=>null))->save()) {
-			$this->success(L('DELETE_SUCCESS'));
-		} else {
-			$this->error(L('DELETE_ERROR').$this->M->getError());
-		}
-	}
 
 
 }

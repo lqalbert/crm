@@ -51,6 +51,10 @@ class DepartmentModel extends Model {
         return $this->select();
     }
 
+    public function delete($ids){
+        return $this->where(array('id'=>array('in', $ids )))->save(array('status'=>-1, 'user_id'=>null));
+    }
+
     
 
 }
