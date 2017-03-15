@@ -10,8 +10,8 @@
       left:90px;
     }
     .el-tabs__header{
-      border-top:2px solid #1AA094;
-      border-bottom: 1px solid #1aa094;
+      border-top:2px solid #ea4b4b;
+      border-bottom: 1px solid #c51f1f;
     }
     .el-dialog .el-tabs__header{
       border-top:none;
@@ -78,11 +78,11 @@
             <el-button  @click="openDialog('advancedQuery')" size="small" type="primary">{:L('ADVANCED_QUERY')}</el-button>
           </el-tooltip>
 
-          <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start">
+          <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
             <el-button  size="small" @click="searchReset2">重置</el-button>
           </el-tooltip>
 
-          <el-tooltip content="录入新的客户" placement="bottom-start"  style="margin-left:10px;">
+          <el-tooltip content="录入新的客户" placement="bottom-start" style="margin-left:10px;">
             <el-button  @click="openDialog('add')" size="small" icon="plus" type="primary">{:L('ADD')}</el-button>
           </el-tooltip>
 
@@ -120,7 +120,7 @@
 
           <el-tooltip content="本人跟踪且成交了的客户" placement="bottom-start">
             <el-badge :value="{$aggregation.type}" :max="9" style="margin-left:15px;">
-              <el-button type="info" size="small" @click="setField('type')">服务</el-button>
+              <el-button type="primary" size="small" @click="setField('type')">服务</el-button>
             </el-badge>
           </el-tooltip>
 
@@ -169,6 +169,7 @@
       v-loading="dataLoad" 
       element-loading-text="{:L('DATA_LOGIN')}"
       highlight-current-row
+      empty-text="暂无数据,请录入客户！"
       @selection-change="handleSelectionChange"
       @row-click="trackLog"  ref="select" 
       @row-dblclick="userInfo"
@@ -273,7 +274,7 @@
      <el-col :span="24">
         <el-tabs  type="border-card">
           <el-tab-pane label="跟踪记录">
-            <el-table :data="tableData"  empty-text="请点击客户显示跟踪信息" border style="width: 100%"  @row-dblclick="viewtraceContents" >
+            <el-table :data="tableData"  empty-text="请点击客户显示跟踪信息" border style="width: 100%"  @row-dblclick="viewtraceContents">
               <el-table-column prop="user" label="操作员工" header-align="center">
               </el-table-column>
 
@@ -283,16 +284,16 @@
               <el-table-column prop="name" label="客户姓名" header-align="center">
               </el-table-column>
 
-              <el-table-column label="内容" align="center">
-                <template scope="scope">
-                  {{scope.row.content | handleString}}
-                </template>
-              </el-table-column>
+                <el-table-column label="内容" header-align="center">
+                  <template scope="scope">
+                    {{scope.row.content | handleString}}
+                  </template>
+                </el-table-column>
 
               <el-table-column prop="created_at" label="跟踪时间" align="center">
               </el-table-column>
 
-              <el-table-column prop="track_text" label="跟踪类型" align="center">
+              <el-table-column prop="track_text" label="跟踪类型" header-align="center">
               </el-table-column>
 
             </el-table>
@@ -731,7 +732,6 @@ function toInt(v){
       this[disableArr[i] +"_disabled"] = !!this.editForm[disableArr[i]] ?  true : false ;
     }
   }).setMethod('handleSelectionChange', function(val){
-
     //this.multipleSelection = val;
     this.multipleSelection = [];
     if(val.length >= 2){
@@ -811,14 +811,14 @@ function toInt(v){
   }).setMethod('userInfo',function(row,event){
       var index = this.dataList.indexOf(row);
       this.realInfoForm.cus_id = row.id;
-    this.$http.get('{:U("findRealInfo")}', {params:{cus_id:row.id} }).then(function(response){
-       this.realInfoForm.identity = response.body.identity;
-       this.realInfoForm.type = response.body.type;
-       this.realInfoForm.expense = response.body.expense;
-       this.realInfoForm.cycle = response.body.cycle;
-       this.realInfoForm.address = response.body.address;
-       this.realInfoForm.cus_id = response.body.cus_id;
-    });
+      this.$http.get('{:U("findRealInfo")}', {params:{cus_id:row.id} }).then(function(response){
+         this.realInfoForm.identity = response.body.identity;
+         this.realInfoForm.type = response.body.type;
+         this.realInfoForm.expense = response.body.expense;
+         this.realInfoForm.cycle = response.body.cycle;
+         this.realInfoForm.address = response.body.address;
+         this.realInfoForm.cus_id = response.body.cus_id;
+      });
 
       this.handleEdit(index, row);
   }).setMethod('setField', function(v){
@@ -863,7 +863,8 @@ function toInt(v){
   }).setComputed('isTypeV', function(){
     return this.editForm.type == 'V';
   }).setMethod('sortChange', function(sortObject){
-
+    console.log(sortObject);
+    console.log(this.searchForm);
     var sortMap = {
       ascending: 'asc',
       descending: 'desc'
@@ -978,5 +979,10 @@ function toInt(v){
     this.traceContentFormDialog = true;
     this.traceContentForm.content = row.content;
   });
+</script>
+<script>
+  var sb=document.getElementsByClassName("el-dialog");
+  console.log(sb.item(1));
+
 </script>
 </block>

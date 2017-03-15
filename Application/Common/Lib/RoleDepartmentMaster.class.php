@@ -22,9 +22,7 @@ class RoleDepartmentMaster {
     public function getGroupContacts($obj){
         $depart_id = $this->getDepartId($obj->id);
         $captainId = D('Role')->getIdByEname(RoleModel::CAPTAIN);
-        $sql = "select user_id,realname from user_info where user_id not in (select user_id from group_basic ) and department_id=".$depart_id. " and role_id=".$captainId;
-        return M()->query($sql);
-        //return M('user_info')->where(array('department_id'=>$depart_id, 'role_id'=>$captainId, 'group_id'=>0 ))->select();
+        return M('user_info')->where(array('department_id'=>$depart_id, 'role_id'=>$captainId, 'group_id'=>0 ))->select();
     }
 
     public function setEmployQueryCondition($m, $obj){
@@ -38,7 +36,7 @@ class RoleDepartmentMaster {
 
     public function setGroupQueryCondition($m, $obj){
         $depart_id = $this->getDepartId($obj->id);
-        $m->where(array('group_basic.department_id'=>$depart_id));
+        $m->where(array('department_id'=>$depart_id));
     }
 
     public function getAllBenC($obj){

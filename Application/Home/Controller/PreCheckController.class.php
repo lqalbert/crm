@@ -1,8 +1,6 @@
 <?php
 namespace Home\Controller;
 
-use Home\Model\RoleModel;
-
 class PreCheckController extends CommonController {
     protected $table = "customer";
 
@@ -47,12 +45,6 @@ class PreCheckController extends CommonController {
 
     public function getUser(){
         $id = I("post.id");
-
-        //如果是 部门经理 就暂时不能索取
-        if (D('Role')->getEnameById(session('account')['userInfo']['role_id']) == RoleModel::DEPARTMENTMASTER) {
-            $this->error('部门经理暂进还不能索取哦');
-        }
-
         $re = $this->M->changeSalesman($id, session('uid'));
         if ($re) {
             $this->success('索取成功');

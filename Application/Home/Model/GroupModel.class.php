@@ -26,9 +26,4 @@ class GroupModel extends Model {
         
         return $this->select();
     }
-
-    public function delete($ids){
-
-        return $this->where(array('id'=>array('IN', $ids)))->data(array('status'=>-1, 'user_id'=>null))->save();
-    }
 }
