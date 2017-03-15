@@ -3,19 +3,15 @@
 * 部门经理 管理 客户
 */
 namespace Home\Controller;
-
 use Common\Lib\User;
 use Home\Model\CustomerModel;
+use Home\Logic\CustomerLogic;
 use Home\Model\CustomerLogModel;
 
 class DepartmentCustomerController extends CommonController {
-
-
     private $depart_id = 0;
-
-
     protected $table="Customer";
-
+    protected $pageSize = 11;
 
     public function _initialize(){
         parent::_initialize();
@@ -45,36 +41,34 @@ class DepartmentCustomerController extends CommonController {
     }
 
     public function index(){
-        
         $searchGroup = $this->getGoups();
         array_unshift($searchGroup, array('id'=>0, 'name'=>'本部门'));
         
         $D = D('Customer');
 
-        $this->assign('customerType', $D->getType());
-        $this->assign('sexType',      $D->getSexType());
-        $this->assign('Quality',      $D->getQuality());
-        $this->assign('Year',         $D->getYear());
-        $this->assign('Income',       $D->getIncome());
-        $this->assign('Sty',          $D->getStyle());
-        $this->assign('Money',        $D->getMoney());
-        $this->assign('Energy',       $D->getEnergy());
-        $this->assign('Problem',      $D->getProblem());
-        $this->assign('Mode',         $D->getMode());
-        $this->assign('Attitude',     $D->getAttitude());
-        $this->assign('Profession',   $D->getProfession());
-        $this->assign('Intention',    $D->getIntention());
-        $this->assign('Source',       $D->getSource());
-        $this->assign('logType',      D('CustomerLog')->getType());
-        $this->assign('steps',        D('CustomerLog')->getSteps());
-        $this->assign('Proportion',   D('CustomerLog')->getProportion());
-        $this->assign('Remind',       D('CustomerLog')->getRemind());
-
-        $this->assign('Departments',  D('Department')->getAllDepartments('id,name'));
-        $this->assign('GoodsType',    D('CustomerLog')->getGoodsType());
-        $this->assign('ServiceCycle', D('CustomerLog')->getServiceCycle());
-        $this->assign('searchGroup', $searchGroup);
-        $this->display();
+         $this->assign('customerType', $D->getType());
+         $this->assign('sexType',      $D->getSexType());
+         $this->assign('Quality',      $D->getQuality());
+         $this->assign('Year',         $D->getYear());
+         $this->assign('Income',       $D->getIncome());
+         $this->assign('Sty',          $D->getStyle());
+         $this->assign('Money',        $D->getMoney());
+         $this->assign('Energy',       $D->getEnergy());
+         $this->assign('Problem',      $D->getProblem());
+         $this->assign('Mode',         $D->getMode());
+         $this->assign('Attitude',     $D->getAttitude());
+         $this->assign('Profession',   $D->getProfession());
+         $this->assign('Intention',    $D->getIntention());
+         $this->assign('Source',       $D->getSource());
+         $this->assign('logType',      D('CustomerLog')->getType());
+         $this->assign('steps',        D('CustomerLog')->getSteps());
+         $this->assign('Proportion',   D('CustomerLog')->getProportion());
+         $this->assign('Remind',       D('CustomerLog')->getRemind());
+         $this->assign('Departments',  D('Department')->getAllDepartments('id,name'));
+         $this->assign('GoodsType',    D('CustomerLog')->getGoodsType());
+         $this->assign('ServiceCycle', D('CustomerLog')->getServiceCycle());
+         $this->assign('searchGroup', $searchGroup);
+         $this->display();
     }
 
 
@@ -132,57 +126,8 @@ class DepartmentCustomerController extends CommonController {
 
     //单个按钮那个
     private function setField(){
-         $between_today =  R('Customer/getDayBetween');
-         switch (I('get.field')) {
-                case 'plan':
-                    $this->M->where(array(
-                        'plan'=> $between_today
-                        ));
-                    break;
-                case 'log':
-                    $this->M->where(array('log_count'=> array('NEQ',0)));
-                    break;
-                case 'unlog':
-                    $this->M->where(array('log_count'=> 0));
-                    break;
-                    //转出 连 customer_transflog 表 from_department_id = this->depart_id
-                    // 近三个月的
-                case 'transfto':
-                    $this->M->where(array(
-                        'transfer_status'=>1, 
-                        'from_department_id'=> $this->depart_id,
-                        'ct.created_at'=>array('EGT', $this->getThreeMonthsAgoDateTime())))
-                            ->join('customer_transflog as ct on customers_basic.id=ct.cus_id');
-                    break;
-                    //转入 连 customer_transflog 表 to_department_id = this->depart_id
-                case 'transfin':
-                    $this->M->where(array(
-                        'transfer_status'=>1, 
-                        'to_department_id'=> $this->depart_id,
-                        'ct.created_at'=>array('EGT', $this->getThreeMonthsAgoDateTime())))
-                            ->join('customer_transflog as ct on customers_basic.id=ct.cus_id');
-                    break;
-                case 'type':
-                    $this->M->where(array('type'=>CustomerModel::TYPE_V));
-                    break;
-                case 'important':
-                    $this->M->where(array('important'=>1));
-                    break;
-                case 'conflict':
-                    $this->M->where(array(
-                        'conflict'=> $between_today
-                        ));
-                    break;
-                default:
-                    
-                    break;
-            }
+        D('Customer','Logic')->getSingleButton('DepCus',$this->M);
     }
-
-    private function getThreeMonthsAgoDateTime(){
-        return Date("Y-m-d 00:00:00", time()-CustomerController::THREE_MONTH_AGE);
-    }
-
 
 
     /**
@@ -225,14 +170,13 @@ class DepartmentCustomerController extends CommonController {
 
         // 如果一个时间都没传
         // 近3个月之内的
-        // Date("Y-m-d", time()-CustomerController::THREE_MONTH_AGE)
         if ( empty(I('get.start')) 
              && empty(I('get.end')) 
              && empty(I('get.track_start')) 
              && empty(I('get.track_end')) 
              && strpos(I('get.fiedl'),'transf') === false
              ) {
-            $this->M->setStart('last_track', Date("Y-m-d", time()-CustomerController::THREE_MONTH_AGE));
+            $this->M->setStart('last_track', D('Customer','Logic')->ThreeMonthsAge());
         }
     }
 
@@ -251,10 +195,7 @@ class DepartmentCustomerController extends CommonController {
         $this->M->join('customers_contacts as cc on customers_basic.id = cc.cus_id');
         $count = (int)$this->M->count();
         $this->setQeuryCondition();
-        $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id and cc.is_main=1')
-                ->join('left join customers_contacts as cc2 on customers_basic.id =  cc2.cus_id and cc2.is_main!=1')
-                ->join('left join user_info as ui on customers_basic.salesman_id = ui.user_id')
-                ->field('customers_basic.*,cc.qq,cc.phone,cc.weixin,cc.qq_nickname,cc.weixin_nickname,cc2.qq as qq2,cc2.phone as phone2,cc2.weixin as weixin2,cc2.qq_nickname as qq_nickname2,cc2.weixin_nickname as weixin_nickname2, ui.realname');
+        D('Customer','Logic')->getJoinCondition($this->M);
         $list = $this->M->page(I('get.p',0). ','. $this->pageSize)->order('id desc')->select();
         $result = array('list'=>$list, 'count'=>$count);
         
@@ -335,41 +276,22 @@ class DepartmentCustomerController extends CommonController {
     * 添加跟踪纪录
     *
     */
-    public function addTrackLogs(){
-        // $id = I('post.id');
-        
-        $LogM = D('CustomerLog');
-        $to_type = I('post.to_type', '');
-        $LogM->startTrans();
-        if (!$LogM->create()) {
-            
-            $LogM->rollback();
-            $this->error(L('ADD_ERROR').$LogM->getError());
-        }
-        $this->M->find($LogM->cus_id);
-        if ($to_type !== "" &&  $to_type != $this->M->type) {
-            $LogM->contentSetChangeType($this->M->type, $to_type);
-            $this->M->type = $to_type;
-            
-            $re = $this->M->save();
-            if ($re === false) {
-                $LogM->rollback();
-                $this->error(L('ADD_ERROR').$this->M->getError()."e");
-            }
-        }
-
-        if( $LogM->track_type == 0 || !empty($LogM->track_type)){
-            $LogM->track_text = D('CustomerLog')->getType((int)$LogM->track_type);
-        }
-
-        if ($LogM->add()) {
-            $LogM->commit();
-            $this->success(L('ADD_SUCCESS'));
-        } else {
-            $LogM->rollback();
-            $this->error(L('ADD_ERROR').$LogM->getError());
-        }
-        
+	public function addTrackLogs(){
+        D('Customer','Logic')->addTrackLogs();
     }
 
+    /**
+    *   获取跟踪信息
+    *
+    */
+	public function trackInfo(){
+        $arr=D('Customer','Logic')->trackInfo($this->M);
+		if (IS_AJAX) {
+			$this->ajaxReturn($arr);
+		}  else {
+			return $arr;
+		}
+	}
+
 }
+

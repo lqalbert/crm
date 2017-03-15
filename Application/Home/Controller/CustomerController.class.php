@@ -1,30 +1,19 @@
 <?php
 namespace Home\Controller;
-use Home\Model\CustomerModel;
-use Home\Model\CustomerLogModel;
-use Home\Model\RoleModel;
-use Home\Model\RealInfoModel;
-use Common\Lib\User;
 use Think\Model;
-
+use Common\Lib\User;
+use Home\Model\RoleModel;
+use Home\Model\CustomerModel;
+use Home\Model\RealInfoModel;
+use Home\Logic\CustomerLogic;
+use Home\Model\CustomerLogModel;
 class CustomerController extends CommonController {
-
-    const THREE_MONTH_AGE = 7776000;
-
-
-	protected $table = "customer";
+	protected $table = "Customer";
 	protected $pageSize = 11;
-
-	public function getDayBetween(){
-		$today = Date("Y-m-d")." 00:00:00" ;
-		return   array(
-					array('GT', $today), 
-					array('LT', Date("Y-m-d H:i:s", strtotime("+1 day", strtotime($today))))
-		         );
-	}
 
 	public function index () {
 		// $dataList = $this->getList();
+        // var_dump(D('Customer','Logic')->sb);die();
         $user = new User();
         $searchGroup = $user->getRoleObject()
                             ->getCustomerSearchGroup(array(array('value'=>'user_id','key'=>"本人" ) , array('value'=>'group','key'=>"团组" )));
@@ -105,7 +94,8 @@ class CustomerController extends CommonController {
     * 默认为3个月时间
     */
     public function getBeenPulld(){
-        $date = Date("Y-m-d H:i:s", time()-THREE_MONTH_AGE);
+        //$date = Date("Y-m-d H:i:s", time()-self::THREE_MONTH_AGE);
+        $data = D('Customer','Logic')->ThreeMonthsAge();
         $c = D('customers_pulls')->where(array('from_id'=> session('uid'), 'created_at'=>array('GT', $date )   ))->count();
         if ($this->IS_AJAX) {
             $this->ajaxReturn($c);
@@ -146,9 +136,6 @@ class CustomerController extends CommonController {
             }
             
         }
-
-
-
         $track_start   = str_replace('/','-',I('get.track_start')) ;
         $track_end   = str_replace('/','-',I('get.track_end'));
         if( $track_start || $track_end ){
@@ -173,7 +160,7 @@ class CustomerController extends CommonController {
            $this->advanceSearch();
         }else{  
 
-            $timeCondition=date("Y-m-d H:i:s",strtotime("-3 month",time()));
+            $timeCondition = D('Customer','Logic')->ThreeMonthsAge();
             $this->M->where(array("created_at"=>array('EGT',$timeCondition)));
 
             $this->setGroupCondition(I('get.group',"user_id")); ;
@@ -183,42 +170,8 @@ class CustomerController extends CommonController {
                 // $this->M->where(array("phone"=> array('like', I('get.name')."%")));
             }*/
 
-
-            $between_today =  $this->getDayBetween();
-
-            switch (I('get.field')) {
-                case 'plan':
-                    $this->M->where(array(
-                        'plan'=> $between_today
-                        ));
-                    break;
-                case 'log':
-                    $this->M->where(array('log_count'=> array('NEQ',0)));
-                    break;
-                case 'unlog':
-                    $this->M->where(array('log_count'=> 0));
-                    break;
-                case 'transfto':
-                    $this->M->where(array('transfer_status'=>1, 'transfer_to'=>array('NEQ', 0)));
-                    break;
-                case 'transfin':
-                    $this->M->where(array('transfer_status'=>array( array('EQ', 1), array('EQ', 2), 'or'), 'transfer_to'=>session('uid')));
-                    break;
-                case 'type':
-                    $this->M->where(array('type'=>CustomerModel::TYPE_V));
-                    break;
-                case 'important':
-                    $this->M->where(array('important'=>1));
-                    break;
-                case 'conflict':
-                    $this->M->where(array(
-                        'conflict'=> $between_today
-                        ));
-                    break;
-                default:
-                    
-                    break;
-            }
+            D('Customer','Logic')->getSingleButton('Cus',$this->M);
+           
         }
 
 
@@ -241,13 +194,7 @@ class CustomerController extends CommonController {
         $this->setNamelike();
         $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id ');
         $count = (int)$this->M->count();
-
-        $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id and cc.is_main=1')
-                ->join('left join customers_contacts as cc2 on customers_basic.id =  cc2.cus_id and cc2.is_main!=1')
-                ->join('left join user_info as ui on customers_basic.salesman_id = ui.user_id')
-                ->field('customers_basic.*,cc.qq,cc.phone,cc.weixin,cc.qq_nickname,cc.weixin_nickname,cc2.qq as qq2,cc2.phone as phone2,cc2.weixin as weixin2,cc2.qq_nickname as qq_nickname2,cc2.weixin_nickname as weixin_nickname2, ui.realname');
-
-
+         D('Customer','Logic')->getJoinCondition($this->M);
         if (I('get.sort_field', null)) {
             $this->M->order(I('get.sort_field')." ". I('get.sort_order'));
         }
@@ -416,41 +363,8 @@ class CustomerController extends CommonController {
 	*
 	*/
 	public function addTrackLogs(){
-		// $id = I('post.id');
-        $this->authCheck(I('post.cus_id'));
-		$LogM = D('CustomerLog');
-		$to_type = I('post.to_type', '');
-		$LogM->startTrans();
-		if (!$LogM->create()) {
-			
-			$LogM->rollback();
-			$this->error(L('ADD_ERROR').$LogM->getError());
-		}
-		$this->M->find($LogM->cus_id);
-		if ($to_type !== "" &&  $to_type != $this->M->type) {
-			$LogM->contentSetChangeType($this->M->type, $to_type);
-			$this->M->type = $to_type;
-			
-			$re = $this->M->save();
-			if ($re === false) {
-				$LogM->rollback();
-				$this->error(L('ADD_ERROR').$this->M->getError()."e");
-			}
-		}
-
-        if( $LogM->track_type == 0 || !empty($LogM->track_type)){
-            $LogM->track_text = D('CustomerLog')->getType((int)$LogM->track_type);
-        }
-
-		if ($LogM->add()) {
-			$LogM->commit();
-			$this->success(L('ADD_SUCCESS'));
-		} else {
-			$LogM->rollback();
-			$this->error(L('ADD_ERROR').$LogM->getError());
-		}
-		
-	}
+        D('Customer','Logic')->addTrackLogs();
+    }
 
     /**
     *   添加计划记录
@@ -475,33 +389,21 @@ class CustomerController extends CommonController {
     *
     */
 	public function trackInfo(){
-        $type=$this->M->getType(I('post.type'));
-        $group_id=M('user_info')->where(array('user_id'=>I('post.user_id')))->field('group_id')->find();
-        $groupInfo=M('group_basic')->where(array('id'=>$group_id['group_id']))->field('name')->find();
-        $userName=M('user_info')->where(array('user_id'=>I('user_id')))->field('realname')->find();
-        $user=$groupInfo['name']."-".$userName['realname'];
-        $arr=M('customers_log')->where(array('cus_id'=>I('post.id')))->order('id desc')->select();
-        foreach ($arr as $key => $value){
-        	$arr[$key]['type']=$type;
-        	$arr[$key]['user']=M('user_info')->where(array('user_id'=>$arr[$key]['user_id'],'id'=>I('post.id')))->getField('realname');
-        	$arr[$key]['name']=I('post.name');
-        	$arr[$key]['track_type']=D('CustomerLog')->getType((int)$arr[$key]['track_type']);
-        }
+        $arr=D('Customer','Logic')->trackInfo($this->M);
 		if (IS_AJAX) {
 			$this->ajaxReturn($arr);
-
 		}  else {
-			
 			return $arr;
 		}
 	}
+
 
 
 	/**
 	* 获取今天之内的 计划客户
 	*/
 	public function getTodays(){
-		$between_today =  $this->getDayBetween();
+		$between_today =  D('Customer','Logic')->getDayBetween();
 		$this->M->where(array('plan'=>$between_today))
 		        ->where(array("salesman_id"=> session('uid')))
                 ->join('customers_contacts as cc on customers_basic.id=cc.cus_id and cc.is_main = 1')
