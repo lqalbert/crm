@@ -94,7 +94,6 @@ class CustomerController extends CommonController {
     * 默认为3个月时间
     */
     public function getBeenPulld(){
-        //$date = Date("Y-m-d H:i:s", time()-self::THREE_MONTH_AGE);
         $data = D('Customer','Logic')->ThreeMonthsAge();
         $c = D('customers_pulls')->where(array('from_id'=> session('uid'), 'created_at'=>array('GT', $date )   ))->count();
         if ($this->IS_AJAX) {
@@ -121,32 +120,13 @@ class CustomerController extends CommonController {
         }
 
         if (I('get.type')) {
-            $this->M->where(array("cc.type"=> I('get.type')));
+            $this->M->where(array("type"=> I('get.type')));
         }
 
-        $start = I('get.start') ;
-        $end   = I('get.end');
-        if( $start || $end ){
-            if ( $start && $end ) {
-                $this->M->where(array("created_at"=> array(array('GT', $start), array('LT', $end)) ));
-            } else if( $start ){
-                 $this->M->where(array("created_at"=> array('GT', $start)));
-            } else if($end) {
-                $this->M->where(array("created_at"=> array('LT', $end)));
-            }
-            
-        }
-        $track_start   = str_replace('/','-',I('get.track_start')) ;
+        $this->M->setTimeDiv('created_at', I('get.start'), I('get.end'));
+        $track_start = str_replace('/','-',I('get.track_start')) ;
         $track_end   = str_replace('/','-',I('get.track_end'));
-        if( $track_start || $track_end ){
-            if ( $track_start && $track_end ) {
-                $this->M->where(array("last_track"=> array(array('GT', $track_start), array('LT', $track_end)) ));
-            } else if( $track_start ){
-                 $this->M->where(array("last_track"=> array('GT', $track_start)));
-            } else if($track_end) {
-                $this->M->where(array("last_track"=> array('LT', $track_end)));
-            }
-        }
+        $this->M->setTimeDiv('last_track', $track_start, $track_end);
     }
 
 	/**
@@ -159,23 +139,23 @@ class CustomerController extends CommonController {
         if(I('get.ctrl') == 'advance'){   
            $this->advanceSearch();
         }else{  
-
             $timeCondition = D('Customer','Logic')->ThreeMonthsAge();
             $this->M->where(array("created_at"=>array('EGT',$timeCondition)));
 
-            $this->setGroupCondition(I('get.group',"user_id")); ;
+            $this->setGroupCondition(I('get.group',"user_id"));
 
-            /*if (I('get.name')) {
+            if (I('get.name')) {
                 $this->M->where(array("name|cc.phone|cc.qq|cc.qq_nickname|cc.weixin"=> array('like', I('get.name')."%")));
                 // $this->M->where(array("phone"=> array('like', I('get.name')."%")));
-            }*/
+            }
 
             D('Customer','Logic')->getSingleButton('Cus',$this->M);
            
         }
 
+        $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id ');
 
-       /* $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id and cc.is_main=1');
+        /*$this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id and cc.is_main=1');
                 ->join('left join customers_contacts as cc2 on customers_basic.id =  cc2.cus_id and cc2.is_main!=1')
                 ->field('customers_basic.*,cc.qq,cc.phone,cc.weixin,cc.qq_nickname,cc.weixin_nickname,cc2.qq as qq2,cc2.phone as phone2,cc2.weixin as wexin2,cc2.qq_nickname as qq_nickname2,cc2.weixin_nickname as weixin_nickname2');*/
 
@@ -191,36 +171,14 @@ class CustomerController extends CommonController {
 
     protected function _getList(){
         $this->setQeuryCondition();
-        $this->setNamelike();
-        $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id ');
+        // $this->setNamelike();
+        // $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id ');
         $count = (int)$this->M->count();
-         D('Customer','Logic')->getJoinCondition($this->M);
+        $this->setQeuryCondition();
+        D('Customer','Logic')->getJoinCondition($this->M);
         if (I('get.sort_field', null)) {
             $this->M->order(I('get.sort_field')." ". I('get.sort_order'));
         }
-
-        /*if(I('get.ctrl') != 'advance'){ 
-            if (I('get.name')) {
-                $this->M->where(array("cc2.phone|cc2.qq|cc2.qq_nickname|cc2.weixin"=> array('like', I('get.name')."%")));
-            }
-        }*/
-
-        if(I('get.ctrl') != 'advance'){ 
-            if (I('get.name')) {
-                $this->M->where(array('_complex'=> 
-                            array(
-                                "cc2.phone|cc2.qq|cc2.qq_nickname|cc2.weixin"=> array('like', I('get.name')."%"),
-                                "name|cc.phone|cc.qq|cc.qq_nickname|cc.weixin"=> array('like', I('get.name')."%"),
-                                '_logic'=>'OR'
-                            )
-                        )
-                    );
-            }
-        }
-
-        
-        $this->setQeuryCondition();
-
         $list = $this->M->page(I('get.p',0). ','. $this->pageSize)->select();
         // echo $this->M->getLastSql();
         $result = array('list'=>$list, 'count'=>$count);
@@ -406,7 +364,7 @@ class CustomerController extends CommonController {
 		$between_today =  D('Customer','Logic')->getDayBetween();
 		$this->M->where(array('plan'=>$between_today))
 		        ->where(array("salesman_id"=> session('uid')))
-                ->join('customers_contacts as cc on customers_basic.id=cc.cus_id and cc.is_main = 1')
+                ->join('customers_contacts as cc on customers_basic.id = cc.cus_id and cc.is_main=1')
 		        ->field('customers_basic.id,qq,name,plan,remind');
 		$re = $this->M->select();
 		foreach ($re as $key => $value) {

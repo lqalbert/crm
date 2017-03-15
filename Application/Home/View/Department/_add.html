@@ -50,7 +50,9 @@
 
         <el-form-item label="联系人"  prop="contact">
           <el-select v-model='addForm.user_id'>
-            <el-option v-for="user in computedusers" :label="user.realname" :value="user.user_id"></el-option>
+            <el-option v-for="user in computedusers" :label="user.realname" :value="user.user_id">
+              
+            </el-option>
           </el-select>
         </el-form-item>
 

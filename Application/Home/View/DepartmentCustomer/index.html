@@ -377,7 +377,7 @@ Vue.filter("handleString", function(v) {
   page.addRemindFormUrl = "{:U('setRemid')}";
   page.addChoiceFormUrl = "{:U('setImportant')}";
   page.getGroupMemberListUrl = "{:U('getGroupMemberList')}";
-  page.getTrackLogUrl = "{:U('trackInfo')}";
+  page.getTrackLogUrl = "{:U('Customer/trackInfo')}";
   page.addTransferFormUrl = "{:U('trasnfCustomers')}";
   window.defaultOption.setDatas({
     advanchShow:false,
@@ -590,6 +590,32 @@ Vue.filter("handleString", function(v) {
           currentValue.intention = currentValue.intention == 0?"":currentValue.intention;      
           currentValue.source = currentValue.source == 0?"":currentValue.source;          
           //console.log(typeof(currentValue.quality));
+
+          // 如果不是 就交换 qq与 qq2 phone与phone2 ...
+          if (currentValue.cc_main != 1) {
+            // qq weixin phone qq_nickname weixin_nickname
+            currentValue.qq2        = currentValue.qq ^ currentValue.qq2;
+            currentValue.weixin2    = currentValue.weixin ^ currentValue.weixin2;
+            currentValue.phone2     = currentValue.phone ^ currentValue.phone2;
+            currentValue.qq_nickname2     = currentValue.qq_nickname ^ currentValue.qq_nickname2;
+            currentValue.weixin_nickname2 = currentValue.weixin_nickname ^ currentValue.weixin_nickname2;
+
+            currentValue.qq  = currentValue.qq2 ^ currentValue.qq;
+            currentValue.qq2 = currentValue.qq2 ^ currentValue.qq;
+
+            currentValue.weixin  = currentValue.weixin2 ^ currentValue.weixin;
+            currentValue.weixin2 = currentValue.weixin2 ^ currentValue.weixin;
+
+            currentValue.phone   = currentValue.phone2 ^ currentValue.phone;
+            currentValue.phone2  = currentValue.phone2 ^ currentValue.phone;
+
+            currentValue.qq_nickname   = currentValue.qq_nickname2 ^ currentValue.qq_nickname;
+            currentValue.qq_nickname2  = currentValue.qq_nickname2 ^ currentValue.qq_nickname;
+
+            currentValue.weixin_nickname   = currentValue.weixin_nickname2 ^ currentValue.weixin_nickname;
+            currentValue.weixin_nickname2  = currentValue.weixin_nickname2 ^ currentValue.weixin_nickname;
+
+          }
 
        })
      return data;

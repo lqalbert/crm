@@ -43,9 +43,9 @@
 					    </el-table-column>
 					   <!-- <el-table-column prop="id"  label="员工ID" width="100">
 					    </el-table-column> -->
-					    <el-table-column prop="account" label="登录账号" width="100" >
+					    <el-table-column prop="account" label="登录账号" width="100" align="center">
 					    </el-table-column>
-						 <el-table-column prop="realname" label="员工姓名" width="150" >
+						 <el-table-column prop="realname" label="员工姓名" width="150" align="center">
 					    </el-table-column>
 					    <el-table-column prop="sex"  label="性别" width="80" align="center">
 						    <template scope="scope">
@@ -69,7 +69,7 @@
 					    <el-table-column prop="mphone" label="手机" width="140" align="center">
 					    </el-table-column>
 					    
-					    <el-table-column prop="qq" label="QQ号" width="160" >
+					    <el-table-column prop="qq" label="QQ号" width="140" align="center">
 					    </el-table-column>
 					    <el-table-column prop="qq_nickname" label="QQ昵称" width="180" align="center">
 					    </el-table-column>
@@ -235,6 +235,21 @@
 				],
 				qq:[
                      {validator: checkQQ, trigger:'blur'},
+				],
+
+			},
+			editRules:{
+				account:[
+					{ required: true, message: '请输入账号', trigger: 'blur' }
+				],
+				realname:[
+					{required: true, message: '请输入员工姓名', trigger: 'blur'},
+				],
+				mphone:[
+					{validator: checkPhone, trigger: 'blur'},
+				],
+				qq:[
+					{validator: checkQQ, trigger:'blur'},
 				],
 
 			}

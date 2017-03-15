@@ -15,7 +15,7 @@ class DepartmentCustomerController extends CommonController {
 
     public function _initialize(){
         parent::_initialize();
-        $this->depart_id = $this->getDepartMentID();
+        // $this->depart_id = $this->getDepartMentID();
     }
 
     private function getDepartMentID(){
@@ -73,10 +73,17 @@ class DepartmentCustomerController extends CommonController {
 
 
     private function checkLikeField(){
-        $arrList = array('name', 'phone', 'qq', 'weixin', );
+        $arrList = array('name', 'cc.phone', 'cc.qq', 'cc.weixin', );
         foreach ($arrList as $value) {
-            if (I('get.'.$value)) {
-                $this->M->where(array($field=>array('like', $value."%")));
+            if (strpos($value, 'cc')===false) {
+                // $value = substr($value, 3);
+                
+                $val = I('get.'.$value);
+            } else {
+               $val = I('get.'.substr($value, 3));
+            }
+            if ($val) {
+                $this->M->where(array($value=>array('like', $val."%")));
             }
         }
     }
@@ -117,9 +124,11 @@ class DepartmentCustomerController extends CommonController {
                 $userIds = M("user_info")->where(array('group_id'=>$group_id))->getField('user_id', true);
                 break;
         }
-        // var_dump($group_id);
         if ($userIds) {
             $this->M->where(array('salesman_id'=>array('IN', $userIds)));
+        } else {
+            //没有队员 没有组长  
+            $this->M->where(array('salesman_id'=>'-1'));
         }
         
     }
@@ -178,6 +187,8 @@ class DepartmentCustomerController extends CommonController {
              ) {
             $this->M->setStart('last_track', D('Customer','Logic')->ThreeMonthsAge());
         }
+
+        $this->M->join('customers_contacts as cc on customers_basic.id = cc.cus_id');
     }
 
     public function delete() {
@@ -192,13 +203,14 @@ class DepartmentCustomerController extends CommonController {
     public function _getList(){
         $this->setQeuryCondition();
         //没有 is_main
-        $this->M->join('customers_contacts as cc on customers_basic.id = cc.cus_id');
         $count = (int)$this->M->count();
         $this->setQeuryCondition();
         D('Customer','Logic')->getJoinCondition($this->M);
-        $list = $this->M->page(I('get.p',0). ','. $this->pageSize)->order('id desc')->select();
+        if (I('get.sort_field', null)) {
+            $this->M->order(I('get.sort_field')." ". I('get.sort_order'));
+        }
+        $list = $this->M->page(I('get.p',0). ','. $this->pageSize)->select();
         $result = array('list'=>$list, 'count'=>$count);
-        
         return $result;
     }
 

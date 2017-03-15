@@ -46,23 +46,23 @@
 					    </el-table-column>
 					    <!-- <el-table-column label="单位ID" align="center" prop="id" width="90">
 					    </el-table-column> -->
-					    <el-table-column   label="单位名"  prop="name" width="200">
+					    <el-table-column   label="单位名"  prop="name" width="180">
 					    </el-table-column>
-					    <el-table-column label="类型" align="left" prop="typeText" >
+					    <el-table-column label="类型" align="center" prop="typeText" >
 					    </el-table-column>
-						<el-table-column label="事业/财富区" align="left" prop="p_name" width="250">
+						<el-table-column label="事业/财富区" align="center" prop="p_name" width="110">
 					    </el-table-column>
-					    <el-table-column label="片区" align="left" prop="zone">
+					    <el-table-column label="片区" align="center" prop="zone">
 					    </el-table-column>
-					    <el-table-column label="联系人" align="left" prop="realname">
+					    <el-table-column label="联系人" align="center" prop="contact">
 					    </el-table-column>
-					    <el-table-column label="联系电话" align="left" prop="phone" width="140">
+					    <el-table-column label="联系电话" align="center" prop="tel" width="140">
 					    </el-table-column>
-					    <!-- <el-table-column label="拓展一" align="center" prop="expand1">
-                        </el-table-column>
-                        <el-table-column  label="拓展二" align="center" prop="expand2">
-                        </el-table-column> -->
-						<el-table-column label="是否启用" :context="_self" align="center" prop="status" width="150">
+					    <el-table-column label="拓展一" align="center" prop="expand1">
+					    </el-table-column>
+					    <el-table-column  label="拓展二" align="center" prop="expand2">
+					    </el-table-column>
+						<el-table-column label="是否启用" :context="_self" align="center" prop="status">
 					      <template scope="scope">
   							<div>
   						        <el-switch
@@ -138,7 +138,7 @@
 
 		<div v-show="show" style="display: none">
 			<!-- 高级查询 -->
-			
+			<include file="_search" />
 			<!-- / 高级查询 -->
 
 			<!-- 添加 -->
@@ -162,6 +162,7 @@
 </block>
 <block name="scripts">
 <script>
+    page.getUsersUrl = "{:U('getUsers')}";
 	window.defaultOption.setDatas({
   	    //传输照片上传地址
   	    pathInfo:{folder:'department'},
@@ -185,9 +186,9 @@
              name:[
                 { required: true, message: '请填写单位名称', trigger: 'blur' },
              ],
-             // type:[
-             //    { required: true, message: '请选择类型', trigger: 'blur' },
-             // ],
+             type:[
+                { required: true, message: '请选择类型', trigger: 'blur' },
+             ],
              division_id:[
                 { required: true, message: '请选择事业/财富区', trigger: 'blur' },
              ],
@@ -198,13 +199,13 @@
              public:[
                 { required: true, message: '请选择是否公示', trigger: 'blur' },
              ],
-             /*address:[
+             address:[
                 { required: true, message: '请填写地址', trigger: 'blur' },
-             ],*/
+             ],
 		},
 		typeList:{:json_encode($typeList)},
 		zoneList:{:json_encode($zoneList)},
-		userList:{:json_encode($departmentMaster)},
+		// userList:{:json_encode($departmentMaster)},
 		computedusers:[]
 
 	}).setForm('add', {
@@ -253,7 +254,7 @@
 		return response.path;
 	}).setMethod('uploadImg_E',function(response, file, fileList){
     	this.editForm.img = response.path;
-    }).setMethod("handleEdit", function(index, row){
+    }).setAdvancedSearch().setMethod("handleEdit", function(index, row){
 		//将此行数据赋给editForm
 		var type='edit';
 		//console.log(row);
@@ -271,11 +272,10 @@
 	    this.$http.get("{:U('getDivision')}").then(function(response){
 	    	vmThis.topO = response.body;
 	    })
-
+        this.getUsers(0);
 	}).setMethod('beforeList',function(dataList){
 		var vmThis = this;
 		dataList.forEach(function(currentValue, index){
-			// currentValue['public']   = currentValue.public == 1 ?'是':'否';
             currentValue['type']     = parseInt(currentValue['type']);
 			currentValue['typeText'] = vmThis.typeList[currentValue['type']];
 			currentValue['zone']     = vmThis.zoneList[currentValue['zone_id']];
@@ -292,7 +292,8 @@
 	    this.$http.get("{:U('getDivision')}").then(function(response){
 	    	vmThis.topO = response.body;
 	    });
-		this.computedusers = this.userList;
+		// this.computedusers = this.userList;
+        this.getUsers(this.dataList[this.editIndex].user_id);
 	}).setMethod('switchHandle',function(index,row){
 	    row.status=row.switch?'1':'0';
 	    this.initObject(this.statusForm, row);
@@ -307,6 +308,19 @@
 	    	});
 	    	vmThis.dataList[vmThis.statusIndex].switch = !vmThis.dataList[vmThis.statusIndex].switch;
 	    });
+    }).setMethod('getUsers', function(id){
+        /**
+        * 获取备选的主管
+        */
+        if (!id) {
+            id = 0;
+        }
+        this.$http.get(page.getUsersUrl, {params:{id:id}}).then(function(response){
+            this.computedusers = response.body;
+        }, function(response){
+
+        });
+
     });
 </script>
 

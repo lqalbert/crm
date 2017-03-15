@@ -178,14 +178,18 @@
   	    <el-table-column width="50" align="center" type="selection"></el-table-column>
 
   	    <el-table-column label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  ></el-table-column>
-        <el-table-column  header-align="center"  prop="realname" label="跟踪员工" sortable width="190"> </el-table-column>
-        <el-table-column  header-align="center" prop="name"  label="客户姓名" width="110"></el-table-column>
-        <el-table-column  header-align="center" prop="type" label="客户类型" sortable width="140">
+  	    <el-table-column  header-align="center" prop="name"  label="客户姓名" width="110"></el-table-column>
+  	    <el-table-column  header-align="center" prop="type" label="客户类型" sortable width="140">
           <template scope="scope">
             {{ getType(scope.row.type, 'customerType') }}
           </template>
-        </el-table-column>
+  	    </el-table-column>
 
+        <el-table-column  header-align="center"  prop="user_id" label="跟踪员工" sortable width="190">
+            <template scope="scope">
+              {{ getType(scope.row.user_id, 'memberList') }}
+            </template>
+          </el-table-column>
 
           <el-table-column  header-align="center" prop="qq" label="QQ号"  width="170">
             <template scope="scope">
@@ -278,19 +282,19 @@
               <el-table-column prop="user" label="操作员工" header-align="center">
               </el-table-column>
 
-              <el-table-column prop="type" label="客户类型" header-align="center">
+              <el-table-column prop="type" label="客户类型" align="center">
               </el-table-column>
 
-              <el-table-column prop="name" label="客户姓名" header-align="center">
+              <el-table-column prop="name" label="客户姓名" width="180" align="center">
               </el-table-column>
-
+              
                 <el-table-column label="内容" header-align="center">
                   <template scope="scope">
                     {{scope.row.content | handleString}}
                   </template>
                 </el-table-column>
 
-              <el-table-column prop="created_at" label="跟踪时间" align="center">
+              <el-table-column prop="created_at" label="跟踪时间" width="180" align="center">
               </el-table-column>
 
               <el-table-column prop="track_text" label="跟踪类型" header-align="center">
@@ -316,7 +320,6 @@
   <!-- / 录入客户 -->
   <!-- 跟踪内容 -->
   <include file="_traceContent" />
-  <!-- /跟踪内容 -->
   <!-- 录入高级查询条件 -->
   <include file="_advancedQuery" />
   <!-- 客户预查 -->
@@ -395,13 +398,6 @@ function toInt(v){
     }
   }
 
-  Vue.filter("handleString", function(v) {
-    if(v!=''){
-      var cnt=v.substring(0,3)+'......';   
-    }
-      return cnt;
-  });
-
   window.defaultOption.setDatas({
     realInfo:false,
     gridData:[],
@@ -435,7 +431,7 @@ function toInt(v){
     ServiceCycle:{:json_encode($ServiceCycle)},
     provinces:[],
     cities:[],
-    deps:[],//
+    // deps:[],//
     reUsers:[],//
     multipleSelection: [],
     alertDesc:"",
@@ -656,8 +652,6 @@ function toInt(v){
     address:'',
     cus_id:'',
     fm:'',
-  },true).setForm('traceContent',{
-    content:'',
   },true).setMethod('getType', function(type, field){
       return this[field][type];
   }).setMethod('searchCustomer', function(){
@@ -687,6 +681,32 @@ function toInt(v){
           currentValue.profession = currentValue.profession == 0?"":currentValue.profession;      
           currentValue.intention = currentValue.intention == 0?"":currentValue.intention;      
           currentValue.source = currentValue.source == 0?"":currentValue.source; 
+
+          // 如果不是 就交换 qq与 qq2 phone与phone2 ...
+          if (currentValue.cc_main != 1) {
+            // qq weixin phone qq_nickname weixin_nickname
+            currentValue.qq2        = currentValue.qq ^ currentValue.qq2;
+            currentValue.weixin2    = currentValue.weixin ^ currentValue.weixin2;
+            currentValue.phone2     = currentValue.phone ^ currentValue.phone2;
+            currentValue.qq_nickname2     = currentValue.qq_nickname ^ currentValue.qq_nickname2;
+            currentValue.weixin_nickname2 = currentValue.weixin_nickname ^ currentValue.weixin_nickname2;
+
+            currentValue.qq  = currentValue.qq2 ^ currentValue.qq;
+            currentValue.qq2 = currentValue.qq2 ^ currentValue.qq;
+
+            currentValue.weixin  = currentValue.weixin2 ^ currentValue.weixin;
+            currentValue.weixin2 = currentValue.weixin2 ^ currentValue.weixin;
+
+            currentValue.phone   = currentValue.phone2 ^ currentValue.phone;
+            currentValue.phone2  = currentValue.phone2 ^ currentValue.phone;
+
+            currentValue.qq_nickname   = currentValue.qq_nickname2 ^ currentValue.qq_nickname;
+            currentValue.qq_nickname2  = currentValue.qq_nickname2 ^ currentValue.qq_nickname;
+
+            currentValue.weixin_nickname   = currentValue.weixin_nickname2 ^ currentValue.weixin_nickname;
+            currentValue.weixin_nickname2  = currentValue.weixin_nickname2 ^ currentValue.weixin_nickname;
+
+          }
           
           //console.log(typeof(currentValue.quality));
 
@@ -712,6 +732,7 @@ function toInt(v){
        vmThis.$set(vmThis,'reUsers',reUsers);
      });
   }).setMethod('beforeEdit',function(){
+
     if (!this.$refs['editselect']) {
       this.provinceChange(this.editForm.area_province);
     }
@@ -731,6 +752,8 @@ function toInt(v){
       // console.log(disableArr[i], !!this.editForm[disableArr[i]]);
       this[disableArr[i] +"_disabled"] = !!this.editForm[disableArr[i]] ?  true : false ;
     }
+
+
   }).setMethod('handleSelectionChange', function(val){
     //this.multipleSelection = val;
     this.multipleSelection = [];
@@ -790,15 +813,15 @@ function toInt(v){
       vmThis.$set(vmThis, 'provinces', provinces);
     });
     //接收单位、员工
-    this.$http.get('{:U("getRecDep")}',{params:{id:0}}).then(
+    /*this.$http.get('{:U("getRecDep")}',{params:{id:0}}).then(
       function(response){
       var deps=[];
       response.body.forEach(function(currentValue,index){
         deps.push({value:currentValue.value,name:currentValue.dep_name});
       })
       vmThis.$set(vmThis,'deps',deps);
-      //console.log(deps);
-    });
+      
+    });*/
 
     this.dialogLabelWidth = "100px";
   }).setMethod('trackLog',function(row,event,column){

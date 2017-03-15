@@ -16,7 +16,7 @@ class RoleGold {
     }
 
     public function getGroupUpsOrg(){
-        return D('department')->where(array('type'=>array('in', array(DepartmentModel::CAREER, DepartmentModel::GENERALIZE))))->field("id,name")->select();
+        return D('department')->field("id,name")->select();
     }
 
     /**

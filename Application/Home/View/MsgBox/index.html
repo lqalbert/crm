@@ -10,7 +10,7 @@
 			       <el-input placeholder="请输入标题关键字" v-model="searchForm.name"></el-input>
 			      </el-form-item>
 			      <el-form-item>
-			       <el-button type="primary" icon="search" @click="loadDatalist">查询</el-button>
+			       <el-button type="primary" icon="search" @click="dataReload">查询</el-button>
 			       <el-tooltip content="清空搜索框并刷新表格数据" placement="right">
 			        <el-button icon="loading" @click="searchReset">重置</el-button>
 			       </el-tooltip>
@@ -56,7 +56,7 @@
 <block name="scripts">
 <script>
   window.defaultOption.setDatas({
-	 multipleSelection:[], 
+	  loadDataList:[],
   }).setForm('search',{
   	name:'',
   }).setMethod("handleDeletes", function(url){
@@ -64,7 +64,6 @@
 		  this.$message.error('请先选择消息');
 		  return false;
 	  }else{
-
 		  if (!arguments[2]) {
 			  url= this.page.deleteUrl;
 		  }

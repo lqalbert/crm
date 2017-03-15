@@ -16,9 +16,10 @@ return array(
 	// 'DB_DSN' => 'mysql:host=localhost;dbname=run_cn_crm;charset=utf8',
 
 
-
-
-
+/*	'DB_TYPE' => 'mysql',
+	'DB_USER' => 'beta_crm',
+	'DB_PWD' =>'beta2008beta',
+	'DB_DSN' => 'mysql:host=139.224.40.238;dbname=beta_crm;charset=utf8',*/
 
 
 	//语言

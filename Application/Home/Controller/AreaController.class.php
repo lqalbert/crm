@@ -11,5 +11,6 @@ class AreaController extends CommonController {
 		$pid = I('get.pid',1);
 		$list = $this->M->where(array("p_id"=>$pid))->select();
 		$this->ajaxReturn($list);
+        // echo json_decode($list);
 	}
 }
