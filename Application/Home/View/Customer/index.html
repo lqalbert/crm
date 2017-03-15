@@ -683,7 +683,7 @@ function toInt(v){
           currentValue.source = currentValue.source == 0?"":currentValue.source; 
 
           // 如果不是 就交换 qq与 qq2 phone与phone2 ...
-          if (currentValue.cc_main != 1) {
+          /*if (currentValue.cc_main != 1) {
             // qq weixin phone qq_nickname weixin_nickname
             currentValue.qq2        = currentValue.qq ^ currentValue.qq2;
             currentValue.weixin2    = currentValue.weixin ^ currentValue.weixin2;
@@ -706,7 +706,7 @@ function toInt(v){
             currentValue.weixin_nickname   = currentValue.weixin_nickname2 ^ currentValue.weixin_nickname;
             currentValue.weixin_nickname2  = currentValue.weixin_nickname2 ^ currentValue.weixin_nickname;
 
-          }
+          }*/
           
           //console.log(typeof(currentValue.quality));
 
