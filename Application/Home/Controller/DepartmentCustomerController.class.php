@@ -78,10 +78,17 @@ class DepartmentCustomerController extends CommonController {
 
 
     private function checkLikeField(){
-        $arrList = array('name', 'phone', 'qq', 'weixin', );
+        $arrList = array('name', 'cc.phone', 'cc.qq', 'cc.weixin', );
         foreach ($arrList as $value) {
-            if (I('get.'.$value)) {
-                $this->M->where(array($field=>array('like', $value."%")));
+            if (strpos($value, 'cc')===false) {
+                // $value = substr($value, 3);
+                
+                $val = I('get.'.$value);
+            } else {
+               $val = I('get.'.substr($value, 3));
+            }
+            if ($val) {
+                $this->M->where(array($value=>array('like', $val."%")));
             }
         }
     }
@@ -217,8 +224,10 @@ class DepartmentCustomerController extends CommonController {
              && empty(I('get.track_end')) 
              && strpos(I('get.fiedl'),'transf') === false
              ) {
-            $this->M->setStart('last_track', Date("Y-m-d", time()-CustomerController::THREE_MONTH_AGE));
+            $this->M->setStart('created_at', Date("Y-m-d", time()-CustomerController::THREE_MONTH_AGE));
         }
+
+        $this->M->join('customers_contacts as cc on customers_basic.id = cc.cus_id');
     }
 
     public function delete() {
@@ -234,14 +243,14 @@ class DepartmentCustomerController extends CommonController {
 
         $this->setQeuryCondition();
         //没有 is_main
-        $this->M->join('customers_contacts as cc on customers_basic.id = cc.cus_id');
-        $count = (int)$this->M->count();
         
+        $count = (int)$this->M->count();
+        /*var_dump($this->M->getLastSql());
+        die();*/
         $this->setQeuryCondition();
-        $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id and cc.is_main=1')
-                ->join('left join customers_contacts as cc2 on customers_basic.id =  cc2.cus_id and cc2.is_main!=1')
+        $this->M->join('left join customers_contacts as cc2 on customers_basic.id =  cc2.cus_id and cc.id <>cc2.id')
                 ->join('left join user_info as ui on customers_basic.salesman_id = ui.user_id')
-                ->field('customers_basic.*,cc.qq,cc.phone,cc.weixin,cc.qq_nickname,cc.weixin_nickname,cc2.qq as qq2,cc2.phone as phone2,cc2.weixin as weixin2,cc2.qq_nickname as qq_nickname2,cc2.weixin_nickname as weixin_nickname2, ui.realname');
+                ->field('customers_basic.*,cc.qq,cc.phone,cc.weixin,cc.qq_nickname,cc.weixin_nickname, cc.is_main as cc_main,cc2.qq as qq2,cc2.phone as phone2,cc2.weixin as weixin2,cc2.qq_nickname as qq_nickname2,cc2.weixin_nickname as weixin_nickname2, ui.realname');
 
 
         if (I('get.sort_field', null)) {
@@ -249,7 +258,7 @@ class DepartmentCustomerController extends CommonController {
         }
 
         $list = $this->M->page(I('get.p',0). ','. $this->pageSize)->select();
-
+        // var_dump($this->M->getLastSql());
         $result = array('list'=>$list, 'count'=>$count);
         
         return $result;

@@ -105,7 +105,7 @@ class CustomerController extends CommonController {
     * 默认为3个月时间
     */
     public function getBeenPulld(){
-        $date = Date("Y-m-d H:i:s", time()-THREE_MONTH_AGE);
+        $date = Date("Y-m-d H:i:s", time()- self::THREE_MONTH_AGE );
         $c = D('customers_pulls')->where(array('from_id'=> session('uid'), 'created_at'=>array('GT', $date )   ))->count();
         if ($this->IS_AJAX) {
             $this->ajaxReturn($c);
@@ -139,7 +139,7 @@ class CustomerController extends CommonController {
         $this->M->setTimeDiv('created_at', $start, $end);
 
         
-        $track_start   = str_replace('/','-',I('get.track_start')) ;
+        $track_start = str_replace('/','-',I('get.track_start')) ;
         $track_end   = str_replace('/','-',I('get.track_end'));
         $this->M->setTimeDiv('last_track', $track_start, $track_end);
     }
@@ -155,15 +155,15 @@ class CustomerController extends CommonController {
            $this->advanceSearch();
         }else{  
 
-            $timeCondition=date("Y-m-d H:i:s",strtotime("-3 month",time()));
+            $timeCondition=date("Y-m-d H:i:s",strtotime("-3 months",time()));
             $this->M->where(array("created_at"=>array('EGT',$timeCondition)));
 
-            $this->setGroupCondition(I('get.group',"user_id")); ;
+            $this->setGroupCondition(I('get.group',"user_id"));
 
-            /*if (I('get.name')) {
+            if (I('get.name')) {
                 $this->M->where(array("name|cc.phone|cc.qq|cc.qq_nickname|cc.weixin"=> array('like', I('get.name')."%")));
                 // $this->M->where(array("phone"=> array('like', I('get.name')."%")));
-            }*/
+            }
 
 
             $between_today =  $this->getDayBetween();
@@ -204,7 +204,7 @@ class CustomerController extends CommonController {
         }
 
 
-       /* $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id and cc.is_main=1');
+        /*$this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id and cc.is_main=1');
                 ->join('left join customers_contacts as cc2 on customers_basic.id =  cc2.cus_id and cc2.is_main!=1')
                 ->field('customers_basic.*,cc.qq,cc.phone,cc.weixin,cc.qq_nickname,cc.weixin_nickname,cc2.qq as qq2,cc2.phone as phone2,cc2.weixin as wexin2,cc2.qq_nickname as qq_nickname2,cc2.weixin_nickname as weixin_nickname2');*/
 
@@ -220,39 +220,19 @@ class CustomerController extends CommonController {
 
     protected function _getList(){
         $this->setQeuryCondition();
-        $this->setNamelike();
+        // $this->setNamelike();
         $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id ');
         $count = (int)$this->M->count();
 
-        $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id and cc.is_main=1')
-                ->join('left join customers_contacts as cc2 on customers_basic.id =  cc2.cus_id and cc2.is_main!=1')
+        $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id ')
+                ->join('left join customers_contacts as cc2 on customers_basic.id =  cc2.cus_id and cc2.id!=cc.id')
                 ->join('left join user_info as ui on customers_basic.salesman_id = ui.user_id')
-                ->field('customers_basic.*,cc.qq,cc.phone,cc.weixin,cc.qq_nickname,cc.weixin_nickname,cc2.qq as qq2,cc2.phone as phone2,cc2.weixin as weixin2,cc2.qq_nickname as qq_nickname2,cc2.weixin_nickname as weixin_nickname2, ui.realname');
+                ->field('customers_basic.*,cc.qq,cc.phone,cc.weixin,cc.qq_nickname,cc.weixin_nickname,cc.is_main as cc_main,cc2.qq as qq2,cc2.phone as phone2,cc2.weixin as weixin2,cc2.qq_nickname as qq_nickname2,cc2.weixin_nickname as weixin_nickname2,ui.realname');
 
 
         if (I('get.sort_field', null)) {
             $this->M->order(I('get.sort_field')." ". I('get.sort_order'));
         }
-
-        /*if(I('get.ctrl') != 'advance'){ 
-            if (I('get.name')) {
-                $this->M->where(array("cc2.phone|cc2.qq|cc2.qq_nickname|cc2.weixin"=> array('like', I('get.name')."%")));
-            }
-        }*/
-
-        if(I('get.ctrl') != 'advance'){ 
-            if (I('get.name')) {
-                $this->M->where(array('_complex'=> 
-                            array(
-                                "cc2.phone|cc2.qq|cc2.qq_nickname|cc2.weixin"=> array('like', I('get.name')."%"),
-                                "name|cc.phone|cc.qq|cc.qq_nickname|cc.weixin"=> array('like', I('get.name')."%"),
-                                '_logic'=>'OR'
-                            )
-                        )
-                    );
-            }
-        }
-
         
         $this->setQeuryCondition();
 

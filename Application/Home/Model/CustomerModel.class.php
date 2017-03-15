@@ -475,7 +475,7 @@ class CustomerModel extends Model {
 
 
     public function setShowCondition(){
-      $this->where(array('status'=>1));
+      $this->where(array('customers_basic.status'=>1));
     }
 
     public function setTransf($id){
