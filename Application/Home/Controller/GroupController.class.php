@@ -39,39 +39,22 @@ class GroupController extends CommonController {
 	public function setQeuryCondition(){
 		$map=array();
 		if (!empty(I('get.name'))) {
-			$map['name']=array('like',"%".I('get.name')."%");
+			$map['group_basic.name']=array('like', I('get.name')."%");
 		}
 
 		$user = new User();
 		$user->getRoleObject();
-		$contactList = $user->setGroupQueryCondition($this->M);
+		$user->setGroupQueryCondition($this->M);
 		
-		$this->M->where($map);
+		$this->M->where($map)
+				->join('left join user_info as ui on group_basic.user_id = ui.user_id')
+				->field('group_basic.* , ui.realname as realname, ui.mphone as phone');
 	}
 
 	public function _before_add(){
 		$this->rightProcted();
-
-
-		$user_id = I('post.user_id', null);
-		if (!empty($user_id)) {
-			$this->setContactPost($user_id);
-		}
-		return true;
 	}
 
-
-	public function _before_edit(){
-		$user_id = I('post.user_id',0);
-		$id = I('post.id');
-		$old_row = $this->M->find($id);
-		if ($old_row['user_id'] != $user_id) {
-			$this->setContactPost($user_id);
-		}
-
-		
-		return true;
-	}
 
 	public function getEmployeesByGroupId(){
 		$re = M('user_info')->where(array('group_id'=>I('get.id')))->field('user_id,qq,realname,mphone as phone')->select();
