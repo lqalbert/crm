@@ -1,14 +1,14 @@
 <el-dialog title="编辑员工" v-model="editFormDialog" @open='beforeEdit'>
 <!-- <el-form :model="form"> -->
-<el-form ref="editForm" :rules="addRules" :model="editForm" :label-width="dialogLabelWidth">
+<el-form ref="editForm" :rules="editRules" :model="editForm" :label-width="dialogLabelWidth">
   <el-row>
     <el-col :span="12">
-      <el-form-item label="登录账号">
+      <el-form-item label="登录账号" prop="account">
         <el-input v-model="editForm.account"  :disabled="true" auto-complete="off"></el-input>
       </el-form-item>
     </el-col>
     <el-col :span="12">
-      <el-form-item label="员工姓名">
+      <el-form-item label="员工姓名" prop="realname">
         <el-input v-model="editForm.realname" auto-complete="off"></el-input>
         
       </el-form-item>
@@ -47,7 +47,7 @@
     <el-row>
       <el-col :span="12">
 
-        <el-form-item label="手机">
+        <el-form-item label="手机" prop="mphone">
           <el-input v-model="editForm.mphone"  auto-complete="off"></el-input>
         </el-form-item>
       </el-col>

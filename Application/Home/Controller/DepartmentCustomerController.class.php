@@ -10,7 +10,7 @@ use Home\Model\CustomerModel;
 class DepartmentCustomerController extends CommonController {
 
 
-    private $depart_id = 0;
+    private $depart_id = 51;
 
 
     protected $table="Customer";
@@ -18,13 +18,13 @@ class DepartmentCustomerController extends CommonController {
 
     public function _initialize(){
         parent::_initialize();
-        $this->depart_id = $this->getDepartMentID();
+        // $this->depart_id = $this->getDepartMentID();
     }
 
     private function getDepartMentID(){
         $re =  M('department_basic')->where(array('user_id'=>session('uid')))->getField('id');
         if (is_numeric($re)) {
-            return $re;
+            return $depart_id;
         } else {
             return 0;
         }
@@ -36,7 +36,6 @@ class DepartmentCustomerController extends CommonController {
         // 又重复了 赶进度 暂时先这样。后面再优化
         $depart_id = $this->depart_id;
         if ($depart_id) {
-           
             return D("Group")->getAllGoups($depart_id, 'id,name');
         } else {
             return array();
@@ -95,12 +94,28 @@ class DepartmentCustomerController extends CommonController {
 
 
     private function setCreatedField(){
-        $this->M->setTimeDiv('created_at', I('get.start'), I('get.end'));
+        if(I('get.start')){
+            $this->M->setStart('created_at', I('get.start'));
+        } 
+
+
+        if(I('get.end')){
+            $this->M->setEnd('created_at', I('get.end'));
+        } 
     }
 
 
     private function setTrackField(){
-        $this->M->setTimeDiv('last_track', I('get.track_start'), I('get.track_end'));
+        if(I('get.track_start')){
+            $this->M->setStart('last_track', I('get.track_start'));
+        } 
+
+
+        if(I('get.track_end')){
+            $this->M->setEnd('last_track', I('get.track_end'));
+        } 
+
+        
     }
 
     private function setGroupField(){
@@ -113,7 +128,7 @@ class DepartmentCustomerController extends CommonController {
                 $userIds = M("user_info")->where(array('group_id'=>$group_id))->getField('user_id', true);
                 break;
         }
-        
+        // var_dump($group_id);
         if ($userIds) {
             $this->M->where(array('salesman_id'=>array('IN', $userIds)));
         }
@@ -201,13 +216,11 @@ class DepartmentCustomerController extends CommonController {
 
         
         //个人
-
         if (I('get.user_id')) {
             $this->M->setSalesman(I('get.user_id'));
         } else {
             //部门还是小组
-
-            if (strpos(I('get.field'),'transf') === false) {
+            if (strpos(I('get.fiedl'),'transf') === false) {
                 $this->setGroupField();
             }   
         }
@@ -240,27 +253,21 @@ class DepartmentCustomerController extends CommonController {
     }
 
     public function _getList(){
-
         $this->setQeuryCondition();
         //没有 is_main
-        
         $count = (int)$this->M->count();
-        /*var_dump($this->M->getLastSql());
-        die();*/
+
         $this->setQeuryCondition();
         $this->M->join('left join customers_contacts as cc2 on customers_basic.id =  cc2.cus_id and cc.id <>cc2.id')
                 ->join('left join user_info as ui on customers_basic.salesman_id = ui.user_id')
                 ->field('customers_basic.*,cc.qq,cc.phone,cc.weixin,cc.qq_nickname,cc.weixin_nickname, cc.is_main as cc_main,cc2.qq as qq2,cc2.phone as phone2,cc2.weixin as weixin2,cc2.qq_nickname as qq_nickname2,cc2.weixin_nickname as weixin_nickname2, ui.realname');
 
-
         if (I('get.sort_field', null)) {
             $this->M->order(I('get.sort_field')." ". I('get.sort_order'));
         }
-
         $list = $this->M->page(I('get.p',0). ','. $this->pageSize)->select();
-        // var_dump($this->M->getLastSql());
         $result = array('list'=>$list, 'count'=>$count);
-        
+
         return $result;
     }
 
@@ -373,84 +380,6 @@ class DepartmentCustomerController extends CommonController {
             $this->error(L('ADD_ERROR').$LogM->getError());
         }
         
-    }
-
-    /**
-    * 编辑
-    *
-    * 知道 丑丑丑丑丑丑丑丑丑丑丑丑  
-    * if 超过三层了 fuck customerContact 的逻辑需要重构封装 
-    */
-    public function edit() {
-        $this->M->startTrans();
-        if ($this->M->create($_POST, Model::MODEL_UPDATE) && ($this->M->save() !== false) )  {
-            $D_cc  = D('CustomerContact');
-            $D_cc->where(array('is_main'=>1, 'cus_id'=>$_POST['id']))->find();
-            $re = $D_cc->edit($D_cc->getMainPost());
-            if ($re === false) {
-                $this->M->rollback();
-                $this->error($D_cc->getError());
-            }
-
-            $data2 = $D_cc->getSecondPost();
-
-            if ($D_cc->where(array('is_main'=>0, 'cus_id'=>$_POST['id']))->find()) {
-                $re = $D_cc->edit($data2, true);
-                if ($re !== false) {
-                    $this->M->commit();
-                    $this->success('编辑成功1');
-                } else {
-                     $this->M->rollback();
-                    $this->error($D_cc->getError());
-                }
-            } else {
-                // 
-                if ((empty($data2['phone']) && empty($data2['qq']) && empty($data2['weixin']))) {
-                    $this->M->commit();
-                    $this->success('编辑成功2');
-                }
-                $data2['cus_id'] = $_POST['id'];
-                if ( $D_cc->create($data2) && $D_cc->add()  ) {
-                    $this->M->commit();
-                    $this->success('编辑成功3_'.$D_cc->getLastSql());
-                } else {
-                    $this->M->rollback();
-                    $this->error($D_cc->getError());
-                }
-            }
-            $this->M->commit();
-            $this->success('编辑成功4');
-            //$this->success(L('EDIT_SUCCESS'));
-        } else {
-            $this->M->rollback();
-            $this->error($this->M->getError());
-        }
-    }
-
-    /**
-    *   获取跟踪信息
-    *
-    */
-    public function trackInfo(){
-        $type=$this->M->getType(I('post.type'));
-        $group_id=M('user_info')->where(array('user_id'=>I('post.user_id')))->field('group_id')->find();
-        $groupInfo=M('group_basic')->where(array('id'=>$group_id['group_id']))->field('name')->find();
-        $userName=M('user_info')->where(array('user_id'=>I('user_id')))->field('realname')->find();
-        $user=$groupInfo['name']."-".$userName['realname'];
-        $arr=M('customers_log')->where(array('cus_id'=>I('post.id')))->order('id desc')->select();
-        foreach ($arr as $key => $value){
-            $arr[$key]['type']=$type;
-            $arr[$key]['user']=M('user_info')->where(array('user_id'=>$arr[$key]['user_id'],'id'=>I('post.id')))->getField('realname');
-            $arr[$key]['name']=I('post.name');
-            $arr[$key]['track_type']=D('CustomerLog')->getType((int)$arr[$key]['track_type']);
-        }
-        if (IS_AJAX) {
-            $this->ajaxReturn($arr);
-
-        }  else {
-            
-            return $arr;
-        }
     }
 
 }

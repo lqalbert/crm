@@ -15,6 +15,8 @@ class DepartmentModel extends Model {
    );
 
 	private $types = array(
+		'总部',
+		'事业区',
 		'事业部',
 		'推广部',
 	);

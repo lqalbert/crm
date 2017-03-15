@@ -15,6 +15,7 @@ return array(
 	// 'DB_PWD' =>'run2008run',
 	// 'DB_DSN' => 'mysql:host=localhost;dbname=run_cn_crm;charset=utf8',
 
+
 /*	'DB_TYPE' => 'mysql',
 	'DB_USER' => 'beta_crm',
 	'DB_PWD' =>'beta2008beta',
