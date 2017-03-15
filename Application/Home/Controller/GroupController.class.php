@@ -53,7 +53,7 @@ class GroupController extends CommonController {
 		$this->rightProcted();
 
 
-		$user_id = I('post.user_id',0);
+		$user_id = I('post.user_id', null);
 		if (!empty($user_id)) {
 			$this->setContactPost($user_id);
 		}

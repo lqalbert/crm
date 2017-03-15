@@ -128,9 +128,11 @@ class DepartmentCustomerController extends CommonController {
                 $userIds = M("user_info")->where(array('group_id'=>$group_id))->getField('user_id', true);
                 break;
         }
-        // var_dump($group_id);
         if ($userIds) {
             $this->M->where(array('salesman_id'=>array('IN', $userIds)));
+        } else {
+            //没有队员 没有组长  
+            $this->M->where(array('salesman_id'=>'-1'));
         }
         
     }
@@ -266,8 +268,8 @@ class DepartmentCustomerController extends CommonController {
             $this->M->order(I('get.sort_field')." ". I('get.sort_order'));
         }
         $list = $this->M->page(I('get.p',0). ','. $this->pageSize)->select();
+        
         $result = array('list'=>$list, 'count'=>$count);
-
         return $result;
     }
 

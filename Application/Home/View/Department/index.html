@@ -162,6 +162,7 @@
 </block>
 <block name="scripts">
 <script>
+    page.getUsersUrl = "{:U('getUsers')}";
 	window.defaultOption.setDatas({
   	    //传输照片上传地址
   	    pathInfo:{folder:'department'},
@@ -204,7 +205,7 @@
 		},
 		typeList:{:json_encode($typeList)},
 		zoneList:{:json_encode($zoneList)},
-		userList:{:json_encode($departmentMaster)},
+		// userList:{:json_encode($departmentMaster)},
 		computedusers:[]
 
 	}).setForm('add', {
@@ -271,11 +272,11 @@
 	    this.$http.get("{:U('getDivision')}").then(function(response){
 	    	vmThis.topO = response.body;
 	    })
-
+        this.getUsers(0);
 	}).setMethod('beforeList',function(dataList){
 		var vmThis = this;
 		dataList.forEach(function(currentValue, index){
-			// currentValue['public']   = currentValue.public == 1 ?'是':'否';
+            currentValue['type']     = parseInt(currentValue['type']);
 			currentValue['typeText'] = vmThis.typeList[currentValue['type']];
 			currentValue['zone']     = vmThis.zoneList[currentValue['zone_id']];
   		    currentValue['switch']   = currentValue.status==1?true:false;
@@ -291,7 +292,8 @@
 	    this.$http.get("{:U('getDivision')}").then(function(response){
 	    	vmThis.topO = response.body;
 	    });
-		this.computedusers = this.userList;
+		// this.computedusers = this.userList;
+        this.getUsers(this.dataList[this.editIndex].user_id);
 	}).setMethod('switchHandle',function(index,row){
 	    row.status=row.switch?'1':'0';
 	    this.initObject(this.statusForm, row);
@@ -306,6 +308,19 @@
 	    	});
 	    	vmThis.dataList[vmThis.statusIndex].switch = !vmThis.dataList[vmThis.statusIndex].switch;
 	    });
+    }).setMethod('getUsers', function(id){
+        /**
+        * 获取备选的主管
+        */
+        if (!id) {
+            id = 0;
+        }
+        this.$http.get(page.getUsersUrl, {params:{id:id}}).then(function(response){
+            this.computedusers = response.body;
+        }, function(response){
+
+        });
+
     });
 </script>
 
