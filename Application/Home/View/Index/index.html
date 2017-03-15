@@ -27,18 +27,6 @@
 				display: block;
 				margin: 0 auto;
 			}
-			.layui-nav-tree .layui-nav-bar{
-				width: 5px;
-                height: 0;
-				background-color: #FF5722;
-			}
-			.layui-nav-tree .layui-this>a, .layui-nav-tree .layui-this>a:hover{
-			    background-color: #29a0e2;
-                color: #fff;
-			}
-		    .layui-nav-tree .layui-this>a{
-		    	background-color: #2080b5;
-		    }
 		</style>
 		<!--[if lte IE 9]> 
 	    <script>
@@ -53,34 +41,34 @@
 	</head>
 	<body>
 		<div class="layui-layout layui-layout-admin" id="layui_layout">
-			<div class="layui-header header header-demo" style="border-bottom: 2px solid #e23232;">
+			<div class="layui-header header header-demo">
 				<div class="layui-main">
 					<div class="admin-login-box">
 						<a class="logo" style="left: 0;" href="#">
 							<span style="font-size:22px;">CRM客户关系管理</span>
 						</a>
-						<div class="admin-side-toggle" style="background:#d85126;">
+						<div class="admin-side-toggle">
 							<i class="fa fa-bars" aria-hidden="true"></i>
 						</div>
 					</div>
 					<ul class="layui-nav admin-header-item" lay-filter="user">
-                        <li class="layui-nav-item" style="color:#d85126;">
+                        <li class="layui-nav-item" style="color:#527979;">
 							<p>北京时间 <span class="date"></span></p>
 						</li>
-						<li class="layui-nav-item" style="color:#d85126;">
+						<li class="layui-nav-item" style="color:#527979;">
 							欢迎您！&nbsp;本次登录地点为：{:session('location.location')}
 						</li>
 						<li class="layui-nav-item">
-							<a href="javascript:;" id="lock" style="color:#d85126;"><i class="layui-icon">&#xf0098;</i>&nbsp;锁屏</a>
+							<a href="javascript:;" id="lock"><i class="layui-icon">&#xf0098;</i>&nbsp;锁屏</a>
 						</li>
 						<li class="layui-nav-item">
-							<a href="javascript:;" id='refresh' style="color:#d85126;"><i class="layui-icon">&#xf0008;</i>&nbsp;刷新</a>
+							<a href="javascript:;" id='refresh'><i class="layui-icon">&#xf0008;</i>&nbsp;刷新</a>
 						</li>
 					  	<php>
 							$userInfo = session('account')['userInfo'];
 						</php>
 						<li class="layui-nav-item">
-							<a href="javascript:;" class="admin-header-user" style="color:#d85126;">
+							<a href="javascript:;" class="admin-header-user">
 								<img src="__ROOT__{$userInfo['head']}" />
 								<span><?php echo session('account')['account']?></span>
 							</a>

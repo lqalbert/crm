@@ -130,18 +130,22 @@ class CustomerController extends CommonController {
             $this->M->where(array("cc.phone"=> array('like', I('get.name')."%")));
         }
 
-        if (I('get.type')) {
-            $this->M->where(array("type"=> I('get.type')));
+        if(I('get.start')){
+            $this->M->where(array("created_at"=> array('GT', I('get.start'))));
         }
 
-        $start = I('get.start') ;
-        $end   = I('get.end');
-        $this->M->setTimeDiv('created_at', $start, $end);
+        if(I('get.end')){
+            $this->M->where(array("created_at"=> array('LT', I('get.end'))));
+        }
 
-        
-        $track_start   = str_replace('/','-',I('get.track_start')) ;
-        $track_end   = str_replace('/','-',I('get.track_end'));
-        $this->M->setTimeDiv('last_track', $track_start, $track_end);
+
+        if(I('get.track_start')){
+            $this->M->where(array("last_track"=> array('GT', str_replace('/','-',I('get.track_start')))));
+        }
+
+        if(I('get.track_start')){
+            $this->M->where(array("last_track"=> array('LT', str_replace('/','-',I('get.track_start')))));
+        }
     }
 
 	/**
@@ -226,8 +230,7 @@ class CustomerController extends CommonController {
 
         $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id and cc.is_main=1')
                 ->join('left join customers_contacts as cc2 on customers_basic.id =  cc2.cus_id and cc2.is_main!=1')
-                ->join('left join user_info as ui on customers_basic.salesman_id = ui.user_id')
-                ->field('customers_basic.*,cc.qq,cc.phone,cc.weixin,cc.qq_nickname,cc.weixin_nickname,cc2.qq as qq2,cc2.phone as phone2,cc2.weixin as weixin2,cc2.qq_nickname as qq_nickname2,cc2.weixin_nickname as weixin_nickname2, ui.realname');
+                ->field('customers_basic.*,cc.qq,cc.phone,cc.weixin,cc.qq_nickname,cc.weixin_nickname,cc2.qq as qq2,cc2.phone as phone2,cc2.weixin as weixin2,cc2.qq_nickname as qq_nickname2,cc2.weixin_nickname as weixin_nickname2');
 
 
         if (I('get.sort_field', null)) {
@@ -485,9 +488,8 @@ class CustomerController extends CommonController {
 	public function getTodays(){
 		$between_today =  $this->getDayBetween();
 		$this->M->where(array('plan'=>$between_today))
-		        ->where(array("salesman_id"=> session('uid')))
-                ->join('customers_contacts as cc on customers_basic.id=cc.cus_id and cc.is_main = 1')
-		        ->field('customers_basic.id,qq,name,plan,remind');
+		        ->where(array("user_id"=> session('uid')))
+		        ->field('id,qq,name,plan,remind');
 		$re = $this->M->select();
 		foreach ($re as $key => $value) {
 			$re[$key]['time'] = strtotime($value['plan']) * 1000;
