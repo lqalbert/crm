@@ -102,13 +102,10 @@ class DepartmentCustomerController extends CommonController {
 
 
     private function setTrackField(){
-
         $start = I('get.track_start');
         $end   = I('get.track_end');
-        
         $this->M->setTimeDiv('last_track', $start, $end); 
 
-        
     }
 
     private function setGroupField(){
