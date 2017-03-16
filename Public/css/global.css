@@ -67,7 +67,7 @@ h1,h2,h3,h4,h5,h6,a,p,span{font-family: "微软雅黑","Microsoft YaHei","Micros
 
 .header-index{background-color: #080018; border: none;}
 
-.layui-layout-admin .header-demo{border-bottom-color: #1AA094; background-color: #fff;}
+.layui-layout-admin .header-demo{border-bottom-color: #e23232; background-color: #fff;}
 .header-demo .logo{left: 40px;}
 .header-demo .layui-nav{top: 0;}
 .header-demo .layui-nav .layui-nav-item{margin: 0 10px; line-height: 55px;}
@@ -313,7 +313,7 @@ body .site-demo-nav .layui-nav-item{line-height: 40px}
 	height: 100%;
 }
 .admin-nav-card>.layui-tab-title{
-	border-bottom: 1px solid #1AA094;
+	border-bottom: 1px solid #c51f1f;
 }
 .admin-nav-card .layui-tab-title cite{
 	font-style: normal;
@@ -424,7 +424,6 @@ body .site-demo-nav .layui-nav-item{line-height: 40px}
   .site-demo-tplres .site-demo-tplh2, .site-demo-tplres .site-demo-tplview{width: 100%; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;}
 
   .site-demo-title{position: static; left: 0;}
-  body .layui-layout-admin .site-demo{}
   .site-demo-code{position: static; height: 350px;}
   
   .admin-side-toggle ,.admin-header-item{display: none;}

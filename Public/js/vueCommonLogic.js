@@ -306,4 +306,10 @@ function setResetForm(opt, type){
 	
 }
 
-
+//过滤器
+Vue.filter("handleString", function(v) {
+  if(v!=''){
+    var cnt=v.substring(0,3)+'......';   
+  }
+    return cnt;
+});
