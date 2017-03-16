@@ -73,18 +73,22 @@ class DepartmentCustomerController extends CommonController {
 
 
     private function checkLikeField(){
-        $arrList = array('name', 'cc.phone', 'cc.qq', 'cc.weixin', );
+        //改造成复合查询
+        if (I('get.name')) {
+            $this->M->where(array('name'=>array('like', I('get.name')."%")));
+        }
+
+        $complexWhere = array('_logic'=>'OR');
+        $arrList = array('phone', 'qq', 'weixin', );
         foreach ($arrList as $value) {
-            if (strpos($value, 'cc')===false) {
-                // $value = substr($value, 3);
-                
-                $val = I('get.'.$value);
-            } else {
-               $val = I('get.'.substr($value, 3));
+            if (I('get.'.$value)) {
+                $complexWhere['cc.'.$value] = array('like', I('get.'.$value)."%");
+                $complexWhere['cc2.'.$value] = array('like', I('get.'.$value)."%");
             }
-            if ($val) {
-                $this->M->where(array($value=>array('like', $val."%")));
-            }
+        }
+
+        if (count($complexWhere)>1) {
+            $this->M->where(array('_complex'=>$complexWhere));
         }
     }
 
@@ -181,7 +185,7 @@ class DepartmentCustomerController extends CommonController {
             $this->M->setStart('created_at', D('Customer','Logic')->ThreeMonthsAge());
         }
 
-        $this->M->join('customers_contacts as cc on customers_basic.id = cc.cus_id');
+        $this->M->join('customers_contacts as cc on customers_basic.id = cc.cus_id and cc.is_main=1');
     }
 
 
