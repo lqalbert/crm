@@ -591,31 +591,7 @@ Vue.filter("handleString", function(v) {
           currentValue.source = currentValue.source == 0?"":currentValue.source;          
           //console.log(typeof(currentValue.quality));
 
-          // 如果不是 就交换 qq与 qq2 phone与phone2 ...
-          if (currentValue.cc_main != 1) {
-            // qq weixin phone qq_nickname weixin_nickname
-            currentValue.qq2        = currentValue.qq ^ currentValue.qq2;
-            currentValue.weixin2    = currentValue.weixin ^ currentValue.weixin2;
-            currentValue.phone2     = currentValue.phone ^ currentValue.phone2;
-            currentValue.qq_nickname2     = currentValue.qq_nickname ^ currentValue.qq_nickname2;
-            currentValue.weixin_nickname2 = currentValue.weixin_nickname ^ currentValue.weixin_nickname2;
-
-            currentValue.qq  = currentValue.qq2 ^ currentValue.qq;
-            currentValue.qq2 = currentValue.qq2 ^ currentValue.qq;
-
-            currentValue.weixin  = currentValue.weixin2 ^ currentValue.weixin;
-            currentValue.weixin2 = currentValue.weixin2 ^ currentValue.weixin;
-
-            currentValue.phone   = currentValue.phone2 ^ currentValue.phone;
-            currentValue.phone2  = currentValue.phone2 ^ currentValue.phone;
-
-            currentValue.qq_nickname   = currentValue.qq_nickname2 ^ currentValue.qq_nickname;
-            currentValue.qq_nickname2  = currentValue.qq_nickname2 ^ currentValue.qq_nickname;
-
-            currentValue.weixin_nickname   = currentValue.weixin_nickname2 ^ currentValue.weixin_nickname;
-            currentValue.weixin_nickname2  = currentValue.weixin_nickname2 ^ currentValue.weixin_nickname;
-
-          }
+          
 
        })
      return data;
@@ -833,13 +809,5 @@ Vue.filter("handleString", function(v) {
   }).setComputed('isTypeV', function(){
     return this.editForm.type == 'V';
   });
-</script>
-<script>
-     //console.log({:json_encode($Sty)});
-   // var he=document.getElementById('he');
-    //var h=document.body.scrollHeight;
-    //console.log(sb);
-    //sb.style.height=h/2+'px';  max-height="400"
-    //he.setAttribute("max-height",h*0.6);
 </script>
 </block>

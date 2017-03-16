@@ -116,7 +116,15 @@ class CustomerController extends CommonController {
         }
 
         if (I('get.phone')) {
-            $this->M->where(array("cc.phone"=> array('like', I('get.name')."%")));
+            // $this->M->where(array("cc.phone"=> array('like', I('get.name')."%")));
+            $val = I('get.phone');
+            $complexWhere = array('_logic'=>'OR');
+            $complexWhere['cc.phone']  = array('like', $val."%");
+            $complexWhere['cc2.phone'] = array('like', $val."%");
+
+            if (count($complexWhere)>1) {
+                $this->M->where(array('_complex'=>$complexWhere));
+            }
         }
 
         if (I('get.type')) {
@@ -145,36 +153,42 @@ class CustomerController extends CommonController {
             $this->setGroupCondition(I('get.group',"user_id"));
 
             if (I('get.name')) {
-                $this->M->where(array("name|cc.phone|cc.qq|cc.qq_nickname|cc.weixin"=> array('like', I('get.name')."%")));
-                // $this->M->where(array("phone"=> array('like', I('get.name')."%")));
+                $this->M->where(array("name"=> array('like', I('get.name')."%")));
+            }
+
+            if (I('get.contact')) {
+                $complexWhere = array('_logic'=>'OR');
+                $arrList = array('phone', 'qq', 'weixin' );
+                $val = I('get.contact');
+                foreach ($arrList as $value) {
+                    $complexWhere['cc.'.$value] = array('like', $val."%");
+                    $complexWhere['cc2.'.$value] = array('like', $val."%");
+                }
+
+                if (count($complexWhere)>1) {
+                    $this->M->where(array('_complex'=>$complexWhere));
+                }
             }
 
             D('Customer','Logic')->getSingleButton('Cus',$this->M);
            
         }
 
-        $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id ');
-
-        /*$this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id and cc.is_main=1');
-                ->join('left join customers_contacts as cc2 on customers_basic.id =  cc2.cus_id and cc2.is_main!=1')
-                ->field('customers_basic.*,cc.qq,cc.phone,cc.weixin,cc.qq_nickname,cc.weixin_nickname,cc2.qq as qq2,cc2.phone as phone2,cc2.weixin as wexin2,cc2.qq_nickname as qq_nickname2,cc2.weixin_nickname as weixin_nickname2');*/
+        $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id  and cc.is_main = 1');
 
 	}
 
     private function setNamelike(){
-        if(I('get.ctrl') != 'advance'){ 
+        /*if(I('get.ctrl') != 'advance'){ 
             if (I('get.name')) {
                 $this->M->where(array("name|cc.phone|cc.qq|cc.qq_nickname|cc.weixin"=> array('like', I('get.name')."%")));
             }
-        }
+        }*/
     }
 
     protected function _getList(){
         $this->setQeuryCondition();
-        // $this->setNamelike();
-        // $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id ');
         $count = (int)$this->M->count();
-
         $this->setQeuryCondition();
         D('Customer','Logic')->getJoinCondition($this->M);
         if (I('get.sort_field', null)) {
