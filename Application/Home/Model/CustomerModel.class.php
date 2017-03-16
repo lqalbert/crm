@@ -471,7 +471,21 @@ class CustomerModel extends Model {
       return $this->data(array('transfer_status'=>1))->where(array('id'=>$id))->save();
     }
 
+    public function delete($ids){
+        return $this->where(array('id'=>array('in', $ids )))->save(array('status'=>-1));
+    }
 
+    public function setTimeDiv($field, $start=null, $end=null){
+      if ($start && $end) {
+         $this->where(
+          array(
+            $field=>array( array('EGT', $start." 00:00:00"), array('ELT', $start." 00:00:00"))));
+      }else if($start){
+        $this->setStart($field, $start);
+      } else if($end){
+        $this->setEnd($field, $end);
+      }
+    }
 
 
 }

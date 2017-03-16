@@ -58,8 +58,12 @@
   	<el-col :span="24">
   		<el-form :inline="true" ref="searchForm" :model="searchForm">
   		  <el-form-item prop="name" style="width:170px">
-  		    <el-input v-model="searchForm.name" size="small" placeholder="客户姓名|手机|qq|微信号"></el-input>
+  		    <el-input v-model="searchForm.name" size="small" placeholder="客户姓名"></el-input>
   		  </el-form-item>
+
+        <el-form-item prop="name" style="width:170px">
+          <el-input v-model="searchForm.contact" size="small" placeholder="手机|qq|微信号"></el-input>
+        </el-form-item>
 
         <el-form-item prop="group" style="width:80px">
           <el-select v-model="searchForm.group" size="small" placeholder="请选择">
@@ -507,6 +511,7 @@ function toInt(v){
 
   }).setForm('search', {
     name:'',
+    contact:'',
     field: '',
     group:'user_id',
     ctrl:'search',
@@ -682,33 +687,6 @@ function toInt(v){
           currentValue.intention = currentValue.intention == 0?"":currentValue.intention;      
           currentValue.source = currentValue.source == 0?"":currentValue.source; 
 
-          // 如果不是 就交换 qq与 qq2 phone与phone2 ...
-          /*if (currentValue.cc_main != 1) {
-            // qq weixin phone qq_nickname weixin_nickname
-            currentValue.qq2        = currentValue.qq ^ currentValue.qq2;
-            currentValue.weixin2    = currentValue.weixin ^ currentValue.weixin2;
-            currentValue.phone2     = currentValue.phone ^ currentValue.phone2;
-            currentValue.qq_nickname2     = currentValue.qq_nickname ^ currentValue.qq_nickname2;
-            currentValue.weixin_nickname2 = currentValue.weixin_nickname ^ currentValue.weixin_nickname2;
-
-            currentValue.qq  = currentValue.qq2 ^ currentValue.qq;
-            currentValue.qq2 = currentValue.qq2 ^ currentValue.qq;
-
-            currentValue.weixin  = currentValue.weixin2 ^ currentValue.weixin;
-            currentValue.weixin2 = currentValue.weixin2 ^ currentValue.weixin;
-
-            currentValue.phone   = currentValue.phone2 ^ currentValue.phone;
-            currentValue.phone2  = currentValue.phone2 ^ currentValue.phone;
-
-            currentValue.qq_nickname   = currentValue.qq_nickname2 ^ currentValue.qq_nickname;
-            currentValue.qq_nickname2  = currentValue.qq_nickname2 ^ currentValue.qq_nickname;
-
-            currentValue.weixin_nickname   = currentValue.weixin_nickname2 ^ currentValue.weixin_nickname;
-            currentValue.weixin_nickname2  = currentValue.weixin_nickname2 ^ currentValue.weixin_nickname;
-
-          }*/
-          
-          //console.log(typeof(currentValue.quality));
 
        })
      return data;

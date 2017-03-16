@@ -90,7 +90,7 @@ class CustomerLogic extends Model{
     *
     */
     public function getJoinCondition($D){
-      $D->join('left join customers_contacts as cc2 on customers_basic.id =  cc2.cus_id and cc.id != cc2.id')
+      $D->join('left join customers_contacts as cc2 on customers_basic.id =  cc2.cus_id and cc.is_main = 0')
         ->join('left join user_info as ui on customers_basic.salesman_id = ui.user_id')
         ->field('customers_basic.*,cc.qq,cc.phone,cc.weixin,cc.qq_nickname,cc.weixin_nickname, cc.is_main as cc_main,cc2.qq as qq2,cc2.phone as phone2,cc2.weixin as weixin2,cc2.qq_nickname as qq_nickname2,cc2.weixin_nickname as weixin_nickname2, ui.realname');
     }

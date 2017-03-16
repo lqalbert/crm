@@ -73,43 +73,40 @@ class DepartmentCustomerController extends CommonController {
 
 
     private function checkLikeField(){
-        $arrList = array('name', 'cc.phone', 'cc.qq', 'cc.weixin', );
+        //改造成复合查询
+        if (I('get.name')) {
+            $this->M->where(array('name'=>array('like', I('get.name')."%")));
+        }
+
+        $complexWhere = array('_logic'=>'OR');
+        $arrList = array('phone', 'qq', 'weixin', );
         foreach ($arrList as $value) {
-            if (strpos($value, 'cc')===false) {
-                // $value = substr($value, 3);
-                
-                $val = I('get.'.$value);
-            } else {
-               $val = I('get.'.substr($value, 3));
+            if (I('get.'.$value)) {
+                $complexWhere['cc.'.$value] = array('like', I('get.'.$value)."%");
+                $complexWhere['cc2.'.$value] = array('like', I('get.'.$value)."%");
             }
-            if ($val) {
-                $this->M->where(array($value=>array('like', $val."%")));
-            }
+        }
+
+        if (count($complexWhere)>1) {
+            $this->M->where(array('_complex'=>$complexWhere));
         }
     }
 
 
     private function setCreatedField(){
-        if(I('get.start')){
-            $this->M->setStart('created_at', I('get.start'));
-        } 
+        $start = I('get.start');
+        $end   = I('get.end');
 
-
-        if(I('get.end')){
-            $this->M->setEnd('created_at', I('get.end'));
-        } 
+        $this->M->setTimeDiv('created_at', $start, $end); 
     }
 
 
     private function setTrackField(){
-        if(I('get.track_start')){
-            $this->M->setStart('last_track', I('get.track_start'));
-        } 
 
-
-        if(I('get.track_end')){
-            $this->M->setEnd('last_track', I('get.track_end'));
-        } 
+        $start = I('get.track_start');
+        $end   = I('get.track_end');
+        
+        $this->M->setTimeDiv('last_track', $start, $end); 
 
         
     }
@@ -185,20 +182,13 @@ class DepartmentCustomerController extends CommonController {
              && empty(I('get.track_end')) 
              && strpos(I('get.fiedl'),'transf') === false
              ) {
-            $this->M->setStart('last_track', D('Customer','Logic')->ThreeMonthsAge());
+            $this->M->setStart('created_at', D('Customer','Logic')->ThreeMonthsAge());
         }
 
-        $this->M->join('customers_contacts as cc on customers_basic.id = cc.cus_id');
+        $this->M->join('customers_contacts as cc on customers_basic.id = cc.cus_id and cc.is_main=1');
     }
 
-    public function delete() {
 
-        if ($this->M->data(array('status'=>-1))->where(array('id'=>array('in', I("post.ids") )))->save()) {
-            $this->success('操作成功');
-        } else {
-            $this->error('操作失败'.$this->M->getError());
-        }
-    }
 
     public function _getList(){
         $this->setQeuryCondition();

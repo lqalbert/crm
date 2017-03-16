@@ -190,6 +190,10 @@
   page.setGroupMemberUrl = "{:U('setEmployees')}";
   page.removeMemberUrl   = "{:U('removeMember')}";
   page.getMemberUrl      = "{:U('getMemberList')}";
+
+  page.getUsersUrl = "{:U('getUsers')}";
+
+
   window.defaultOption.setDatas({
   	 //传输照片上传地址
   	 pathInfo:{folder:'group'},
@@ -381,6 +385,17 @@
   }).setMethod('delSelect', function(v){
 
     this.secondSelection = v;
+  }).setMethod('getUsers', function(d){
+    
+    this.$http.get(page.getUsersUrl,{params:{id:d}}).then(function(response){
+      this.contactList = response.body;
+    }, function(response){
+
+    });
+  }).setMethod('beforeOpen', function(){
+    this.getUsers(0);
+  }).setMethod('beforeEdit', function(){
+    this.getUsers(this.dataList[this.editIndex].user_id);
   });
 </script>
 </block>

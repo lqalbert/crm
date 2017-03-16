@@ -1,27 +1,24 @@
 <?php
 namespace Home\Controller;
+
 use Common\Lib\User;
+use Home\Model\RoleModle;
+
 class GroupController extends CommonController {
 	protected $table="group_basic";
 
 	
 	public function index (){
-		// $namelist=M('department_basic')->field('name,zone')->select();
 
 		// 联系人列表
 		$user = new User();
 		$user->getRoleObject();
-		$contactList = $user->getRoleGroupContacts();
-		
-
+		/*$contactList = $user->getRoleGroupContacts();*/
 		//上级组织
 		$org = $user->getRoleGroupOrgs();
-
-		//所有队员
-		// $members = $user->getAllBenC();
 		
 		$this->assign("namelist",    $org);
-		$this->assign("contactList", $contactList);
+		$this->assign("contactList", array());
 		// $this->assign("memberList",  $members);
 		$this->display();
 	}
@@ -80,6 +77,23 @@ class GroupController extends CommonController {
 	public function removeMember(){
 		$user_ids = I("post.user_ids");
 		$this->setGroupEmployee($user_ids, 0);
+	}
+
+	/**
+    * 获取 对应的备选负责人
+    */
+	public function getUsers(){
+
+
+		// 暂进没想到更好的方式了
+		$id = I("get.id", 0); //user_id;
+		$user = new User();
+		$user->getRoleObject();
+		$contactList = $user->getRoleGroupContacts($id);
+
+		
+
+		$this->ajaxReturn($contactList);
 	}
 
 
