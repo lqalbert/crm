@@ -479,7 +479,7 @@ class CustomerModel extends Model {
       if ($start && $end) {
          $this->where(
           array(
-            $field=>array( array('EGT', $start." 00:00:00"), array('ELT', $start." 00:00:00"))));
+            $field=>array( array('EGT', $start." 00:00:00"), array('ELT', $end." 00:00:00"))));
       }else if($start){
         $this->setStart($field, $start);
       } else if($end){

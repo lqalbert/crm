@@ -174,17 +174,12 @@ class CustomerController extends CommonController {
            
         }
 
-        $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id  and cc.is_main = 1');
+        $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id  and cc.is_main = 1')
+                ->join('left join customers_contacts as cc2 on customers_basic.id =  cc2.cus_id and cc2.is_main = 0');
 
 	}
 
-    private function setNamelike(){
-        /*if(I('get.ctrl') != 'advance'){ 
-            if (I('get.name')) {
-                $this->M->where(array("name|cc.phone|cc.qq|cc.qq_nickname|cc.weixin"=> array('like', I('get.name')."%")));
-            }
-        }*/
-    }
+
 
     protected function _getList(){
         $this->setQeuryCondition();

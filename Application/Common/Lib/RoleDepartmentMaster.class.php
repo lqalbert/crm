@@ -24,7 +24,7 @@ class RoleDepartmentMaster {
         $captainId = D('Role')->getIdByEname(RoleModel::CAPTAIN);
         /*return M('user_info')->where(array('department_id'=>$depart_id, 'role_id'=>$captainId, 'group_id'=>0 ))->select();*/
 
-        $sql = "select user_id,mid(realname, 1, 5) as realname from user_info where (role_id=$captainId and user_id not in ( select user_id from group_basic where department_id = $depart_id ) and department_id = $depart_id )  or user_id=$id ";
+        $sql = "select user_id,mid(realname, 1, 5) as realname from user_info where (role_id=$captainId and user_id not in ( select user_id from group_basic where department_id = $depart_id and user_id is not null ) and department_id = $depart_id )  or user_id=$id ";
         return M()->query($sql);
 
 

@@ -50,7 +50,7 @@ class DepartmentController extends CommonController {
 		$RoleModle = D('Role');
 		$departmentRoleId = $RoleModle->getIdByEname(RoleModel::DEPARTMENTMASTER);
 		$id = I("get.id", 0);
-		$sql = "select user_id,mid(realname, 1, 5) as realname from user_info where role_id=$departmentRoleId and (user_id not in(select user_id from department_basic) or user_id=$id)";
+		$sql = "select user_id,mid(realname, 1, 5) as realname from user_info where (role_id=$departmentRoleId and user_id not in(select user_id from department_basic where user_id is not null) ) or user_id=$id";
 		$result = $this->M->query($sql);
 		$this->ajaxReturn($result);
 	}

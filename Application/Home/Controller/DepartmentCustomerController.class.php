@@ -115,12 +115,18 @@ class DepartmentCustomerController extends CommonController {
         $group_id = I('get.group',0);
         switch ($group_id) {
             case 0:
-                $userIds = M("user_info")->where(array('department_id'=>$this->depart_id, 'user_id'=>array('NEQ', session('uid'))))->getField('user_id', true);
+                if (empty($this->depart_id)) {
+                    $userIds = array();
+                } else {
+                    $userIds = M("user_info")->where(array('department_id'=>$this->depart_id, 'user_id'=>array('NEQ', session('uid'))))->getField('user_id', true);
+                }
+                
                 break;
             default:
                 $userIds = M("user_info")->where(array('group_id'=>$group_id))->getField('user_id', true);
                 break;
         }
+
         if ($userIds) {
             $this->M->where(array('salesman_id'=>array('IN', $userIds)));
         } else {
@@ -185,7 +191,8 @@ class DepartmentCustomerController extends CommonController {
             $this->M->setStart('created_at', D('Customer','Logic')->ThreeMonthsAge());
         }
 
-        $this->M->join('customers_contacts as cc on customers_basic.id = cc.cus_id and cc.is_main=1');
+        $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id  and cc.is_main = 1')
+                ->join('left join customers_contacts as cc2 on customers_basic.id =  cc2.cus_id and cc2.is_main = 0');
     }
 
 
@@ -200,6 +207,7 @@ class DepartmentCustomerController extends CommonController {
             $this->M->order(I('get.sort_field')." ". I('get.sort_order'));
         }
         $list = $this->M->page(I('get.p',0). ','. $this->pageSize)->select();
+
         $result = array('list'=>$list, 'count'=>$count);
         return $result;
     }
