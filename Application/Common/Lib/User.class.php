@@ -44,8 +44,8 @@ class User {
         return $this;
     }
 
-    public function getRoleGroupContacts(){
-        return $this->roleObject->getGroupContacts($this);
+    public function getRoleGroupContacts($id){
+        return $this->roleObject->getGroupContacts($this, $id);
     }
 
     public function getRoleGroupOrgs(){

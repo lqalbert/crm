@@ -9,8 +9,8 @@ return array(
 	'EDIT_ERROR'     =>'编辑失败',
 	
 	
-	'DELETE_SUCCESS' =>'编辑成功',
-	'DELETE_ERROR'   =>'编辑失败',
+	'DELETE_SUCCESS' =>'删除成功',
+	'DELETE_ERROR'   =>'删除失败',
 	
 	'DATA_LOGIN'     => '拼命加载中',
 	

@@ -1,4 +1,4 @@
-<el-dialog title="编辑团队小组" v-model="editFormDialog">
+<el-dialog title="编辑团队小组" v-model="editFormDialog" @open="beforeEdit">
 
   <el-form ref="editForm" :rules="rules" :model="editForm" :label-width="dialogLabelWidth">
   <input type="hidden" name="img" v-model="editForm.img"/>

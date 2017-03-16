@@ -28,13 +28,24 @@ class RbacUserModel extends RelationModel {
         return md5($p);
     }
 
-    /**
-    * 重载add
-    *
-    *
-    */
-    /*public function add($data='',$options=array(),$replace=false){
-    	// $this->password = $this->cryptPawssword($this->password);
-    	return parent::add($data, $options,$replace);
-    }*/
+
+    public function delete($ids){
+        // return $this->where(array('id'=>array('in', $ids )))->save(array('status'=>-1));
+        $id_arr = explode(",", $ids);
+        $date   = Date('Y-m-d');
+        $sql    = "update ".$this->tableName. " set `status`=-1, `account` = CONCAT(`account`, '_$date') where id=%d";
+        $this->startTrans();
+        
+        
+        foreach ($id_arr as $key => $value) {
+            $re = M()->execute($sql, $value);
+            if ($re=== false) {
+                $this->rollback();
+                return false;
+            }
+        }
+
+        $this->commit();
+        return true;
+    }
 }

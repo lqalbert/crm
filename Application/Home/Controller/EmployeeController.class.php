@@ -22,7 +22,8 @@ class EmployeeController extends CommonController {
 		        	area_province,created_at,
 		        	department_id,group_id,
 		        	head,id,mphone,no_authorized,phone,
-		        	qq,qq_nickname,realname,role_ename,role_id,sex,status,user_id,weixin,weixin_nikname')->where(array('no_authorized'=>0));
+		        	qq,qq_nickname,realname,role_ename,role_id,sex,status,user_id,weixin,weixin_nikname')->where(array('no_authorized'=>0))
+		        ->where(array('rbac_user.status'=>array('EGT',0)));
 
 		$user = new User;
 		$user->getRoleObject();
@@ -31,6 +32,8 @@ class EmployeeController extends CommonController {
 		if (isset($_GET['name'])) {
 			$this->M->where(array('account'=>array('like', I('get.name')."%")));
 		}
+
+
 	}
 
 	public function getRoles(){
@@ -172,7 +175,7 @@ class EmployeeController extends CommonController {
 		}
 	}
 
-	public function _before_delete() {
+	/*public function _before_delete() {
 		$this->setQeuryCondition();
-	}
+	}*/
 }

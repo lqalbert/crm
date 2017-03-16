@@ -10,9 +10,12 @@ class RoleGold {
     }
 
 
-    public function getGroupContacts(){
+    public function getGroupContacts($obj, $id){
         $captainId = D('Role')->getIdByEname(RoleModel::CAPTAIN);
-        return M('user_info')->where(array('role_id'=>$captainId))->select();
+        /*return M('user_info')->where(array('role_id'=>$captainId))->select();*/
+
+        $sql = "select user_id,mid(realname, 1, 5) as realname from user_info where (role_id=$captainId and user_id not in(select user_id from group_basic) ) or user_id=$id";
+        return M()->query($sql);
     }
 
     public function getGroupUpsOrg(){

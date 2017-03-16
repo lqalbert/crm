@@ -90,26 +90,19 @@ class DepartmentCustomerController extends CommonController {
 
 
     private function setCreatedField(){
-        if(I('get.start')){
-            $this->M->setStart('created_at', I('get.start'));
-        } 
+        $start = I('get.start');
+        $end   = I('get.end');
 
-
-        if(I('get.end')){
-            $this->M->setEnd('created_at', I('get.end'));
-        } 
+        $this->M->setTimeDiv('created_at', $start, $end); 
     }
 
 
     private function setTrackField(){
-        if(I('get.track_start')){
-            $this->M->setStart('last_track', I('get.track_start'));
-        } 
 
-
-        if(I('get.track_end')){
-            $this->M->setEnd('last_track', I('get.track_end'));
-        } 
+        $start = I('get.track_start');
+        $end   = I('get.track_end');
+        
+        $this->M->setTimeDiv('last_track', $start, $end); 
 
         
     }
@@ -185,20 +178,13 @@ class DepartmentCustomerController extends CommonController {
              && empty(I('get.track_end')) 
              && strpos(I('get.fiedl'),'transf') === false
              ) {
-            $this->M->setStart('last_track', D('Customer','Logic')->ThreeMonthsAge());
+            $this->M->setStart('created_at', D('Customer','Logic')->ThreeMonthsAge());
         }
 
         $this->M->join('customers_contacts as cc on customers_basic.id = cc.cus_id');
     }
 
-    public function delete() {
 
-        if ($this->M->data(array('status'=>-1))->where(array('id'=>array('in', I("post.ids") )))->save()) {
-            $this->success('操作成功');
-        } else {
-            $this->error('操作失败'.$this->M->getError());
-        }
-    }
 
     public function _getList(){
         $this->setQeuryCondition();
