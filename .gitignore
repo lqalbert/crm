@@ -1,6 +1,7 @@
 .project
 .idea
 .settings/*
+.vscode
 .buildpath
 /Application/Runtime/*
 /Upload/*
