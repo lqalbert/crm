@@ -15,13 +15,13 @@ class DepartmentCustomerController extends CommonController {
 
     public function _initialize(){
         parent::_initialize();
-        // $this->depart_id = $this->getDepartMentID();
+        $this->depart_id = $this->getDepartMentID();
     }
 
     private function getDepartMentID(){
         $re =  M('department_basic')->where(array('user_id'=>session('uid')))->getField('id');
         if (is_numeric($re)) {
-            return $depart_id;
+            return $re;
         } else {
             return 0;
         }
@@ -120,7 +120,6 @@ class DepartmentCustomerController extends CommonController {
                 } else {
                     $userIds = M("user_info")->where(array('department_id'=>$this->depart_id, 'user_id'=>array('NEQ', session('uid'))))->getField('user_id', true);
                 }
-                
                 break;
             default:
                 $userIds = M("user_info")->where(array('group_id'=>$group_id))->getField('user_id', true);
