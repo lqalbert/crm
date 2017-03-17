@@ -452,7 +452,7 @@ class CustomerModel extends Model {
     }
 
     public function setEnd($field, $value){
-      $this->where(array($field=>array('ELT', $value." 00:00:00")));
+      $this->where(array($field=>array('ELT', $value." 23:59:59")));
     }  
 
     /**
@@ -479,7 +479,7 @@ class CustomerModel extends Model {
       if ($start && $end) {
          $this->where(
           array(
-            $field=>array( array('EGT', $start." 00:00:00"), array('ELT', $end." 00:00:00"))));
+            $field=>array( array('EGT', $start." 00:00:00"), array('ELT', $end." 23:59:59"))));
       }else if($start){
         $this->setStart($field, $start);
       } else if($end){
