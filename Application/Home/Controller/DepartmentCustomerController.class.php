@@ -182,7 +182,7 @@ class DepartmentCustomerController extends CommonController {
              && empty(I('get.end')) 
              && empty(I('get.track_start')) 
              && empty(I('get.track_end')) 
-             && strpos(I('get.fiedl'),'transf') === false
+             && strpos(I('get.field'),'transf') === false
              ) {
             $this->M->setStart('created_at', D('Customer','Logic')->ThreeMonthsAge());
         }

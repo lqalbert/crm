@@ -148,7 +148,7 @@ class CustomerController extends CommonController {
            $this->advanceSearch();
         }else{  
             $timeCondition = D('Customer','Logic')->ThreeMonthsAge();
-            $this->M->where(array("created_at"=>array('EGT',$timeCondition)));
+            $this->M->where(array("customer_basic.created_at"=>array('EGT',$timeCondition)));
 
             $this->setGroupCondition(I('get.group',"user_id"));
 

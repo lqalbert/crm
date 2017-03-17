@@ -705,7 +705,6 @@ Vue.filter("handleString", function(v) {
       this.handleEdit(index, row);
   }).setMethod('setField', function(v){
       this[FormName.getFormName('search')].field = v;
-      this[FormName.getFormName('search')].group = 'user_id';
       this.loadDatalist();
   }).setMethod('refresh',function(){
     window.location.reload();
