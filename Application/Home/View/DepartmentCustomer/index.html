@@ -120,7 +120,7 @@
           </el-row>
 
          <el-form-item>
-           <el-button type="info"  size="small" icon="search" @click="loadDatalist">查询</el-button> 
+           <el-button type="info"  size="small" icon="search" @click="searchFunction">查询</el-button> 
            <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start">
              <el-button size="small" @click="searchReset">重置</el-button>
            </el-tooltip>
@@ -510,57 +510,11 @@ Vue.filter("handleString", function(v) {
     name:"",
     step:"",
     track_type:'',
-  },true).setForm('addPlan',{
-     cus_id:'',
-     name:'',
-     plan:'',
   },true).setForm('addTransfer',{
      cus_id:[],
      rec_dep:'',
      proportion:'100',
-  },true).setForm('addRemind',{
-     cus_id:'',
-     name:'',
-     remind:'',
-     remark:'',
-  },true).setForm('addChoice',{
-     cus_id:'',
-     name:'',
-     remark:'',
-     choose:1,
-     type:'',
-  },true).setForm('showDetail',{
-    id:"",
-    name:"",
-    type:"",
-    phone:"",
-    phone2:"",
-    qq:"",
-    qq2:"",
-    qq_nickname:"",
-    qq_nickname2:"",
-    sex:0,
-    weixin:"",
-    weixin_nickname:"",
-    area_province:null,
-    area_city:null,
-    quality:'',
-    year:'',
-    re_income:'',
-    style:'',
-    money:'',
-    energy:'',
-    problem:'',
-    mode:'',
-    attitude:'',
-    profession:'',
-    intention:'',
-    source:'',
-    remark:"",
-  },true).setForm('importc',{
-    c:0,
-    t:0
-  }, true).setForm('realInfo',{
+  },true).setForm('realInfo',{
     identity:'',
     type:'',
     expense:'',
@@ -588,9 +542,6 @@ Vue.filter("handleString", function(v) {
           currentValue.intention = currentValue.intention == 0?"":currentValue.intention;      
           currentValue.source = currentValue.source == 0?"":currentValue.source;          
           //console.log(typeof(currentValue.quality));
-
-          
-
        })
      return data;
   }).setMethod('provinceChange', function(v){
@@ -648,8 +599,6 @@ Vue.filter("handleString", function(v) {
     this.commonSelect('addPlan');
     this.dialogLabelWidth = "140px";
   }).setMethod('beforeAddTransfer',function(){
-    // this.commonSelect('addTransfer');  
-
     if (this.multipleSelection.length ==0) {
       this.closeDialog('addTransfer');
       this.$message.error('请先至少选择一位客户');
@@ -803,8 +752,10 @@ Vue.filter("handleString", function(v) {
     // var index = this.tableData.indexOf(row);
     this.traceContentFormDialog = true;
     this.traceContentForm.content = row.content;
-  }).setComputed('isTypeV', function(){
-    return this.editForm.type == 'V';
+  }).setMethod('searchFunction', function(){
+    this.searchForm.field = "";
+    this.dataLoad = true;
+    this.loadDatalist();
   });
 </script>
 </block>

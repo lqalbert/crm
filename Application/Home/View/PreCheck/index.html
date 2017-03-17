@@ -55,7 +55,7 @@
                     <el-table-column  label="操作" align="center" :context="_self">
                       <template scope="scope">
                     
-                       <el-button type="primary" size="small" v-if="scope.row.s>=0" @click="getCustomer(scope.row.id)">可以索取</el-button>
+                       <el-button type="primary" size="small" v-if="scope.row.s<=0" @click="getCustomer(scope.row.id)">可以索取</el-button>
                       </template>
                     </el-table-column>
 
