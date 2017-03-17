@@ -117,7 +117,12 @@ class CustomerLogic extends Model{
                         'ct.created_at'=>array('EGT', D('Customer','Logic')->ThreeMonthsAge())))
                         ->join('customer_transflog as ct on customers_basic.id=ct.cus_id');
                 }else{
-                   $D->where(array('transfer_status'=>1, 'transfer_to'=>array('NEQ', 0)));
+                   // $D->where(array('transfer_status'=>1, 'transfer_to'=>array('NEQ', 0)));
+                    $D->where(array(
+                        'transfer_status'=>1, 
+                        'from_id'=> session('uid'),
+                        'ct.created_at'=>array('EGT', D('Customer','Logic')->ThreeMonthsAge())))
+                        ->join('customer_transflog as ct on customers_basic.id=ct.cus_id');
                 }
                 
                 break;
@@ -129,7 +134,11 @@ class CustomerLogic extends Model{
                         'ct.created_at'=>array('EGT', D('Customer','Logic')->ThreeMonthsAge())))
                         ->join('customer_transflog as ct on customers_basic.id=ct.cus_id');
                 }else{
-                   $D->where(array('transfer_status'=>array( array('EQ', 1), array('EQ', 2), 'or'), 'transfer_to'=>session('uid')));
+                   $D->where(array(
+                        'transfer_status'=>1, 
+                        'to_id'=> session('uid'),
+                        'ct.created_at'=>array('EGT', D('Customer','Logic')->ThreeMonthsAge())))
+                        ->join('customer_transflog as ct on customers_basic.id=ct.cus_id');
                 }
                 
                 break;

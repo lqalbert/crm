@@ -115,6 +115,9 @@ function setCommonLogic(opt){
 		this.$refs.searchForm.resetFields();
 		this.dataLoad = true;
 		this.loadDatalist();
+
+		delete this.searchForm.sort_field;
+        delete this.searchForm.sort_order;
 		// window.location.reload();
 
 	})
@@ -241,7 +244,8 @@ function setForm(opt, type){
 				if (valid) {
 					vmThis.commonSubmitLogic(url, form);
 				} else {
-					console.log('error submit!!');
+					// console.log('error submit!!');
+					console.log(vmThis[formName]);
 					return false;
 				}
 			})

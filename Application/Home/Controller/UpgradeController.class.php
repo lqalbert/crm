@@ -15,7 +15,9 @@ class UpgradeController extends CommonController {
     */
     public function customers(){
         // die('close');
-        $all = M('customers_basic')->field('id,phone_del,qq_del,qq_nickname_del,weixin_del,weixin_nickname_del')->select();
+        /*$all = M('customers_basic')->field('id,phone_del,qq_del,qq_nickname_del,weixin_del,weixin_nickname_del')->select();*/
+        $sql = "select id,phone_del,qq_del,qq_nickname_del,weixin_del,weixin_nickname_del from customers_basic where id not in (select cus_id from customers_contacts)";
+        $all = M('customers_basic')->query($sql);
         foreach ($all as $key => $value) {
             $data = array();
             $data['cus_id']   = $value['id'];
@@ -25,8 +27,10 @@ class UpgradeController extends CommonController {
             $data['qq_nickname']     = $value['qq_nickname_del'];
             $data['weixin_nickname'] = $value['weixin_nickname_del'];
             $data['is_main'] = 1;
-
-            M('customers_contacts')->data($data)->add();
+            if (!M('customers_contacts')->where(array('phone'=>$data['phone']))->find()) {
+                M('customers_contacts')->data($data)->add();
+            }
+            
         }
 
         echo 'done';

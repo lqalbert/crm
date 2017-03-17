@@ -162,6 +162,10 @@
 </block>
 <block name="scripts">
 <script>
+
+    function checkType(rule, value, callback){
+
+    }
     page.getUsersUrl = "{:U('getUsers')}";
 	window.defaultOption.setDatas({
   	    //传输照片上传地址
@@ -187,7 +191,8 @@
                 { required: true, message: '请填写单位名称', trigger: 'blur' },
              ],
              type:[
-                { required: true, message: '请选择类型', trigger: 'blur' },
+                { required: true, message: '请选择类型', trigger: 'blur' ,type: 'number'},
+                // { validator: checkType, message: '请选择类型', trigger: 'blur' },
              ],
              division_id:[
                 { required: true, message: '请选择事业/财富区', trigger: 'blur' },

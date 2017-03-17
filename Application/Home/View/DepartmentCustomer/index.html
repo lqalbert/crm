@@ -272,7 +272,8 @@
             @row-dblclick="viewtraceContents">
               <el-table-column prop="user" header-align="center" label="操作员工" >
               </el-table-column>
-              <el-table-column prop="user" header-align="center" label="客户类型" >
+              <el-table-column prop="type" header-align="center" label="客户类型" >
+             
               </el-table-column>
               <el-table-column prop="name" header-align="center" label="客户姓名">
               </el-table-column>
@@ -297,11 +298,11 @@
 
  
   <!-- 编辑 -->
-  <include file="Customer::_edit" />
+  <include file="_edit" />
   <!-- 显示客户一般资料 -->
   <include file="_userInfo"/>
   <!-- 录入跟踪  -->
-  <include file="Customer::_track" />
+  <include file="_track" />
   <!-- / 录入跟踪 -->
 
   <!-- 录入转让 -->

@@ -64,6 +64,8 @@ class CustomerController extends CommonController {
 			$_GET['field'] = $value;
 			$this->setQeuryCondition();
 			$aggregation[$value] = $this->M->count();
+            
+            
 		}
 		$this->assign('aggregation', $aggregation);
         $this->assign('pulled',      $this->getBeenPulld());
@@ -304,14 +306,19 @@ class CustomerController extends CommonController {
                 }
             } else {
                 // 
-                if ((empty($data2['phone']) && empty($data2['qq']) && empty($data2['weixin']))) {
+                if ( empty($data2['phone']) 
+                    && empty($data2['qq']) 
+                    && empty($data2['weixin'])
+                    && empty($data2['qq_nickname'])
+                    && empty($data2['weixin_nickname'])
+                    ) {
                     $this->M->commit();
                     $this->success('编辑成功2');
                 }
                 $data2['cus_id'] = $_POST['id'];
                 if ( $D_cc->create($data2) && $D_cc->add()  ) {
                     $this->M->commit();
-                    $this->success('编辑成功3_'.$D_cc->getLastSql());
+                    $this->success('编辑成功3_');
                 } else {
                     $this->M->rollback();
                     $this->error($D_cc->getError());
