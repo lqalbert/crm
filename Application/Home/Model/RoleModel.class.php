@@ -46,4 +46,8 @@ class RoleModel extends Model {
 	public function getIdByType($type){
 		return $this->getIdByEname($this->getEnameByType($type));
 	}
+
+	public function getEnameById($id){
+		return $this->where(array("id"=>$id))->getField('ename');
+	}
 }
