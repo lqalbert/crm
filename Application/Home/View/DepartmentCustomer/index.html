@@ -188,18 +188,16 @@
 
         <el-table-column   label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  ></el-table-column>
 
-        <el-table-column prop="name" header-align="center" label="客户姓名" width="140" ></el-table-column>
+        <el-table-column prop="name"  label="客户姓名" width="140" ></el-table-column>
 
 
 
-        <el-table-column prop="type" header-align="center" sortable label="客户类型" width="180" >
+        <el-table-column prop="type"  sortable label="客户类型" width="180" >
           <template scope="scope">
             {{ getType(scope.row.type, 'customerType') }}
           </template>
         </el-table-column>
-        <el-table-column  prop="realname" header-align="center" sortable label="跟踪员工"  width="200">
-
-        </el-table-column>
+        <el-table-column  prop="realname"  sortable label="跟踪员工"  width="200"></el-table-column>
         <el-table-column prop="qq" label="QQ号" header-align="center" width="160">
           <template scope="scope">
             {{ scope.row.qq }}
