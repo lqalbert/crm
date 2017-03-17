@@ -20,7 +20,7 @@ class CustomerController extends CommonController {
         $groupMemberList = M('user_info')->where(array('group_id'=>session('account')['userInfo']['group_id']))->getField("user_id,realname");
 
         $this->assign('searchGroup',  $searchGroup);
-        $this->assign('memberList',   $groupMemberList);
+        $this->assign('memberList',   array());
 		$this->assign('customerType', $this->M->getType());
 		$this->assign('sexType',      $this->M->getSexType());
 		$this->assign('Quality',      $this->M->getQuality());
