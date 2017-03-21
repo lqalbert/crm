@@ -69,7 +69,7 @@ class ExcelController extends CommonController {
 
 
     public function customerImport(){
-
+        die('暂不可用');
         if (IS_GET) {
             $this->assign('pageSize', $this->pageSize);
             $this->assign('groups',   M('group_basic')->field('id,name')->select());

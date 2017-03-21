@@ -180,7 +180,7 @@ class CustomerModel extends Model {
       if ($d == false) {
         $this->rollback();
         $this->error = $D_contact->getError();
-        //$this->addConflict($mainData );
+        $this->addConflict($mainData );
 
         return false;
       }
@@ -196,7 +196,7 @@ class CustomerModel extends Model {
           if ( !($D_contact->create($data) && $D_contact->add())) {
             $this->rollback();
             $this->error = $D_contact->getError($data );
-           // $this->addConflict();
+           $this->addConflict($data);
             return false;
           }
         }
@@ -213,16 +213,20 @@ class CustomerModel extends Model {
     private function addConflict($data){
       $error = $this->error;
       if (mb_strpos($error, '存在')!==false) {
+
          if (mb_strpos($error, '手机')!==false) {
-           $cus_id = $this->getConflictCusId('phone');
-           D('CustomerConflict')->addPhone($cus_id, $data);
+           $cus_id = $this->getConflictCusId('phone',$data);
+           D('CustomerConflict')->addPhone($cus_id, $data['phone']);
          } else if(mb_strpos($error, 'QQ')!==false){
+
            $cus_id = $this->getConflictCusId('qq', $data);
-           D('CustomerConflict')->addQQ($cus_id);
+           D('CustomerConflict')->addQQ($cus_id, $data['qq']);
+
          } else if(mb_strpos($error, '微信')!==false){
-            $cus_id = $this->getConflictCusId('weixin', $data);
-           D('CustomerConflict')->addWx($cus_id);
+           $cus_id = $this->getConflictCusId('weixin', $data);
+           D('CustomerConflict')->addWx($cus_id, $data['weixin']);
          }
+
       }
     }
 
