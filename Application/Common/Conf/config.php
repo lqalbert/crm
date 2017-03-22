@@ -5,16 +5,17 @@ return array(
     //调试
 	'SHOW_PAGE_TRACE' => false, 
 
+//192.168.0.12
+	// 'DB_TYPE' => 'mysql',
+	// 'DB_USER' => 'dev_crm_02',
+	// 'DB_PWD' =>'dev2008dev',
+	// 'DB_DSN' => 'mysql:host=192.168.0.12;dbname=dev_crm_02;charset=utf8',
 
+//本地
 	'DB_TYPE' => 'mysql',
-	'DB_USER' => 'dev_crm_02',
-	'DB_PWD' =>'dev2008dev',
-	// 'DB_DSN' => 'mysql://dev_cn_crm_01:dev2008dev@192.168.0.12:3306/dev_cn_crm_01#utf8',
-	'DB_DSN' => 'mysql:host=192.168.0.12;dbname=dev_crm_02;charset=utf8',
-	// 'DB_USER' => 'run_cn_crm',
-	// 'DB_PWD' =>'run2008run',
-	// 'DB_DSN' => 'mysql:host=localhost;dbname=run_cn_crm;charset=utf8',
-
+	'DB_USER' => 'root',
+	'DB_PWD' =>'',
+	'DB_DSN' => 'mysql:host=localhost;dbname=dev_crm_02;charset=utf8',
 
 /*	'DB_TYPE' => 'mysql',
 	'DB_USER' => 'beta_crm',
