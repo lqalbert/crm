@@ -1,0 +1,58 @@
+<el-dialog title="客户审查" v-model="reviewFormDialog">
+  <el-form ref="reviewForm"  :model="reviewForm" size="small" label-width="120px">
+    <el-row>
+      <el-col :span="12">
+        <el-form-item prop="cus_id" label="客户姓名:" style="margin-bottom:0;">
+          <template scope="scope">
+            {{reviewForm.cus_id}}
+          </template>
+        </el-form-item>
+      </el-col>
+      <el-col :span="12">
+        <el-form-item prop="address" label="通讯地址:" style="margin-bottom:0;">
+          <template scope="scope">
+            {{reviewForm.address}}
+          </template>
+        </el-form-item>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="12">
+        <el-form-item prop="type" label="产品类型:" style="margin-bottom:0;">
+          <template scope="scope">
+            {{reviewForm.type}}
+          </template>
+        </el-form-item>
+      </el-col>
+      <el-col :span="12" >
+        <el-form-item prop="expense" label="产品金额:" style="margin-bottom:0;">
+          <template scope="scope">
+            {{reviewForm.expense}}
+          </template>
+        </el-form-item>
+      </el-col>
+    </el-row>
+
+    <el-row>
+      <el-col :span="12">
+        <el-form-item prop="cycle" label="产品周期:" style="margin-bottom:0;">
+          <template scope="scope">
+            {{reviewForm.cycle}}
+          </template>
+        </el-form-item>
+      </el-col>
+      <el-col :span="12" >
+        <el-form-item prop="user_id" label="跟踪员工:" style="margin-bottom:0;">
+          <template scope="scope">
+            {{ getType(reviewForm.user_id, 'memberList') }}
+          </template>
+        </el-form-item>
+      </el-col>
+    </el-row>
+  </el-form>
+    <div slot="footer" class="dialog-footer">
+        <el-button type="danger" @click="reset('review')">不通过</el-button>
+        <el-button type="primary" v-show="!reviewFormSubmitStatus" @click="review">通过</el-button>
+        <el-button type="primary" v-show="reviewFormSubmitStatus" :loading="true" >审查中</el-button>
+    </div>
+</el-dialog>

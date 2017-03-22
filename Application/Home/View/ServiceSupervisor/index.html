@@ -1,0 +1,396 @@
+<extend name="Common:base"/>
+<block name="head">
+  <style>
+    .el-tabs__header{
+      border-top:2px solid #ea4b4b;
+      border-bottom: 1px solid #c51f1f;
+    }
+    .el-dialog .el-tabs__header{
+      border-top:none;
+    }
+    .el-tabs--border-card .el-tabs__item{
+      border-left: none;
+    }
+    .el-tabs--border-card .el-tabs__item.is-active {
+      background-color: #fff;
+      border-right-color: #d3dce6;
+      background: #544b8f;
+      color: #fff;
+    }
+    .el-tabs--border-card .el-tabs__header {
+      background-color: #fff;
+      margin: 0;
+    }
+    .container > .wrapp > .a > .el-row {
+      margin-bottom: 6px;
+    }
+    .el-tabs--border-card .el-tabs__content{
+      padding:0 9px 5px 9px;
+    }
+    .el-card, .el-menu--horizontal .el-submenu>.el-menu, .el-tabs--border-card{
+      box-shadow: none;
+    }
+    .el-tabs--border-card{
+      border: none;
+    }
+    .el-table__body tr.current-row>td{
+      background: rgba(157, 195, 232, 0.7);
+    }
+    .el-tabs__item{
+    	font-family: Microsoft YaHei;
+    	color:#0d0f10;
+    	font-size: 14px;
+    }
+  </style>
+</block>
+<block name="body">
+<div id="app" class="container">
+	<div class="wrapp" id="app1" v-show="show" style="display:none;">
+		<div class="a" id="app2">
+			<el-row>
+			  <el-col :span="24">
+          <el-form :inline="true" ref="searchForm" :model="searchForm">
+		  		  <el-form-item prop="name" style="width:170px">
+		  		    <el-input v-model="searchForm.name" size="small" placeholder="客户姓名"></el-input>
+		  		  </el-form-item>
+		  		  <el-form-item prop="contact" style="width:170px">
+		  		    <el-input v-model="searchForm.contact" size="small" placeholder="客户姓名|手机|qq|微信号"></el-input>
+		  		  </el-form-item>
+
+		        <el-form-item prop="field" v-show="false">
+		          <input type="hidden" size="small" v-model="searchForm.field">
+		        </el-form-item>
+
+		        <el-form-item>
+		          <el-button type="info" size="small" icon="search">查询</el-button> 
+		          
+		          <el-tooltip content="录入高级查询条件"  style="margin-left:10px;">
+		            <el-button @click="openDialog('advancedQuery')" size="small" type="primary">{:L('ADVANCED_QUERY')}</el-button>
+		          </el-tooltip>
+
+		          <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
+		            <el-button  size="small">重置</el-button>
+		          </el-tooltip>
+
+		          <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:15px;">
+		            <el-button @click="refresh" size="small" type="danger">刷新</el-button>
+		          </el-tooltip>
+
+		  		  </el-form-item>
+  		    </el-form>
+			  </el-col>
+		  </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-table border v-loading="dataLoad" :data="tableData"
+              @selection-change="handleSelectionChange"
+              element-loading-text="{:L('DATA_LOGIN')}"
+              empty-text="暂无数据,销售妹子正在努力中！"
+              highlight-current-row ref="select">
+
+		  	    <el-table-column width="50" align="center" type="selection"></el-table-column>
+            
+		  	    <el-table-column label="{:L('INDEX')}" type="index" width="65"  ></el-table-column>
+
+		  	    <el-table-column  header-align="center" prop="name"  label="客户姓名" width="110"></el-table-column>
+
+		  	    <el-table-column  header-align="center" prop="type" label="客户类型" sortable width="140">
+		          <template scope="scope">
+		            {{ getType(scope.row.type, 'customerType') }}
+		          </template>
+		  	    </el-table-column>
+
+		        <el-table-column  header-align="center"  prop="user_id" label="跟踪员工" sortable width="190">
+	            <template scope="scope">
+	              {{ getType(scope.row.user_id, 'memberList') }}
+	            </template>
+		        </el-table-column>
+
+	          <el-table-column  header-align="center" prop="qq" label="QQ号"  width="170">
+	            <template scope="scope">
+	              {{ scope.row.qq }}
+	              <a v-if="scope.row.qq" :href="getTenct(scope.row.qq)">
+	                <img width="25"  src="__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg" alt="">
+	              </a>
+	            </template>
+	          </el-table-column>
+
+		        <el-table-column header-align="center" prop="qq_nickname" label="QQ昵称"  width="170"></el-table-column>
+
+		  	    <el-table-column prop="phone" label="手机" align="center" width="130"></el-table-column>
+
+		        <el-table-column  header-align="center" prop="weixin" label="微信号" align="left" width="170">
+	            <template scope="scope">
+	              {{ scope.row.weixin }}
+	            </template>
+		        </el-table-column>
+
+		        <el-table-column  header-align="center" prop="weixin_nickname" label="微信昵称" align="left" width="170">
+	            <template scope="scope">
+	              {{ scope.row.weixin_nickname }}
+	            </template>
+		        </el-table-column>
+
+		        <el-table-column  prop="last_track" sortable='customer' label="最后跟踪时间" align="center" width="175"></el-table-column>
+
+		        <el-table-column  prop="commission" label="跟踪方比例"  header-align="center" width="110"></el-table-column>
+
+		        <el-table-column  prop="plan" label="计划跟踪时间" align="center" width="175"></el-table-column>
+
+		        <el-table-column  prop="conflict" label="最后冲突时间" align="center" width="175"></el-table-column>
+
+		        <el-table-column  header-align="center"  label="地区" width="135">
+		          <template scope="scope">
+		            {{ scope.row.province_name+"-"+scope.row.city_name }}
+		          </template>
+		        </el-table-column>
+
+		        <el-table-column prop="sex"  label="性别" width="80"  header-align="center">
+		          <template scope="scope">
+		            {{ getType(scope.row.sex, 'sexType') }}
+		          </template>
+		        </el-table-column>
+          </el-table>
+        </el-col>
+      </el-row>
+		  <!-- toolbar -->
+		  <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
+		    <el-col :span="12">
+		      <div class="grid-content bg-purple">
+		      	<span class="wrapper">
+			        <el-tooltip content="选择一个客户分配给指定的客服主管/人员" placement="right">
+			          <el-button size="small" @click="openDialog('assign')" type="primary">分配</el-button>
+			        </el-tooltip>
+
+			        <el-tooltip content="选择客户分配给指定的客服主管/人员" placement="right">
+			          <el-button size="small" @click="openDialog('batchAssign')" type="primary" style="margin-left:10px;">批量分配</el-button>
+			        </el-tooltip>
+			      </span>
+		      </div>
+		    </el-col>
+		    <el-col :span="12">
+		      <div class="grid-content bg-purple-light pull-right">
+		        <!-- page -->
+		        <include file="Common:_pagination" />
+		        <!-- / page -->
+		      </div>
+		    </el-col>
+		  </el-row>
+		</div>
+
+	  <div id="app3" class="b" style="margin:5px -10px 5px;">
+	    <el-row>
+	     <el-col :span="24">
+	        <el-tabs  type="border-card">
+	          <el-tab-pane label="跟踪记录">
+	            <el-table empty-text="请点击客户显示跟踪信息" border style="width: 100%">
+	              <el-table-column prop="user" label="操作员工" header-align="center">
+	              </el-table-column>
+
+	              <el-table-column prop="type" label="客户类型" header-align="center">
+	              </el-table-column>
+
+	              <el-table-column prop="name" label="客户姓名" header-align="center">
+	              </el-table-column>
+	              
+                <el-table-column label="内容" header-align="center">
+                  <template scope="scope">
+                    {{scope.row.content | handleString}}
+                  </template>
+                </el-table-column>
+
+	              <el-table-column prop="created_at" label="跟踪时间" width="180" align="center">
+	              </el-table-column>
+
+	              <el-table-column prop="track_text" label="跟踪类型" header-align="center">
+	              </el-table-column>
+	            </el-table>
+	          </el-tab-pane>
+	          <el-tab-pane label="软件账号">
+	            <el-table empty-text="请点击客户显示其软件账号" border style="width: 100%">
+	              <el-table-column prop="user" label="创建员工" header-align="center">
+	              </el-table-column>
+
+	              <el-table-column prop="account" label="软件账号" align="center">
+	              </el-table-column>
+
+	              <el-table-column prop="production" label="产品" header-align="center">
+	              </el-table-column>
+	              
+	              <el-table-column prop="mark" label="备注" header-align="center">
+	              </el-table-column>
+
+	              <el-table-column prop="create_t" label="创建时间" width="180" align="center">
+	              </el-table-column>
+	            </el-table>
+	          </el-tab-pane>
+	          <el-tab-pane label="客户资料">
+	            <el-table empty-text="请点击客户显示其客户资料" border style="width: 100%">
+	              <el-table-column prop="user" label="操作员工" header-align="center">
+	              </el-table-column>
+
+	              <el-table-column label="产品金额" header-align="center">
+	              </el-table-column>
+
+	              <el-table-column label="产品类型" header-align="center">
+	              </el-table-column>
+	              
+	              <el-table-column label="身份证" header-align="center">
+	              </el-table-column>
+
+	              <el-table-column label="通讯地址" header-align="center">
+	              </el-table-column>
+
+	              <el-table-column label="创建时间" align="center">
+	              </el-table-column>
+	            </el-table>
+	          </el-tab-pane>
+	        </el-tabs>
+	     </el-col>
+	    </el-row>
+	  </div>
+	</div>
+
+	<div class="dialogWrapper" v-show="show" style="display: none">
+	  <!-- 录入高级查询条件 -->
+	  <include file="_advancedQuery" />
+	  <!-- /录入高级查询条件 -->
+	  <!-- 审查 -->
+	  <include file="_review" />
+	  <!-- /审查 -->
+	  <!-- 审查通过开账号 -->
+	  <include file="_reviewPass" />
+	  <!-- /审查通过开账号 -->
+	  <!-- 分配 -->
+	  <include file="_assign" />
+	  <!-- /分配 -->
+	  <!-- 批量分配 -->
+	  <include file="_batchAssign"/>
+	  <!-- /批量分配 -->
+
+	</div>
+
+</div>
+</block>
+<block name="scripts">
+<script>
+  window.defaultOption.setDatas({
+  	customerType:{:json_encode($customerType)},
+  	sexType:{:json_encode($sexType)},
+  	memberList:{:json_encode($memberList)},
+  	GoodsType:{:json_encode($GoodsType)},
+  	multipleSelection: [],
+  	reviewFormDialog:false,
+  	reviewPassFormDialog:false,
+    tableData: [
+	     {name: "苏三", type: "V", user_id:'1',qq:'269009751',qq_nickname:'逝者如斯乎',phone:'13888888888',weixin:'goodgoods',weixin_nickname:'不舍昼夜',last_track:'0000-00-00 00:00:00',commission:'100',plan:'0000-00-00 00:00:00',conflict:'0000-00-00 00:00:00',sex:'2',province_name:'四川',city_name:'成都',},
+	     {name: "苏三", type: "V", user_id:'1',qq:'269009751',qq_nickname:'逝者如斯乎',phone:'13888888888',weixin:'goodgoods',weixin_nickname:'不舍昼夜',last_track:'0000-00-00 00:00:00',commission:'100',plan:'0000-00-00 00:00:00',conflict:'0000-00-00 00:00:00',sex:'2',province_name:'四川',city_name:'成都',},
+	     {name: "苏三", type: "V", user_id:'1',qq:'269009751',qq_nickname:'逝者如斯乎',phone:'13888888888',weixin:'goodgoods',weixin_nickname:'不舍昼夜',last_track:'0000-00-00 00:00:00',commission:'100',plan:'0000-00-00 00:00:00',conflict:'0000-00-00 00:00:00',sex:'2',province_name:'四川',city_name:'成都',},
+	     {name: "苏三", type: "V", user_id:'1',qq:'269009751',qq_nickname:'逝者如斯乎',phone:'13888888888',weixin:'goodgoods',weixin_nickname:'不舍昼夜',last_track:'0000-00-00 00:00:00',commission:'100',plan:'0000-00-00 00:00:00',conflict:'0000-00-00 00:00:00',sex:'2',province_name:'四川',city_name:'成都',},
+	     {name: "苏三", type: "V", user_id:'1',qq:'269009751',qq_nickname:'逝者如斯乎',phone:'13888888888',weixin:'goodgoods',weixin_nickname:'不舍昼夜',last_track:'0000-00-00 00:00:00',commission:'100',plan:'0000-00-00 00:00:00',conflict:'0000-00-00 00:00:00',sex:'2',province_name:'四川',city_name:'成都',},
+	     {name: "苏三", type: "V", user_id:'1',qq:'269009751',qq_nickname:'逝者如斯乎',phone:'13888888888',weixin:'goodgoods',weixin_nickname:'不舍昼夜',last_track:'0000-00-00 00:00:00',commission:'100',plan:'0000-00-00 00:00:00',conflict:'0000-00-00 00:00:00',sex:'2',province_name:'四川',city_name:'成都',},
+	     {name: "苏三", type: "V", user_id:'1',qq:'269009751',qq_nickname:'逝者如斯乎',phone:'13888888888',weixin:'goodgoods',weixin_nickname:'不舍昼夜',last_track:'0000-00-00 00:00:00',commission:'100',plan:'0000-00-00 00:00:00',conflict:'0000-00-00 00:00:00',sex:'2',province_name:'四川',city_name:'成都',},
+	     {name: "苏三", type: "V", user_id:'1',qq:'269009751',qq_nickname:'逝者如斯乎',phone:'13888888888',weixin:'goodgoods',weixin_nickname:'不舍昼夜',last_track:'0000-00-00 00:00:00',commission:'100',plan:'0000-00-00 00:00:00',conflict:'0000-00-00 00:00:00',sex:'2',province_name:'四川',city_name:'成都',},
+	     {name: "苏三", type: "V", user_id:'1',qq:'269009751',qq_nickname:'逝者如斯乎',phone:'13888888888',weixin:'goodgoods',weixin_nickname:'不舍昼夜',last_track:'0000-00-00 00:00:00',commission:'100',plan:'0000-00-00 00:00:00',conflict:'0000-00-00 00:00:00',sex:'2',province_name:'四川',city_name:'成都',},
+	     {name: "苏三", type: "V", user_id:'1',qq:'269009751',qq_nickname:'逝者如斯乎',phone:'13888888888',weixin:'goodgoods',weixin_nickname:'不舍昼夜',last_track:'0000-00-00 00:00:00',commission:'100',plan:'0000-00-00 00:00:00',conflict:'0000-00-00 00:00:00',sex:'2',province_name:'四川',city_name:'成都',},
+	     {name: "苏三", type: "V", user_id:'1',qq:'269009751',qq_nickname:'逝者如斯乎',phone:'13888888888',weixin:'goodgoods',weixin_nickname:'不舍昼夜',last_track:'0000-00-00 00:00:00',commission:'100',plan:'0000-00-00 00:00:00',conflict:'0000-00-00 00:00:00',sex:'2',province_name:'四川',city_name:'成都',},
+       {name: "苏三1110", type: "V", user_id:'1',qq:'269009751',qq_nickname:'逝者如斯乎',phone:'13888888888',weixin:'goodgoods',weixin_nickname:'不舍昼夜',last_track:'0000-00-00 00:00:00',commission:'100',plan:'0000-00-00 00:00:00',conflict:'0000-00-00 00:00:00',sex:'2',province_name:'四川',city_name:'成都',},
+    ],
+  }).setForm('search',{
+    name:'',
+    contact:'',
+    field: '',
+    group:'user_id',
+    ctrl:'search',
+  }).setForm('advancedQuery',{
+    start:'',
+    end:'',
+    type:'V',
+    group:'user_id',
+    ctrl:'advance',
+    name:"",
+    phone:"",
+    track_start:"",
+    track_end:"",
+  },true).setForm('review',{
+  	identity:'515151515151515151',
+  	type:'点金手至尊版(两年)',
+  	expense:'29999',
+  	cycle:'2年',
+  	address:'138888888888',
+  	user_id:'1',
+  	cus_id:'苏三',
+  },true).setForm('reviewPass',{
+    accountID:'',
+    type:'',
+    mark:'',
+  },true).setForm('assign',{
+  	name:'',
+  },true).setForm('batchAssign',{
+  	name:'',
+  },true).setMethod('getType', function(type, field){
+      return this[field][type];
+  }).setMethod('refresh',function(){
+  	window.location.reload();
+  }).setMethod('reset',function(v){
+    // this.$refs.advancedQueryForm.resetFields();
+    this.closeDialog(v);
+  }).setMethod('advanceSearch',function(){
+
+       for (var x  in  this.advancedQueryForm) {
+         if (this.advancedQueryForm[x] instanceof  Date) {
+          this.advancedQueryForm[x] = this.advancedQueryForm[x].toLocaleDateString();
+         }
+       }
+      // this.searchForm = Oassign({}, this.searchForm, this.advancedQueryForm);
+      this.searchForm = Oassign({},  this.advancedQueryForm);
+      this.loadDatalist();
+      this.closeDialog('advancedQuery');
+
+  }).setMethod('handleSelectionChange', function(val){
+    //this.multipleSelection = val;
+    this.multipleSelection = [];
+    if(val.length >= 2){
+       if(val.length == this.tableData.length){
+         this.multipleSelection = val;
+       }else{
+         this.multipleSelection.push(val.shift());
+       }
+    } else {
+      this.multipleSelection = val;
+    }
+  }).setMethod('commonSelect',function(x){
+    var form = x;
+    var vmThis = this;
+    if (this.multipleSelection.length ==0 ||  this.multipleSelection.length>1) {
+      this.closeDialog(form);
+      this.$message.error('请先选择一位客户');
+      return false;
+    } else {
+      var  row = this.multipleSelection.pop();
+      this[FormName.getForm(x)].name = row.name;
+      this[FormName.getForm(x)].cus_id = row.id;
+      this.row=row;
+      return row;
+    }
+  }).setMethod('beforeAssign',function(){
+  	 this.commonSelect('assign');
+  }).setMethod('assign',function(){
+  	 this.closeDialog('assign');
+  	 //console.log(this.assignForm);
+  }).setMethod('batchAssign',function(){
+  	 this.closeDialog('batchAssign');
+  	 //console.log(this.multipleSelection);
+  }).setMethod('beforeBatchAssign',function(){
+    var form = 'batchAssign';
+    var vmThis = this;
+    if (this.multipleSelection.length ==0) {
+      this.closeDialog(form);
+      this.$message.error('请全选此页的客户');
+      return false;
+    } else {
+      return this.multipleSelection;
+    }
+  });
+</script>
+</block>

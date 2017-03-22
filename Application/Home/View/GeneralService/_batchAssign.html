@@ -1,0 +1,20 @@
+<el-dialog title="分配客户" v-model="batchAssignFormDialog" @open="beforeBatchAssign">
+  <el-form  ref="assignForm" :label-width="dialogLabelWidth" :model="assignForm">
+    <el-row>
+      <el-col :span="10">
+        <el-form-item label="指定客服" prop="type">
+          <el-select v-model="batchAssignForm.type" placeholder="请选择客服人员">
+            <el-option v-for="(type,key) in memberList" :label="type"  :value="key"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+    </el-row>
+  </el-form>
+
+  <div slot="footer" class="dialog-footer">
+   <el-button type="danger" @click="closeDialog('batchAssign')">取 消</el-button>
+   <el-button type="primary" v-show="!assignFormSubmitStatus" @click="batchAssign" >分配</el-button>
+   <el-button type="primary" v-show="assignFormSubmitStatus" :loading="true" >分配中</el-button>
+  </div>
+
+</el-dialog>
