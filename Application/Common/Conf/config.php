@@ -15,7 +15,7 @@ return array(
 	'DB_TYPE' => 'mysql',
 	'DB_USER' => 'root',
 	'DB_PWD' =>'',
-	'DB_DSN' => 'mysql:host=localhost;dbname=local_crm;charset=utf8',
+	'DB_DSN' => 'mysql:host=localhost;dbname=dev_crm_02;charset=utf8',
 
 /*	'DB_TYPE' => 'mysql',
 	'DB_USER' => 'beta_crm',
