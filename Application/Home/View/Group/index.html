@@ -27,9 +27,8 @@
 					border  
 					v-loading="dataLoad"  
 					element-loading-text="拼命加载中"
-                    @row-click="choseRow"
-                    @selection-change="handleSelectionChange"
-                    >
+          @row-click="choseRow"
+          @selection-change="handleSelectionChange">
 					    <el-table-column type="selection"  align="center" width="50" >
 					    </el-table-column>
 					    <el-table-column type="index" :formatter="handleIndex" width="65" align="center" label="序号" >
@@ -115,7 +114,7 @@
                         border
                         @selection-change="delSelect"
                          >
-                          <el-table-column type="selection"  width="50" >
+                          <el-table-column type="selection"  width="50" :selectable="selectable">
                           </el-table-column>
                           <el-table-column prop="user_id" label="员工ID" width="180" align="center">
                           </el-table-column>
@@ -348,15 +347,32 @@
 
   }).setMethod('removeMember', function(){
     var vmThis  =this;
+    var ids = [];
+    vmThis.secondSelection.forEach(function(current){
+         
+          if (current.type == '主管') {
+            captain = true;
+          }
+          ids.push(current.user_id);
+
+      })
+
+    if (captain) {
+      vmThis.$message({
+          message: '不能把主管删了',
+          type:    'error'
+        });
+      return;
+    }
+
+
     this.$confirm('确定移除选中的成员?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(function(){
-            var ids = [];
-            vmThis.secondSelection.forEach(function(current){
-                ids.push(current.user_id);
-            })
+            
+
             vmThis.$http.post(page.removeMemberUrl, {user_ids:ids}).then(function(response){
                 vmThis.$message({
                   message: '操作成功',
@@ -396,6 +412,8 @@
     this.getUsers(0);
   }).setMethod('beforeEdit', function(){
     this.getUsers(this.dataList[this.editIndex].user_id);
+  }).setMethod('selectable', function(row, index){
+     return row.type=="主管" ? false : true;
   });
 </script>
 </block>

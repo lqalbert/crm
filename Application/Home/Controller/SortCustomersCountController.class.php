@@ -89,6 +89,9 @@ class SortCustomersCountController extends CommonController{
         // 修改版 没有录入客户的A员工 会显示 0
         $list = M()->query('select realname as name , IFNULL(cbc.c, 0) as `count`, ui.user_id from user_info as ui left join (select count(id) as `c`, user_id from customers_basic as cb where '. $this->getDayBetween().' group by user_id) as cbc on ui.user_id = cbc.user_id where ui.role_id in('.$roleM->getIdByEname(RoleModel::CAPTAIN).', '.$roleM->getIdByEname(RoleModel::STAFF).') order by `count` desc limit '. $this->getOffset().','.$this->pageSize);
 
+        /*var_dump('select realname as name , IFNULL(cbc.c, 0) as `count`, ui.user_id from user_info as ui left join (select count(id) as `c`, user_id from customers_basic as cb where '. $this->getDayBetween().' group by user_id) as cbc on ui.user_id = cbc.user_id where ui.role_id in('.$roleM->getIdByEname(RoleModel::CAPTAIN).', '.$roleM->getIdByEname(RoleModel::STAFF).') order by `count` desc limit '. $this->getOffset().','.$this->pageSize);
+
+        die();*/
         return  array('list'=>$list, 'count'=>$count);
     }
 
