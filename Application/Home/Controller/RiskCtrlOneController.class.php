@@ -10,4 +10,8 @@ class RiskCtrlOneController extends CommonController{
 		$this->assign('sexType',      D('Customer')->getSexType());
 		$this->display();
 	}
+
+    public function getList(){
+        $this->ajaxReturn([]);
+    }
 }

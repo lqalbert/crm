@@ -11,11 +11,11 @@ return array(
 	// 'DB_PWD' =>'dev2008dev',
 	// 'DB_DSN' => 'mysql:host=192.168.0.12;dbname=dev_crm_02;charset=utf8',
 
-//本地
+// 本地
 	'DB_TYPE' => 'mysql',
 	'DB_USER' => 'root',
 	'DB_PWD' =>'',
-	'DB_DSN' => 'mysql:host=localhost;dbname=dev_crm_02;charset=utf8',
+	'DB_DSN' => 'mysql:host=localhost;dbname=local_crm;charset=utf8',
 
 /*	'DB_TYPE' => 'mysql',
 	'DB_USER' => 'beta_crm',

@@ -64,10 +64,10 @@
 		        <el-form-item>
 		          <el-button type="info" size="small" icon="search">查询</el-button> 
 		          
-		          <el-tooltip content="录入高级查询条件"  style="margin-left:10px;">
+		          <!-- <el-tooltip content="录入高级查询条件"  style="margin-left:10px;">
 		            <el-button @click="openDialog('advancedQuery')" size="small" type="primary">{:L('ADVANCED_QUERY')}</el-button>
 		          </el-tooltip>
-
+ -->
 		          <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
 		            <el-button  size="small">重置</el-button>
 		          </el-tooltip>
@@ -96,7 +96,7 @@
         <el-col :span="24">
           <el-table border v-loading="dataLoad" :data="tableData"
               element-loading-text="{:L('DATA_LOGIN')}"
-              empty-text="暂无数据,销售妹子正在努力中！"
+              empty-text="暂无数据"
               highlight-current-row ref="select">
 
 		  	    <el-table-column width="50" align="center" type="selection"></el-table-column>
@@ -169,12 +169,8 @@
 		    <el-col :span="12">
 		      <div class="grid-content bg-purple">
 		      	<span class="wrapper">
-			        <el-tooltip content="选择一个客户分配给指定的客服主管/人员" placement="right">
-			          <el-button size="small" type="primary">分配</el-button>
-			        </el-tooltip>
-
 			        <el-tooltip content="选择客户分配给指定的客服主管/人员" placement="right">
-			          <el-button size="small" type="primary" style="margin-left:10px;">批量分配</el-button>
+			          <el-button size="small" type="primary" @click="openDialog('dipacth')">批量分配</el-button>
 			        </el-tooltip>
 			      </span>
 		      </div>
@@ -248,6 +244,8 @@
 	  <!-- 录入高级查询条件 -->
 	  <include file="_advancedQuery" />
 	  <!-- /录入高级查询条件 -->
+
+      <include file="_dispacth" />
 	</div>
 
 </div>
@@ -288,7 +286,9 @@
     phone:"",
     track_start:"",
     track_end:"",
-  },true).setMethod('getType', function(type, field){
+  },true).setForm('dipacth',{
+    user_id:""
+  }, true).setMethod('getType', function(type, field){
       return this[field][type];
   }).setMethod('refresh',function(){
   	window.location.reload();

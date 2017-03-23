@@ -1,0 +1,22 @@
+<el-dialog title="分配" v-model="dipacthFormDialog">
+  <el-form ref="dipacthForm"  :model="dipacthForm" size="small" label-width="140px">
+    <el-row>
+      <el-col :span="12">
+        <el-form-item prop="type" label="回访专员">
+            <el-select v-model="dipacthForm.user_id" size="small" placeholder="请选择" >
+                <el-option value="回访专员01" ></el-option>
+                <el-option value="回访专员02" ></el-option>
+                <el-option value="回访专员03" ></el-option>
+                <el-option value="回访专员04" ></el-option>
+                <el-option value="回访专员05" ></el-option>
+            </el-select>
+        </el-form-item>
+      </el-col>
+    </el-row>
+  </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="closeDialog('dipacth')">取 消</el-button>
+      <el-button type="primary" v-show="!dipacthFormSubmitStatus" @click="dipacthFormSubmit(page.dipacthFormUrl, 'edit')" >确 定</el-button>
+      <el-button type="primary" v-show="dipacthFormSubmitStatus" :loading="true" >修改中</el-button>
+    </div>
+</el-dialog>
