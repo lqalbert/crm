@@ -95,6 +95,7 @@
       <el-row>
         <el-col :span="24">
           <el-table border v-loading="dataLoad" :data="tableData"
+              @selection-change="handleSelectionChange"
               element-loading-text="{:L('DATA_LOGIN')}"
               empty-text="暂无数据"
               highlight-current-row ref="select">
@@ -190,7 +191,7 @@
 	     <el-col :span="24">
 	        <el-tabs  type="border-card">
 	          <el-tab-pane label="跟踪记录">
-	            <el-table empty-text="请点击客户显示跟踪信息" border style="width: 100%">
+	            <el-table :data="tableDataOne" empty-text="请点击客户显示跟踪信息" border style="width: 100%" @row-dblclick="viewtraceContents">
 	              <el-table-column prop="user" label="操作员工" header-align="center">
 	              </el-table-column>
 
@@ -214,23 +215,23 @@
 	            </el-table>
 	          </el-tab-pane>
 	          <el-tab-pane label="客户资料">
-	            <el-table empty-text="请点击客户显示其客户资料" border style="width: 100%">
-	              <el-table-column prop="user" label="操作员工" header-align="center">
+	            <el-table :data="tableDataTwo" empty-text="请点击客户显示其客户资料" border style="width: 100%">
+	              <el-table-column label="操作员工" prop="user" header-align="center">
 	              </el-table-column>
 
-	              <el-table-column label="产品金额" header-align="center">
+	              <el-table-column label="产品金额" prop="expense" header-align="center">
 	              </el-table-column>
 
-	              <el-table-column label="产品类型" header-align="center">
+	              <el-table-column label="产品类型" prop="type" header-align="center">
 	              </el-table-column>
 	              
-	              <el-table-column label="身份证" header-align="center">
+	              <el-table-column label="身份证" prop="identity" align="center">
 	              </el-table-column>
 
-	              <el-table-column label="通讯地址" header-align="center">
+	              <el-table-column label="通讯地址" prop="address" header-align="center">
 	              </el-table-column>
 
-	              <el-table-column label="创建时间" align="center">
+	              <el-table-column label="创建时间" prop="time" align="center">
 	              </el-table-column>
 	            </el-table>
 	          </el-tab-pane>
@@ -244,8 +245,10 @@
 	  <!-- 录入高级查询条件 -->
 	  <include file="_advancedQuery" />
 	  <!-- /录入高级查询条件 -->
-
-      <include file="_dispacth" />
+    <!-- 批量分配 -->
+    <include file="_dispacth" />
+	  <!-- 跟踪内容 -->
+	  <include file="_traceContent" />
 	</div>
 
 </div>
@@ -256,6 +259,7 @@
   	customerType:{:json_encode($customerType)},
   	sexType:{:json_encode($sexType)},
   	memberList:{:json_encode($memberList)},
+  	multipleSelection:[],
     tableData: [
 	     {name: "苏三", type: "V", user_id:'1',qq:'269009751',qq_nickname:'逝者如斯乎',phone:'13888888888',weixin:'goodgoods',weixin_nickname:'不舍昼夜',last_track:'0000-00-00 00:00:00',commission:'100',plan:'0000-00-00 00:00:00',conflict:'0000-00-00 00:00:00',sex:'2',province_name:'四川',city_name:'成都',},
 	     {name: "苏三", type: "V", user_id:'1',qq:'269009751',qq_nickname:'逝者如斯乎',phone:'13888888888',weixin:'goodgoods',weixin_nickname:'不舍昼夜',last_track:'0000-00-00 00:00:00',commission:'100',plan:'0000-00-00 00:00:00',conflict:'0000-00-00 00:00:00',sex:'2',province_name:'四川',city_name:'成都',},
@@ -269,6 +273,18 @@
 	     {name: "苏三", type: "V", user_id:'1',qq:'269009751',qq_nickname:'逝者如斯乎',phone:'13888888888',weixin:'goodgoods',weixin_nickname:'不舍昼夜',last_track:'0000-00-00 00:00:00',commission:'100',plan:'0000-00-00 00:00:00',conflict:'0000-00-00 00:00:00',sex:'2',province_name:'四川',city_name:'成都',},
 	     {name: "苏三", type: "V", user_id:'1',qq:'269009751',qq_nickname:'逝者如斯乎',phone:'13888888888',weixin:'goodgoods',weixin_nickname:'不舍昼夜',last_track:'0000-00-00 00:00:00',commission:'100',plan:'0000-00-00 00:00:00',conflict:'0000-00-00 00:00:00',sex:'2',province_name:'四川',city_name:'成都',},
        {name: "苏三", type: "V", user_id:'1',qq:'269009751',qq_nickname:'逝者如斯乎',phone:'13888888888',weixin:'goodgoods',weixin_nickname:'不舍昼夜',last_track:'0000-00-00 00:00:00',commission:'100',plan:'0000-00-00 00:00:00',conflict:'0000-00-00 00:00:00',sex:'2',province_name:'四川',city_name:'成都',},
+    ],
+    tableDataOne:[
+      {user:'张三',type:'V.成交客户',name:'苏三',content:'四张机，鸳鸯织就欲双飞。可怜未老头先白，春波碧草，晓寒深处，相对浴红衣。',created_at:'2017-03-23 11:27:56',track_text:'上门服务'},
+      {user:'张三',type:'A.成交客户',name:'苏三',content:'四张机，鸳鸯织就欲双飞。可怜未老头先白，春波碧草，晓寒深处，相对浴红衣。',created_at:'2017-03-22 11:27:56',track_text:'上门服务'},
+      {user:'张三',type:'B.成交客户',name:'苏三',content:'四张机，鸳鸯织就欲双飞。可怜未老头先白，春波碧草，晓寒深处，相对浴红衣。',created_at:'2017-03-21 11:27:56',track_text:'上门服务'},
+      {user:'张三',type:'C.成交客户',name:'苏三',content:'四张机，鸳鸯织就欲双飞。可怜未老头先白，春波碧草，晓寒深处，相对浴红衣。',created_at:'2017-03-20 11:27:56',track_text:'上门服务'},
+      {user:'张三',type:'D.成交客户',name:'苏三',content:'四张机，鸳鸯织就欲双飞。可怜未老头先白，春波碧草，晓寒深处，相对浴红衣。',created_at:'2017-03-19 11:27:56',track_text:'上门服务'},
+      {user:'张三',type:'E.成交客户',name:'苏三',content:'四张机，鸳鸯织就欲双飞。可怜未老头先白，春波碧草，晓寒深处，相对浴红衣。',created_at:'2017-03-18 11:27:56',track_text:'上门服务'},
+      {user:'张三',type:'F.成交客户',name:'苏三',content:'四张机，鸳鸯织就欲双飞。可怜未老头先白，春波碧草，晓寒深处，相对浴红衣。',created_at:'2017-03-17 11:27:56',track_text:'上门服务'},
+    ],
+    tableDataTwo:[
+      {user:'张三',expense:'88888',type:'点金手至尊版（两年）',identity:'515151515151515151',address:'成都春熙路IFS中心',time:'2017-03-23 12:00:00'},
     ],
   }).setForm('search',{
     name:'',
@@ -288,10 +304,23 @@
     track_end:"",
   },true).setForm('dipacth',{
     user_id:""
-  }, true).setMethod('getType', function(type, field){
+  }, true).setForm('traceContent',{
+    content:'',
+  },true).setMethod('getType', function(type, field){
       return this[field][type];
   }).setMethod('refresh',function(){
   	window.location.reload();
+  }).setMethod('handleSelectionChange',function(val){
+    this.multipleSelection = [];
+    if(val.length >= 2){
+       if(val.length == this.tableData.length){
+         this.multipleSelection = val;
+       }else{
+         this.multipleSelection.push(val.shift());
+       }
+    } else {
+      this.multipleSelection = val;
+    }
   }).setMethod('advancedQueryReset',function(){
     // this.$refs.advancedQueryForm.resetFields();
     this.closeDialog('advancedQuery');
@@ -307,6 +336,19 @@
       this.loadDatalist();
       this.closeDialog('advancedQuery');
 
+  }).setMethod('beforeDipacth',function(){
+    var form = 'dipacth';
+    var vmThis = this;
+    if (this.multipleSelection.length != this.tableData.length) {
+      this.closeDialog(form);
+      this.$message.error('请全选此页的客户');
+      return false;
+    } else {
+      return this.multipleSelection;
+    }
+  }).setMethod('viewtraceContents',function(row,event){
+    this.traceContentFormDialog = true;
+    this.traceContentForm.content = row.content;
   });
 </script>
 </block>

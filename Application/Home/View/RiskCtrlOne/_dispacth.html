@@ -1,4 +1,4 @@
-<el-dialog title="分配" v-model="dipacthFormDialog">
+<el-dialog title="分配" v-model="dipacthFormDialog" @open="beforeDipacth">
   <el-form ref="dipacthForm"  :model="dipacthForm" size="small" label-width="140px">
     <el-row>
       <el-col :span="12">
