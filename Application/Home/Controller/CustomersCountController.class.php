@@ -71,16 +71,44 @@ class CustomersCountController extends CommonController{
         $this->ajaxReturn($result);
 
     }
-   
 
+
+    private function departmentMasterSelectFilter($arr){
+        unset($arr['department']);
+        return $arr;
+    }
+
+    private function captainSelectFilter($arr){
+        $dArr = $this->departmentMasterSelectFilter($arr);
+        unset($dArr['group']);
+        return $dArr;
+    }
+   
+    private function getSelect($arr){
+
+        $funcName = $this->roleEname."SelectFilter";
+        if (method_exists($this, $funcName)) {
+            return call_user_func(array($this, $funcName),$arr);
+        }
+        return $arr;
+    }
 
     public function index(){
 
-        $org = I('get.org', 'o');
+        $org = I('get.org', 'user');
         $id  = I('get.id', '0');
+
+        $selectArr = array(
+            'department'=>'部门',
+            'group'     =>'小组',
+            'user'      =>'个人',
+        );
 
         $this->assign('org', $org);
         $this->assign('id',  $id);
+        $this->assign('object', $this->getSelect($selectArr));
+
+
         $this->display();
     }
 
@@ -101,16 +129,14 @@ class CustomersCountController extends CommonController{
         }
     }
 
-    public function goldFilter(){
-        return array();
-    }
+    
 
-    public function departmentMasterFilter(){
+    public function departmentMasterUserFilter(){
         
         return array('department_id'=> session('account')['userInfo']['department_id']);
     }
 
-    public function captainFilter(){
+    public function captainUserFilter(){
         return array('group_id'=> session('account')['userInfo']['group_id']);
     }
 
@@ -120,7 +146,12 @@ class CustomersCountController extends CommonController{
     * 如果是主管 array('group_id'=>$id)
     */
     private function getUserOrgCondition(){
-        return call_user_func(array($this, $this->roleEname."Filter"));
+        $funcName = $this->roleEname."UserFilter";
+        if (method_exists($this, $funcName)) {
+            return call_user_func(array($this, $funcName));
+        }
+        return array();
+        
     }
 
 
@@ -137,36 +168,109 @@ class CustomersCountController extends CommonController{
                                         ->group('user_id')
                                         ->buildSql();
 
-        $list = M('user_info')->field("realname as name , IFNULL(cbc.c, 0) as `count`, user_info.user_id")
+        $list = M('user_info')->field("realname as name , IFNULL(cbc.c, 0) as `count`, user_info.user_id, 'user' as org ")
                               ->join('left join '.$subQuery.' as cbc using(user_id) ')
-                              ->page(I('get.p',0). ','. $this->pageSize)
                               ->where($this->getUserCondition())
                               ->where($this->getUserFilterCondition())
                               ->where($this->getUserOrgCondition())
                               ->order(' count desc')
+                              ->page(I('get.p',0). ','. $this->pageSize)
                               ->select();
-        
-        $result = array('list'=>$list, 'count'=>$count);
-        return $result;
+
+        return array('list'=>$list, 'count'=>$count);
     }
 
-
+    //过滤掉不需要显示的部门小组
     private function getGroupFilterCondition(){
         $org = I('get.org', 'o');
         $id = I('get.id', 0);
         if ($org == 'department' && $id!=0) {
-            return array('department'=>$id);
+            return array('department_id'=>$id);
         } else {
             return array();
         }
+    }
+
+    
+
+    public function departmentMasterGroupFilter(){
+        
+        return array('department_id'=> session('account')['userInfo']['department_id']);
+    }
+
+    public function captainGroupFilter(){
+        return array('department_id'=> -1);
+    }
+
+
+    //根据不同的角色 得到不同的条件
+    /**
+    * 如果是总经办 array();
+    * 如果是部门 array('departmen_id'=> $id)
+    * 如果是主管 主管没有权力查看这个 array('departmen_id'=> -1)
+    */
+    private function getGroupOrgCondition(){
+        $funcName = $this->roleEname."GroupFilter";
+        if (method_exists($this, $funcName)) {
+            return call_user_func(array($this, $funcName));
+        }
+        return array();
     }
 
     public function getGroupCount(){
         $between_today = $this->getDayBetween();
 
         $count = M('group_basic')->where($this->getGroupFilterCondition())
+                                 ->where($this->getGroupOrgCondition())
+                                 ->count();
+        // 小组的
+        $subQuery = M('customers_basic')->join('inner join user_info as ui  using(user_id)')
+                                        ->where($between_today)
+                                        ->where($this->getGroupFilterCondition())
+                                        ->where($this->getGroupOrgCondition())
+                                        ->where(array('status'=>array('EGT',0)))
+                                        ->field('count(customers_basic.id) as `c` ,ui.group_id')
+                                        ->group('ui.group_id')
+                                        ->buildSql();
+
+
+        $list = M('group_basic')->join('left join '.$subQuery.'as uc on group_basic.id=uc.group_id')
+                                ->where($this->getGroupFilterCondition())
                                 ->where($this->getGroupOrgCondition())
-                                ->count();
+                                ->where(array('status'=>array('EGT',0)))
+                                ->field('id,name ,IFNULL(uc.c, 0) as `count` ,\'group\' as org')
+                                ->order(' count desc')
+                                ->page(I('get.p',0). ','. $this->pageSize)
+                                ->select();
+        
+        return array('list'=>$list, 'count'=>$count);
+    }
+
+
+    //只有总经办才有权限
+    private function getDepartmentCount(){
+        $between_today = $this->getDayBetween();
+
+        $count = M('department_basic')->where(array('status'=>array('EGT',0)))
+                                      ->count();
+
+        // 部门的
+        $subQuery = M('customers_basic')->join('inner join user_info as ui  using(user_id)')
+                                        ->where($between_today)
+                                        ->where(array('status'=>array('EGT',0)))
+                                        ->field('count(customers_basic.id) as `c` ,ui.department_id')
+                                        ->group('ui.department_id')
+                                        ->buildSql();
+
+
+        $list = M('department_basic')->join('left join '.$subQuery.'as uc on department_basic.id=uc.department_id')
+                                    ->where(array('status'=>array('EGT',0)))
+                                    ->field('id,name ,IFNULL(uc.c, 0) as `count`, \'department\' as org ')
+                                    ->order(' count desc')
+                                    ->page(I('get.p',0). ','. $this->pageSize)
+                                    ->select();
+
+        return array('list'=>$list, 'count'=>$count);
     }
 
 

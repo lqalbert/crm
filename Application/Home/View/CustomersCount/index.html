@@ -24,9 +24,7 @@
             </el-form-item>
             <el-form-item prop="object">
               <el-select v-model="searchForm.object" placeholder="请选择对象" >
-                <el-option label="部门" value="department"></el-option>
-                <el-option label="小组" value="group"></el-option>
-                <el-option label="个人" value="user"></el-option>
+                <el-option v-for="(item, key) in select" :label="item" :value="key" ></el-option>
               </el-select>
             </el-form-item>
             
@@ -49,6 +47,12 @@
                     <el-table-column label="序号"  align="center" width="65" :formatter="handleIndex"  >
                     </el-table-column>
                     <el-table-column prop="name"  label="名称"  align="center">
+                    <template scope="scope">
+                    <span v-if="scope.row.org != 'user' ">
+                      <a :href="getUrl(scope.row.id)">{{ scope.row.name }}</a>
+                    </span>
+                    <span v-else>{{ scope.row.name }}</span>
+                    </template>
                     </el-table-column>
                     
                     <el-table-column prop="count"  label="客户数(个)"  align="center">
@@ -76,19 +80,27 @@
 
     page.listUrl = "{:U('getList', array('org'=>$org, 'id'=>$id))}";
 
-
-
       window.defaultOption.setDatas({
+        select:{:json_encode($object)},
+        org:'{$org}',
+        id:'{$id}',
       }).setForm('search',{
         start:'',
         end:'',
-        object:'user'
+        object:''
       }).setMethod('startDateChange', function(v){
         
         this.searchForm.start = v;
       }).setMethod('endDateChange', function(v){
         this.searchForm.end = v;
        
+      }).setMethod('getUrl', function(v){
+        return "{:U('index')}" + "?org=" + this.searchForm.object + "&id=" + v;
+      }).setVueHook('created', function(){
+        this.searchForm.object = this.objectMap(this.org);
+      }).setMethod('objectMap', function(v){
+        var ma = {'department':'group', 'group':'user'};
+         return ma[v];
       });
     </script>
 </block>
