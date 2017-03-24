@@ -33,18 +33,19 @@ class RbacUserModel extends RelationModel {
         // return $this->where(array('id'=>array('in', $ids )))->save(array('status'=>-1));
         $id_arr = explode(",", $ids);
         $date   = Date('Y-m-d');
-        $sql    = "update ".$this->tableName. " set `status`=-1, `account` = CONCAT(`account`, '_$date') where id=%d";
+        $sql     = "update ".$this->tableName. " set `status`=-1, `account` = CONCAT(`account`, '_$date') where id=%d";
+        $sql2    = "update user_info set  `realname` = CONCAT(`realname`, '_$date_删除') where user_id=%d";
         $this->startTrans();
         
         
         foreach ($id_arr as $key => $value) {
             $re = M()->execute($sql, $value);
-            if ($re=== false) {
+            $re2= M()->execute($sql2, $value);
+            if ($re === false || $re2 === false) {
                 $this->rollback();
                 return false;
             }
         }
-
         $this->commit();
         return true;
     }

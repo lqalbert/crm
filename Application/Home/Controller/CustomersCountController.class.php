@@ -176,7 +176,7 @@ class CustomersCountController extends CommonController{
                               ->order(' count desc')
                               ->page(I('get.p',0). ','. $this->pageSize)
                               ->select();
-
+        
         return array('list'=>$list, 'count'=>$count);
     }
 
