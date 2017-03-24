@@ -32,7 +32,7 @@ class RoleDepartmentMaster {
 
     public function setEmployQueryCondition($m, $obj){
         $depart_id = $this->getDepartId($obj->id);
-        $m->where(array('user_info.department_id'=>array('eq', $depart_id)));
+        $m->where(array('user_info.department_id'=>array('eq', $depart_id), 'user_info.user_id'=>array('NEQ', session('uid'))));
     }
 
     public function getGroupUpsOrg($obj){
