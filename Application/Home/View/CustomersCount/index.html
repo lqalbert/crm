@@ -85,8 +85,8 @@
         org:'{$org}',
         id:'{$id}',
       }).setForm('search',{
-        start:'',
-        end:'',
+        start:'{:I("get.start","")}',
+        end:'{:I("get.end","")}',
         object:''
       }).setMethod('startDateChange', function(v){
         
@@ -95,7 +95,16 @@
         this.searchForm.end = v;
        
       }).setMethod('getUrl', function(v){
-        return "{:U('index')}" + "?org=" + this.searchForm.object + "&id=" + v;
+        var s = [];
+        if (this.searchForm.start.length) {
+          s.push("start="+this.searchForm.start);
+        }
+
+        if (this.searchForm.end.length) {
+          s.push("start="+this.searchForm.end);
+        }
+
+        return "{:U('index')}" + "?org=" + this.searchForm.object + "&id=" + v +"&"+s.join("&");
       }).setVueHook('created', function(){
         this.searchForm.object = this.objectMap(this.org);
       }).setMethod('objectMap', function(v){
