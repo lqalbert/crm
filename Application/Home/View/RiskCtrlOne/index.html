@@ -339,9 +339,9 @@
   }).setMethod('beforeDipacth',function(){
     var form = 'dipacth';
     var vmThis = this;
-    if (this.multipleSelection.length != this.tableData.length) {
+    if (this.multipleSelection.length == 0 ) {
       this.closeDialog(form);
-      this.$message.error('请全选此页的客户');
+      this.$message.error('请至少选择一个');
       return false;
     } else {
       return this.multipleSelection;
