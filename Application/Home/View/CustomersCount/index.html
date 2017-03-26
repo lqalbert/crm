@@ -101,7 +101,7 @@
         }
 
         if (this.searchForm.end.length) {
-          s.push("start="+this.searchForm.end);
+          s.push("end="+this.searchForm.end);
         }
 
         return "{:U('index')}" + "?org=" + this.searchForm.object + "&id=" + v +"&"+s.join("&");
