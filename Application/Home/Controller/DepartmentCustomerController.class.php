@@ -198,13 +198,14 @@ class DepartmentCustomerController extends CommonController {
         $this->setQeuryCondition();
         //没有 is_main
         $count = (int)$this->M->count();
+        
         $this->setQeuryCondition();
         D('Customer','Logic')->getJoinCondition($this->M);
         if (I('get.sort_field', null)) {
             $this->M->order(I('get.sort_field')." ". I('get.sort_order'));
         }
         $list = $this->M->page(I('get.p',0). ','. $this->pageSize)->select();
-
+        
         $result = array('list'=>$list, 'count'=>$count);
         return $result;
     }
