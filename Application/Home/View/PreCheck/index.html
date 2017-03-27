@@ -33,13 +33,12 @@
                   >
                     <el-table-column prop="name"  label="客户姓名" width="140">
                     </el-table-column>
-                    
-                    <!-- <el-table-column prop="type" label="客户类型"  :context="_self">
-                      <template scope="scope">
-                        {{ getType(scope.row.type, 'customerType') }}
-                      </template>
-                    </el-table-column> -->
                     <el-table-column  prop="user_name" label="跟踪员工"  >
+                    <template scope="scope">
+                      <span v-if="scope.row.db_name">
+                        {{ scope.row.db_name }}-
+                      </span>{{ scope.row.user_name }}
+                    </template>
                     </el-table-column>
                     <el-table-column  prop="created_at" label="录入时间" align="center" >
                     </el-table-column>

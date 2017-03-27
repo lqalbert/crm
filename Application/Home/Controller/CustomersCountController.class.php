@@ -223,6 +223,8 @@ class CustomersCountController extends CommonController{
         $count = M('group_basic')->where($this->getGroupFilterCondition())
                                  ->where($this->getGroupOrgCondition())
                                  ->count();
+
+       
         // 小组的
         $subQuery = M('customers_basic')->join('inner join user_info as ui  using(user_id)')
                                         ->where($between_today)

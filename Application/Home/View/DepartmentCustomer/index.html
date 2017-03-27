@@ -84,13 +84,13 @@
           </el-form-item>
 
           <el-form-item prop="group" >
-            <el-select v-model="searchForm.group" size="small"   placeholder="请选择小组" @change="groupChange">
+            <el-select v-model="searchForm.group" size="small" clearable  placeholder="请选择小组" @change="groupChange">
               <el-option v-for="item in searchGroup" :label="item.name" :value="item.id" :disabled="item.disabled"></el-option>
             </el-select>
           </el-form-item>
 
           <el-form-item prop="user_id" >
-            <el-select v-model="searchForm.user_id" size="small"   placeholder="请选择队员">
+            <el-select v-model="searchForm.user_id" size="small" clearable  placeholder="请选择队员">
               <el-option v-for="item in memeberList" :label="item.realname" :value="item.user_id" :disabled="item.disabled"></el-option>
             </el-select>
           </el-form-item>
