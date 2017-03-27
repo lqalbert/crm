@@ -52,17 +52,16 @@
 					          {{ getType(scope.row.sex, 'sexType') }}
 					        </template>
 					    </el-table-column>
-					    <!--<el-table-column prop="status" label="是否有效" width="100">
-					    </el-table-column>
-					    <el-table-column prop="faccount" label="演示账号" width="150">
+					   <el-table-column prop="id_card" label="身份证号" width="192">
+					   </el-table-column>
+					    <!--<el-table-column prop="faccount" label="演示账号" width="150">
 					    </el-table-column>
 					    <el-table-column prop="department" label="所属组织" width="100">
 					    </el-table-column>
 					    <el-table-column prop="employeetype" label="员工类型" width="100">
 					    </el-table-column>
 					    <el-table-column prop="ishow" label="是否公示" width="100">
-					    </el-table-column>
-						 -->
+					    </el-table-column> -->
 					    <el-table-column prop="phone" label="固话" width="140" align="center">
 					    </el-table-column>
 					     
@@ -272,7 +271,8 @@
 			qq:"",
 			qq_nickname:"",
 			weixin:"",
-			weixin_nikname:""
+			weixin_nikname:"",
+			id_card:""
 		}).setForm('edit',{
 			account:"",
 			role_id:"",
@@ -290,7 +290,8 @@
 			qq:"",
 			qq_nickname:"",
 			weixin:"",
-			weixin_nikname:""
+			weixin_nikname:"",
+			id_card:""
 		}).setForm('setRoles',{
 			user_id:0,
 			role_ids:0
