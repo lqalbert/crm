@@ -348,6 +348,7 @@
   }).setMethod('removeMember', function(){
     var vmThis  =this;
     var ids = [];
+    var captain = false;
     vmThis.secondSelection.forEach(function(current){
          
           if (current.type == '主管') {
@@ -379,19 +380,17 @@
                   type: 'success'
                 });
                 // vmThis.tableData = [];
-                vmThis.choseRow(vmThis.row);
+                // vmThis.choseRow(vmThis.row);
             }, function(response){
                 vmThis.$message({
                   message: '操作失败',
                   type: 'error'
                 });
             });
-
-
-          vmThis.$message({
+          /*vmThis.$message({
             type: 'success',
             message: '移除成功!'
-          });
+          });*/
         }).catch(function(){
           vmThis.$message({
             type: 'info',
