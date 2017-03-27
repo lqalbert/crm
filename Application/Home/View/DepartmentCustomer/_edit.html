@@ -219,6 +219,8 @@
     </el-tabs>
   </el-form>
   <div slot="footer" class="dialog-footer">
-    <include file="Common:_edit" />
+    el-button @click="closeDialog('edit')">取 消</el-button>
+    <el-button type="primary" v-show="!editFormSubmitStatus" @click="editSubmit(page.editFormUrl, 'edit')" >确 定</el-button>
+    <el-button type="primary" v-show="editFormSubmitStatus" :loading="true" >修改中</el-button>
   </div>
 </el-dialog>
