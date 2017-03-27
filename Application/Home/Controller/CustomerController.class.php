@@ -537,6 +537,12 @@ class CustomerController extends CommonController {
             $ob->where(array('cus_id'=>I('post.cus_id')))->save(I('post.'));
         }else{
             if($ob->create($_POST) && $ob->add()){
+                $data=array(
+                    'cus_id'=>I('post.cus_id'),
+                    'user_id'=>I('post.user_id'),
+                    'risk_one'=>'1'     
+                );
+                M('customers_service')->add($data);
                 $this->success(L('真实资料添加成功'));
             }else{
                 $this->error($ob->getError());    

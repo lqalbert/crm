@@ -62,14 +62,14 @@
 		        </el-form-item>
 
 		        <el-form-item>
-		          <el-button type="info" size="small" icon="search">查询</el-button> 
+		          <el-button type="info" size="small" icon="search" @click="loadDatalist">查询</el-button> 
 		          
 		          <!-- <el-tooltip content="录入高级查询条件"  style="margin-left:10px;">
 		            <el-button @click="openDialog('advancedQuery')" size="small" type="primary">{:L('ADVANCED_QUERY')}</el-button>
 		          </el-tooltip>
  -->
 		          <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
-		            <el-button  size="small">重置</el-button>
+		            <el-button  size="small" @click="searchReset">重置</el-button>
 		          </el-tooltip>
 
 		          <el-tooltip content="已经审核通过但未转给客服主管" placement="bottom-start" style="margin-left:10px;">
@@ -94,8 +94,9 @@
 		  </el-row>
       <el-row>
         <el-col :span="24">
-          <el-table border v-loading="dataLoad" :data="tableData"
+          <el-table :data="dataList" border v-loading="dataLoad" 
               @selection-change="handleSelectionChange"
+              @sort-change="sortChange"
               element-loading-text="{:L('DATA_LOGIN')}"
               empty-text="暂无数据"
               highlight-current-row ref="select">
@@ -260,6 +261,8 @@
   	sexType:{:json_encode($sexType)},
   	memberList:{:json_encode($memberList)},
   	multipleSelection:[],
+  	provinces:[],
+    cities:[],
     tableData: [
 	     {name: "苏三", type: "V", user_id:'1',qq:'269009751',qq_nickname:'逝者如斯乎',phone:'13888888888',weixin:'goodgoods',weixin_nickname:'不舍昼夜',last_track:'0000-00-00 00:00:00',commission:'100',plan:'0000-00-00 00:00:00',conflict:'0000-00-00 00:00:00',sex:'2',province_name:'四川',city_name:'成都',},
 	     {name: "苏三", type: "V", user_id:'1',qq:'269009751',qq_nickname:'逝者如斯乎',phone:'13888888888',weixin:'goodgoods',weixin_nickname:'不舍昼夜',last_track:'0000-00-00 00:00:00',commission:'100',plan:'0000-00-00 00:00:00',conflict:'0000-00-00 00:00:00',sex:'2',province_name:'四川',city_name:'成都',},
@@ -311,16 +314,16 @@
   }).setMethod('refresh',function(){
   	window.location.reload();
   }).setMethod('handleSelectionChange',function(val){
-    this.multipleSelection = [];
-    if(val.length >= 2){
-       if(val.length == this.tableData.length){
-         this.multipleSelection = val;
-       }else{
-         this.multipleSelection.push(val.shift());
-       }
-    } else {
-      this.multipleSelection = val;
-    }
+    this.multipleSelection = val;
+    // if(val.length >= 2){
+    //    if(val.length == this.tableData.length){
+    //      this.multipleSelection = val;
+    //    }else{
+    //      this.multipleSelection.push(val.shift());
+    //    }
+    // } else {
+    //   this.multipleSelection = val;
+    // }
   }).setMethod('advancedQueryReset',function(){
     // this.$refs.advancedQueryForm.resetFields();
     this.closeDialog('advancedQuery');
@@ -339,9 +342,9 @@
   }).setMethod('beforeDipacth',function(){
     var form = 'dipacth';
     var vmThis = this;
-    if (this.multipleSelection.length != this.tableData.length) {
+    if (this.multipleSelection.length == 0) {
       this.closeDialog(form);
-      this.$message.error('请全选此页的客户');
+      this.$message.error('请至少选择一个客户');
       return false;
     } else {
       return this.multipleSelection;
@@ -349,6 +352,33 @@
   }).setMethod('viewtraceContents',function(row,event){
     this.traceContentFormDialog = true;
     this.traceContentForm.content = row.content;
+  }).setMethod('sortChange', function(sortObject){
+    console.log(sortObject);
+    console.log(this.searchForm);
+    var sortMap = {
+      ascending: 'asc',
+      descending: 'desc'
+    }
+    if (sortObject.column === null) {
+      delete this.searchForm.sort_field;
+      delete this.searchForm.sort_order;
+    } else {
+      this.searchForm.sort_field = sortObject.prop;
+      this.searchForm.sort_order = sortMap[sortObject.order];
+    }
+    this.dataLoad = true;
+    //this.loadDatalist();    
+  }).setVueHook('mounted', function(){
+    var vmThis = this;
+    //省份、城市
+    this.$http.get('{:U("Area/getAreasByPid")}', {params:{pid:1} }).then(function(response){
+      var provinces = [];
+      response.body.forEach(function(currentValue,index){
+        provinces.push({id: currentValue.id, name: currentValue.name});
+      })
+      vmThis.$set(vmThis, 'provinces', provinces);
+    });
+    this.dialogLabelWidth = "100px";
   });
 </script>
 </block>

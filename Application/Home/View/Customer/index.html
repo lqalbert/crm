@@ -921,6 +921,7 @@ function toInt(v){
         vmThis.$set(vmThis, 'dataLoad', false);
     })*/
   }).setMethod('editSubmit',function(url, form){
+    console.log(this.realInfoForm);
     FormName.type = form;
     var  formName    =  FormName.getFormName();  //form+"Form"; 
     if(this[formName].type=='V'){
