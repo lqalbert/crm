@@ -1,5 +1,4 @@
 <el-dialog title="录入客户" v-model="addFormDialog">
-<!-- <el-form :model="form"> -->
   <el-form ref="addForm" :rules="addRules" :model="addForm" v-model="addForm" :label-width="dialogLabelWidth">
     <el-tabs type="card">
       <el-tab-pane label="核心资料" name="first">
@@ -24,6 +23,14 @@
           <el-col :span="12">
             <el-form-item label="手机号1" prop="phone">
               <el-input v-model="addForm.phone" auto-complete="off" placeholder="请填写手机号"></el-input>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="12">
+            <el-form-item  label="客户来源" prop="source">
+              <el-select v-model="addForm.source"   placeholder="选择客户来源" >
+                <el-option v-for="(source,key) in Source" :label="source"  :value="key"></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           
@@ -208,13 +215,7 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="12">
-            <el-form-item  label="客户来源" >
-              <el-select v-model="addForm.source"   placeholder="选择客户来源" >
-                <el-option v-for="(source,key) in Source" :label="source"  :value="key"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
+          
           <el-col :span="10">
             <el-form-item label="备注">
               <el-input
