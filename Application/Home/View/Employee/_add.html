@@ -155,6 +155,68 @@
     </el-input>
     </el-form-item>
     </el-tab-pane>
+    <el-tab-pane label="身份证照" name="third" class="third">
+      <el-row>
+        <el-col :span="24">
+           <el-form-item label="手持身份证照">
+                <el-upload
+                 class="card_img"
+                 action="{:U('Upload/index2')}" 
+                 accept="image/jpeg,image/png,image/jpg,image/gif,image/bmp"
+                 :on-success="cardImg" 
+                 :data="pathInfo"
+                 :headers="xuploadheader"
+                 :multiple="false"
+                 :show-upload-list="false"
+                 :before-upload="beforeAvatarUpload">
+                 <img v-if='addForm.card_img' :src="'__ROOT__' + addForm.card_img" alt="" style="max-width: 400px; max-height:300px;">
+                 <i  v-else class="el-icon-plus avatar-uploader-icon"></i>
+              </el-upload>
+            </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row>
+        <el-col :span="24">
+           <el-form-item label="身份证正面照">
+                <el-upload
+                 class="card_front"
+                 action="{:U('Upload/index2')}" 
+                 accept="image/jpeg,image/png,image/jpg,image/gif,image/bmp"
+                 :on-success="cardFront" 
+                 :data="pathInfo"
+                 :headers="xuploadheader"
+                 :multiple="false"
+                 :show-upload-list="false"
+                 :before-upload="beforeAvatarUpload">
+                 <img v-if='addForm.card_front' :src="'__ROOT__' + addForm.card_front" alt="" style="max-width: 400px; max-height:300px;">
+                 <i  v-else class="el-icon-plus avatar-uploader-icon"></i>
+              </el-upload>
+            </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row>
+        <el-col :span="24">
+           <el-form-item label="身份证反面照">
+                <el-upload
+                 class="card_back"
+                 action="{:U('Upload/index2')}" 
+                 accept="image/jpeg,image/png,image/jpg,image/gif,image/bmp"
+                 :on-success="cardBack" 
+                 :data="pathInfo"
+                 :headers="xuploadheader"
+                 :multiple="false"
+                 :show-upload-list="false"
+                 :before-upload="beforeAvatarUpload">
+                 <img v-if='addForm.card_back' :src="'__ROOT__' + addForm.card_back" alt="" style="max-width: 400px; max-height:300px;">
+                 <i  v-else class="el-icon-plus avatar-uploader-icon"></i>
+              </el-upload>
+            </el-form-item>
+        </el-col>
+      </el-row>
+
+    </el-tab-pane>
   </el-tabs>
  
    

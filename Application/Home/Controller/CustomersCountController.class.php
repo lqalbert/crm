@@ -158,7 +158,8 @@ class CustomersCountController extends CommonController{
     public function getUserCount(){
 
         $between_today = $this->getDayBetween();
-        $count =  M('user_info')->where($this->getUserCondition())
+        $count =  M('user_info')->join('inner join rbac_user on (user_info.user_id = rbac_user.id and rbac_user.status>=0 )')
+                                ->where($this->getUserCondition())
                                 ->where($this->getUserFilterCondition())
                                 ->where($this->getUserOrgCondition())
                                 ->count();
@@ -170,7 +171,7 @@ class CustomersCountController extends CommonController{
 
         $list = M('user_info')->field("realname as name , IFNULL(cbc.c, 0) as `count`, user_info.user_id, 'user' as org ")
                               ->join('left join '.$subQuery.' as cbc using(user_id) ')
-                              ->join('inner join rbac_user on (user_info.user_id = rbac_user.id and rbac_user.status=0 )')
+                              ->join('inner join rbac_user on (user_info.user_id = rbac_user.id and rbac_user.status>=0 )')
                               ->where($this->getUserCondition())
                               ->where($this->getUserFilterCondition())
                               ->where($this->getUserOrgCondition())

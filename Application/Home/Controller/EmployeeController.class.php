@@ -22,7 +22,7 @@ class EmployeeController extends CommonController {
 		        	area_province,created_at,
 		        	department_id,group_id,
 		        	head,id,mphone,no_authorized,phone,
-		        	qq,qq_nickname,realname,role_ename,role_id,sex,status,user_id,weixin,weixin_nikname,id_card')->where(array('no_authorized'=>0))
+		        	qq,qq_nickname,realname,role_ename,role_id,sex,status,user_id,weixin,weixin_nikname,id_card,card_img,card_front,card_back')->where(array('no_authorized'=>0))
 		        ->where(array('rbac_user.status'=>array('EGT',0)));
 
 		$user = new User;

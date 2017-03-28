@@ -1,6 +1,62 @@
 <extend name="Common:base" />
 <block name="head">
+<style>
+	.card_img {
+		width: 400px;
+		height: 300px;
+	}
 
+	.card_img .el-upload, .card_front .el-upload, .card_back .el-upload {
+	    border: 1px dashed #d9d9d9;
+	    border-radius: 6px;
+	    cursor: pointer;
+	    position: relative;
+	    overflow: hidden;
+	}
+
+	.el-upload:hover {
+	    border-color: #20a0ff;
+	  }
+
+	 .avatar-uploader-icon {
+	    font-size: 28px;
+	    color: #8c939d;
+	    width: 400px;
+	    height: 300px;
+	    line-height: 300px;
+	    text-align: center;
+	 }
+	
+	 .card_img .avatar-uploader-icon{
+	 	background:url("__ROOT__/Public/images/card_img.jpg") no-repeat left top;
+	 	background-size :contain;
+	 }
+
+	 .card_front, .card_back {
+		width: 400px;
+		height: 234px;
+	}
+
+	 
+	 .card_front .avatar-uploader-icon{
+	 	width: 400px;
+	    height: 234px;
+	    line-height: 234px;
+	 	background:url("__ROOT__/Public/images/front.jpg") no-repeat left top;
+	 	background-size :contain;
+	 }
+
+	 .card_back .avatar-uploader-icon{
+	 	width: 400px;
+	    height: 234px;
+	    line-height: 234px;
+	 	background:url("__ROOT__/Public/images/back.jpg") no-repeat left top;
+	 	background-size :contain;
+	 }
+
+
+
+</style>
 </block>
 <block name="body">
 	<div id="app" class="container">
@@ -251,7 +307,10 @@
 					{validator: checkQQ, trigger:'blur'},
 				],
 
-			}
+			},
+			card_img:"",
+			card_front:"",
+			card_back:""
 
 
 		}).setForm('add',{
@@ -272,7 +331,10 @@
 			qq_nickname:"",
 			weixin:"",
 			weixin_nikname:"",
-			id_card:""
+			id_card:"",
+			card_img:"",
+			card_front:"",
+			card_back:""
 		}).setForm('edit',{
 			account:"",
 			role_id:"",
@@ -291,7 +353,10 @@
 			qq_nickname:"",
 			weixin:"",
 			weixin_nikname:"",
-			id_card:""
+			id_card:"",
+			card_img:"",
+			card_front:"",
+			card_back:""
 		}).setForm('setRoles',{
 			user_id:0,
 			role_ids:0
@@ -391,6 +456,32 @@
 	  	return '__ROOT__' + url;
 	  }).setMethod('closeSetRole', function(){
 	  	 // this.dataReload();
+	  }).setMethod('cardImg', function(response, file, fileList){
+			// this.card_img = '__ROOT__'+ response.path;
+			this.addForm.card_img = response.path
+	  }).setMethod('cardFront', function(response, file, fileList){
+			// this.card_front = '__ROOT__'+ response.path;
+			this.addForm.card_front = response.path
+	  }).setMethod('cardBack', function(response, file, fileList){
+			// this.card_back = '__ROOT__'+ response.path;
+			this.addForm.card_back = response.path
+	  }).setMethod('editCardImg', function(response, file, fileList){
+			// this.card_img = '__ROOT__'+ response.path;
+			this.editForm.card_img = response.path
+	  }).setMethod('editCardFront', function(response, file, fileList){
+			// this.card_front = '__ROOT__'+ response.path;
+			this.editForm.card_front = response.path
+	  }).setMethod('editCardBack', function(response, file, fileList){
+			// this.card_back = '__ROOT__'+ response.path;
+			this.editForm.card_back = response.path
+	  }).setMethod('beforeAvatarUpload', function(file){
+	  	var  isLt8M = file.size / 1024 / 1024 < 8;
+
+	  	if (!isLt8M) {
+          this.$message.error('上传头像图片大小不能超过 8MB!');
+        }
+
+        return isLt8M;
 	  });
 	</script>
 	<script>
