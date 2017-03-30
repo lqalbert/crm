@@ -124,6 +124,7 @@ function setCommonLogic(opt){
 	// //打开关闭对话框
 
 	opt.setMethod("openDialog", function(dialog){
+		//console.log(this.multipleSelection);
 		this[FormName.getDialog(dialog)] = true;
         //console.log(FormName.getDialog(dialog));
 		this.currentForm = FormName.getForm(dialog);

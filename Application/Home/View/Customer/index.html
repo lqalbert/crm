@@ -182,8 +182,8 @@
   	    <el-table-column width="50" align="center" type="selection"></el-table-column>
 
   	    <el-table-column label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  ></el-table-column>
-  	    <el-table-column  header-align="center" prop="name"  label="客户姓名" width="110"></el-table-column>
-  	    <el-table-column  header-align="center" prop="type" label="客户类型" sortable width="140">
+  	    <el-table-column  header-align="center" prop="name"  label="客户姓名" width="150"></el-table-column>
+  	    <el-table-column  header-align="center" prop="type" label="客户类型" sortable width="170">
           <template scope="scope">
             {{ getType(scope.row.type, 'customerType') }}
           </template>
@@ -672,6 +672,7 @@ function toInt(v){
       vmThis.$message.error('错了哦，这是一条错误消息');
     })
   }).setMethod('beforeList', function(data){
+        
         data.forEach(function(currentValue){
           //将string类型转换为number和为0的变为空
           currentValue.quality = currentValue.quality == 0?"":currentValue.quality;      
@@ -921,7 +922,6 @@ function toInt(v){
         vmThis.$set(vmThis, 'dataLoad', false);
     })*/
   }).setMethod('editSubmit',function(url, form){
-    console.log(this.realInfoForm);
     FormName.type = form;
     var  formName    =  FormName.getFormName();  //form+"Form"; 
     if(this[formName].type=='V'){
@@ -932,6 +932,7 @@ function toInt(v){
     }   
   }).setMethod('addRealInfo',function(url){
       var  vmThis   = this;
+      this.realInfoFormSubmitStatus = true;
       this.$http.post(url,this.realInfoForm).then(function (response) {
         vmThis.$message({
               message: '操作成功',
@@ -983,8 +984,8 @@ function toInt(v){
   });
 </script>
 <script>
-  var sb=document.getElementsByClassName("el-dialog");
-  console.log(sb.item(1));
+  // var sb=document.getElementsByClassName("el-dialog");
+  // console.log(sb.item(1));
 
 </script>
 </block>

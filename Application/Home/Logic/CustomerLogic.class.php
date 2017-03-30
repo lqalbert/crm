@@ -65,7 +65,7 @@ class CustomerLogic extends Model{
         $arr=M('customers_log')->where(array('cus_id'=>I('post.id')))->order('id desc')->select();
         foreach ($arr as $key => $value){
         	$arr[$key]['type']=$type;
-        	$arr[$key]['user']=M('user_info')->where(array('user_id'=>$arr[$key]['user_id'],'id'=>I('post.id')))->getField('realname');
+        	$arr[$key]['user']=M('user_info')->where(array('user_id'=>$value['user_id']))->getField('realname');
         	$arr[$key]['name']=I('post.name');
         	$arr[$key]['track_type']=D('CustomerLog')->getType((int)$arr[$key]['track_type']);
         }

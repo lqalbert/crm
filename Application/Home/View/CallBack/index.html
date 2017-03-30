@@ -64,12 +64,12 @@
 		        <el-form-item>
 		          <el-button type="info" size="small" icon="search">查询</el-button> 
 		          
-		          <el-tooltip content="录入高级查询条件"  style="margin-left:10px;">
+<!-- 		          <el-tooltip content="录入高级查询条件"  style="margin-left:10px;">
 		            <el-button @click="openDialog('advancedQuery')" size="small" type="primary">{:L('ADVANCED_QUERY')}</el-button>
-		          </el-tooltip>
+		          </el-tooltip> -->
 
 		          <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
-		            <el-button  size="small">重置</el-button>
+		            <el-button @click="searchReset" size="small">重置</el-button>
 		          </el-tooltip>
 
 		          <el-tooltip content="已经审核通过但未转给客服主管" placement="bottom-start" style="margin-left:10px;">
@@ -96,7 +96,8 @@
         <el-col :span="24">
           <el-table border v-loading="dataLoad" :data="tableData"
               @selection-change="handleSelectionChange"
-              @row-dblclick="userInfo"
+              @sort-change="sortChange"
+              @row-dblclick="review" @row-click="trackLog"
               element-loading-text="{:L('DATA_LOGIN')}"
               empty-text="暂无数据,销售妹子正在努力中！"
               highlight-current-row ref="select">

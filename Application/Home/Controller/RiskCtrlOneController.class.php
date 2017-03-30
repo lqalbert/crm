@@ -1,7 +1,10 @@
 <?php
 namespace Home\Controller;
-use Think\Controller;
+use Think\Model;
 use Common\Lib\User;
+use Home\Model\RoleModel;
+use Home\Model\CustomerModel;
+use Home\Model\RealInfoModel;
 use Home\Logic\CustomerLogic;
 use Home\Model\CustomerLogModel;
 class RiskCtrlOneController extends CommonController{
@@ -13,20 +16,49 @@ class RiskCtrlOneController extends CommonController{
   }
 
 	public function index(){
+    //var_dump($this->getCallBackMan());die();
 		$groupMemberList = M('user_info')->getField("user_id,realname");
     $this->assign('memberList',   $groupMemberList);
 		$this->assign('customerType', D('Customer')->getType());
 		$this->assign('sexType',      D('Customer')->getSexType());
+		$this->assign('GoodsType',    D('CustomerLog')->getGoodsType());
+		$this->assign('badgeNum',     $this->badgeNum());
+    $this->assign('callBackMan',   $this->getCallBackMan());
 		$this->display();
 	}
 
+  public function badgeNum(){
+		$badgeNum['already']=$this->M->where(array('risk_one'=>'0'))->count();
+		$badgeNum['yet']=$this->M->where(array('risk_one'=>'1'))->count();
+		return $badgeNum;
+  }
+
+  public function getCallBackMan(){
+    $callback=M('rbac_role')->where(array('ename'=>'callback','status'=>'1'))->find();
+    $user_id=M('rbac_role_user')->where(array('role_id'=>$callback['id']))->getField('user_id',true);
+    if($callback && $user_id){
+      $man=M('user_info')->where(array('user_id'=>array('IN',$user_id)))->field('user_id,realname')->select();
+    }else{
+      $man=null;
+    }
+    return $man;
+
+    
+  }
+
   public function getList(){
+  	$this->setQeuryCondition();
+	  $count=(int)$this->M->count();
 	  $this->setQeuryCondition();
-	  $count=(int)$this->M->where(array('risk_one'=>'1'))->count();
-	  $cusArr=$this->M->where(array('risk_one'=>'1'))->getField('cus_id', true);
+	  $cusArr=$this->M->getField('cus_id', true);
 	  $cusList=implode(",", $cusArr);
-	  $list = M()->query("select * from customers_basic as cb INNER JOIN customers_contacts as cc on cb.id = cc.cus_id and cc.is_main = 1 
-	  	WHERE cb.id IN (". $cusList .") ORDER BY cb.id desc LIMIT ".$this->getOffset().','.$this->pageSize);
+	  if(empty($cusList)){
+	    $list =null;
+	  }else{
+	    $list = M('customers_basic as cb')->join("customers_contacts as cc on cb.id = cc.cus_id and cc.is_main = 1 ")
+          ->where(array('cb.id'=>array('IN',$cusList)))->order("cb.id desc")->limit($this->getOffset().','.$this->pageSize)->select();
+	  }
+    //echo M('customers_basic as cb')->getLastSql();
 	  $result = array('list'=>$list, 'count'=>$count);
     $this->ajaxReturn($result);
   }
@@ -37,17 +69,88 @@ class RiskCtrlOneController extends CommonController{
 	* @return null
 	*/
 	public function setQeuryCondition() {
-       
-    M('customers_basic')->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id  and cc.is_main = 1');
+		
+    $this->M->where(array('risk_one'=>'1'));
+
+    if (I('get.name')) {
+        M('customers_basic as cb')->where(array("cb.name"=> array('like', I('get.name')."%")));
+    }
+    
+    if(I('get.contact')){
+    	  $val=I('get.contact');
+    	  M('customers_basic as cb')->where(array('cc.qq|cc.phone|cc.weixin'=>array('LIKE',$val."%")));
+    }
+
+    switch (I('get.field')) {
+    	case 'already':
+				$this->M->where(array('risk_one'=>'0'));
+    		break;
+    	case 'yet':
+				$this->M->where(array('risk_one'=>'1'));
+    		break;
+    	default:
+    	  $this->M->where(array('risk_one'=>'1'));
+    		break;
+    }
 
 	}
 
 
+  /**
+  *   获取跟踪信息
+  *
+  */
+	public function trackInfo(){
+    $type=D('Customer')->getType(I('post.type'));
+    $arr=M('customers_log')->where(array('cus_id'=>I('post.cus_id')))->order('id desc')->select();
+    foreach ($arr as $key => $value){
+    	$arr[$key]['type']=$type;
+    	$arr[$key]['user']=M('user_info')->where(array('user_id'=>$value['user_id']))->getField('realname');
+    	$arr[$key]['name']=I('post.name');
+    	$arr[$key]['track_type']=D('CustomerLog')->getType((int)$arr[$key]['track_type']);
+    }
+		if (IS_AJAX) {
+			$this->ajaxReturn($arr);
+		}  else {
+			return $arr;
+		}
+  }    
+        
+  /**
+  *   获取客户资料
+  *
+  */
+  public function findDealInfo(){
+    $arr=M('deal_info')->where(array('user_id'=>I('post.user_id'),'cus_id'=>I('post.cus_id')))->select();
+		if (IS_AJAX) {
+			$this->ajaxReturn($arr);
+		}  else {
+			return $arr;
+		}
+  }
 
-
-
-
-
+  /**
+  *   获取客户资料
+  *
+  */
+  public function dispacth(){
+    //var_dump(I('post.'));
+    $user_id=reset(I('post.'));
+    array_shift($_POST);
+    $userList=implode(',', I('post.'));
+    $data=array(
+       'risk_one'=>'0',
+       'call_back'=>'1',
+       'user_id'=>$user_id['user_id']
+    );
+    $this->M->create($data);
+    $re=$this->M->where(array('cus_id'=>array('IN',$userList)))->save();
+    if($re){
+      $this->success("分配成功");
+    }else{
+      $this->error($this->M->getError());
+    }
+  }
 
 
 

@@ -17,7 +17,8 @@ class RoleModel extends Model {
 		'gold',  //总经办
 		'departmentMaster', //部门经理
 		'captain', //主管 队长
-		'staff' //员工
+		'staff',//员工
+		'callback'//回访专员
 	);
 
 	public function getEnames(){
