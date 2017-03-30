@@ -2,6 +2,9 @@
 namespace Home\Model;
 use Think\Model;
 class SysNoticeModel extends Model{
+
+    const DELETE_STATUS = -1;
+
 	  protected $tableName = 'sys_notice';
    
     protected $NoticeType = array(
@@ -47,6 +50,12 @@ class SysNoticeModel extends Model{
     	} else {
     		return $this->NoticeType;
     	}
+    }
+
+    public function delete($ids){
+        // return $this->where(array('id'=>array('in', $ids )))->save(array('status'=>-1));
+        $id_arr = explode(",", $ids);
+        return $this->data(array('status'=>self::DELETE_STATUS))->where(array('id'=> array('in', $id_arr)))->save();
     }
 
 

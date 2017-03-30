@@ -312,8 +312,10 @@ function setResetForm(opt, type){
 
 //过滤器
 Vue.filter("handleString", function(v) {
-  if(v!=''){
-    var cnt=v.substring(0,3)+'......';   
+  if (v.length > 0 ) {
+  	var length = (arguments[1] || 3);
+  	return v.substring(0,length)+'......';  
+  } else {
+  	return '';
   }
-    return cnt;
 });
