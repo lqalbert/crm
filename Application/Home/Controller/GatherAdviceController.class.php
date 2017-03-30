@@ -2,8 +2,11 @@
 namespace Home\Controller;
 use Think\Model;
 use Home\Model\GatherAdviceModel;
+use Home\Model\AdvicesBasicModel;
+
+
 class GatherAdviceController extends CommonController{
-  protected $table = 'advices_basic';
+  protected $table = 'AdvicesBasic';
   protected $pageSize = 11;
   public function index(){
     $this->assign('AdviceType', D('GatherAdvice')->getAdviceType());
@@ -32,6 +35,8 @@ class GatherAdviceController extends CommonController{
       $this->M->where(array("title"=> array('like', "%".I('get.name')."%")));
     }
 
+    $this->M->where(array('status'=>array('NEQ', AdvicesBasicModel::DELETE_STATUS)));
+
   }
 
   /**
@@ -41,13 +46,13 @@ class GatherAdviceController extends CommonController{
   {
 
     if (!empty($_POST)) {
-      $gatherAdvice = M('advices_basic');
+      $gatherAdvice = $this->M;
       $data = array();
       $data['type'] = I('post.type');
       $data['title'] = I('post.title');
       $data['advice'] = I('post.advice');
       $data['ad_user'] = session('account')['userInfo']['user_id'];
-      $data['time'] = date('Y:m:d');
+      $data['time'] = date('Y-m-d');
       $re = $gatherAdvice->data($data)->add();
       if ($re) {
         $this->success(L('ADD_SUCCESS'));
@@ -64,7 +69,7 @@ class GatherAdviceController extends CommonController{
    * 回复建议
    */
   public function reply(){
-    $gatherAdvice = M('advices_basic');
+    $gatherAdvice = $this->M;
     $data = array();
     $data['id'] = I('post.id');
     $data['reply'] = I('post.reply');

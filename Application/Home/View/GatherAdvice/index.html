@@ -12,7 +12,7 @@
             <el-form-item>
              <el-button type="primary" icon="search" @click="loadDatalist">查询</el-button>
              <el-tooltip content="清空搜索框并刷新表格数据" placement="right">
-              <el-button icon="loading" @click="searchReset">重置</el-button>
+              <el-button @click="searchReset">重置</el-button>
              </el-tooltip>
             </el-form-item>
           </el-form>
@@ -25,18 +25,18 @@
            @selection-change="handleSelectionChange">
             <el-table-column type="selection" align="center" width="50"></el-table-column>
             <el-table-column label="序号" align="center" :formatter="handleIndex" width="65"></el-table-column>
-            <el-table-column label="类型" prop="type" align="center" >
+            <el-table-column label="类型" prop="type"  >
               <template scope="scope">
                 {{ getType(scope.row.type, 'AdviceType') }}
               </template>
             </el-table-column>
-            <el-table-column label="标题" prop="title" align="center" ></el-table-column>
-            <el-table-column label="建议内容" prop="advice" align="center"></el-table-column> 
-            <el-table-column label="发表人" prop="ad_user" align="center" >  
+            <el-table-column label="标题" prop="title"  ></el-table-column>
+            <el-table-column label="建议内容" prop="advice" ></el-table-column> 
+            <el-table-column label="发表人" prop="ad_user"  >  
             </el-table-column>
             <el-table-column label="时间" prop="time" align="center" ></el-table-column> 
-            <el-table-column label="回复内容" prop="reply" align="center" ></el-table-column> 
-            <el-table-column label="回复人" prop="re_user" align="center" >
+            <el-table-column label="回复内容" prop="reply"  ></el-table-column> 
+            <el-table-column label="回复人" prop="re_user"  >
             </el-table-column>
             <el-table-column label="回复时间" prop="re_time" align="center" ></el-table-column>  
           </el-table>
@@ -52,6 +52,10 @@
                  </el-tooltip>
                  <el-tooltip content="选择一条建议并回复" placement="right">
                    <el-button size="small" type="primary" @click="openDialog('reply')" icon="plus">建议回复
+                   </el-button>
+                 </el-tooltip>
+                 <el-tooltip content="选择多条建议" placement="right">
+                   <el-button size="small" type="danger" @click="deletes" icon="circle-close">删除
                    </el-button>
                  </el-tooltip>
               </div>
@@ -94,12 +98,14 @@
         { required: true, message: '请选择类型', trigger: 'blur' }
       ],
       advice:[
-        { required: true, message: '请输入内容', trigger: 'blur' }
+        { required: true, message: '请输入内容', trigger: 'blur' },
+        { max: 200, message: '200个字符以内哦', trigger: 'blur' }
       ],
     },
     replyRules:{
       reply:[
-        { required: true, message: '请输入内容', trigger: 'blur' }
+        { required: true, message: '请输入内容', trigger: 'blur' },
+        { max: 200, message: '200个字符以内哦', trigger: 'blur' }
       ],
     },
   }).setForm('search',{
@@ -137,6 +143,23 @@
     this.commonSelect('reply');
   }).setMethod('replyFormSubmit',function(url ,form){
     this.commonSubmitLogic(url, form);
+  }).setMethod('deletes', function(){
+    if (this.multipleSelection.length==0) {
+      this.$message.error('请至少选择一条');
+      return ;
+    }
+
+    var ids = [];
+    for (var i = this.multipleSelection.length - 1; i >= 0; i--) {
+      ids.push(this.multipleSelection[i].id);
+    }
+
+    this.$http.post(page.deleteUrl, {ids: ids}).then(function(response){
+      this.$message.success(response.body.info);
+    }, function(response){
+      this.$message.error(response.body.info);
+    })
+
   });
 </script>
 </block>
