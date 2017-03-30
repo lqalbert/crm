@@ -170,22 +170,22 @@ function setCommonLogic(opt){
         		//this.dataLoad = true;
 		       // this.loadDatalist();
 
-        	}, function(response){
-        		var message = '删除失败';
-        		if (response.body.info) {
-        			message = response.body.info;
-        		}
-        		vmThis.$message({
-		            type: 'error',
-		            message: '删除失败'
-		          });
-        	})
+		      	}, function(response){
+		      		var message = '删除失败';
+		      		if (response.body.info) {
+		      			message = response.body.info;
+		      		}
+		      		vmThis.$message({
+			            type: 'error',
+			            message: '删除失败'
+			          });
+		      })
         }).catch(function() {
           vmThis.$message({
             type: 'info',
             message: '已取消删除'
           });          
-        });
+    });
 	})
 
 	opt.setMethod('getTenct', function(qq){

@@ -10,7 +10,8 @@ class CustomerModel extends Model {
 	const TYPE_E = 'E';
 	const TYPE_N = 'F';
   const TYPE_F = 'N';
-	const TYPE_V = 'V';
+  const TYPE_V = 'V';
+	const TYPE_VX = 'VX';
 
 	const UNKNOW = 0;
 	const MAN    = 1;
@@ -30,6 +31,7 @@ class CustomerModel extends Model {
           "F"=>"F.黑名单（同行）",
           "N"=>"N.无效客户",
           "V"=>"V.成交客户",
+          "VX"=>"VX.审核未通过",
     	);
 
     protected $sexType = array(

@@ -1,7 +1,12 @@
 <?php
 namespace Home\Controller;
-use Think\Controller;
+use Think\Model;
 use Common\Lib\User;
+use Home\Model\RoleModel;
+use Home\Model\CustomerModel;
+use Home\Model\RealInfoModel;
+use Home\Logic\CustomerLogic;
+use Home\Model\CustomerLogModel;
 class GeneralServiceController extends CommonController{
 	public function index(){
 		$groupMemberList = M('user_info')->getField("user_id,realname");

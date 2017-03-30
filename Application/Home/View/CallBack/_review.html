@@ -1,10 +1,10 @@
-<el-dialog title="客户审查" v-model="reviewFormDialog">
+<el-dialog title="客户审查" v-model="reviewFormDialog" style="font-size:16px;">
   <el-form ref="reviewForm"  :model="reviewForm" size="small" label-width="120px">
     <el-row>
       <el-col :span="12">
         <el-form-item prop="cus_id" label="客户姓名:" style="margin-bottom:0;">
           <template scope="scope">
-            {{reviewForm.cus_id}}
+            {{reviewForm.name}}
           </template>
         </el-form-item>
       </el-col>
@@ -20,14 +20,14 @@
       <el-col :span="12">
         <el-form-item prop="type" label="产品类型:" style="margin-bottom:0;">
           <template scope="scope">
-            {{reviewForm.type}}
+            {{ getType(reviewForm.type, 'GoodsType') }}
           </template>
         </el-form-item>
       </el-col>
       <el-col :span="12" >
         <el-form-item prop="expense" label="产品金额:" style="margin-bottom:0;">
           <template scope="scope">
-            {{reviewForm.expense}}
+            {{reviewForm.expense}} RMB
           </template>
         </el-form-item>
       </el-col>
@@ -37,7 +37,7 @@
       <el-col :span="12">
         <el-form-item prop="cycle" label="产品周期:" style="margin-bottom:0;">
           <template scope="scope">
-            {{reviewForm.cycle}}
+            {{ getType(reviewForm.cycle, 'ServiceCycle') }}
           </template>
         </el-form-item>
       </el-col>
@@ -51,8 +51,8 @@
     </el-row>
   </el-form>
     <div slot="footer" class="dialog-footer">
-        <el-button type="danger" @click="reset('review')">不通过</el-button>
-        <el-button type="primary" v-show="!reviewFormSubmitStatus" @click="review">通过</el-button>
+        <el-button type="danger" @click="reviewFail">不通过</el-button>
+        <el-button type="primary" v-show="!reviewFormSubmitStatus" @click="reviewSubmit">通 过</el-button>
         <el-button type="primary" v-show="reviewFormSubmitStatus" :loading="true" >审查中</el-button>
     </div>
 </el-dialog>

@@ -54,7 +54,7 @@
 		  		    <el-input v-model="searchForm.name" size="small" placeholder="客户姓名"></el-input>
 		  		  </el-form-item>
 		  		  <el-form-item prop="contact" style="width:170px">
-		  		    <el-input v-model="searchForm.contact" size="small" placeholder="客户姓名|手机|qq|微信号"></el-input>
+		  		    <el-input v-model="searchForm.contact" size="small" placeholder="手机|qq|微信号"></el-input>
 		  		  </el-form-item>
 
 		        <el-form-item prop="field" v-show="false">
@@ -62,25 +62,25 @@
 		        </el-form-item>
 
 		        <el-form-item>
-		          <el-button type="info" size="small" icon="search">查询</el-button> 
+		          <el-button type="info" size="small" icon="search" @click="loadDatalist">查询</el-button> 
 		          
 <!-- 		          <el-tooltip content="录入高级查询条件"  style="margin-left:10px;">
 		            <el-button @click="openDialog('advancedQuery')" size="small" type="primary">{:L('ADVANCED_QUERY')}</el-button>
 		          </el-tooltip> -->
 
 		          <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
-		            <el-button @click="searchReset" size="small">重置</el-button>
+		            <el-button size="small" @click="searchReset">重置</el-button>
 		          </el-tooltip>
 
 		          <el-tooltip content="已经审核通过但未转给客服主管" placement="bottom-start" style="margin-left:10px;">
-		            <el-badge :value="26" :max="9" >
-		              <el-button size="small" type="primary">已审核</el-button>
+		            <el-badge :value="{$badgeNum.already}" :max="9" >
+		              <el-button @click="setField('already')" size="small" type="primary">已审核</el-button>
 		            </el-badge>
 		          </el-tooltip>
 
 		          <el-tooltip content="等待审核的客户" placement="bottom-start" style="margin-left:15px;">
-		            <el-badge :value="26" :max="9" >
-		              <el-button type="info" size="small">待审核</el-button>
+		            <el-badge :value="{$badgeNum.yet}" :max="9" >
+		              <el-button @click="setField('yet')" type="info" size="small">待审核</el-button>
 		            </el-badge>
 		          </el-tooltip>
 
@@ -94,7 +94,7 @@
 		  </el-row>
       <el-row>
         <el-col :span="24">
-          <el-table border v-loading="dataLoad" :data="tableData"
+          <el-table border v-loading="dataLoad" :data="dataList"
               @selection-change="handleSelectionChange"
               @sort-change="sortChange"
               @row-dblclick="review" @row-click="trackLog"
@@ -106,9 +106,9 @@
             
 		  	    <el-table-column label="{:L('INDEX')}" type="index" width="65"  ></el-table-column>
 
-		  	    <el-table-column  header-align="center" prop="name"  label="客户姓名" width="110"></el-table-column>
+		  	    <el-table-column  header-align="center" prop="name"  label="客户姓名" width="150"></el-table-column>
 
-		  	    <el-table-column  header-align="center" prop="type" label="客户类型" sortable width="140">
+		  	    <el-table-column  header-align="center" prop="type" label="客户类型" sortable width="170">
 		          <template scope="scope">
 		            {{ getType(scope.row.type, 'customerType') }}
 		          </template>
@@ -172,12 +172,12 @@
 		    <el-col :span="12">
 		      <div class="grid-content bg-purple">
 		      	<span class="wrapper">
-			        <el-tooltip content="选择一个客户分配给指定的客服主管/人员" placement="right">
+<!-- 			        <el-tooltip content="选择一个客户分配给指定的客服主管/人员" placement="right">
 			          <el-button size="small" @click="openDialog('assign')" type="primary">分配</el-button>
-			        </el-tooltip>
+			        </el-tooltip> -->
 
-			        <el-tooltip content="选择客户分配给指定的客服主管/人员" placement="right">
-			          <el-button size="small" @click="openDialog('batchAssign')" type="primary" style="margin-left:10px;">批量分配</el-button>
+			        <el-tooltip content="选择单个或多个客户分配给指定的客服主管" placement="right">
+			          <el-button size="small" @click="openDialog('batchAssign')" type="primary">分 配</el-button>
 			        </el-tooltip>
 			      </span>
 		      </div>
@@ -196,6 +196,30 @@
 	    <el-row>
 	     <el-col :span="24">
 	        <el-tabs  type="border-card">
+	          <el-tab-pane label="软件账号">
+	            <el-table :data="tableDataThree" empty-text="请点击客户显示其软件账号" border style="width: 100%">
+	              <el-table-column prop="user" label="创建员工" header-align="center">
+			            <template scope="scope">
+			              {{ getType(scope.row.open_id, 'memberList') }}
+			            </template>
+	              </el-table-column>
+
+	              <el-table-column prop="account_id" label="软件账号" align="center">
+	              </el-table-column>
+
+	              <el-table-column prop="production" label="产品" header-align="center">
+				          <template scope="scope">
+				            {{ getType(scope.row.type, 'GoodsType') }}
+				          </template>
+	              </el-table-column>
+	              
+	              <el-table-column prop="mark" label="备注" header-align="center">
+	              </el-table-column>
+
+	              <el-table-column prop="time" label="创建时间" width="180" align="center">
+	              </el-table-column>
+	            </el-table>
+	          </el-tab-pane>
 	          <el-tab-pane label="跟踪记录">
 	            <el-table :data="tableDataOne" empty-text="请点击客户显示跟踪信息" border style="width: 100%" @row-dblclick="viewtraceContents">
 	              <el-table-column prop="user" label="操作员工" header-align="center">
@@ -223,12 +247,18 @@
 	          <el-tab-pane label="客户资料">
 	            <el-table :data="tableDataTwo" empty-text="请点击客户显示其客户资料" border style="width: 100%">
 	              <el-table-column label="操作员工" prop="user" header-align="center">
+			            <template scope="scope">
+			              {{ getType(scope.row.user_id, 'memberList') }}
+			            </template>
 	              </el-table-column>
 
 	              <el-table-column label="产品金额" prop="expense" header-align="center">
 	              </el-table-column>
 
 	              <el-table-column label="产品类型" prop="type" header-align="center">
+				          <template scope="scope">
+				            {{ getType(scope.row.type, 'GoodsType') }}
+				          </template>
 	              </el-table-column>
 	              
 	              <el-table-column label="身份证" prop="identity" align="center">
@@ -238,24 +268,6 @@
 	              </el-table-column>
 
 	              <el-table-column label="创建时间" prop="time" align="center">
-	              </el-table-column>
-	            </el-table>
-	          </el-tab-pane>
-	          <el-tab-pane label="软件账号">
-	            <el-table :data="tableDataThree" empty-text="请点击客户显示其软件账号" border style="width: 100%">
-	              <el-table-column prop="user" label="创建员工" header-align="center">
-	              </el-table-column>
-
-	              <el-table-column prop="account" label="软件账号" align="center">
-	              </el-table-column>
-
-	              <el-table-column prop="production" label="产品" header-align="center">
-	              </el-table-column>
-	              
-	              <el-table-column prop="mark" label="备注" header-align="center">
-	              </el-table-column>
-
-	              <el-table-column prop="create_t" label="创建时间" width="180" align="center">
 	              </el-table-column>
 	            </el-table>
 	          </el-tab-pane>
@@ -276,7 +288,7 @@
 	  <include file="_reviewPass" />
 	  <!-- /审查通过开账号 -->
 	  <!-- 分配 -->
-	  <include file="_assign" />
+	  <!-- <include file="_assign" /> -->
 	  <!-- /分配 -->
 	  <!-- 批量分配 -->
 	  <include file="_batchAssign"/>
@@ -289,43 +301,42 @@
 </block>
 <block name="scripts">
 <script>
+  page.openAccountUrl = "{:U('openAccount')}";
+  page.dipacthFormUrl = "{:U('dispacth')}";
   window.defaultOption.setDatas({
   	customerType:{:json_encode($customerType)},
   	sexType:{:json_encode($sexType)},
   	memberList:{:json_encode($memberList)},
   	GoodsType:{:json_encode($GoodsType)},
+  	ServiceCycle:{:json_encode($ServiceCycle)},
+  	SupServiceMan:{:json_encode($SupServiceMan)},
   	multipleSelection: [],
-  	reviewFormDialog:false,
-  	reviewPassFormDialog:false,
-    tableData: [
-	     {name: "苏三", type: "V", user_id:'1',qq:'269009751',qq_nickname:'逝者如斯乎',phone:'13888888888',weixin:'goodgoods',weixin_nickname:'不舍昼夜',last_track:'0000-00-00 00:00:00',commission:'100',plan:'0000-00-00 00:00:00',conflict:'0000-00-00 00:00:00',sex:'2',province_name:'四川',city_name:'成都',},
-	     {name: "苏三", type: "V", user_id:'1',qq:'269009751',qq_nickname:'逝者如斯乎',phone:'13888888888',weixin:'goodgoods',weixin_nickname:'不舍昼夜',last_track:'0000-00-00 00:00:00',commission:'100',plan:'0000-00-00 00:00:00',conflict:'0000-00-00 00:00:00',sex:'2',province_name:'四川',city_name:'成都',},
-	     {name: "苏三", type: "V", user_id:'1',qq:'269009751',qq_nickname:'逝者如斯乎',phone:'13888888888',weixin:'goodgoods',weixin_nickname:'不舍昼夜',last_track:'0000-00-00 00:00:00',commission:'100',plan:'0000-00-00 00:00:00',conflict:'0000-00-00 00:00:00',sex:'2',province_name:'四川',city_name:'成都',},
-	     {name: "苏三", type: "V", user_id:'1',qq:'269009751',qq_nickname:'逝者如斯乎',phone:'13888888888',weixin:'goodgoods',weixin_nickname:'不舍昼夜',last_track:'0000-00-00 00:00:00',commission:'100',plan:'0000-00-00 00:00:00',conflict:'0000-00-00 00:00:00',sex:'2',province_name:'四川',city_name:'成都',},
-	     {name: "苏三", type: "V", user_id:'1',qq:'269009751',qq_nickname:'逝者如斯乎',phone:'13888888888',weixin:'goodgoods',weixin_nickname:'不舍昼夜',last_track:'0000-00-00 00:00:00',commission:'100',plan:'0000-00-00 00:00:00',conflict:'0000-00-00 00:00:00',sex:'2',province_name:'四川',city_name:'成都',},
-	     {name: "苏三", type: "V", user_id:'1',qq:'269009751',qq_nickname:'逝者如斯乎',phone:'13888888888',weixin:'goodgoods',weixin_nickname:'不舍昼夜',last_track:'0000-00-00 00:00:00',commission:'100',plan:'0000-00-00 00:00:00',conflict:'0000-00-00 00:00:00',sex:'2',province_name:'四川',city_name:'成都',},
-	     {name: "苏三", type: "V", user_id:'1',qq:'269009751',qq_nickname:'逝者如斯乎',phone:'13888888888',weixin:'goodgoods',weixin_nickname:'不舍昼夜',last_track:'0000-00-00 00:00:00',commission:'100',plan:'0000-00-00 00:00:00',conflict:'0000-00-00 00:00:00',sex:'2',province_name:'四川',city_name:'成都',},
-	     {name: "苏三", type: "V", user_id:'1',qq:'269009751',qq_nickname:'逝者如斯乎',phone:'13888888888',weixin:'goodgoods',weixin_nickname:'不舍昼夜',last_track:'0000-00-00 00:00:00',commission:'100',plan:'0000-00-00 00:00:00',conflict:'0000-00-00 00:00:00',sex:'2',province_name:'四川',city_name:'成都',},
-	     {name: "苏三", type: "V", user_id:'1',qq:'269009751',qq_nickname:'逝者如斯乎',phone:'13888888888',weixin:'goodgoods',weixin_nickname:'不舍昼夜',last_track:'0000-00-00 00:00:00',commission:'100',plan:'0000-00-00 00:00:00',conflict:'0000-00-00 00:00:00',sex:'2',province_name:'四川',city_name:'成都',},
-	     {name: "苏三", type: "V", user_id:'1',qq:'269009751',qq_nickname:'逝者如斯乎',phone:'13888888888',weixin:'goodgoods',weixin_nickname:'不舍昼夜',last_track:'0000-00-00 00:00:00',commission:'100',plan:'0000-00-00 00:00:00',conflict:'0000-00-00 00:00:00',sex:'2',province_name:'四川',city_name:'成都',},
-	     {name: "苏三", type: "V", user_id:'1',qq:'269009751',qq_nickname:'逝者如斯乎',phone:'13888888888',weixin:'goodgoods',weixin_nickname:'不舍昼夜',last_track:'0000-00-00 00:00:00',commission:'100',plan:'0000-00-00 00:00:00',conflict:'0000-00-00 00:00:00',sex:'2',province_name:'四川',city_name:'成都',},
-       {name: "苏三1110", type: "V", user_id:'1',qq:'269009751',qq_nickname:'逝者如斯乎',phone:'13888888888',weixin:'goodgoods',weixin_nickname:'不舍昼夜',last_track:'0000-00-00 00:00:00',commission:'100',plan:'0000-00-00 00:00:00',conflict:'0000-00-00 00:00:00',sex:'2',province_name:'四川',city_name:'成都',},
-    ],
-    tableDataOne:[
-      {user:'张三',type:'V.成交客户',name:'苏三',content:'四张机，鸳鸯织就欲双飞。可怜未老头先白，春波碧草，晓寒深处，相对浴红衣。',created_at:'2017-03-23 11:27:56',track_text:'上门服务'},
-      {user:'张三',type:'A.成交客户',name:'苏三',content:'四张机，鸳鸯织就欲双飞。可怜未老头先白，春波碧草，晓寒深处，相对浴红衣。',created_at:'2017-03-22 11:27:56',track_text:'上门服务'},
-      {user:'张三',type:'B.成交客户',name:'苏三',content:'四张机，鸳鸯织就欲双飞。可怜未老头先白，春波碧草，晓寒深处，相对浴红衣。',created_at:'2017-03-21 11:27:56',track_text:'上门服务'},
-      {user:'张三',type:'C.成交客户',name:'苏三',content:'四张机，鸳鸯织就欲双飞。可怜未老头先白，春波碧草，晓寒深处，相对浴红衣。',created_at:'2017-03-20 11:27:56',track_text:'上门服务'},
-      {user:'张三',type:'D.成交客户',name:'苏三',content:'四张机，鸳鸯织就欲双飞。可怜未老头先白，春波碧草，晓寒深处，相对浴红衣。',created_at:'2017-03-19 11:27:56',track_text:'上门服务'},
-      {user:'张三',type:'E.成交客户',name:'苏三',content:'四张机，鸳鸯织就欲双飞。可怜未老头先白，春波碧草，晓寒深处，相对浴红衣。',created_at:'2017-03-18 11:27:56',track_text:'上门服务'},
-      {user:'张三',type:'F.成交客户',name:'苏三',content:'四张机，鸳鸯织就欲双飞。可怜未老头先白，春波碧草，晓寒深处，相对浴红衣。',created_at:'2017-03-17 11:27:56',track_text:'上门服务'},
-    ],
-    tableDataTwo:[
-      {user:'张三',expense:'88888',type:'点金手至尊版（两年）',identity:'515151515151515151',address:'成都春熙路IFS中心',time:'2017-03-23 12:00:00'},
-    ],
-    tableDataThree:[
-      {user:'无名氏',account:'201703231008611',production:'点金手至尊版（两年）',mark:'五张机，芳心密与巧心期',create_t:'2017-03-23 12:10:00'},
-    ],
+  	provinces:[],
+    cities:[],
+    cusIdList:[],
+    tableDataOne:[{
+	     'name':'',
+	     'created_at':'',
+	     'type':'',
+	     'track_type':'',
+	     'content':'',
+	     'user':''
+    }],
+    tableDataTwo:[{
+       'user':'',
+       'expense':'',
+       'type':'',
+       'identity':'',
+       'address':'',
+       'time':''
+    }],
+    tableDataThree:[{
+      	'user':'',
+      	'account':'',
+      	'production':'',
+      	'mark':'',
+      	'create_t':'',
+    }],
   }).setForm('search',{
     name:'',
     contact:'',
@@ -343,30 +354,37 @@
     track_start:"",
     track_end:"",
   },true).setForm('review',{
-  	identity:'515151515151515151',
-  	type:'点金手至尊版(两年)',
-  	expense:'29999',
-  	cycle:'2年',
-  	address:'138888888888',
-  	user_id:'1',
-  	cus_id:'苏三',
+  	name:'',
+  	address:'',
+  	type:'',
+  	identity:'',
+  	expense:'',
+  	cycle:'',
+  	user_id:'',
+  	cus_id:'',
   },true).setForm('reviewPass',{
     accountID:'',
     type:'',
     mark:'',
+    user_id:'',
+    cus_id:'',
   },true).setForm('assign',{
-  	name:'',
+  	user_id:'',
   },true).setForm('batchAssign',{
-  	name:'',
+  	user_id:'',
   },true).setForm('traceContent',{
     content:'',
   },true).setMethod('getType', function(type, field){
       return this[field][type];
+  }).setMethod('beforeList', function(data){
+     //console.log(this.callBackMan);
+     return data;
   }).setMethod('refresh',function(){
   	window.location.reload();
-  }).setMethod('reset',function(v){
-    // this.$refs.advancedQueryForm.resetFields();
-    this.closeDialog(v);
+  }).setMethod('setField', function(v){
+      this[FormName.getFormName('search')].field = v;
+      this[FormName.getFormName('search')].group = 'user_id';
+      this.loadDatalist();
   }).setMethod('advanceSearch',function(){
 
        for (var x  in  this.advancedQueryForm) {
@@ -380,60 +398,154 @@
       this.closeDialog('advancedQuery');
 
   }).setMethod('handleSelectionChange', function(val){
-    //this.multipleSelection = val;
-    this.multipleSelection = [];
-    if(val.length >= 2){
-       if(val.length == this.tableData.length){
-         this.multipleSelection = val;
-       }else{
-         this.multipleSelection.push(val.shift());
-       }
-    } else {
-      this.multipleSelection = val;
-    }
-  }).setMethod('commonSelect',function(x){
-    var form = x;
-    var vmThis = this;
-    if (this.multipleSelection.length ==0 ||  this.multipleSelection.length>1) {
-      this.closeDialog(form);
-      this.$message.error('请先选择一位客户');
-      return false;
-    } else {
-      var  row = this.multipleSelection.pop();
-      this[FormName.getForm(x)].name = row.name;
-      this[FormName.getForm(x)].cus_id = row.id;
-      this.row=row;
-      return row;
-    }
-  }).setMethod('userInfo',function(row,event){
-      
+     this.multipleSelection = val;
+  }).setMethod('review',function(row,event){
+
+  	 this.reviewForm.name=row.name;
+  	 this.reviewForm.address=this.tableDataTwo[0].address;
+  	 this.reviewForm.type=this.tableDataTwo[0].type;
+  	 this.reviewForm.identity=this.tableDataTwo[0].identity;
+  	 this.reviewForm.expense=this.tableDataTwo[0].expense;
+  	 this.reviewForm.cycle=this.tableDataTwo[0].cycle;
+  	 this.reviewForm.user_id=this.tableDataTwo[0].user_id;
+     this.reviewForm.cus_id=this.tableDataTwo[0].cus_id;
+
      this.reviewFormDialog = true;
-  }).setMethod('review',function(){
-  	 this.reviewPassFormDialog = true;
-  }).setMethod('reviewPass',function(){
-  	 this.closeDialog('reviewPass');
-  	 this.closeDialog('review');
-  }).setMethod('beforeAssign',function(){
-  	 this.commonSelect('assign');
-  }).setMethod('assign',function(){
-  	 this.closeDialog('assign');
-  	 //console.log(this.assignForm);
-  }).setMethod('batchAssign',function(){
-  	 this.closeDialog('batchAssign');
+  }).setMethod('reviewFail',function(){
+      var vmThis = this;
+			this.$confirm('确定不通过?', '提示', {
+	      confirmButtonText: '确定',
+	      cancelButtonText: '取消',
+	      type: 'warning'
+	    }).then(function(){
+	    	vmThis.$http.post('{:U(reviewFail)}', vmThis.reviewForm).then(function(response){
+      		vmThis.$message({
+	            type: 'success',
+	            message: '已经打回到销售处'
+	        });
+	        vmThis.closeDialog('review');
+          vmThis.loadDatalist();
+	      },function(response){
+      		vmThis.$message({
+	            type: 'success',
+	            message: '打回销售处失败'
+	        });
+	      });
+	    }).catch(function() {
+	      vmThis.$message({
+	        type: 'info',
+	        message: '已取消！'
+	      });          
+	    });
+  }).setMethod('reviewSubmit',function(){
+  	  var  vmThis   = this;
+      this.reviewFormSubmitStatus = true;
+      setTimeout(function(){
+        vmThis.reviewFormSubmitStatus = false;
+        vmThis.reviewPassFormDialog = true;
+      }, 2000); 
+  }).setMethod('reviewPass',function(url){
+  	 var  vmThis   = this;
+  	 this.reviewPassForm.user_id=this.reviewForm.user_id;
+  	 this.reviewPassForm.cus_id=this.reviewForm.cus_id;
+  	 this.reviewPassFormSubmitStatus=true
+  	 this.$http.post(url,this.reviewPassForm).then(function(response){
+		    vmThis.$message({message: '开设成功',type: 'success'});
+		    setTimeout(function(){
+		      vmThis.closeDialog('reviewPass');
+		      vmThis.closeDialog('review');
+		      vmThis.reviewPassFormSubmitStatus = false;
+		      vmThis.$refs.reviewPassForm.resetFields(); 
+		      this.loadDatalist();
+		    }, 2000);
+  	 },function(){
+        vmThis.$message.error("出错啦");
+  	 });
+
+  }).setMethod('batchAssign',function(url){
+  	 // this.closeDialog('batchAssign');
   	 //console.log(this.multipleSelection);
+
+    var  vmThis   = this;
+    for (var x in this.multipleSelection) {
+          this.cusIdList.push(this.multipleSelection[x].cus_id);
+    }
+    // this.multipleSelection.forEach(function(element, index, array){
+    //       this.cusIdList=element.cus_id;
+    //       //this.cusIdList.push('element.cus_id');
+    // });
+    this.cusIdList.pop();
+    this.cusIdList.unshift({user_id:this.batchAssignForm.user_id});
+    this.assignFormSubmitStatus = true;
+    this.$http.post(url,this.cusIdList).then(function(response){
+      vmThis.$message({message: '操作成功',type: 'success'});
+      setTimeout(function(){
+        vmThis.batchAssignFormDialog = false;
+        vmThis.assignFormSubmitStatus = false;
+        vmThis.$refs.batchAssignForm.resetFields(); 
+        vmThis.refresh();
+      }, 2000);  
+    },function(response){
+      vmThis.$message.error("查询出错啦");
+    });
+
+
   }).setMethod('beforeBatchAssign',function(){
     var form = 'batchAssign';
     var vmThis = this;
-    if (this.multipleSelection.length != this.tableData.length) {
+    if (this.multipleSelection.length == 0) {
       this.closeDialog(form);
-      this.$message.error('请全选此页的客户');
+      this.$message.error('请至少选择一个客户');
       return false;
     } else {
+      this.$confirm('请先确认当前选择的这些客户都已经过审查！', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'info'
+      });
       return this.multipleSelection;
     }
   }).setMethod('viewtraceContents',function(row,event){
     this.traceContentFormDialog = true;
     this.traceContentForm.content = row.content;
+  }).setMethod('sortChange', function(sortObject){
+    console.log(sortObject);
+    console.log(this.searchForm);
+    var sortMap = {
+      ascending: 'asc',
+      descending: 'desc'
+    }
+    if (sortObject.column === null) {
+      delete this.searchForm.sort_field;
+      delete this.searchForm.sort_order;
+    } else {
+      this.searchForm.sort_field = sortObject.prop;
+      this.searchForm.sort_order = sortMap[sortObject.order];
+    }
+    this.dataLoad = true;
+    //this.loadDatalist();    
+  }).setVueHook('mounted', function(){
+    var vmThis = this;
+    //省份、城市
+    this.$http.get('{:U("Area/getAreasByPid")}', {params:{pid:1} }).then(function(response){
+      var provinces = [];
+      response.body.forEach(function(currentValue,index){
+        provinces.push({id: currentValue.id, name: currentValue.name});
+      })
+      vmThis.$set(vmThis, 'provinces', provinces);
+    });
+    this.dialogLabelWidth = "100px";
+  }).setMethod('trackLog',function(row,event,column){
+    this.commonFind('{:U(trackInfo)}','tableDataOne',row);
+    this.commonFind('{:U(findDealInfo)}','tableDataTwo',row);
+    this.commonFind('{:U(softwareInfo)}','tableDataThree',row);
+  }).setMethod('commonFind',function(url,table,row){
+  	var vmThis = this;
+    this.$http.post(url,row).then(function(response){
+      vmThis[table] = response.body;
+    },function(response){
+      vmThis.$message.error("查询出错啦");
+    });
   });
 </script>
 </block>

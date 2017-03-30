@@ -535,6 +535,7 @@ class CustomerController extends CommonController {
         $_POST['user_id']=session('uid'); 
         if($ob->where(array('cus_id'=>I('post.cus_id'),'identity'=>I('post.identity')))->find()){
             $ob->where(array('cus_id'=>I('post.cus_id')))->save(I('post.'));
+            M('customers_service')->where(array('cus_id'=>I('post.cus_id'),'user_id'=>I('post.user_id')))->setField('call_back','1');
         }else{
             if($ob->create($_POST) && $ob->add()){
                 $data=array(

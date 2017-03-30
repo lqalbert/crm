@@ -23,7 +23,7 @@ class RiskCtrlOneController extends CommonController{
 		$this->assign('sexType',      D('Customer')->getSexType());
 		$this->assign('GoodsType',    D('CustomerLog')->getGoodsType());
 		$this->assign('badgeNum',     $this->badgeNum());
-    $this->assign('callBackMan',   $this->getCallBackMan());
+    $this->assign('callBackMan',  $this->getCallBackMan());
 		$this->display();
 	}
 
@@ -41,9 +41,7 @@ class RiskCtrlOneController extends CommonController{
     }else{
       $man=null;
     }
-    return $man;
-
-    
+    return $man; 
   }
 
   public function getList(){
@@ -130,7 +128,7 @@ class RiskCtrlOneController extends CommonController{
   }
 
   /**
-  *   获取客户资料
+  *   分配给回访专员
   *
   */
   public function dispacth(){

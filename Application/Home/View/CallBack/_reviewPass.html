@@ -23,8 +23,8 @@
     </el-row>
   </el-form>
   <div slot="footer" class="dialog-footer">
-      <el-button @click="reset('reviewPass')">关闭</el-button>
-      <el-button type="primary" v-show="!reviewPassFormSubmitStatus" @click="reviewPass" >确定</el-button>
+      <el-button type="danger" @click="closeDialog('reviewPass')">关闭</el-button>
+      <el-button type="primary" v-show="!reviewPassFormSubmitStatus" @click="reviewPass(page.openAccountUrl)">开 设</el-button>
       <el-button type="primary" v-show="reviewPassFormSubmitStatus" :loading="true" >开设中</el-button>
   </div>
 </el-dialog>

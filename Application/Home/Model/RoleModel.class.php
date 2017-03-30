@@ -18,7 +18,9 @@ class RoleModel extends Model {
 		'departmentMaster', //部门经理
 		'captain', //主管 队长
 		'staff',//员工
-		'callback'//回访专员
+		'riskone',//风控一
+		'callback',//回访专员
+		'sup_service',//客服主管
 	);
 
 	public function getEnames(){

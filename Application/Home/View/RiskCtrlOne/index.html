@@ -68,13 +68,13 @@
 		            <el-button  size="small" @click="searchReset">重置</el-button>
 		          </el-tooltip>
 
-		          <el-tooltip content="已经审核通过但未转给客服主管" placement="bottom-start" style="margin-left:10px;">
+		          <el-tooltip content="已经分配给回访专员的客户" placement="bottom-start" style="margin-left:10px;">
 		            <el-badge :value="{$badgeNum.already}" :max="9" >
 		              <el-button size="small" type="primary" @click="setField('already')">已分配</el-button>
 		            </el-badge>
 		          </el-tooltip>
 
-		          <el-tooltip content="等待审核的客户" placement="bottom-start" style="margin-left:15px;">
+		          <el-tooltip content="还未分配给回访专员的客户" placement="bottom-start" style="margin-left:15px;">
 		            <el-badge :value="{$badgeNum.yet}" :max="9" >
 		              <el-button type="info" size="small" @click="setField('yet')">待分配</el-button>
 		            </el-badge>
@@ -102,9 +102,9 @@
             
 		  	    <el-table-column label="{:L('INDEX')}" type="index" width="65"  ></el-table-column>
 
-		  	    <el-table-column  header-align="center" prop="name"  label="客户姓名" width="110"></el-table-column>
+		  	    <el-table-column  header-align="center" prop="name"  label="客户姓名" width="150"></el-table-column>
 
-		  	    <el-table-column  header-align="center" prop="type" label="客户类型" sortable width="140">
+		  	    <el-table-column  header-align="center" prop="type" label="客户类型" sortable width="170">
 		          <template scope="scope">
 		            {{ getType(scope.row.type, 'customerType') }}
 		          </template>
@@ -168,8 +168,8 @@
 		    <el-col :span="12">
 		      <div class="grid-content bg-purple">
 		      	<span class="wrapper">
-			        <el-tooltip content="选择单个或多个客户分配给指定的客服主管/人员" placement="right">
-			          <el-button size="small" type="primary" @click="openDialog('dipacth')">分配</el-button>
+			        <el-tooltip content="选择单个或多个客户分配给指定的回访专员" placement="right">
+			          <el-button size="small" type="primary" @click="openDialog('dipacth')">分 配</el-button>
 			        </el-tooltip>
 			      </span>
 		      </div>
@@ -307,7 +307,6 @@
     track_end:"",
   },true).setForm('dipacth',{
     user_id:"",
-
   }, true).setForm('traceContent',{
     content:'',
   },true).setMethod('getType', function(type, field){
