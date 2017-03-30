@@ -21,7 +21,14 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-table :data="dataList" v-loading="dataLoad"  border  stripe element-loading-text="{:L('DATA_LOGIN')}" ref="select">
+          <el-table 
+          :data="dataList" 
+          v-loading="dataLoad"  
+          border  stripe 
+          element-loading-text="{:L('DATA_LOGIN')}" 
+          ref="select"
+          @row-click="showDetail"
+          >
             <!-- <el-table-column type="selection" align="center" width="50"></el-table-column> -->
             <el-table-column label="序号"  :formatter="handleIndex" width="65"></el-table-column>
             <el-table-column label="公告类型" prop="type" align="center" width="100">
@@ -30,7 +37,7 @@
                </template>
             </el-table-column>
             <el-table-column label="公告标题" prop="title"  width="100"></el-table-column>
-            <el-table-column label="公告内容" prop="content" >
+            <el-table-column label="公告内容(点击查看详细)" prop="content" >
               <template scope="scope">
                 {{ scope.row.content | handleString(20) }}
               </template>
@@ -40,8 +47,8 @@
             <el-table-column label="发布人" prop="user" width="120"></el-table-column>
             <el-table-column label="操作"  align="center" width="180">
                <template scope="scope">
-                  <el-button type="success" @click="handleEdit(scope.$index, scope.row)"     size="small">编辑</el-button>
-                  <el-button type="danger"  @click="handleDelete(scope.$index, scope.row)"   size="small" >删除</el-button>
+                  <el-button type="success" @click.stop="handleEdit(scope.$index, scope.row)"     size="small">编辑</el-button>
+                  <el-button type="danger"  @click.stop="handleDelete(scope.$index, scope.row)"   size="small" >删除</el-button>
                </template>
             </el-table-column>  
           </el-table>
@@ -77,6 +84,10 @@
       <include file="_edit" />
       <!-- / 编辑 -->
 
+      <!-- 编辑 -->
+      <include file="_detail" />
+      <!-- / 编辑 -->
+
     </div>
 
   </div>
@@ -84,6 +95,8 @@
 <block name="scripts">
 <script>
   window.defaultOption.setDatas({
+    detailContent:"",
+    detailFormDialog:false,
     NoticeType:{:json_encode($NoticeType)},
     addRules:{
       title:[
@@ -110,6 +123,9 @@
     end:'',
   }).setMethod('getType', function(type, field){
      return this[field][type];
+  }).setMethod('showDetail', function(row){
+    this.detailContent = row.content;
+    this.openDialog('detail');
   });
 </script>
 </block>
