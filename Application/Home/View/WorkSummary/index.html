@@ -12,7 +12,7 @@
             <el-form-item>
              <el-button type="primary" icon="search" @click="loadDatalist">查询</el-button>
              <el-tooltip content="清空搜索框并刷新表格数据" placement="right">
-              <el-button icon="loading" @click="searchReset">重置</el-button>
+              <el-button @click="searchReset">重置</el-button>
              </el-tooltip>
             </el-form-item>
           </el-form>
@@ -25,8 +25,8 @@
            @selection-change="handleSelectionChange" ref="select">
             <el-table-column type="selection" align="center" width="50"></el-table-column>
             <el-table-column label="序号" align="center" :formatter="handleIndex" width="65"></el-table-column>
-            <el-table-column label="总结标题" prop="title" align="center" ></el-table-column>
-            <el-table-column label="总结内容" prop="content" align="center"></el-table-column> 
+            <el-table-column label="总结标题" prop="title"  ></el-table-column>
+            <el-table-column label="总结内容" prop="content" ></el-table-column> 
             <el-table-column label="总结类型" prop="type" align="center" >
                <template scope="scope">
                   {{ getType(scope.row.type, 'SummaryType') }}
@@ -36,7 +36,7 @@
             <el-table-column label="总结时间" prop="su_time" align="center" ></el-table-column> 
             <el-table-column label="回复员工" prop="re_user" align="center" ></el-table-column> 
             <el-table-column label="回复时间" prop="re_time" align="center" ></el-table-column>  
-            <el-table-column label="回复内容" prop="reply" align="center" ></el-table-column>  
+            <el-table-column label="回复内容" prop="reply" ></el-table-column>  
           </el-table>
         </el-col>
       </el-row>

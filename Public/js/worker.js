@@ -33,11 +33,12 @@ function start(url){
             cusList = JSON.parse(this.responseText) ;
 
             if (cusList.length > 0) {
+                if (interval) {
+                    clearInterval(interval);
+                }
                 interval = setInterval(function(){
                     var d = new Date() ;
                     
-                    // console.log(d);
-                    // 这里时间 有问題
                     for (var i = 0, len = cusList.length; i < len ; i++) {
                         // console.log(cusList[i]);
                         var b = new Date();
