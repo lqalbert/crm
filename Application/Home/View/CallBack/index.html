@@ -279,7 +279,7 @@
 
 	<div class="dialogWrapper" v-show="show" style="display: none">
 	  <!-- 录入高级查询条件 -->
-	  <include file="_advancedQuery" />
+	  <!-- <include file="_advancedQuery" /> -->
 	  <!-- /录入高级查询条件 -->
 	  <!-- 审查 -->
 	  <include file="_review" />
@@ -486,7 +486,7 @@
         vmThis.refresh();
       }, 2000);  
     },function(response){
-      vmThis.$message.error("查询出错啦");
+      vmThis.$message.error("操作出错啦");
     });
 
 
@@ -535,10 +535,6 @@
       vmThis.$set(vmThis, 'provinces', provinces);
     });
     this.dialogLabelWidth = "100px";
-  }).setMethod('trackLog',function(row,event,column){
-    this.commonFind('{:U(trackInfo)}','tableDataOne',row);
-    this.commonFind('{:U(findDealInfo)}','tableDataTwo',row);
-    this.commonFind('{:U(softwareInfo)}','tableDataThree',row);
   }).setMethod('commonFind',function(url,table,row){
   	var vmThis = this;
     this.$http.post(url,row).then(function(response){
@@ -546,6 +542,10 @@
     },function(response){
       vmThis.$message.error("查询出错啦");
     });
+  }).setMethod('trackLog',function(row,event,column){
+    this.commonFind('{:U(trackInfo)}','tableDataOne',row);
+    this.commonFind('{:U(findDealInfo)}','tableDataTwo',row);
+    this.commonFind('{:U(softwareInfo)}','tableDataThree',row);
   });
 </script>
 </block>

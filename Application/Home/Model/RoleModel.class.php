@@ -9,6 +9,11 @@ class RoleModel extends Model {
 	const DEPARTMENTMASTER = 'departmentMaster';
 	const CAPTAIN = 'captain';
 	const STAFF = 'staff';
+	const RISK_ONE = 'riskone';
+	const RISK_TWO = 'risktwo';
+	const CALL_BACK = 'callback';
+	const SUP_SERVICE = 'sup_service';
+	const GEN_SERVICE = 'gen_service';
 
 	protected $tableName = 'rbac_role';
 
@@ -19,8 +24,10 @@ class RoleModel extends Model {
 		'captain', //主管 队长
 		'staff',//员工
 		'riskone',//风控一
+		'risktwo',//风控一
 		'callback',//回访专员
 		'sup_service',//客服主管
+		'gen_service'//普通客服
 	);
 
 	public function getEnames(){

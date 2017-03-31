@@ -28,11 +28,11 @@ class CallBackController extends CommonController{
 	}
 
   public function badgeNum(){
-	  $cusList=M('software_account')->getField('cus_id',true);
-	  $userList=M('software_account')->getField('user_id',true);
-  	$user_id=session('account')['userInfo']['user_id'];
-  	$badgeNum['already']=$this->M->where(array('call_back'=>'1','user_id'=>array('IN',$userList),'cus_id'=>array('IN',$cusList)))->count();
-		$allCount=$this->M->where(array('call_back'=>'1','user_id'=>$user_id))->count();
+    $cusList=M('software_account')->getField('cus_id',true);
+    $operatorList=M('software_account')->getField('open_id',true);
+  	$operator_id=session('account')['userInfo']['user_id'];
+  	$badgeNum['already']=$this->M->where(array('call_back'=>'1','operator_id'=>array('IN',$operatorList),'cus_id'=>array('IN',$cusList)))->count();
+		$allCount=$this->M->where(array('call_back'=>'1','operator_id'=>$operator_id))->count();
 		$yetNum=$allCount-$badgeNum['already'];
 		$badgeNum['yet']=$yetNum>0 ? $yetNum : 0 ;
 		return $badgeNum;
@@ -58,10 +58,12 @@ class CallBackController extends CommonController{
 	  $cusList=implode(",", $cusArr);
 	  if(empty($cusList)){
 	    $list =null;
+      $count='0';
 	  }else{
 	    $list = M('customers_basic as cb')->join("customers_contacts as cc on cb.id = cc.cus_id and cc.is_main = 1 ")
           ->where(array('cb.id'=>array('IN',$cusList)))->order("cb.id desc")->limit($this->getOffset().','.$this->pageSize)->select();
-	  }
+	    $count = $list==null ? '0' :$count;
+    }
     //echo M('customers_basic as cb')->getLastSql();
 	  $result = array('list'=>$list, 'count'=>$count);
     $this->ajaxReturn($result);
@@ -73,8 +75,8 @@ class CallBackController extends CommonController{
 	* @return null
 	*/
 	public function setQeuryCondition() {
-		$user_id=session('account')['userInfo']['user_id'];
-    $this->M->where(array('call_back'=>'1','user_id'=>$user_id));
+		$operator_id=session('account')['userInfo']['user_id'];
+    $this->M->where(array('call_back'=>'1','operator_id'=>$operator_id));
 
     if (I('get.name')) {
         M('customers_basic as cb')->where(array("cb.name"=> array('like', I('get.name')."%")));
@@ -85,16 +87,16 @@ class CallBackController extends CommonController{
     	  M('customers_basic as cb')->where(array('cc.qq|cc.phone|cc.weixin'=>array('LIKE',$val."%")));
     }
 	  $cusList=M('software_account')->getField('cus_id',true);
-	  $userList=M('software_account')->getField('user_id',true);
+	  $operatorList=M('software_account')->getField('open_id',true);
     switch (I('get.field')) {
     	case 'already':
-				$this->M->where(array('call_back'=>'1','user_id'=>array('IN',$userList),'cus_id'=>array('IN',$cusList)));
+				$this->M->where(array('call_back'=>'1','operator_id'=>array('IN',$operatorList),'cus_id'=>array('IN',$cusList)));
     		break;
     	case 'yet':
-				$this->M->where(array('call_back'=>'1','user_id'=>array('IN',$userList),'cus_id'=>array('NOT IN',$cusList)));
+				$this->M->where(array('call_back'=>'1','operator_id'=>array('IN',$operatorList),'cus_id'=>array('NOT IN',$cusList)));
     		break;
     	default:
-    	  $this->M->where(array('call_back'=>'1','user_id'=>$user_id));
+    	   $this->M->where(array('call_back'=>'1','operator_id'=>$operator_id));
     		break;
     }
 
@@ -134,7 +136,7 @@ class CallBackController extends CommonController{
   }
 
   /**
-  *   获取客户资料
+  *   获取账号信息
   *
   */
   public function softwareInfo(){
@@ -176,8 +178,8 @@ class CallBackController extends CommonController{
   *
   */
   public function reviewFail(){
-  	//var_dump($_POST);
-  	$re=$this->M->where(array('cus_id'=>I('post.cus_id'),'user_id'=>I('post.user_id')))->setField('call_back','0');
+  	$operator_id=session('account')['userInfo']['user_id'];
+  	$re=$this->M->where(array('operator_id'=>$operator_id,'cus_id'=>I('post.cus_id'),'user_id'=>I('post.user_id')))->setField('call_back','0');
   	$res=M('customers_basic')->where(array('user_id'=>I('post.user_id'),'id'=>I('post.cus_id')))->setField('type','VX');
     if($re && $res){
       $this->success("审核通过");
@@ -198,7 +200,7 @@ class CallBackController extends CommonController{
     $data=array(
        'call_back'=>'0',
        'service_sup'=>'1',
-       'user_id'=>$user_id['user_id']
+       'operator_id'=>$user_id['user_id'],
     );
     $this->M->create($data);
     $re=$this->M->where(array('cus_id'=>array('IN',$userList)))->save();

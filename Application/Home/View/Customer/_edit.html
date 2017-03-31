@@ -12,7 +12,7 @@
           <el-col :span="12">
             <el-form-item label="客户类型" prop="type">
               <el-select v-model="editForm.type" placeholder="请选择客户类型" :disabled="isTypeV">
-                <el-option v-for="(type, key) in customerType" :label="type" :value="key" :disabled="key=='F' || key=='VX'"></el-option>
+                <el-option v-for="(type, key) in customerType" :label="type" :value="key" :disabled="key=='F' || key=='VX' || key=='VT'"></el-option>
               </el-select>
             </el-form-item>
           </el-col>

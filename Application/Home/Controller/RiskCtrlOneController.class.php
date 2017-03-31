@@ -16,7 +16,6 @@ class RiskCtrlOneController extends CommonController{
   }
 
 	public function index(){
-    //var_dump($this->getCallBackMan());die();
 		$groupMemberList = M('user_info')->getField("user_id,realname");
     $this->assign('memberList',   $groupMemberList);
 		$this->assign('customerType', D('Customer')->getType());
@@ -52,10 +51,12 @@ class RiskCtrlOneController extends CommonController{
 	  $cusList=implode(",", $cusArr);
 	  if(empty($cusList)){
 	    $list =null;
+      $count='0';
 	  }else{
 	    $list = M('customers_basic as cb')->join("customers_contacts as cc on cb.id = cc.cus_id and cc.is_main = 1 ")
           ->where(array('cb.id'=>array('IN',$cusList)))->order("cb.id desc")->limit($this->getOffset().','.$this->pageSize)->select();
-	  }
+	    $count = $list==null ? '0' :$count;
+    }
     //echo M('customers_basic as cb')->getLastSql();
 	  $result = array('list'=>$list, 'count'=>$count);
     $this->ajaxReturn($result);
@@ -139,7 +140,8 @@ class RiskCtrlOneController extends CommonController{
     $data=array(
        'risk_one'=>'0',
        'call_back'=>'1',
-       'user_id'=>$user_id['user_id']
+       'operator_id'=>$user_id['user_id'],
+
     );
     $this->M->create($data);
     $re=$this->M->where(array('cus_id'=>array('IN',$userList)))->save();
