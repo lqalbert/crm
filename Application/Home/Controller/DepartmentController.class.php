@@ -25,7 +25,7 @@ class DepartmentController extends CommonController {
 	public function setQeuryCondition() {
 		$map = array('department_basic.status'=>array('EGT',0) ); //查询的参数
 		if ( !empty(I('get.name')) ) {
-			$map['name'] = array('like',"%". I('get.name')."%");
+			$map['department_basic.name'] = array('like',"%". I('get.name')."%");
 		}
 		$this->M->where($map);
 
