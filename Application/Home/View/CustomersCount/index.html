@@ -31,7 +31,7 @@
             <el-form-item>
               <el-button type="info" icon="search" @click="loadDatalist">查询</el-button>
               <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start">
-                <el-button @click="searchReset">重置</el-button>
+                <el-button @click="resetBack">重置</el-button>
               </el-tooltip>
             </el-form-item>
           </el-form>
@@ -110,6 +110,8 @@
       }).setMethod('objectMap', function(v){
         var ma = {'department':'group', 'group':'user'};
          return ma[v];
+      }).setMethod('resetBack', function(){
+        window.location.href="{:U('index')}";
       });
     </script>
 </block>
