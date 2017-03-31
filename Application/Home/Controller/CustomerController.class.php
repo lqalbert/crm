@@ -177,7 +177,8 @@ class CustomerController extends CommonController {
         }
 
         $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id  and cc.is_main = 1')
-                ->join('left join customers_contacts as cc2 on customers_basic.id =  cc2.cus_id and cc2.is_main = 0');
+                ->join('left join customers_contacts as cc2 on customers_basic.id =  cc2.cus_id and cc2.is_main = 0')
+                ->where(array('customers_basic.status'=>array('NEQ', -1)));
 
 	}
 
