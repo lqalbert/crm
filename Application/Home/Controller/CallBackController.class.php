@@ -39,7 +39,7 @@ class CallBackController extends CommonController{
   }
 
   public function getSupServiceMan(){
-    $callback=M('rbac_role')->where(array('ename'=>'sup_service','status'=>'1'))->find();
+    $callback=M('rbac_role')->where(array('ename'=>'supService','status'=>'1'))->find();
     $user_id=M('rbac_role_user')->where(array('role_id'=>$callback['id']))->getField('user_id',true);
     if($callback && $user_id){
       $man=M('user_info')->where(array('user_id'=>array('IN',$user_id)))->field('user_id,realname')->select();
