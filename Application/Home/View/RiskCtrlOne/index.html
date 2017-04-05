@@ -392,10 +392,6 @@
     for (var x in this.multipleSelection) {
           this.cusIdList.push(this.multipleSelection[x].cus_id);
     }
-    // this.multipleSelection.forEach(function(element, index, array){
-    //       this.cusIdList=element.cus_id;
-    //       //this.cusIdList.push('element.cus_id');
-    // });
     this.cusIdList.pop();
     this.cusIdList.unshift({user_id:this.dipacthForm.user_id});
     this.dipacthFormSubmitStatus = true;

@@ -89,23 +89,17 @@
 		<el-col :span="24">
 			<el-card class="box-card">
 				<div class="clearfix" slot="header">
-					<span>业绩报表 测试数据</span>
+					<span>业绩报表(每日) 测试数据</span>
 				</div>
 				<div>
-					<el-table
-				      :data="sysReport"
-				      style="width: 100%">
-				      <el-table-column
-				        prop="date"
-				        label="日期"
-				        width="180">
-				      </el-table-column>
+					<el-table :data="sysReport" border style="width: 100%">
+				    <el-table-column prop="date"  label="日期" width="180"></el-table-column>
 						<el-table-column prop="zyj"   label="总业绩"></el-table-column>
 						<el-table-column prop="cjc"   label="成交客户数（新成交/合作）"></el-table-column>
 						<el-table-column prop="xfc"   label="续费客户数（续费/合作）"></el-table-column>
 						<el-table-column prop="xfy"   label="续费业绩（续费/合作）"></el-table-column>
 						<el-table-column prop="sjc"   label="升级客户数（升级/合作）"></el-table-column>
-						<el-table-column prop="sjy"   label="升级业绩（升级）"></el-table-column>
+						<el-table-column prop="sjy"   label="升级业绩（升级/合作）"></el-table-column>
 				    </el-table>
 				</div>
 			</el-card>
@@ -116,13 +110,10 @@
 		<el-col :span="12">
 			<el-card class="box-card">
 				<div class="clearfix" slot="header">
-					<span>量化报表 测试数据</span>
+					<span>量化报表(每日) 测试数据</span>
 				</div>
 				<div>
-					<el-table
-						:data="data3"
-						style="width:100%"
-					>
+					<el-table border :data="data3" style="width:100%">
 						<el-table-column prop="date" label="日期"></el-table-column>
 						<el-table-column prop="sd"   label="锁定"></el-table-column>
 						<el-table-column prop="gz"   label="跟踪"></el-table-column>
@@ -136,13 +127,10 @@
 		<el-col :span="12">
 			<el-card class="box-card">
 				<div class="clearfix" slot="header">
-					<span>客户报表 测试数据</span>
+					<span>客户报表(每日) 测试数据</span>
 				</div>
 				<div>
-					<el-table
-						:data="data3"
-						style="width:100%"
-					>
+					<el-table border :data="data3" style="width:100%">
 						<el-table-column prop="date" label="日期"></el-table-column>
 						<el-table-column prop="sd"   label="锁定"></el-table-column>
 						<el-table-column prop="gz"   label="跟踪"></el-table-column>
@@ -170,7 +158,7 @@
 		// console.log('mounted charts');
 		var myChart = echarts.init(document.getElementById('echarts'));
         myChart.setOption({
-            // title: { text: 'ECharts 入门示例' },
+            title: { text: '个人12个月每月销售金额柱状图和当月排名' },
             tooltip: {},
             xAxis: {
                 data: ["2016-11","2016-12","2017-01","2017-02","2017-03","2017-04"]
@@ -182,7 +170,7 @@
             series: [{
                 name: '销量',
                 type: 'bar',
-                data: [15, 30, 46, 20, 30, 50]
+                data: [15000, 30000, 96000, 20000, 30000, 50000]
             },{
                 name: '业绩',
                 type: 'line',
@@ -223,7 +211,7 @@
 					
 				},
 				{
-					date:'2016-12-01',
+					date:'2016-12-02',
 					zyj:'730',
 					cjc:'0 / 0',
 					xfc:'0.00 / 0.00',
@@ -234,7 +222,7 @@
 				}
 				,
 				{
-					date:'2016-12-01',
+					date:'2016-12-03',
 					zyj:'730',
 					cjc:'0 / 0',
 					xfc:'0.00 / 0.00',
@@ -254,7 +242,7 @@
 					xq:'1',
 				},
 				{
-					date:'2016-01-01',
+					date:'2016-01-02',
 					sd:'1',
 					gz:'2',
 					tj:'0',
@@ -262,7 +250,7 @@
 					xq:'1',
 				},
 				{
-					date:'2016-01-01',
+					date:'2016-01-03',
 					sd:'1',
 					gz:'2',
 					tj:'0',
@@ -270,7 +258,7 @@
 					xq:'1',
 				},
 				{
-					date:'2016-01-01',
+					date:'2016-01-04',
 					sd:'1',
 					gz:'2',
 					tj:'0',
