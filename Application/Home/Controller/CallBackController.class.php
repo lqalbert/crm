@@ -29,10 +29,18 @@ class CallBackController extends CommonController{
     $cusList=M('software_account')->getField('cus_id',true);
     $operatorList=M('software_account')->getField('open_id',true);
   	$operator_id=session('account')['userInfo']['user_id'];
-  	$badgeNum['already']=$this->M->where(array('call_back'=>'1','operator_id'=>array('IN',$operatorList),'cus_id'=>array('IN',$cusList)))->count();
-		$allCount=$this->M->where(array('call_back'=>'1','operator_id'=>$operator_id))->count();
-		$yetNum=$allCount-$badgeNum['already'];
-		$badgeNum['yet']=$yetNum>0 ? $yetNum : 0 ;
+    $allCount=$this->M->where(array('call_back'=>'1','operator_id'=>$operator_id))->count();
+    if($cusList==null || $operatorList==null){
+      $badgeNum['already']=0;
+      $badgeNum['yet']=0;
+    }else{
+      $badgeNum['already']=$this->M->where(array('call_back'=>'1','operator_id'=>array('IN',$operatorList),'cus_id'=>array('IN',$cusList)))->count();
+      $yetNum=$allCount-$badgeNum['already'];
+      $badgeNum['yet']=$yetNum>0 ? $yetNum : 0 ;
+    }
+  	
+		
+
 		return $badgeNum;
   }
 
@@ -89,10 +97,19 @@ class CallBackController extends CommonController{
 	  $operatorList=M('software_account')->getField('open_id',true);
     switch (I('get.field')) {
     	case 'already':
-				$this->M->where(array('call_back'=>'1','operator_id'=>array('IN',$operatorList),'cus_id'=>array('IN',$cusList)));
+        if($cusList==null || $operatorList==null){
+          $this->M->where(array('call_back'=>array('GT','1')));
+        }else{
+          $this->M->where(array('call_back'=>'1','operator_id'=>array('IN',$operatorList),'cus_id'=>array('IN',$cusList)));
+        }
     		break;
     	case 'yet':
-				$this->M->where(array('call_back'=>'1','operator_id'=>array('IN',$operatorList),'cus_id'=>array('NOT IN',$cusList)));
+        if($cusList==null || $operatorList==null){
+          $this->M->where(array('call_back'=>array('GT','1')));
+        }else{
+          $this->M->where(array('call_back'=>'1','operator_id'=>array('IN',$operatorList),'cus_id'=>array('NOT IN',$cusList)));
+        }
+				
     		break;
     	default:
     	   $this->M->where(array('call_back'=>'1','operator_id'=>$operator_id));
