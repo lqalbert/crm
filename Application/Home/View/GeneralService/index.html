@@ -99,10 +99,7 @@
 		          </template>
 		  	    </el-table-column>
 
-		        <el-table-column  header-align="center"  prop="user_id" label="跟踪员工" sortable width="190">
-	            <template scope="scope">
-	              {{ getType(scope.row.user_id, 'memberList') }}
-	            </template>
+		        <el-table-column  header-align="center"  prop="realname" label="跟踪员工" sortable width="190">
 		        </el-table-column>
 
 	          <el-table-column  header-align="center" prop="qq" label="QQ号"  width="170">
@@ -177,10 +174,7 @@
 	        <el-tabs  type="border-card">
 	          <el-tab-pane label="软件账号">
 	            <el-table :data="tableDataThree" empty-text="请点击客户显示其软件账号" border style="width: 100%">
-	              <el-table-column prop="user" label="创建员工" header-align="center">
-			            <template scope="scope">
-			              {{ getType(scope.row.open_id, 'memberList') }}
-			            </template>
+	              <el-table-column prop="realname" label="创建员工" header-align="center">
 	              </el-table-column>
 
 	              <el-table-column prop="account_id" label="软件账号" align="center">
@@ -225,10 +219,7 @@
 	          </el-tab-pane>
 	          <el-tab-pane label="客户资料">
 	            <el-table :data="tableDataTwo" empty-text="请点击客户显示其客户资料" border style="width: 100%">
-	              <el-table-column label="操作员工" prop="user" header-align="center">
-			            <template scope="scope">
-			              {{ getType(scope.row.user_id, 'memberList') }}
-			            </template>
+	              <el-table-column label="操作员工" prop="realname" header-align="center">
 	              </el-table-column>
 
 	              <el-table-column label="产品金额" prop="expense" header-align="center">
@@ -257,21 +248,6 @@
 	</div>
 
 	<div class="dialogWrapper" v-show="show" style="display: none">
-	  <!-- 录入高级查询条件 -->
-	  <!-- <include file="_advancedQuery" /> -->
-	  <!-- /录入高级查询条件 -->
-	  <!-- 审查 -->
-	  <!-- <include file="_review" /> -->
-	  <!-- /审查 -->
-	  <!-- 审查通过开账号 -->
-	  <!-- <include file="_reviewPass" /> -->
-	  <!-- /审查通过开账号 -->
-	  <!-- 分配 -->
-	  <!-- <include file="_assign" /> -->
-	  <!-- /分配 -->
-	  <!-- 批量分配 -->
-	  <!-- <include file="_batchAssign"/> -->
-	  <!-- /批量分配 -->
 	  <!-- 跟踪内容 -->
 	  <include file="_traceContent" />
 	</div>
@@ -283,7 +259,6 @@
   window.defaultOption.setDatas({
   	customerType:{:json_encode($customerType)},
   	sexType:{:json_encode($sexType)},
-  	memberList:{:json_encode($memberList)},
   	GoodsType:{:json_encode($GoodsType)},
   	ServiceCycle:{:json_encode($ServiceCycle)},
   	multipleSelection: [],

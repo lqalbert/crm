@@ -16,8 +16,6 @@ class RiskCtrlOneController extends CommonController{
   }
 
 	public function index(){
-		$groupMemberList = M('user_info')->getField("user_id,realname");
-    $this->assign('memberList',   $groupMemberList);
 		$this->assign('customerType', D('Customer')->getType());
 		$this->assign('sexType',      D('Customer')->getSexType());
 		$this->assign('GoodsType',    D('CustomerLog')->getGoodsType());
@@ -47,14 +45,15 @@ class RiskCtrlOneController extends CommonController{
   	$this->setQeuryCondition();
 	  $count=(int)$this->M->count();
 	  $this->setQeuryCondition();
-	  $cusArr=$this->M->getField('cus_id', true);
+	  $cusArr=$this->M->getField('cus_id', true);  
 	  $cusList=implode(",", $cusArr);
 	  if(empty($cusList)){
 	    $list =null;
       $count='0';
 	  }else{
 	    $list = M('customers_basic as cb')->join("customers_contacts as cc on cb.id = cc.cus_id and cc.is_main = 1 ")
-          ->where(array('cb.id'=>array('IN',$cusList)))->order("cb.id desc")->limit($this->getOffset().','.$this->pageSize)->select();
+              ->join('left join user_info as ui on cb.user_id=ui.user_id')->field('ui.realname,cb.*,cc.*')
+              ->where(array('cb.id'=>array('IN',$cusList)))->order("cb.id desc")->limit($this->getOffset().','.$this->pageSize)->select();
 	    $count = $list==null ? '0' :$count;
     }
     //echo M('customers_basic as cb')->getLastSql();
@@ -120,7 +119,8 @@ class RiskCtrlOneController extends CommonController{
   *
   */
   public function findDealInfo(){
-    $arr=M('deal_info')->where(array('user_id'=>I('post.user_id'),'cus_id'=>I('post.cus_id')))->select();
+    $arr=M('deal_info as di')->join('user_info as ui on di.user_id=ui.user_id')->field('ui.realname,di.*')
+         ->where(array('di.user_id'=>I('post.user_id'),'di.cus_id'=>I('post.cus_id')))->select();
 		if (IS_AJAX) {
 			$this->ajaxReturn($arr);
 		}  else {

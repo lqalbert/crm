@@ -44,13 +44,14 @@
       <el-col :span="12" >
         <el-form-item prop="user_id" label="跟踪员工:" style="margin-bottom:0;">
           <template scope="scope">
-            {{ getType(reviewForm.user_id, 'memberList') }}
+            {{ reviewForm.realname}}
           </template>
         </el-form-item>
       </el-col>
     </el-row>
   </el-form>
     <div slot="footer" class="dialog-footer">
+        <el-button type="info" @click="closeDialog('review')">关闭</el-button>
         <el-button type="danger" @click="reviewFail">不通过</el-button>
         <el-button type="primary" v-show="!reviewFormSubmitStatus" @click="reviewSubmit">通 过</el-button>
         <el-button type="primary" v-show="reviewFormSubmitStatus" :loading="true" >审查中</el-button>
