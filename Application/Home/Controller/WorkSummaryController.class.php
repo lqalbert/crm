@@ -35,6 +35,14 @@ class WorkSummaryController extends CommonController{
   }
 
 
+  public function addreply(){
+    $_POST['re_user'] = session('uid');
+    $_POST['re_time'] = Date('Y-m-d H:i:s');
+    unset($_POST['su_user']);
+    parent::edit();
+  }
+
+
 
 
 
