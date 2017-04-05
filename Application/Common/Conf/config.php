@@ -1,25 +1,10 @@
 <?php
 return array(
 	//'配置项'=>'配置值'
+	'LOAD_EXT_CONFIG' => 'db',
 
     //调试
 	'SHOW_PAGE_TRACE' => false, 
-
-
-	'DB_TYPE' => 'mysql',
-	'DB_USER' => 'dev_crm_02',
-	'DB_PWD' =>'dev2008dev',
-	// 'DB_DSN' => 'mysql://dev_cn_crm_01:dev2008dev@192.168.0.12:3306/dev_cn_crm_01#utf8',
-	'DB_DSN' => 'mysql:host=192.168.0.12;dbname=dev_crm_02;charset=utf8',
-	// 'DB_USER' => 'run_cn_crm',
-	// 'DB_PWD' =>'run2008run',
-	// 'DB_DSN' => 'mysql:host=localhost;dbname=run_cn_crm;charset=utf8',
-
-
-/*	'DB_TYPE' => 'mysql',
-	'DB_USER' => 'beta_crm',
-	'DB_PWD' =>'beta2008beta',
-	'DB_DSN' => 'mysql:host=139.224.40.238;dbname=beta_crm;charset=utf8',*/
 
 
 	//语言
@@ -44,5 +29,5 @@ return array(
 	'RBAC_ACCESS_TABLE'=>'rbac_access',   //权限表  
 	'RBAC_NODE_TABLE'=>  'rbac_node',       //节点表  
 	// 'RBAC_SUPERADMIN' => 'admin',
-	'ADMIN_AUTH_KEY'=>'superAdmin',       //超级管理员识别  
+	'ADMIN_AUTH_KEY'=>'superAdmin',       //超级管理员识别
 );
