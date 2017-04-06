@@ -26,7 +26,7 @@ class ServiceSupervisorController extends CommonController{
 
 
   public function getGenServiceMan(){
-    $callback=M('rbac_role')->where(array('ename'=>'genService','status'=>'1'))->find();
+    $callback=M('rbac_role')->where(array('ename'=>RoleModel::GEN_SERVICE,'status'=>'1'))->find(); 
     $user_id=M('rbac_role_user')->where(array('role_id'=>$callback['id']))->getField('user_id',true);
     if($callback && $user_id){
       $man=M('user_info')->where(array('user_id'=>array('IN',$user_id)))->field('user_id,realname')->select();
