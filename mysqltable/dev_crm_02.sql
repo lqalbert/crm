@@ -9433,11 +9433,11 @@ CREATE TABLE IF NOT EXISTS `group_basic` (
 -- 正在导出表  dev_crm_02.group_basic 的数据：~5 rows (大约)
 /*!40000 ALTER TABLE `group_basic` DISABLE KEYS */;
 INSERT INTO `group_basic` (`id`, `name`, `type`, `department_id`, `user_id`, `contact`, `tel`, `status`, `remark`, `img`) VALUES
-	(1, '团队1', '小组', 98, 267, '团队1A', '', 1, '', ''),
-	(2, '团队2', '小组', 98, NULL, '无', '无', 1, '', ''),
+	(1, '团队1', '小组', 98, 267, '团队1A', '', 2, '', ''),
+	(2, '团队2', '小组', 98, NULL, '无', '无', 2, '', ''),
 	(3, '团队3', '小组', 98, 274, '', '', 1, '', ''),
 	(4, '团队4', '小组', 98, 273, '无', '无', 1, '是', '58c797f1dff04.png'),
-	(5, '团队5', '小组', 97, 269, '无', '无', 1, '', '58ca3db162351.png');
+	(5, '团队5', '小组', 97, 269, '无', '无', 3, '', '58ca3db162351.png');
 /*!40000 ALTER TABLE `group_basic` ENABLE KEYS */;
 
 -- 导出  表 dev_crm_02.menu_basic 结构
@@ -10247,7 +10247,7 @@ CREATE TABLE IF NOT EXISTS `rbac_user` (
 -- 正在导出表  dev_crm_02.rbac_user 的数据：~111 rows (大约)
 /*!40000 ALTER TABLE `rbac_user` DISABLE KEYS */;
 INSERT INTO `rbac_user` (`id`, `account`, `password`, `lockpwd`, `status`, `created_at`, `no_authorized`, `ip`, `location`, `lg_time`) VALUES
-	(1, 'admin', 'e10adc3949ba59abbe56e057f20f883e', 'e10adc3949ba59abbe56e057f20f883e', 0, '2017-04-01 09:15:59', 1, '127.0.0.1', '未分配或者内网IP', '1491009359'),
+	(1, 'admin', 'e10adc3949ba59abbe56e057f20f883e', 'e10adc3949ba59abbe56e057f20f883e', 0, '2017-04-06 09:22:23', 1, '127.0.0.1', '未分配或者内网IP', '1491441743'),
 	(24, 'test1', 'e10adc3949ba59abbe56e057f20f883e', 'e10adc3949ba59abbe56e057f20f883e', 0, '2017-03-30 09:35:13', 0, '127.0.0.1', '未分配或者内网IP', '1490837713'),
 	(26, 'test3', 'e10adc3949ba59abbe56e057f20f883e', 'e10adc3949ba59abbe56e057f20f883e', 0, '2017-03-31 13:34:41', 0, '127.0.0.1', '未分配或者内网IP', '1490938481'),
 	(27, 'test4', 'e10adc3949ba59abbe56e057f20f883e', 'e10adc3949ba59abbe56e057f20f883e', 0, '2017-02-09 15:11:34', 0, '', '', ''),

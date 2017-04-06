@@ -45,7 +45,7 @@ class CallBackController extends CommonController{
   }
 
   public function getSupServiceMan(){
-    $callback=M('rbac_role')->where(array('ename'=>'supService','status'=>'1'))->find();
+    $callback=M('rbac_role')->where(array('ename'=>RoleModel::SUP_SERVICE,'status'=>'1'))->find();
     $user_id=M('rbac_role_user')->where(array('role_id'=>$callback['id']))->getField('user_id',true);
     if($callback && $user_id){
       $man=M('user_info')->where(array('user_id'=>array('IN',$user_id)))->field('user_id,realname')->select();
@@ -198,7 +198,7 @@ class CallBackController extends CommonController{
   public function reviewFail(){
   	$operator_id=session('account')['userInfo']['user_id'];
   	$re=$this->M->where(array('operator_id'=>$operator_id,'cus_id'=>I('post.cus_id'),'user_id'=>I('post.user_id')))->setField('call_back','0');
-  	$res=M('customers_basic')->where(array('user_id'=>I('post.user_id'),'id'=>I('post.cus_id')))->setField('type','VX');
+  	$res=M('customers_basic')->where(array('user_id'=>I('post.user_id'),'id'=>I('post.cus_id')))->setField('type',CustomerModel::TYPE_VX);
     if($re && $res){
       $this->success("审核通过");
     }else{
