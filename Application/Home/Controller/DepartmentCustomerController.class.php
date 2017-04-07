@@ -358,5 +358,31 @@ class DepartmentCustomerController extends CommonController {
         }
     }
 
+    /**
+    *  添加客户真实资料
+    *  
+    */
+    public function realInfo(){ 
+        $ob=D('RealInfo');
+        $_POST['user_id']=session('uid'); 
+        if($ob->where(array('cus_id'=>I('post.cus_id'),'identity'=>I('post.identity')))->find()){
+            $ob->where(array('cus_id'=>I('post.cus_id')))->save(I('post.'));
+            M('customers_service')->where(array('cus_id'=>I('post.cus_id'),'user_id'=>I('post.user_id')))->setField('call_back','1');
+        }else{
+            if($ob->create($_POST) && $ob->add()){
+                $data=array(
+                    'cus_id'=>I('post.cus_id'),
+                    'user_id'=>I('post.user_id'),
+                    'risk_one'=>'1'     
+                );
+                M('customers_service')->add($data);
+                $this->success(L('真实资料添加成功'));
+            }else{
+                $this->error($ob->getError());    
+                
+            }
+        }
+    }
+
 }
 

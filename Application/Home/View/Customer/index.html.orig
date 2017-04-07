@@ -182,8 +182,13 @@
   	    <el-table-column width="50" align="center" type="selection"></el-table-column>
 
   	    <el-table-column label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  ></el-table-column>
+<<<<<<< HEAD
   	    <el-table-column  prop="name"  label="客户姓名" width="110"></el-table-column>
   	    <el-table-column   prop="type" label="客户类型" sortable width="140">
+=======
+  	    <el-table-column  header-align="center" prop="name"  label="客户姓名" width="150"></el-table-column>
+  	    <el-table-column  header-align="center" prop="type" label="客户类型" sortable width="170">
+>>>>>>> step01_04
           <template scope="scope">
             {{ getType(scope.row.type, 'customerType') }}
           </template>
@@ -202,7 +207,6 @@
           </el-table-column>
           <el-table-column  prop="qq_nickname" label="QQ昵称"  width="170"></el-table-column>
   	      <el-table-column prop="phone" label="手机" align="center" width="130"></el-table-column>
-
           <el-table-column  header-align="center" prop="weixin" label="微信号" align="left" width="170">
             <template scope="scope">
               {{ scope.row.weixin }}
@@ -357,11 +361,6 @@
 </block>
 <block name="scripts">
 <script>
-function toInt(v){
-  return parseInt(v);
-}
-</script>
-<script>
   page.addTrackFormUrl = "{:U('addTrackLogs')}";
   page.addPlanFormUrl = "{:U('addPlanLogs')}";
   page.addRemindFormUrl = "{:U('setRemid')}";
@@ -437,7 +436,7 @@ function toInt(v){
     logType:{:json_encode($logType)},
     steps:{:json_encode($steps)},
     searchGroup:{:json_encode($searchGroup)},
-    memberList:{:json_encode($memberList)},
+    memberList:[],
     curCheckedItem:{},
     addRules:{
       name:[
@@ -465,6 +464,9 @@ function toInt(v){
       money:[
         { required:true, message:'请选择客户资料量',trigger:'blur'},  
       ],
+      source:[
+        {required:true, message:'请选择客户来源', trigger:'blur'}
+      ]
     },
     editRules:{
       name:[
@@ -482,6 +484,9 @@ function toInt(v){
       money:[
         { required:true, message:'请选择客户资料量',trigger:'blur'},
       ],
+      source:[
+        { required:true, message:'请选择客户来源', trigger:'blur'},
+      ]
     },
 
     qq_disabled:false,
@@ -497,8 +502,7 @@ function toInt(v){
       ],
       type:[{ required: true, message: '请选择产品类型', trigger: 'blur' },],
       expense:[
-        { required: true, message: '请输入产品金额', trigger: 'blur' },
-        { type: 'number', message: '请输入产品金额', trigger: 'blur' },
+        { required: true, message: '请输入产品金额', trigger: 'blur',type: 'number' },
       ],
       cycle:[{ required: true, message: '请选择服务周期', trigger: 'blur' },],
       address:[{ required: true, message: '请输入通讯地址', trigger: 'blur' },],
@@ -667,6 +671,7 @@ function toInt(v){
       vmThis.$message.error('错了哦，这是一条错误消息');
     })
   }).setMethod('beforeList', function(data){
+        
         data.forEach(function(currentValue){
           //将string类型转换为number和为0的变为空
           currentValue.quality = currentValue.quality == 0?"":currentValue.quality;      
@@ -889,32 +894,6 @@ function toInt(v){
 
   }).setVueHook('created', function(){
       this._search = Oassign({}, this.searchForm) ; //this.searchForm;
-
-     /* var vmThis = this;
-      var params = {p:this.currentPage};
-      for (var x in this.advancedQueryForm ){
-        if (this.advancedQueryForm[x]!="") {
-          params[x] = this.advancedQueryForm[x];
-        }
-      }
-      this.$http.get(page.listUrl, {params:params}).then(function(response){
-        vmThis.advancedQueryFormDialog = false;
-        // 在显示之前 对数据进行处理
-        if (this.beforeList) {
-          vmThis.$set(vmThis, 'dataList', this.beforeList(response.body.list));
-        } else {
-          vmThis.$set(vmThis, 'dataList', response.body.list);
-        }
-        vmThis.$set(vmThis, 'total',    parseInt(response.body.count));
-
-      }, function(response) {
-        vmThis.$message({
-          message: '获取数据失败：'+ response.body.info,
-          type: 'error'
-        });
-      }).finally(function(){
-        vmThis.$set(vmThis, 'dataLoad', false);
-    })*/
   }).setMethod('editSubmit',function(url, form){
     FormName.type = form;
     var  formName    =  FormName.getFormName();  //form+"Form"; 
@@ -926,6 +905,7 @@ function toInt(v){
     }   
   }).setMethod('addRealInfo',function(url){
       var  vmThis   = this;
+      this.realInfoFormSubmitStatus = true;
       this.$http.post(url,this.realInfoForm).then(function (response) {
         vmThis.$message({
               message: '操作成功',
@@ -976,9 +956,12 @@ function toInt(v){
     this.traceContentForm.content = row.content;
   });
 </script>
+<<<<<<< HEAD
+=======
 <script>
-  var sb=document.getElementsByClassName("el-dialog");
-  console.log(sb.item(1));
+  // var sb=document.getElementsByClassName("el-dialog");
+  // console.log(sb.item(1));
 
 </script>
+>>>>>>> step01_04
 </block>

@@ -1,9 +1,9 @@
 <?php
 namespace Home\Controller;
-
 use Home\Model\CustomerLogModel;
 use Home\Model\DepartmentModel;
 use Home\Model\RoleModel;
+use Common\Lib\User;
 
 
 // getBetween不正确
@@ -12,8 +12,6 @@ class SortCustomersCountController extends CommonController{
     protected $pageSize = 15;
 
     private function getDayBetween(){
-
-
         $start = I('get.start', null);
         $end   = I('get.end',   null); 
 
@@ -33,6 +31,11 @@ class SortCustomersCountController extends CommonController{
     }
 
     public function index(){
+        $user = new User();
+        $searchGroup = $user->getRoleObject()
+          ->getCustomerSearchGroup(array(array('value'=>'user','key'=>"个人" ) ,
+           array('value'=>'group','key'=>"团组" ),array('value'=>'department','key'=>'部门')));
+        $this->assign('searchGroup',$searchGroup);
         $this->display();
     }
 
@@ -47,16 +50,20 @@ class SortCustomersCountController extends CommonController{
     public function getList(){
         switch (I('get.object')) {
             case 'user':
-                 $result = $this->getUserCount();
+                 //$result = $this->getUserCount(); //以前的
+                 $result = $this->getGroupUserCount();
                 break;
             case 'group':
-                 $result = $this->getGroupCount();
+                 //$result = $this->getGroupCount(); //以前的
+                 $result = $this->getDepGroupCount();
                 break;
             case 'department':
-                 $result = $this->getDepartmentCount();
+                 //$result = $this->getDepartmentCount(); //以前的
+                 $result = $this->getDepCount();
                  break;
             default:
-                 $result = $this->getUserCount();
+                 //$result = $this->getUserCount(); //以前的
+                 $result = $this->getGroupUserCount();
                 break;
         }
         $this->ajaxReturn($result);
@@ -140,17 +147,96 @@ class SortCustomersCountController extends CommonController{
     ) as cc on gb.id=cc.group_id group by gb.department_id
 ) as dc on db.id=dc.department_id where db.`type` in('.DepartmentModel::CAREER.', '.DepartmentModel::GENERALIZE.') and db.status=1 order by `count` desc limit '. $this->getOffset().','.$this->pageSize);
 
-
-        
         return array('list'=>$list, 'count'=>$count);
     }
 
+//<=====================================上面是以前的======================下面是现在的======================================================
+    /**
+    * 基于小组下面成员的客户录入统计
+    */
+    private function getGroupUserCount(){
+        $between_today = $this->getBetween();
+        $group_id=session('account')['userInfo']['group_id'];
+        $department_id=session('account')['userInfo']['department_id'];
+        switch (session('account')['userInfo']['role_id']) {
+            case '6':
+                //小组主管看到其组成员的录入统计
+                $count =  M('user_info')->where(array('group_id'=>$group_id))->count();
+                $roleM = D('Role');
+                // 修改版 没有录入客户的A员工 会显示 0
+                $list = M()->query('select realname as name , IFNULL(cbc.c, 0) as `count`, ui.user_id from user_info as ui left join (select count(id) as `c`, user_id from customers_basic as cb where '. $this->getDayBetween().' group by user_id) as cbc on ui.user_id = cbc.user_id where ui.group_id= '. $group_id .' order by `count` desc limit '. $this->getOffset().','.$this->pageSize);
+
+                return  array('list'=>$list, 'count'=>$count);
+                break;
+            case '5':
+                //部门下面所有小组下的所有成员的录入统计
+                $groupListArr=M('group_basic')->where(array('department_id'=>$department_id,'status'=>1))->getField('id',true);
+                $count =  M('user_info')->where(array('group_id'=>array('IN',$groupListArr),'department_id'=>$department_id))->count();
+                $groupList=implode(",", $groupListArr);
+                $roleM = D('Role');
+                // 修改版 没有录入客户的A员工 会显示 0
+                $list = M()->query('select realname as name , IFNULL(cbc.c, 0) as `count`, ui.user_id from user_info as ui left join (select count(id) as `c`, user_id from customers_basic as cb where '. $this->getDayBetween().' group by user_id) as cbc on ui.user_id = cbc.user_id where ui.department_id= '. $department_id .' AND group_id in('. $groupList .')  order by `count` desc limit '. $this->getOffset().','.$this->pageSize);
+
+                return  array('list'=>$list, 'count'=>$count);
+                break;
+            case '1':
+                //所有部门下的所有成员的录入统计
+                $count =  M('user_info')->where(array('department_id'=>array('GT','0')))->count();
+                $roleM = D('Role');
+                // 修改版 没有录入客户的A员工 会显示 0
+                $list = M()->query('select realname as name , IFNULL(cbc.c, 0) as `count`, ui.user_id from user_info as ui left join (select count(id) as `c`, user_id from customers_basic as cb where '. $this->getDayBetween().' group by user_id) as cbc on ui.user_id = cbc.user_id where ui.department_id>0 order by `count` desc limit '. $this->getOffset().','.$this->pageSize);
+
+                return  array('list'=>$list, 'count'=>$count);
+                break;
+            default:
+                # code...
+                break;
+        }
+            
+    }
+
+    /**
+    * 基于部门下的其所有小组的录入统计
+    */
+    private function getDepGroupCount(){
+        $between_today = $this->getBetween();
+        $department_id=session('account')['userInfo']['department_id'];
+        switch (session('account')['userInfo']['role_id']) {
+            case '5':
+                //部门下面所有小组的录入统计
+                $count = M('group_basic')->where(array('department_id'=>$department_id,'status'=>1))->count();
+
+                $list = M()->query('select id,name,  IFNULL(uc.count, 0)  as `count` from group_basic as gb left join 
+                (select count(id) as `count`,ui.group_id  from customers_basic as cb inner join user_info as ui on cb.user_id = ui.user_id where '. $this->getDayBetween().'  group by  ui.group_id ) as uc on gb.id=uc.group_id where gb.status=1 AND gb.department_id='. $department_id .' group by gb.id order by `count` desc limit '. $this->getOffset().','.$this->pageSize);
 
 
+                return array('list'=>$list, 'count'=>$count);
+                break;
+            case '1':
+                //所有部门下的小组的录入统计
+                $count = M('group_basic')->where(array('status'=>1))->count();
 
+                $list = M()->query('select id,name,  IFNULL(uc.count, 0)  as `count` from group_basic as gb left join 
+                (select count(id) as `count`,ui.group_id  from customers_basic as cb inner join user_info as ui on cb.user_id = ui.user_id where '. $this->getDayBetween().'  group by  ui.group_id ) as uc on gb.id=uc.group_id where gb.status=1  group by gb.id order by `count` desc limit '. $this->getOffset().','.$this->pageSize);
+                return array('list'=>$list, 'count'=>$count);
+                break;
+            default:
+                # code...
+                break;
+        }
+        
+    }
 
-
-
+    /**
+    * 基于所有部门的录入统计
+    */
+    private function getDepCount(){
+        $count = M('department_basic')->where(array('status'=>1))->count();
+        $list = M()->query('select id,name,IFNULL(uc.count,0) as `count` from department_basic as db left join(select count(id) as `count`,ui.department_id 
+            from customers_basic as cb inner join user_info as ui on cb.user_id=ui.user_id where '. $this->getDayBetween() .' group by ui.department_id) as uc 
+        on db.id=uc.department_id where db.status=1 group by db.id order by `count` desc limit '. $this->getOffset().','.$this->pageSize);
+        return array('list'=>$list, 'count'=>$count);
+    }
 
 
 

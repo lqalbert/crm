@@ -127,6 +127,7 @@ function setCommonLogic(opt){
 	// //打开关闭对话框
 
 	opt.setMethod("openDialog", function(dialog){
+		//console.log(this.multipleSelection);
 		this[FormName.getDialog(dialog)] = true;
         //console.log(FormName.getDialog(dialog));
 		this.currentForm = FormName.getForm(dialog);
@@ -172,22 +173,22 @@ function setCommonLogic(opt){
         		//this.dataLoad = true;
 		       // this.loadDatalist();
 
-        	}, function(response){
-        		var message = '删除失败';
-        		if (response.body.info) {
-        			message = response.body.info;
-        		}
-        		vmThis.$message({
-		            type: 'error',
-		            message: '删除失败'
-		          });
-        	})
+		      	}, function(response){
+		      		var message = '删除失败';
+		      		if (response.body.info) {
+		      			message = response.body.info;
+		      		}
+		      		vmThis.$message({
+			            type: 'error',
+			            message: '删除失败'
+			          });
+		      })
         }).catch(function() {
           vmThis.$message({
             type: 'info',
             message: '已取消删除'
           });          
-        });
+    });
 	})
 
 	opt.setMethod('getTenct', function(qq){

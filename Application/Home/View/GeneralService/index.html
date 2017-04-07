@@ -1,6 +1,5 @@
 <extend name="Common:base"/>
 <block name="head">
-	<link rel="stylesheet" href="__PUBLIC__/js/jquery.splitter.css">
   <style>
     .el-tabs__header{
       border-top:2px solid #ea4b4b;
@@ -55,7 +54,7 @@
 		  		    <el-input v-model="searchForm.name" size="small" placeholder="客户姓名"></el-input>
 		  		  </el-form-item>
 		  		  <el-form-item prop="contact" style="width:170px">
-		  		    <el-input v-model="searchForm.contact" size="small" placeholder="客户姓名|手机|qq|微信号"></el-input>
+		  		    <el-input v-model="searchForm.contact" size="small" placeholder="手机|qq|微信号关键字"></el-input>
 		  		  </el-form-item>
 
 		        <el-form-item prop="field" v-show="false">
@@ -63,26 +62,14 @@
 		        </el-form-item>
 
 		        <el-form-item>
-		          <el-button type="info" size="small" icon="search">查询</el-button> 
+		          <el-button @click="loadDatalist" type="info" size="small" icon="search">查询</el-button> 
 		          
-		          <el-tooltip content="录入高级查询条件"  style="margin-left:10px;">
-		            <el-button  size="small" type="primary">{:L('ADVANCED_QUERY')}</el-button>
-		          </el-tooltip>
+<!-- 		          <el-tooltip content="录入高级查询条件"  style="margin-left:10px;">
+		            <el-button @click="openDialog('advancedQuery')" size="small" type="primary">{:L('ADVANCED_QUERY')}</el-button>
+		          </el-tooltip> -->
 
 		          <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
-		            <el-button  size="small">重置</el-button>
-		          </el-tooltip>
-
-		          <el-tooltip content="已经审核通过但未转给客服主管" placement="bottom-start" style="margin-left:10px;">
-		            <el-badge :value="26" :max="9" >
-		              <el-button size="small" type="primary">已审核</el-button>
-		            </el-badge>
-		          </el-tooltip>
-
-		          <el-tooltip content="等待审核的客户" placement="bottom-start" style="margin-left:15px;">
-		            <el-badge :value="26" :max="9" >
-		              <el-button type="info" size="small">待审核</el-button>
-		            </el-badge>
+		            <el-button @click="searchReset" size="small">重置</el-button>
 		          </el-tooltip>
 
 		          <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:15px;">
@@ -95,27 +82,24 @@
 		  </el-row>
       <el-row>
         <el-col :span="24">
-          <el-table border v-loading="dataLoad" 
+          <el-table border v-loading="dataLoad" :data="dataList"
+              @selection-change="handleSelectionChange"
+              @row-click="trackLog" @sort-change="sortChange"
               element-loading-text="{:L('DATA_LOGIN')}"
               empty-text="暂无数据,销售妹子正在努力中！"
               highlight-current-row ref="select">
-
-		  	    <el-table-column width="50" align="center" type="selection"></el-table-column>
             
-		  	    <el-table-column label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  ></el-table-column>
+		  	    <el-table-column label="{:L('INDEX')}" type="index" width="65"  ></el-table-column>
 
-		  	    <el-table-column  header-align="center" prop="name"  label="客户姓名" width="110"></el-table-column>
+		  	    <el-table-column  header-align="center" prop="name"  label="客户姓名" width="150"></el-table-column>
 
-		  	    <el-table-column  header-align="center" prop="type" label="客户类型" sortable width="140">
+		  	    <el-table-column  header-align="center" prop="type" label="客户类型" sortable width="170">
 		          <template scope="scope">
 		            {{ getType(scope.row.type, 'customerType') }}
 		          </template>
 		  	    </el-table-column>
 
-		        <el-table-column  header-align="center"  prop="user_id" label="跟踪员工" sortable width="190">
-	            <template scope="scope">
-	              {{ getType(scope.row.user_id, 'memberList') }}
-	            </template>
+		        <el-table-column  header-align="center"  prop="realname" label="跟踪员工" sortable width="190">
 		        </el-table-column>
 
 	          <el-table-column  header-align="center" prop="qq" label="QQ号"  width="170">
@@ -167,24 +151,14 @@
       </el-row>
 		  <!-- toolbar -->
 		  <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
-		    <el-col :span="12">
+		    <el-col :span="12" >
 		      <div class="grid-content bg-purple">
 		      	<span class="wrapper">
-			        <el-tooltip content="选择一个客户分配给指定的客服主管/人员" placement="right">
-			          <el-button size="small" type="primary">分配</el-button>
-			        </el-tooltip>
 
-			        <el-tooltip content="选择客户分配给指定的客服主管/人员" placement="right">
-			          <el-button size="small" type="primary" style="margin-left:10px;">批量分配</el-button>
-			        </el-tooltip>
-
-			        <el-tooltip content="选择一个客户审核其信息" placement="right">
-			          <el-button size="small" type="primary" style="margin-left:10px;">审核</el-button>
-			        </el-tooltip>
 			      </span>
 		      </div>
 		    </el-col>
-		    <el-col :span="12">
+		    <el-col :span="12" :offset="12">
 		      <div class="grid-content bg-purple-light pull-right">
 		        <!-- page -->
 		        <include file="Common:_pagination" />
@@ -194,14 +168,33 @@
 		  </el-row>
 		</div>
 
-    
-
 	  <div id="app3" class="b" style="margin:5px -10px 5px;">
 	    <el-row>
 	     <el-col :span="24">
 	        <el-tabs  type="border-card">
+	          <el-tab-pane label="软件账号">
+	            <el-table :data="tableDataThree" empty-text="请点击客户显示其软件账号" border style="width: 100%">
+	              <el-table-column prop="realname" label="创建员工" header-align="center">
+	              </el-table-column>
+
+	              <el-table-column prop="account_id" label="软件账号" align="center">
+	              </el-table-column>
+
+	              <el-table-column prop="production" label="产品" header-align="center">
+				          <template scope="scope">
+				            {{ getType(scope.row.type, 'GoodsType') }}
+				          </template>
+	              </el-table-column>
+	              
+	              <el-table-column prop="mark" label="备注" header-align="center">
+	              </el-table-column>
+
+	              <el-table-column prop="time" label="创建时间" width="180" align="center">
+	              </el-table-column>
+	            </el-table>
+	          </el-tab-pane>
 	          <el-tab-pane label="跟踪记录">
-	            <el-table empty-text="请点击客户显示跟踪信息" border style="width: 100%">
+	            <el-table :data="tableDataOne" empty-text="请点击客户显示跟踪信息" border style="width: 100%" @row-dblclick="viewtraceContents">
 	              <el-table-column prop="user" label="操作员工" header-align="center">
 	              </el-table-column>
 
@@ -224,42 +217,27 @@
 	              </el-table-column>
 	            </el-table>
 	          </el-tab-pane>
-	          <el-tab-pane label="软件账号">
-	            <el-table empty-text="请点击客户显示其软件账号" border style="width: 100%">
-	              <el-table-column prop="user" label="创建员工" header-align="center">
-	              </el-table-column>
-
-	              <el-table-column prop="account" label="软件账号" align="center">
-	              </el-table-column>
-
-	              <el-table-column prop="production" label="产品" header-align="center">
-	              </el-table-column>
-	              
-	              <el-table-column prop="mark" label="备注" header-align="center">
-	              </el-table-column>
-
-	              <el-table-column prop="create_t" label="创建时间" width="180" align="center">
-	              </el-table-column>
-	            </el-table>
-	          </el-tab-pane>
 	          <el-tab-pane label="客户资料">
-	            <el-table empty-text="请点击客户显示其客户资料" border style="width: 100%">
-	              <el-table-column prop="user" label="操作员工" header-align="center">
+	            <el-table :data="tableDataTwo" empty-text="请点击客户显示其客户资料" border style="width: 100%">
+	              <el-table-column label="操作员工" prop="realname" header-align="center">
 	              </el-table-column>
 
-	              <el-table-column label="产品金额" header-align="center">
+	              <el-table-column label="产品金额" prop="expense" header-align="center">
 	              </el-table-column>
 
-	              <el-table-column label="产品类型" header-align="center">
+	              <el-table-column label="产品类型" prop="type" header-align="center">
+				          <template scope="scope">
+				            {{ getType(scope.row.type, 'GoodsType') }}
+				          </template>
 	              </el-table-column>
 	              
-	              <el-table-column label="身份证" header-align="center">
+	              <el-table-column label="身份证" prop="identity" align="center">
 	              </el-table-column>
 
-	              <el-table-column label="通讯地址" header-align="center">
+	              <el-table-column label="通讯地址" prop="address" header-align="center">
 	              </el-table-column>
 
-	              <el-table-column label="创建时间" align="center">
+	              <el-table-column label="创建时间" prop="time" align="center">
 	              </el-table-column>
 	            </el-table>
 	          </el-tab-pane>
@@ -267,33 +245,125 @@
 	     </el-col>
 	    </el-row>
 	  </div>
-
 	</div>
+
+	<div class="dialogWrapper" v-show="show" style="display: none">
+	  <!-- 跟踪内容 -->
+	  <include file="_traceContent" />
+	</div>
+
 </div>
 </block>
 <block name="scripts">
 <script>
   window.defaultOption.setDatas({
-
+  	customerType:{:json_encode($customerType)},
+  	sexType:{:json_encode($sexType)},
+  	GoodsType:{:json_encode($GoodsType)},
+  	ServiceCycle:{:json_encode($ServiceCycle)},
+  	multipleSelection: [],
+  	provinces:[],
+    cities:[],
+    tableDataOne:[{
+	     'name':'',
+	     'created_at':'',
+	     'type':'',
+	     'track_type':'',
+	     'content':'',
+	     'user':''
+    }],
+    tableDataTwo:[{
+       'user':'',
+       'expense':'',
+       'type':'',
+       'identity':'',
+       'address':'',
+       'time':''
+    }],
+    tableDataThree:[{
+      	'user':'',
+      	'account':'',
+      	'production':'',
+      	'mark':'',
+      	'create_t':'',
+    }],
   }).setForm('search',{
     name:'',
     contact:'',
     field: '',
     group:'user_id',
     ctrl:'search',
+  }).setForm('advancedQuery',{
+    start:'',
+    end:'',
+    type:'V',
+    group:'user_id',
+    ctrl:'advance',
+    name:"",
+    phone:"",
+    track_start:"",
+    track_end:"",
+  },true).setForm('traceContent',{
+    content:'',
+  },true).setMethod('getType', function(type, field){
+      return this[field][type];
+  }).setMethod('beforeList', function(data){
+     return data;
   }).setMethod('refresh',function(){
   	window.location.reload();
-  });
-</script>
-<script src="__PUBLIC__/js/jquery.1.11.min.js"></script>
-<script src="__PUBLIC__/js/jquery.splitter.js"></script>
-<script>
-$(document).ready(function(){
-	 var h=$('#app').height();
-	 console.log(h);
-	 var auto=h/2;
-   $('#app1').css({width: auto, height: auto}).split({orientation: 'horizontal', limit: 1});
-})
+  }).setMethod('advanceSearch',function(){
 
+       for (var x  in  this.advancedQueryForm) {
+         if (this.advancedQueryForm[x] instanceof  Date) {
+          this.advancedQueryForm[x] = this.advancedQueryForm[x].toLocaleDateString();
+         }
+       }
+      this.searchForm = Oassign({},  this.advancedQueryForm);
+      this.loadDatalist();
+      this.closeDialog('advancedQuery');
+  }).setMethod('viewtraceContents',function(row,event){
+      this.traceContentFormDialog = true;
+      this.traceContentForm.content = row.content;
+  }).setMethod('handleSelectionChange', function(val){
+      this.multipleSelection = val;
+  }).setMethod('sortChange', function(sortObject){
+    console.log(sortObject);
+    console.log(this.searchForm);
+    var sortMap = {
+      ascending: 'asc',
+      descending: 'desc'
+    }
+    if (sortObject.column === null) {
+      delete this.searchForm.sort_field;
+      delete this.searchForm.sort_order;
+    } else {
+      this.searchForm.sort_field = sortObject.prop;
+      this.searchForm.sort_order = sortMap[sortObject.order];
+    }
+    this.dataLoad = true;
+    //this.loadDatalist();    
+  }).setVueHook('mounted', function(){
+    var vmThis = this;
+    //省份、城市
+    this.$http.get('{:U("Area/getAreasByPid")}', {params:{pid:1} }).then(function(response){
+      var provinces = [];
+      response.body.forEach(function(currentValue,index){
+        provinces.push({id: currentValue.id, name: currentValue.name});
+      })
+      vmThis.$set(vmThis, 'provinces', provinces);
+    });
+    this.dialogLabelWidth = "100px";
+  }).setMethod('commonFind',function(url,table,row){
+  	var vmThis = this;
+    this.$http.post(url,row).then(function(response){
+      vmThis[table] = response.body;
+    },function(response){
+      vmThis.$message.error("查询出错啦");
+    });
+  }).setMethod('trackLog',function(row,event,column){
+    this.commonFind('{:U(trackInfo)}','tableDataOne',row);
+    this.commonFind('{:U(findDealInfo)}','tableDataTwo',row);
+    this.commonFind('{:U(softwareInfo)}','tableDataThree',row);
+  });
 </script>
 </block>

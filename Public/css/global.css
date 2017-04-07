@@ -356,12 +356,12 @@ body .site-demo-nav .layui-nav-item{line-height: 40px}
     text-align: center;
     width: 30px;
     height: 30px;
-    background-color: #1AA094;
+    background-color:#f76d41;
     line-height: 30px;
     top: 25%;
 }
 .admin-side-toggle:hover{
-	background-color: #5FB878;
+	background-color: #da491b;
 }
 .admin-login-box{
 	width: 185px; height: 55px; position: relative;

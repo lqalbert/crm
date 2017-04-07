@@ -63,6 +63,12 @@ class RoleDepartmentMaster {
     }
 
     public function getCustomerSearchGroup($arr){
+        foreach ($arr as $key => $value) {
+
+            if ($value['value']=="department") {
+                $arr[$key]['disabled'] = true;
+            }
+        }
         return $arr;
     }
 

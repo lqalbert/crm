@@ -11,6 +11,12 @@ class RoleCaptain {
     }
 
     public function getCustomerSearchGroup($arr){
+        foreach ($arr as $key => $value) {
+
+            if ($value['value']=="group" || $value['value']=="department") {
+                $arr[$key]['disabled'] = true;
+            }
+        }
         return $arr;
     }
     
