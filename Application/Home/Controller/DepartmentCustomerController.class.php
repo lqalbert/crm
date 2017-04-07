@@ -364,7 +364,8 @@ class DepartmentCustomerController extends CommonController {
     */
     public function realInfo(){ 
         $ob=D('RealInfo');
-        $_POST['user_id']=session('uid'); 
+        // $_POST['user_id']=session('uid'); 
+        $_POST['user_id']= D('Customer')->where(array('id'=>I('post.cus_id')))->getField('salesman_id');
         if($ob->where(array('cus_id'=>I('post.cus_id'),'identity'=>I('post.identity')))->find()){
             $ob->where(array('cus_id'=>I('post.cus_id')))->save(I('post.'));
             M('customers_service')->where(array('cus_id'=>I('post.cus_id'),'user_id'=>I('post.user_id')))->setField('call_back','1');
