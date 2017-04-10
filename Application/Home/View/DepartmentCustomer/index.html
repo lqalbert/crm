@@ -165,9 +165,15 @@
             <el-button  size="small" @click="openDialog('preCheck')" type="primary">{:L('CUSTOMER_PRE_CHECK')}</el-button>
           </el-tooltip>
 
+          <el-tooltip content="离职员工客户资料">
+            <el-button  size="small"  type="primary" @click="openDialog('quitOut')" >离职客户资料</el-button>
+          </el-tooltip>
+
           <el-tooltip content="点击刷新当前页面" placement="right">
             <el-button size="small" @click="refresh" type="danger">刷新</el-button>
           </el-tooltip>
+
+
     </el-col>
 
   </el-row>
@@ -318,6 +324,7 @@
   <!-- /客户全部资料 -->
 
   <include file="Customer::_preCheck" />
+  <include file="Customer::_quitOut" />
   <!-- 跟踪内容 -->
   <include file="Customer::_traceContent" />
   <!-- /跟踪内容 -->
@@ -525,6 +532,8 @@ Vue.filter("handleString", function(v) {
     fm:'',
   },true).setForm('traceContent',{
     content:'',
+  },true).setForm('quitOut',{
+
   },true).setMethod('getType', function(type, field){
       return this[field][type];
   }).setMethod('beforeList', function(data){

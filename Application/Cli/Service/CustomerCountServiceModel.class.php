@@ -234,9 +234,9 @@ class CustomerCountServiceModel extends \Think\Model{
 
             $content = array();
             foreach ($fields as $v2) {
-                $content[$v2] = call_user_func(array($this, 'get'.parse_name($v2, 1)), $value['id']);
+                $tmp_row[$v2] = call_user_func(array($this, 'get'.parse_name($v2, 1)), $value['id']);
             }
-            $tmp_row['content'] = json_encode($content);
+            // $tmp_row['content'] = json_encode($content);
 
             $re[] = $tmp_row;
         }
@@ -378,15 +378,5 @@ class CustomerCountServiceModel extends \Think\Model{
         }
         return $tmp;
     }
-
-    
-
-    
-    
-
-    
-
-
-
 }
 

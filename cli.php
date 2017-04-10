@@ -30,9 +30,13 @@ define('BIND_MODULE','Cli');
 // 自定义常量
 
 
+/*echo getcwd();
+echo "\n";
+echo dirname(__FILE__);
+echo "\n";
+die();*/
 
-
-
+chdir(dirname(__FILE__));
 // 引入ThinkPHP入口文件
 require './ThinkPHP/ThinkPHP.php';
 
