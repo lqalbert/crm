@@ -1,0 +1,23 @@
+<el-dialog title="重设员工" v-model="resetUserFormDialog" @open="beforeReset">
+<!-- <el-form :model="form"> -->
+<el-form ref="resetUserForm"  :model="resetUserForm"  :label-width="dialogLabelWidth">
+  <el-row>
+
+    <el-col :span="12">
+      <el-form-item label="备选员工" prop="type">
+        <el-select  v-model="resetUserForm.salesman_id" >
+          <el-option  v-for='item in salesmans'  :value="item.id">
+            <span >{{ item.realname }}</span>
+            
+          </el-option>
+        </el-select>
+      </el-form-item>
+    </el-col>
+  </el-row>
+  </el-form>
+  <div slot="footer" class="dialog-footer">
+    <el-button @click="closeDialog('resetUser')">取 消</el-button>
+    <el-button type="primary" v-show="!editFormSubmitStatus" @click="editFormSubmit(page.resetUserFormUrl, 'resetUser')" >确 定</el-button>
+    <el-button type="primary" v-show="editFormSubmitStatus" :loading="true" >修改中</el-button>
+  </div>
+</el-dialog>
