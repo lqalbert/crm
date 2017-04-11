@@ -144,6 +144,20 @@
 		<script src="__PUBLIC__/js/index.js"></script>
 		<script src="__PUBLIC__/js/jquery.1.11.min.js"></script>
 		<script src="__PUBLIC__/plugins/amaran/jquery.amaran.js"></script>
+		<script>
+     //console.log(navigator.userAgent);
+
+			//利用ajax将测试数据保存
+			function Ajapost(){
+				$.post("{:U('test')}");
+			}
+	    window.onbeforeunload = function(){
+	    	$.post("{:U('test')}");
+	      return Ajapost();
+	    }
+
+		</script>
+
 		<script>		
 		     var showList = {};
 			 if (window.Notification && Notification.permission !== "granted") {
