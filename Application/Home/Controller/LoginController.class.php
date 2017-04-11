@@ -14,6 +14,7 @@ class LoginController extends Controller {
 	}
 
 	public function loginHandle() {
+		//var_dump($_SESSION);die();
 		if (IS_POST) {
 			$userModel = D('rbac_user');
 			$where = array(
@@ -22,14 +23,19 @@ class LoginController extends Controller {
 				);
 			$result = $userModel->relation('userInfo')->where($where)->find();
 			if (!$result) {
-                $this->ajaxReturn(array('msg'=>L('LOGIN_ERROR'),'code'=>-1),'JSON');
+        $this->ajaxReturn(array('msg'=>L('LOGIN_ERROR'),'code'=>-1),'JSON');
 			} else {
+        $sessionId=session_id();
+        session('ssid', $sessionId);
+       // $userModel->where(array('id'=>$result['id']))->save(array('ss_id'=>$sessionId));
+        
 				$location=new \Ip\Taobaoip\taobaoIp();//利用淘宝地址库
 				$arr=$location->getLocation();
 				$data=array(
                    'ip'=>$arr['ip'],
                    'location'=>$arr['country'].$arr['region'].$arr['city'].$arr['county'],
                    'lg_time'=>time(),
+                   'ss_id'  =>$sessionId
 				);
 				$re=$userModel->where(array('id'=>$result['id']))->save($data);
 				$_SESSION['location']= $re===false ? '' : $data;
@@ -44,6 +50,7 @@ class LoginController extends Controller {
 				Rbac::saveAccessList();
 				//$this->redirect('Index/index');
 				$this->ajaxReturn(array('msg'=>L('LOGIN_SUCCESS'),'code'=>1),'JSON');
+
 			}
 		} else {
 			$this->redirect('index');
@@ -52,14 +59,19 @@ class LoginController extends Controller {
 
 
 	public function logOut() {
-
+  	$user_id=session('uid');
+  	M('rbac_user')->where(array('id'=>$user_id))->save(array('out_time'=>time()));
 		if(session("account")){
 			session("uid",null);
 			session("account",null);
 			session(null);
 			session('[destroy]');
 		}
+		session('[destroy]');
 		$this->redirect("Login/index");
 	}
 
 }
+
+
+
