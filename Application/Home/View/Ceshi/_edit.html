@@ -1,0 +1,28 @@
+<el-dialog title="编辑修改" v-model="editFormDialog" >
+
+  <el-form ref="editForm" :rules="rules" :model="editForm" v-model="editForm" :label-width="dialogLabelWidth">
+    <el-row>
+    <el-col :span="12">
+      <el-form-item label="名称" prop="name">
+        <el-input v-model="editForm.name"  auto-complete="off" placeholder="请填写单位名称"></el-input>
+      </el-form-item>
+    </el-col>
+  </el-row>
+  <el-row>
+    <el-col :span="12">
+      <el-form-item label="备注"  prop="type">
+        <el-input
+          type="textarea"
+          :rows="2"
+          placeholder="请输入内容"
+          v-model="editForm.brief">
+        </el-input>
+
+      </el-form-item>
+    </el-col>
+  </el-row> 
+  </el-form>
+  <div slot="footer" class="dialog-footer">
+    <include file="Common:_edit" />
+  </div>
+</el-dialog>
