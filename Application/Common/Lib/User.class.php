@@ -30,7 +30,6 @@ class User {
     }
 
 
-
     public function getRole(){
         return M('rbac_role')->find($this->info['role_id']);
     }

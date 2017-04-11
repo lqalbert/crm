@@ -6,9 +6,7 @@
     <el-col :span="12">
       <el-form-item label="备选员工" prop="type">
         <el-select  v-model="resetUserForm.salesman_id" >
-          <el-option  v-for='item in salesmans'  :value="item.id">
-            <span >{{ item.realname }}</span>
-            
+          <el-option  v-for='item in salesmans' :label="item.realname"  :value="item.id">
           </el-option>
         </el-select>
       </el-form-item>
