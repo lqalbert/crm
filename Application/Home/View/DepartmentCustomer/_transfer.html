@@ -1,5 +1,5 @@
 <el-dialog title="客户转让" v-model="addTransferFormDialog" @open="beforeAddTransfer">
-  <el-form  ref="addTransferForm" :label-width="dialogLabelWidth" :model="addTransferForm">
+  <el-form :rules="transferRules" ref="addTransferForm" :label-width="dialogLabelWidth" :model="addTransferForm">
   <el-row>
     <!--< el-col :span="8">
       <el-form-item label="客户姓名"  prop="name">
@@ -9,7 +9,7 @@
 
     <el-col :span="8">
       <el-form-item label="接收单位" prop="rec_dep">
-        <el-select v-model="addTransferForm.rec_dep"   placeholder="请选择接收单位">
+        <el-select v-model="addTransferForm.rec_dep"  @change="departChange" placeholder="请选择接收单位">
           <el-option
             v-for="dep in Departments"
             :label="dep.name"
@@ -18,7 +18,22 @@
         </el-select>
       </el-form-item>
     </el-col>
-    <!-- <el-col :span="8">
+
+    <el-col :span="8">
+      <el-form-item label="接收小组" prop="rec_group" >
+        <el-select v-model="addTransferForm.rec_group" placeholder="请选择接收小组" @change="depChange">
+          <el-option
+            v-for="group in reGroup"
+            :label="group.name"
+            :value="group.id">
+          </el-option>
+        </el-select>
+      </el-form-item>
+    </el-col>
+  </el-row>
+
+  <el-row>
+    <el-col :span="10">
       <el-form-item label="接收员工" prop="rec_user">
         <el-select v-model="addTransferForm.rec_user" filterable placeholder="请选择接收员工">
           <el-option
@@ -28,8 +43,9 @@
           </el-option>
         </el-select>
       </el-form-item>
-    </el-col> -->
+    </el-col>
   </el-row>
+
   <el-row v-show="false">
     <el-col :span="10">
       <el-form-item label="比例" prop="step">

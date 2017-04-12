@@ -312,7 +312,7 @@
   <!-- / 录入跟踪 -->
 
   <!-- 录入转让 -->
-  <include file="Customer::_transfer"/>
+  <include file="_transfer"/>
   <!-- /录入转让 -->
 
   <!-- V类客户资料 -->
@@ -385,6 +385,7 @@ Vue.filter("handleString", function(v) {
   page.getGroupMemberListUrl = "{:U('getGroupMemberList')}";
   page.getTrackLogUrl = "{:U('trackInfo')}";
   page.addTransferFormUrl = "{:U('trasnfCustomers')}";
+  page.getGroupsUrl= "{:U('getDepartGroups')}";
   window.defaultOption.setDatas({
     advanchShow:false,
     buttonText:"展开",
@@ -427,6 +428,7 @@ Vue.filter("handleString", function(v) {
     searchGroup:{:json_encode($searchGroup)},
     memeberList:[],
     Departments:{:json_encode($Departments)},
+    reGroup:[],
    
     editRules:{
       name:[
@@ -465,6 +467,11 @@ Vue.filter("handleString", function(v) {
       cycle:[{ required: true, message: '请选择服务周期', trigger: 'blur' },],
       address:[{ required: true, message: '请输入通讯地址', trigger: 'blur' },],
     },
+    transferRules:{
+      rec_user:[
+        { required:true, message:"接收员工必选", trigger:'blur'}
+      ]
+    }
 
   }).setForm('search', {
     field: '',
@@ -521,6 +528,8 @@ Vue.filter("handleString", function(v) {
   },true).setForm('addTransfer',{
      cus_id:[],
      rec_dep:'',
+     rec_group:'',
+     rec_user:'',
      proportion:'100',
   },true).setForm('realInfo',{
     identity:'',
@@ -566,10 +575,10 @@ Vue.filter("handleString", function(v) {
   }).setMethod('depChange',function(v){
      //console.log(v);
      var vmThis=this;
-     this.$http.get('{:U("getRecUser")}', {params:{p_name:v}}).then(function(response){
+     this.$http.get('{:U("getRecUser")}', {params:{id:v}}).then(function(response){
        var reUsers = [];
        response.body.forEach(function(currentValue,index){
-         reUsers.push({value:currentValue.value,name:currentValue.value});
+         reUsers.push({value:currentValue.id,name:currentValue.realname});
        })
        vmThis.$set(vmThis,'reUsers',reUsers);
      });
@@ -578,17 +587,7 @@ Vue.filter("handleString", function(v) {
       this.provinceChange(this.editForm.area_province);
     }
   }).setMethod('handleSelectionChange', function(val){
-    this.multipleSelection = [];
-    if(val.length >= 2){
-       if(val.length == this.dataList.length){
-         this.multipleSelection = val;
-       }else{
-         this.multipleSelection.push(val.shift());
-       }
-    } else {
-      this.multipleSelection = val;
-    }
-
+    this.multipleSelection = val;
   }).setMethod('commonSelect',function(x){
     var form = x;
     var vmThis = this;
@@ -766,6 +765,13 @@ Vue.filter("handleString", function(v) {
     this.searchForm.field = "";
     this.dataLoad = true;
     this.loadDatalist();
+  }).setMethod('departChange', function(v){
+    this.$http.get(page.getGroupsUrl,{params:{id:v}}).then(function(response){
+      this.addTransferForm.rec_group = "";
+      this.reGroup = response.body;
+    },function(response){
+
+    })
   });
 </script>
 </block>
