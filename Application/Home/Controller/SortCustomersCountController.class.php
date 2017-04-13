@@ -63,9 +63,11 @@ class SortCustomersCountController extends CommonController{
                  $result = $this->getGroupUserCount();
                 break;
         }
+        //echo M()->getLastSql();
         $this->ajaxReturn($result);
 
     }
+
     private function getBetween(){
         $date = I('get.dist', Date("Y-m-d")." 00:00:00");
         return $this->getDayBetween($date);
@@ -211,7 +213,8 @@ class SortCustomersCountController extends CommonController{
                 $count = M('group_basic')->where(array('status'=>1))->count();
 
                 $list = M()->query('select id,name,  IFNULL(uc.count, 0)  as `count` from group_basic as gb left join 
-                (select count(id) as `count`,ui.group_id  from customers_basic as cb inner join user_info as ui on cb.user_id = ui.user_id where '. $this->getDayBetween().'  group by  ui.group_id ) as uc on gb.id=uc.group_id where gb.status=1  group by gb.id order by `count` desc limit '. $this->getOffset().','.$this->pageSize);
+                (select count(id) as `count`,ui.group_id  from customers_basic as cb inner join user_info as ui on cb.user_id = ui.user_id where '. $this->getDayBetween().'  group by  ui.group_id ) as uc
+                 on gb.id=uc.group_id where gb.status=1  group by gb.id order by `count` desc limit '. $this->getOffset().','.$this->pageSize);
                 return array('list'=>$list, 'count'=>$count);
                 break;
             default:
@@ -233,7 +236,10 @@ class SortCustomersCountController extends CommonController{
     }
 
 
-
+ // select gb.id,gb.name,IFNULL(uc.daycount,0) as daycount,IFNULL(uc.vcount,0) as vcount,count(uio.user_id) as ygcount from group_basic as gb left join
+ // (select count(case when cb.type='V' then cb.id end) as vcount,count(cb.id) as daycount,ui.user_id,ui.group_id from customers_basic as cb
+ // inner join user_info as ui on cb.user_id=ui.user_id group by ui.group_id) as uc
+ //   on gb.id=uc.group_id left join user_info as uio on gb.id=uio.group_id group by gb.id
 
 
 

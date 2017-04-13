@@ -13,9 +13,9 @@ return array(
 
 // 本地
 	'DB_TYPE' => 'mysql',
-	'DB_USER' => 'root',
-	'DB_PWD' =>'',
-	'DB_DSN' => 'mysql:host=localhost;dbname=dev_crm_02;charset=utf8',
+	'DB_USER' => 'dev_crm_test',
+	'DB_PWD' =>'rii2008rii',
+	'DB_DSN' => 'mysql:host=192.168.0.12;dbname=dev_crm_test;charset=utf8',
 
 /*	'DB_TYPE' => 'mysql',
 	'DB_USER' => 'beta_crm',
