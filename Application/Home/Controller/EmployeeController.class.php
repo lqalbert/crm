@@ -30,7 +30,7 @@ class EmployeeController extends CommonController {
 		$user->setEmployQueryCondition($this->M);
 
 		if (isset($_GET['name'])) {
-			$this->M->where(array('account'=>array('like', I('get.name')."%")));
+			$this->M->where(array('account|realname'=>array('like', I('get.name')."%")));
 		}
 
 
