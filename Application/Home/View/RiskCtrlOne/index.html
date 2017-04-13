@@ -369,13 +369,13 @@
     });
     this.dialogLabelWidth = "100px";
   }).setMethod('trackLog',function(row,event,column){
-    this.$http.post('{:U(trackInfo)}',row).then(function(response){
+    this.$http.post("{:U('CommonFindDetail/trackInfo')}",row).then(function(response){
       this.tableData = response.body;
     },function(response){
       this.$message.error("查询出错啦");
     });
 
-    this.$http.post('{:U(findDealInfo)}',row).then(function(response){
+    this.$http.post("{:U('CommonFindDetail/findDealInfo')}",row).then(function(response){
       this.tableDataOne = response.body;
     },function(response){
       this.$message.error("查询出错啦");
