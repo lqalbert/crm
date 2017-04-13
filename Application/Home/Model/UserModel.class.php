@@ -38,6 +38,15 @@ class UserModel extends  Model{
              ->select();
     }
 
+    public function getGroupEmployee($group_id){
+        $roleModel = new RoleModel;
+
+        return $this->m->join('user_info on rbac_user.id = user_info.user_id')
+             ->where(array('group_id'=>$group_id, 'rbac_user.status'=>array('NEQ', RbacUserModel::DELETE_SATUS)))
+             ->field('id,account,realname')
+             ->select();
+    }
+
 
 
 }

@@ -3,6 +3,9 @@ namespace Home\Model;
 use Think\Model;
 
 class GroupModel extends Model {
+
+    const DELETE_STATUS = -1;
+
 	protected $tableName = 'group_basic';
 
 

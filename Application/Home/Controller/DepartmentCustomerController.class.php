@@ -240,11 +240,14 @@ class DepartmentCustomerController extends CommonController {
         $cus_ids = I('post.cus_id');
         $rec_dep = I('post.rec_dep');
         $proportion = I('post.proportion');
-        
+        $rec_group = I('post.rec_group');
+        $rec_user = I('post.rec_user');
 
         $preDate = array(
             'from_department_id' => $this->depart_id,
             'to_department_id'   => $rec_dep,
+            'to_id'              => $rec_user,
+            'to_group_id'        => $rec_group,
             'content'            => I('post.content'),
         );
         $d->startTrans();
@@ -356,6 +359,23 @@ class DepartmentCustomerController extends CommonController {
             $this->M->rollback();
             $this->error($this->M->getError());
         }
+    }
+
+    /**
+    * 跟据depart_id 获取小组
+    * 直接用 1 这个数字不好啊 ，暂进这样了
+    */
+    public function getDepartGroups(){
+        $id = I('get.id');
+        $re = D('Group')->field('id,name')->where(array('department_id'=>$id, 'status'=>1))->select();
+        $this->ajaxReturn($re);
+    }
+
+    public function getRecUser(){
+        $id = I('get.id');
+        // $re = D('User')->field('user_id,realname as name')->where(array('group_id'=>$id, 'status'=>array))->select();
+        $re = D('User')->getGroupEmployee($id);
+        $this->ajaxReturn($re);
     }
 
 }
