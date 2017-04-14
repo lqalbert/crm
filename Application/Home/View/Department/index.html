@@ -97,6 +97,8 @@
 					      	<el-button v-else type="text" @click="searchReset">返回上一级</el-button> -->
 					      	<el-button type="success" @click="handleEdit(scope.$index, scope.row)"     size="small">编辑</el-button>
 					      	<el-button type="danger"  @click="handleDelete(scope.$index, scope.row)"   size="small" >删除</el-button>
+
+                            <el-button type="info" @click="outPut(scope.row.id)" size="small"> 导出人员 </el-button>
 					      </template>
 <!-- 					      <span>
 					        <el-button @click="handleEdit($index, row)"   type="success"  size="small">编辑</el-button>
@@ -326,6 +328,9 @@
 
         });
 
+    }).setMethod('outPut', function(id){
+        window.location.href="{:U('outPutExecle')}?id=" + id;
+        
     });
 </script>
 

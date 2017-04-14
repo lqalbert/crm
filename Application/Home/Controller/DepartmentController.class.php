@@ -2,6 +2,7 @@
 namespace Home\Controller;
 use Common\Lib\User;
 use Home\Model\RoleModel;
+use Home\Service\EmployeeOutput;
 
 class DepartmentController extends CommonController {
 	protected $table="Department";
@@ -53,6 +54,17 @@ class DepartmentController extends CommonController {
 		$sql = "select user_id,mid(realname, 1, 5) as realname from user_info where (role_id=$departmentRoleId and user_id not in(select user_id from department_basic where user_id is not null) ) or user_id=$id";
 		$result = $this->M->query($sql);
 		$this->ajaxReturn($result);
+	}
+
+
+	public function outPutExecle(){
+
+		$id = I('get.id'); // department_id
+
+		$outExcel = new EmployeeOutput();
+		$outExcel->setDepartmentId($id);
+		$outExcel->setTitle(D('Department')->where(array('id'=>$id))->getField('name'));
+		outPutExcel($outExcel);
 	}
 
 
