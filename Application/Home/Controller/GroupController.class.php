@@ -76,12 +76,6 @@ class GroupController extends CommonController {
 
 	public function removeMember(){
 		$user_ids = I("post.user_ids");
-
-		if (is_array($user_ids)) {
-			# code...
-		}
-
-
 		$this->setGroupEmployee($user_ids, 0);
 	}
 

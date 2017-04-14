@@ -6,22 +6,7 @@ return array(
     //调试
 	'SHOW_PAGE_TRACE' => false, 
 
-//192.168.0.12
-	// 'DB_TYPE' => 'mysql',
-	// 'DB_USER' => 'dev_crm_02',
-	// 'DB_PWD' =>'dev2008dev',
-	// 'DB_DSN' => 'mysql:host=192.168.0.12;dbname=dev_crm_02;charset=utf8',
 
-// 本地
-	'DB_TYPE' => 'mysql',
-	'DB_USER' => 'root',
-	'DB_PWD' =>'',
-	'DB_DSN' => 'mysql:host=localhost;dbname=dev_crm_02;charset=utf8',
-
-/*	'DB_TYPE' => 'mysql',
-	'DB_USER' => 'beta_crm',
-	'DB_PWD' =>'beta2008beta',
-	'DB_DSN' => 'mysql:host=139.224.40.238;dbname=beta_crm;charset=utf8',*/
 
 
 	//语言
@@ -37,7 +22,7 @@ return array(
 	'USER_AUTH_TYPE' => 1,       // 认证类型
 	'USER_AUTH_KEY' => 'uid',    // 认证识别号
 	//REQUIRE_AUTH_MODULE  需要认证模块
-	'NOT_AUTH_MODULE' => 'Index,nav,Area,PreCheck,Upload,UserDetail,Department,SysNotice,MsgBox',// 无需认证模块
+	'NOT_AUTH_MODULE' => 'Index,nav,Area,PreCheck,Upload,UserDetail,Department,SysNotice,MsgBox,CommonFindDetail',// 无需认证模块
 	'NOT_AUTH_ACTION' =>  'main,index,getList,checkCucstomers,importMyc,getUsers', //无需认证操作
 	//USER_AUTH_GATEWAY 认证网关
 	//RBAC_DB_DSN  数据库连接DSN
