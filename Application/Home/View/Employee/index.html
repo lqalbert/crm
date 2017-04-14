@@ -1,62 +1,10 @@
 <extend name="Common:base" />
 <block name="head">
-<style>
-	.card_img {
-		width: 400px;
-		height: 300px;
-	}
-
-	.card_img .el-upload, .card_front .el-upload, .card_back .el-upload {
-	    border: 1px dashed #d9d9d9;
-	    border-radius: 6px;
-	    cursor: pointer;
-	    position: relative;
-	    overflow: hidden;
-	}
-
-	.el-upload:hover {
-	    border-color: #20a0ff;
-	  }
-
-	 .avatar-uploader-icon {
-	    font-size: 28px;
-	    color: #8c939d;
-	    width: 400px;
-	    height: 300px;
-	    line-height: 300px;
-	    text-align: center;
-	 }
-	
-	 .card_img .avatar-uploader-icon{
-	 	background:url("__ROOT__/Public/images/card_img.jpg") no-repeat left top;
-	 	background-size :contain;
-	 }
-
-	 .card_front, .card_back {
-		width: 400px;
-		height: 234px;
-	}
-
-	 
-	 .card_front .avatar-uploader-icon{
-	 	width: 400px;
-	    height: 234px;
-	    line-height: 234px;
-	 	background:url("__ROOT__/Public/images/front.jpg") no-repeat left top;
-	 	background-size :contain;
-	 }
-
-	 .card_back .avatar-uploader-icon{
-	 	width: 400px;
-	    height: 234px;
-	    line-height: 234px;
-	 	background:url("__ROOT__/Public/images/back.jpg") no-repeat left top;
-	 	background-size :contain;
-	 }
-
-
-
-</style>
+  <style>
+    .el-table__body tr.current-row>td{
+      background: rgba(157, 195, 232, 0.7);
+    }
+  </style>
 </block>
 <block name="body">
 	<div id="app" class="container">
@@ -86,6 +34,7 @@
 					  :data="dataList" 
 				      v-loading="dataLoad" 
 				      element-loading-text="{:L('DATA_LOGIN')}"
+				      highlight-current-row
 				      @selection-change="handleSelectionChange"
 					 border>
 					    <el-table-column type="selection"  width="50" >
@@ -135,7 +84,20 @@
 					    </el-table-column>
 					    <el-table-column prop="address" label="地址" width="190" align="center">
 					    </el-table-column>
-					    
+					    <el-table-column prop="ip" label="登录IP" width="170" header-align="center">
+					    </el-table-column>
+					    <el-table-column prop="location" label="登录地点" width="170" align="center">
+					    </el-table-column>
+					    <el-table-column prop="lg_time" label="最后登录时间" width="175" align="center">
+						    <template scope="scope">
+					          {{ getTime(scope.row.lg_time) }}
+					      </template>
+					    </el-table-column>
+					    <el-table-column prop="out_time" label="最后退出时间" width="175" align="center">
+						    <template scope="scope">
+					          {{ getTime(scope.row.out_time) }}
+					      </template>
+					    </el-table-column>
 					    <el-table-column prop="created_at" label="创建时间" width="190" align="center">
 					    </el-table-column>
 
@@ -370,6 +332,25 @@
 			checkPass:""
 		}, true).setMethod('getType', function(type, field){
 			return this[field][type];
+		}).setMethod('getTime',function(v){
+			if(v==null || v==""){
+				return v;
+			}else{
+		    var date = new Date(v*1000);
+			  var year = date.getFullYear();
+			  var month = date.getMonth()+1;
+			  var day = date.getDate();
+			  var hour = date.getHours();
+			  var minute = date.getMinutes();
+			  var second = date.getSeconds();
+			  month=month<10?'0'+month:month;
+			  day=day<10?'0'+day:day;
+			  hour=hour<10?'0'+hour:hour;
+			  minute=minute<10?'0'+minute:minute;
+			  second=second<10?'0'+second:second;
+			  return year+'-'+month+'-'+day+' '+hour+':'+minute+':'+second;
+			}
+	
 		}).setMethod('handleSetRoles', function(index, row){
 			// var vmThis = this;
 			var f = FormName.getForm('setRoles');

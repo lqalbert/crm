@@ -10,17 +10,16 @@ class CustomerModel extends Model {
 	const TYPE_E = 'E';
 	const TYPE_N = 'F';
   const TYPE_F = 'N';
-	const TYPE_V = 'V';
+  const TYPE_V = 'V';
+  const TYPE_VX = 'VX';
+	const TYPE_VT = 'VT';
 
 	const UNKNOW = 0;
 	const MAN    = 1;
 	const WOMAN  = 2;
 
 
-
-
     protected $tableName = 'customers_basic';
-    public $sb=111111;
     protected $customerType = array(
     	    "A"=>"A.准客户",
           "B"=>"B.意向客户",
@@ -30,6 +29,8 @@ class CustomerModel extends Model {
           "F"=>"F.黑名单（同行）",
           "N"=>"N.无效客户",
           "V"=>"V.成交客户",
+          "VX"=>"VX.审核未通过",
+          "VT"=>"VT.有意见并投诉",
     	);
 
     protected $sexType = array(

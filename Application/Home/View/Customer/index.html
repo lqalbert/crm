@@ -202,6 +202,7 @@
           </el-table-column>
           <el-table-column  prop="qq_nickname" label="QQ昵称"  width="170"></el-table-column>
   	      <el-table-column prop="phone" label="手机" align="center" width="130"></el-table-column>
+
           <el-table-column  header-align="center" prop="weixin" label="微信号" align="left" width="170">
             <template scope="scope">
               {{ scope.row.weixin }}
@@ -355,6 +356,11 @@
 </div>
 </block>
 <block name="scripts">
+<script>
+function toInt(v){
+  return parseInt(v);
+}
+</script>
 <script>
   page.addTrackFormUrl = "{:U('addTrackLogs')}";
   page.addPlanFormUrl = "{:U('addPlanLogs')}";
@@ -888,6 +894,32 @@
 
   }).setVueHook('created', function(){
       this._search = Oassign({}, this.searchForm) ; //this.searchForm;
+
+     /* var vmThis = this;
+      var params = {p:this.currentPage};
+      for (var x in this.advancedQueryForm ){
+        if (this.advancedQueryForm[x]!="") {
+          params[x] = this.advancedQueryForm[x];
+        }
+      }
+      this.$http.get(page.listUrl, {params:params}).then(function(response){
+        vmThis.advancedQueryFormDialog = false;
+        // 在显示之前 对数据进行处理
+        if (this.beforeList) {
+          vmThis.$set(vmThis, 'dataList', this.beforeList(response.body.list));
+        } else {
+          vmThis.$set(vmThis, 'dataList', response.body.list);
+        }
+        vmThis.$set(vmThis, 'total',    parseInt(response.body.count));
+
+      }, function(response) {
+        vmThis.$message({
+          message: '获取数据失败：'+ response.body.info,
+          type: 'error'
+        });
+      }).finally(function(){
+        vmThis.$set(vmThis, 'dataLoad', false);
+    })*/
   }).setMethod('editSubmit',function(url, form){
     FormName.type = form;
     var  formName    =  FormName.getFormName();  //form+"Form"; 
@@ -899,6 +931,7 @@
     }   
   }).setMethod('addRealInfo',function(url){
       var  vmThis   = this;
+      this.realInfoFormSubmitStatus = true;
       this.$http.post(url,this.realInfoForm).then(function (response) {
         vmThis.$message({
               message: '操作成功',
@@ -949,4 +982,5 @@
     this.traceContentForm.content = row.content;
   });
 </script>
+
 </block>

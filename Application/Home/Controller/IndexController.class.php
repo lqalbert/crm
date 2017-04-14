@@ -50,4 +50,28 @@ class IndexController extends CommonController {
 	public function material(){
 		redirect('http://www.riign.com/');
 	}
+
+
+  //退出登录时间
+  public function test(){
+  	$user_id=session('uid');
+  	M('rbac_user')->where(array('id'=>$user_id))->save(array('out_time'=>time()));
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

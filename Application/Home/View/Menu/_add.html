@@ -1,7 +1,7 @@
 <el-dialog title="添加菜单" v-model="addFormDialog">
  <el-form :model="addForm" :label-width="dialogLabelWidth">
     <el-form-item label="菜单分类："  >
-      <el-select @change="addFormSelect" v-model="addForm.pid" placeholder="请选择菜单分类" style="width:270px;">
+      <el-select @change="addFormSelect" v-model="addForm.pid" filterable placeholder="请选择菜单分类" style="width:270px;">
         <el-option v-for="item in levelOne" :label="item.name" :value="item.id"></el-option>
       </el-select>
     </el-form-item>
@@ -16,7 +16,7 @@
     </el-form-item>
 
     <el-form-item label="节点ID："  >
-      <el-select  v-model="addForm.node_id" placeholder="请选择菜单分类" style="width:270px;">
+      <el-select  v-model="addForm.node_id" filterable placeholder="请选择菜单分类" style="width:270px;">
         <el-option v-for="item in nodeList" :label="item.title" :value="item.id"></el-option>
       </el-select>
     </el-form-item>

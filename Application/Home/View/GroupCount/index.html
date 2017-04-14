@@ -1,0 +1,154 @@
+<extend name="Common:base" />
+<block name="head">
+  <style>
+    .superaddition{
+      height:44px;
+      width:400px;
+      position: relative;
+      top : 12px;
+      z-index: 50;
+      left:90px;
+    }
+    .el-tabs__header{
+      border-top:2px solid #ea4b4b;
+      border-bottom: 1px solid #c51f1f;
+    }
+    .el-dialog .el-tabs__header{
+      border-top:none;
+    }
+    .el-tabs--border-card .el-tabs__item{
+      border-left: none;
+    }
+    .el-tabs--border-card .el-tabs__item.is-active {
+      background-color: #fff;
+      border-right-color: #d3dce6;
+      background: #544b8f;
+      color: #fff;
+    }
+    .el-tabs--border-card .el-tabs__header {
+      background-color: #fff;
+      margin: 0;
+    }
+    .container > .wrapp > .a > .el-row {
+      margin-bottom: 6px;
+    }
+    .el-tabs--border-card .el-tabs__content{
+      padding:0 9px 5px 9px;
+    }
+    .el-card, .el-menu--horizontal .el-submenu>.el-menu, .el-tabs--border-card{
+      box-shadow: none;
+    }
+    .el-tabs--border-card{
+      border: none;
+    }
+    .el-table__body tr.current-row>td{
+      background: rgba(157, 195, 232, 0.7);
+    }
+  </style>
+</block>
+<block name="body">
+  
+
+<div id="app" class="container">
+
+<div class="wrapp" id="appx" v-show="show" style="display: none;">
+  <div class="a" id="app3">
+  <el-row>
+    <el-col :span="12" >
+      <el-alert title="未选择日期时默认显示当日24点前的统计数据！" type="info" show-icon close-text="明白" ></el-alert>
+    </el-col>
+  </el-row>
+  <el-row>
+    <el-col :span="24">
+      <el-form :inline="true" ref="searchForm" :model="searchForm">
+        <el-form-item prop="dist">
+          <el-date-picker  v-model="searchForm.dist" placeholder="请选择日期"  @change="dateChange">
+          </el-date-picker>
+        </el-form-item>
+
+        <el-form-item prop="name" style="width:170px">
+          <el-input v-model="searchForm.name" size="small" placeholder="团队|小组名称"></el-input>
+        </el-form-item>
+
+        <el-form-item prop="field" v-show="false">
+          <input type="hidden" size="small" v-model="searchForm.field">
+        </el-form-item>
+
+        <el-form-item>
+          <el-button type="info" size="small" icon="search"  @click="loadDatalist" >查询</el-button> 
+          <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
+            <el-button  size="small" @click="searchReset2"  >重置</el-button>
+          </el-tooltip>
+          <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:10px;">
+            <el-button  size="small" type="danger" @click="refresh" >刷新</el-button>
+          </el-tooltip>
+        </el-form-item>
+
+      </el-form>
+      </el-col>
+  </el-row>
+  <!-- max-height="500" -->
+
+  <el-row>
+    <el-col :span="24">
+      <el-table :data="dataList" border id="he" v-loading="dataLoad" 
+       element-loading-text="{:L('DATA_LOGIN')}" highlight-current-row
+       empty-text="暂无数据,请录入客户！" ref="select" >
+        <el-table-column  label="序号"  align="center" width="65" :formatter="handleIndex"  >
+        </el-table-column>
+        <el-table-column  header-align="center" prop="name" label="团队名称">
+        </el-table-column>
+        <el-table-column  align="center" prop="vcount" label="成交客户数(个)">
+        </el-table-column>
+        <el-table-column  align="center" prop="daycount" label="录入客户数(个)">
+        </el-table-column>
+        <el-table-column  align="center" prop="ygcount" label="员工个数(个)">
+        </el-table-column>
+      </el-table>
+    </el-col>
+  </el-row>
+
+  <!-- toolbar -->
+  <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
+
+    <el-col :span="12" :offset="12">
+      <div class="grid-content bg-purple-light pull-right">
+
+        <!-- page -->
+        <include file="Common:_pagination" />
+        <!-- / page -->
+        
+      </div>
+    </el-col>
+
+  </el-row>
+  </div>
+
+</div>
+
+</div>
+
+</block>
+<block name="scripts">
+<script>
+  window.defaultOption.setDatas({
+       
+  }).setForm('search',{
+    dist:'',
+    name:'',
+    group:'user_id',
+    ctrl:'search',
+  }).setMethod('dateChange', function(v){
+    this.searchForm.dist = v;
+  }).setMethod("searchReset2", function(){
+    this.searchForm = Oassign({}, this._search) ;
+    this.dataLoad = true;
+    this.loadDatalist();
+  }).setMethod('refresh',function(){
+    window.location.reload();
+  });
+</script>
+
+
+
+</block>

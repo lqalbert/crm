@@ -28,6 +28,7 @@ class CustomerLogModel extends Model {
         "售前回访",
         "风控建议",
         "经理建议",
+        "反馈投诉",
 		//"Email联系",
 		    "其它方式"
 	);

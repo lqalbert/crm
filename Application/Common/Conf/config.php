@@ -29,5 +29,5 @@ return array(
 	'RBAC_ACCESS_TABLE'=>'rbac_access',   //权限表  
 	'RBAC_NODE_TABLE'=>  'rbac_node',       //节点表  
 	// 'RBAC_SUPERADMIN' => 'admin',
-	'ADMIN_AUTH_KEY'=>'superAdmin',       //超级管理员识别
+	'ADMIN_AUTH_KEY'=>'superAdmin',       //超级管理员识别  
 );
