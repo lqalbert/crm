@@ -7,7 +7,8 @@ use Common\Lib\User;
 
 
 // getBetween不正确
-
+// 有问题 
+// 直接使用了id 来判断 这个class要禁用
 class SortCustomersCountController extends CommonController{
     protected $pageSize = 15;
 

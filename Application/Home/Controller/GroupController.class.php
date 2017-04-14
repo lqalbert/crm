@@ -81,10 +81,6 @@ class GroupController extends CommonController {
 
 	public function removeMember(){
 		$user_ids = I("post.user_ids");
-
-		
-
-
 		$this->setGroupEmployee($user_ids, 0);
 	}
 

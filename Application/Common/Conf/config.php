@@ -20,7 +20,7 @@ return array(
 	'USER_AUTH_TYPE' => 1,       // 认证类型
 	'USER_AUTH_KEY' => 'uid',    // 认证识别号
 	//REQUIRE_AUTH_MODULE  需要认证模块
-	'NOT_AUTH_MODULE' => 'Index,nav,Area,PreCheck,Upload,UserDetail,Department,SysNotice,MsgBox',// 无需认证模块
+	'NOT_AUTH_MODULE' => 'Index,nav,Area,PreCheck,Upload,UserDetail,Department,SysNotice,MsgBox,CommonFindDetail',// 无需认证模块
 	'NOT_AUTH_ACTION' =>  'main,index,getList,checkCucstomers,importMyc,getUsers,getDepartGroups,getRecUser', //无需认证操作
 	//USER_AUTH_GATEWAY 认证网关
 	//RBAC_DB_DSN  数据库连接DSN
@@ -29,5 +29,5 @@ return array(
 	'RBAC_ACCESS_TABLE'=>'rbac_access',   //权限表  
 	'RBAC_NODE_TABLE'=>  'rbac_node',       //节点表  
 	// 'RBAC_SUPERADMIN' => 'admin',
-	'ADMIN_AUTH_KEY'=>'superAdmin',       //超级管理员识别  
+	'ADMIN_AUTH_KEY'=>'superAdmin',       //超级管理员识别
 );

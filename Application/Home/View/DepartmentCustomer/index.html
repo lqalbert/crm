@@ -329,8 +329,6 @@
   <include file="Customer::_traceContent" />
   <!-- /跟踪内容 -->
 
-  
-
 </div>
 
 </div>
@@ -378,6 +376,7 @@ Vue.filter("handleString", function(v) {
 
 </script>
 <script>
+  page.addRealInfoUrl = "{:U('realInfo')}";
   page.addTrackFormUrl = "{:U('addTrackLogs')}";
   page.addPlanFormUrl = "{:U('addPlanLogs')}";
   page.addRemindFormUrl = "{:U('setRemid')}";
@@ -461,8 +460,8 @@ Vue.filter("handleString", function(v) {
       ],
       type:[{ required: true, message: '请选择产品类型', trigger: 'blur' },],
       expense:[
-        { required: true, message: '请输入产品金额', trigger: 'blur' },
-        { type: 'number', message: '请输入产品金额', trigger: 'blur' },
+        { required: true, message: '请输入产品金额', trigger: 'blur',type: 'number' },
+        
       ],
       cycle:[{ required: true, message: '请选择服务周期', trigger: 'blur' },],
       address:[{ required: true, message: '请输入通讯地址', trigger: 'blur' },],
@@ -657,7 +656,7 @@ Vue.filter("handleString", function(v) {
          this.realInfoForm.expense = response.body.expense;
          this.realInfoForm.cycle = response.body.cycle;
          this.realInfoForm.address = response.body.address;
-         this.realInfoForm.cus_id = response.body.cus_id;
+         // this.realInfoForm.cus_id = response.body.cus_id;
       });
 
       this.handleEdit(index, row);
