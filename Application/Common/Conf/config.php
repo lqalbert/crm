@@ -20,7 +20,7 @@ return array(
 	'USER_AUTH_TYPE' => 1,       // 认证类型
 	'USER_AUTH_KEY' => 'uid',    // 认证识别号
 	//REQUIRE_AUTH_MODULE  需要认证模块
-	'NOT_AUTH_MODULE' => 'Index,nav,Area,PreCheck,Upload,UserDetail,Department,SysNotice,MsgBox,CommonFindDetail',// 无需认证模块
+	'NOT_AUTH_MODULE' => 'Index,nav,Area,PreCheck,Upload,UserDetail,Department,SysNotice,MsgBox,CommonFindDetail,CustomersCountSecond',// 无需认证模块
 
 	'NOT_AUTH_ACTION' =>  'main,index,getList,checkCucstomers,importMyc,getUsers,getDepartGroups,getRecUser,findRealInfo,realInfo', //无需认证操作
 	//USER_AUTH_GATEWAY 认证网关

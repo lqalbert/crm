@@ -15,6 +15,8 @@ class CustomerCountServiceModel extends \Think\Model{
 
     protected $autoCheckFields = false;
 
+    private $store = true;
+
     /**
     * 时间
     */
@@ -68,6 +70,21 @@ class CustomerCountServiceModel extends \Think\Model{
     */
     private $departments = array();
 
+
+    public function getFields(){
+        $this->customerTypes = array_keys(D('Home/Customer')->getType());
+        return array_merge( $this->customerTypes, array('today_v', 'conflict_to', 'conflict_from', 'pulls_num', 'create_num', 'all_num'));
+    }
+
+    /**
+    * set Store 
+    * @param boolean true;
+    *
+    * @return 
+    */
+    public function setStore($isStore = true){
+        $this->store = $isStore;
+    }
 
     private function setGroups(){
         $this->groups = M('group_basic')->where(array('status'=>array('EGT', 0)))->getField('id,name');
@@ -218,10 +235,11 @@ class CustomerCountServiceModel extends \Think\Model{
 
         $roleM = new RoleModel();
 
-        $alluser= M()->query("select id,group_id,department_id from rbac_user inner join user_info on rbac_user.id = user_info.user_id where rbac_user.status>=0 and role_id in(".$roleM->getIdByEname(RoleModel::CAPTAIN).",". $roleM->getIdByEname(RoleModel::STAFF) .")");
+        $alluser= M()->query("select id,group_id,department_id from rbac_user inner join user_info on rbac_user.id = user_info.user_id where rbac_user.status>=0 and group_id<>0 and department_id<>0 and role_id in(".$roleM->getIdByEname(RoleModel::CAPTAIN).",". $roleM->getIdByEname(RoleModel::STAFF) .")");
 
-        $this->customerTypes = array_keys(D('Home/Customer')->getType());
-        $fields = array_merge( $this->customerTypes, array('today_v', 'conflict_to', 'conflict_from', 'pulls_num', 'create_num', 'all_num'));
+        /*$this->customerTypes = array_keys(D('Home/Customer')->getType());
+        $fields = array_merge( $this->customerTypes, array('today_v', 'conflict_to', 'conflict_from', 'pulls_num', 'create_num', 'all_num'));*/
+        $fields = $this->getFields();
         $re = array();
         foreach ($alluser as $value) {
             $tmp_row = array(
@@ -241,9 +259,13 @@ class CustomerCountServiceModel extends \Think\Model{
             $re[] = $tmp_row;
         }
 
-        // addAll;
-
-        M('statistics_usercustomers')->addAll($re);
+        
+        if ($this->store) {
+            return M('statistics_usercustomers')->addAll($re);
+        } else {
+            return $re;
+        }
+        
     }
 
     /**
@@ -324,6 +346,20 @@ class CustomerCountServiceModel extends \Think\Model{
         } else {
             return 0;
         }
+    }
+
+    /**
+    * 存储层 结构
+    */
+    public function getVX($id){
+        return $this->getATypeCount('VX'.$id);
+    }
+
+    /**
+    * 存储层 结构
+    */
+    public function getVT($id){
+        return $this->getATypeCount('VT'.$id);
     }
 
     /**

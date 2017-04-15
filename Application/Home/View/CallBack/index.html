@@ -434,6 +434,7 @@
       setTimeout(function(){
         vmThis.reviewFormSubmitStatus = false;
         vmThis.reviewPassFormDialog = true;
+        vmThis.reviewPassForm.type = vmThis.reviewForm.type;
       }, 2000); 
   }).setMethod('reviewPass',function(url){
   	 var  vmThis   = this;

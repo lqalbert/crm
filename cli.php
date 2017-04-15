@@ -24,7 +24,7 @@ define('BIND_MODULE','Cli');
 
 //  自定义常量
 
-
+define('MODE_NAME', 'cli');
 
 
 // 自定义常量
