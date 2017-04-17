@@ -281,7 +281,7 @@ class CustomerController extends CommonController {
     * 编辑
     *
     * 知道 丑丑丑丑丑丑丑丑丑丑丑丑  
-    * if 超过三层了 fuck customerContact 的逻辑需要重构封装 
+    * if 超过三层了  的逻辑需要重构封装 
     */
     public function edit() {
         $this->M->startTrans();

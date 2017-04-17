@@ -59,6 +59,59 @@ class SysNoticeModel extends Model{
     }
 
 
+    /**
+    * 跟据不同的权限  index.html 显示不同的内容
+    * 列表的操作列
+    * 添加按钮
+    * @parame string 
+    *
+    * @return array
+    */
+
+    public function decoratorView($roleEname){
+      $funcName = $roleEname."GetView";
+      if (method_exists($this, $roleEname."GetView")) {
+        return call_user_func(array($this, $funcName));
+      } else {
+        return $this->getView();
+      }  
+
+    }
+
+    private function getView(){
+      return array(
+            'oprate' => '',
+            'button' => ''
+        );
+    }
+
+    private function goldGetView(){
+      $oprateColumn = <<<'EOD'
+<el-table-column label="操作"  align="center" width="180">
+   <template scope="scope">
+      <el-button type="success" @click.stop="handleEdit(scope.$index, scope.row)"     size="small">编辑</el-button>
+      <el-button type="danger"  @click.stop="handleDelete(scope.$index, scope.row)"   size="small" >删除</el-button>
+   </template>
+</el-table-column>  
+EOD;
+      $addButton = <<< 'BUTTON'
+<el-tooltip content="点击填写公告并发布" placement="right">
+ <el-button size="small" type="info" @click="openDialog('add')" icon="edit">发布公告
+ </el-button>
+</el-tooltip>
+BUTTON;
+      return array(
+            'oprate' => $oprateColumn,
+            'button' => $addButton
+        );
+    }
+
+
+
+
+
+
+
 
 
 

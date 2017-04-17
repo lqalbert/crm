@@ -2,6 +2,7 @@
 namespace Home\Controller;
 
 use Home\Model\SysNoticeModel;
+use Home\Model\RoleModel;
 
 class SysNoticeController extends CommonController{
   protected $table="sys_notice";
@@ -9,6 +10,11 @@ class SysNoticeController extends CommonController{
   
   public function index(){
     $this->assign('NoticeType', $this->M->getType());
+
+
+    $ename = (new RoleModel)->getEnameById(session('account')['userInfo']['role_id']);
+
+    $this->assign('viewDecorator', $this->M->decoratorView($ename));
   	$this->display();
   }
   

@@ -45,12 +45,10 @@
             <el-table-column label="开始日期" prop="start" align="center" width="180"></el-table-column> 
             <el-table-column label="截止日期" prop="end" align="center" width="180"></el-table-column> 
             <el-table-column label="发布人" prop="user" width="120"></el-table-column>
-            <el-table-column label="操作"  align="center" width="180">
-               <template scope="scope">
-                  <el-button type="success" @click.stop="handleEdit(scope.$index, scope.row)"     size="small">编辑</el-button>
-                  <el-button type="danger"  @click.stop="handleDelete(scope.$index, scope.row)"   size="small" >删除</el-button>
-               </template>
-            </el-table-column>  
+            {:$viewDecorator['oprate']}
+            
+
+
           </el-table>
         </el-col>
       </el-row>
@@ -58,10 +56,11 @@
       <el-row type="flex"  justify="space-between" align="middle"  class="row-bg">
             <el-col :span="12">
               <div class="grid-content bg-purple">
-                 <el-tooltip content="点击填写公告并发布" placement="right">
-                   <el-button size="small" type="info" @click="openDialog('add')" icon="edit">发布公告
-                   </el-button>
-                 </el-tooltip>
+                {:$viewDecorator['button']}
+
+                 
+
+
               </div>
             </el-col>
             <el-col :span="12">
