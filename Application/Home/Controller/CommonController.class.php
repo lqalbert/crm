@@ -184,5 +184,13 @@ class CommonController extends Controller {
 		}
 	}
 
+	/**
+	* 得到ename
+	* 
+	*/
+	protected function getRoleEname(){
+		return (new RoleModel)->getEnameById(session('account')['userInfo']['role_id']);
+	}
+
 
 }

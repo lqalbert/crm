@@ -28,6 +28,13 @@ class UserModel extends  Model{
              ->select();
     }
 
+    public function getDepartmentEmployee($depart_id, $field="id,account,realname"){
+        return $this->m->join('user_info on rbac_user.id = user_info.user_id')
+             ->where(array('department_id'=>$depart_id, 'rbac_user.status'=>array('NEQ', RbacUserModel::DELETE_SATUS)))
+             ->field($field)
+             ->select();
+    }
+
     public function getGeneralEmployee($depart_id){
         $roleModel = new RoleModel;
 

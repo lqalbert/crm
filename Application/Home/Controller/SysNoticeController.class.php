@@ -12,7 +12,7 @@ class SysNoticeController extends CommonController{
     $this->assign('NoticeType', $this->M->getType());
 
 
-    $ename = (new RoleModel)->getEnameById(session('account')['userInfo']['role_id']);
+    $ename = $this->getRoleEname();
 
     $this->assign('viewDecorator', $this->M->decoratorView($ename));
   	$this->display();

@@ -32,6 +32,8 @@ class WorkSummaryController extends CommonController{
 			$this->M->where(array("content"=> array('like', "%".I('get.name')."%")));
 		}
 
+    $this->setRoleQuery();
+
   }
 
 
@@ -44,25 +46,28 @@ class WorkSummaryController extends CommonController{
 
 
 
+  private function setRoleQuery(){
+     $funcName = $this->getRoleEname()."Condition";
+     if (method_exists($this, $funcName)) {
+       
+     } else {
+       $this->commonCondition();
+     }
+  }
 
+  private function commonCondition(){
+    $this->M->where(array('su_user'=>session('uid')));
+  }
 
+  private function goldCondition(){
+    // $this->M->where(array('su_user'=>session('uid')));
+  }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  
+  private function departmentMasterCondition(){
+    $user_ids = D("User")->getDepartmentEmployee(session('account')['userInfo']['department_id'], 'id');
+    $this->M->where(array('su_user'=>array('IN', array_column($user_ids, 'id'))));
+  }
 
 
 
