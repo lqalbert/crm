@@ -334,13 +334,13 @@ class CustomerController extends CommonController {
         }
     }
 
-	/**
-	* 添加跟踪纪录
-	*
-	*/
-	public function addTrackLogs(){
-        D('Customer','Logic')->addTrackLogs();
-    }
+	// /**
+	// * 添加跟踪纪录
+	// *
+	// */
+	// public function addTrackLogs(){
+    //     D('Customer','Logic')->addTrackLogs();
+    // }
 
     /**
     *   添加计划记录

@@ -165,9 +165,15 @@
 		    <el-col :span="12">
 		      <div class="grid-content bg-purple">
 		      	<span class="wrapper">
+
 			        <el-tooltip content="选择单个或多个客户分配给指定的回访专员" placement="right">
 			          <el-button size="small" type="primary" @click="openDialog('dipacth')">分 配</el-button>
 			        </el-tooltip>
+
+              <el-tooltip content="选择客户录入跟踪信息" placement="right" style="margin-left:10px;">
+                <el-button size="small" @click="openDialog('addTrack')" type="primary">录入跟踪</el-button>
+              </el-tooltip>
+
 			      </span>
 		      </div>
 		    </el-col>
