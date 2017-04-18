@@ -51,11 +51,15 @@ class CustomerCountServiceModel extends \Think\Model{
     private $pullCount = array();
 
     /**
-    * 录入
+    * 当日录入
     * 
     */
     private $createCount = array();
 
+    /**
+    *  自锁总数
+    */
+    private $ownCount = array();
 
 
     /**
@@ -216,7 +220,7 @@ class CustomerCountServiceModel extends \Think\Model{
         $sql = "select count(id) as c  , user_id from customers_basic  group by user_id  ";
         $re = M()->query($sql);
         foreach ($re as  $value) {
-            $this->OwnCount[$value['user_id']] = $value['c'];
+            $this->ownCount[$value['user_id']] = $value['c'];
         }
     }
 
@@ -237,6 +241,7 @@ class CustomerCountServiceModel extends \Think\Model{
         $this->setPullCount();
         $this->setVCount();
         $this->setCreateCount();
+        $this->setOwnCount();
         $this->setGroups();
         $this->setDepartments();
 
@@ -439,8 +444,8 @@ class CustomerCountServiceModel extends \Think\Model{
     * 存储层 
     */
     public function getOwnNum($id){
-        if (isset($this->OwnCount($id))) {
-            return $this->OwnCount[$id];
+        if (isset($this->ownCount[$id])) {
+            return $this->ownCount[$id];
         } else {
             return 0;
         }

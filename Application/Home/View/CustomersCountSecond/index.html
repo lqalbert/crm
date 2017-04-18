@@ -69,13 +69,13 @@
             </el-table-column>
             <el-table-column  align="center" prop="name"  label="名称"  align="center" width="150">
               <template scope="scope">
-                <span v-if="objType != 'Users' ">
+                <span v-if="objType != 'Users' && id!=0 ">
                   <a :href="getUrl(scope.row.id)">{{ scope.row.name }}</a>
                 </span>
                 <span v-else>{{ scope.row.name }}</span>
               </template>
             </el-table-column>
-            <el-table-column sortable="custom"  align="center" prop="all_num" label="当日客户总数(个)"  width="150">
+            <el-table-column sortable="custom"  align="center" prop="all_num" label="当日客户总数"  width="160">
             </el-table-column>
             <el-table-column sortable="custom"  align="center" prop="create_num" label="当日自锁数"  width="150">
             </el-table-column>
@@ -91,7 +91,6 @@
 
             <el-table-column sortable="custom"  align="center" prop="pulls_num" label="索取"  width="100">
             </el-table-column>
-
 
             <el-table-column sortable="custom"  align="center" prop="a" label="A.准客户"  width="150">
             </el-table-column>
@@ -178,6 +177,7 @@
           v:0,
           vt:0,
           vx:0,
+          id:0
         };
         data.forEach(function(currentValue){
           for (var x in h) {
