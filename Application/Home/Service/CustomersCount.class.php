@@ -37,7 +37,7 @@ class CustomersCount {
 
 
         
-        $list = M('statistics_usercustomers')->field($this->getSqlFields().", department_name as name")
+        $list = M('statistics_usercustomers')->field($this->getSqlFields().", id, department_name as name")
                                             ->where(array('date'=> $this->date))
                                             ->group('department_id')
                                             ->order($this->order)
@@ -47,7 +47,7 @@ class CustomersCount {
 
     public function getGroups($department_id = 0){
         
-        return M('statistics_usercustomers')->field($this->getSqlFields().", group_name as name")
+        return M('statistics_usercustomers')->field($this->getSqlFields().",id , group_name as name")
                                             ->where(array('date'=> $this->date, 'department_id'=>$department_id ))
                                             ->group('group_id')
                                             ->order($this->order)
@@ -58,10 +58,10 @@ class CustomersCount {
     public function getUsers($group_id){
         /*$sql = "select ".$this->getSqlFields(). ", group_name as name  from statistics_usercustomers where `date`='".$this->date."' and group_id=". $group_id ." group by user_id ";
         return M()->query($sql);*/
-        return M('statistics_usercustomers')->join("user_info as ui statistics_usercustomers.user_id=ui.user_id")
-                                            ->field($this->getSqlFields().", realname as name")
-                                            ->where(array('date'=> $this->date, 'group_id'=>$group_id ))
-                                            ->group('user_id')
+        return M('statistics_usercustomers')->join("user_info as ui on statistics_usercustomers.user_id=ui.user_id")
+                                            ->field($this->getSqlFields().", statistics_usercustomers.id, realname as name")
+                                            ->where(array('date'=> $this->date, 'statistics_usercustomers.group_id'=>$group_id ))
+                                            ->group('statistics_usercustomers.user_id')
                                             ->order($this->order)
                                             ->select();
     }

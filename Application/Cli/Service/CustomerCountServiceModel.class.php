@@ -87,11 +87,11 @@ class CustomerCountServiceModel extends \Think\Model{
     }
 
     private function setGroups(){
-        $this->groups = M('group_basic')->where(array('status'=>array('GT', 0)))->getField('id,name');
+        $this->groups = M('group_basic')->where(array('status'=>array('EGT', 0)))->getField('id,name');
     }
 
     private function setDepartments(){
-        $this->departments = M('department_basic')->where(array('status'=>array('GT', 0)))->getField('id,name');
+        $this->departments = M('department_basic')->where(array('status'=>array('EGT', 0)))->getField('id,name');
     }
 
 

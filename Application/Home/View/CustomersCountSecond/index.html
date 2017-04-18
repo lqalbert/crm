@@ -15,7 +15,14 @@
   <div class="a" id="app3">
 <el-row>
     <el-col :span="23" >
-      <el-alert title="暂时只能看昨天及以前的" type="info" show-icon close-text="明白" ></el-alert>
+      <el-alert 
+      title="暂时只能看昨天及以前的" 
+      type="info" 
+      show-icon 
+      close-text="明白" 
+      description="每天晚上12点之后，系统会自成动统计昨天的数据并保存这些数据。所以暂时只能看昨天的"
+      >
+      </el-alert>
     </el-col>
   </el-row>
   <el-row>
@@ -25,14 +32,7 @@
           <el-date-picker size="small" v-model="searchForm.dist" placeholder="请选择日期"  @change="dateChange">
           </el-date-picker>
         </el-form-item>
-         <!-- <el-form-item prop="object">
-          <el-select size="small" v-model="searchForm.object" placeholder="请选择对象" >
-            <el-option v-for="item in searchGroup" :label="item.key" :value="item.value" :disabled="item.disabled"></el-option>
-          </el-select>
-        </el-form-item> -->
-        <!-- <el-form-item prop="enter_name" style="width:170px">
-          <el-input v-model="searchForm.enter_name" size="small" placeholder="个人|团组|部门的名字"></el-input>
-        </el-form-item> -->
+         
         <el-form-item prop="field" v-show="false">
           <input type="hidden" size="small" v-model="searchForm.field">
         </el-form-item>
@@ -43,7 +43,7 @@
             <el-button  size="small" @click="searchReset"  >重置</el-button>
           </el-tooltip>
           <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:10px;">
-            <el-button  size="small" type="danger" @click="refresh" >刷新</el-button>
+            <el-button  size="small" type="danger" @click="resetBack" >刷新</el-button>
           </el-tooltip>
 
         </el-form-item>
@@ -68,13 +68,19 @@
             <el-table-column label="序号"  align="center" width="65" :formatter="handleIndex"  >
             </el-table-column>
             <el-table-column  align="center" prop="name"  label="名称"  align="center" width="150">
+              <template scope="scope">
+                <span v-if="objType != 'Users' ">
+                  <a :href="getUrl(scope.row.id)">{{ scope.row.name }}</a>
+                </span>
+                <span v-else>{{ scope.row.name }}</span>
+              </template>
             </el-table-column>
-            <el-table-column sortable="custom"  align="center" prop="all_num" label="客户总数(个)"  width="150">
+            <el-table-column sortable="custom"  align="center" prop="all_num" label="当日客户总数(个)"  width="150">
             </el-table-column>
-            <el-table-column sortable="custom"  align="center" prop="create_num" label="今日添加数"  width="150">
+            <el-table-column sortable="custom"  align="center" prop="create_num" label="当日添加数"  width="150">
             </el-table-column>
 
-            <el-table-column sortable="custom"  align="center" prop="today_v" label="今日成交数"  width="150">
+            <el-table-column sortable="custom"  align="center" prop="today_v" label="当日成交数"  width="150">
             </el-table-column>
 
             <el-table-column sortable="custom"  align="center" prop="conflict_to" label="冲突"  width="100">
@@ -137,9 +143,12 @@
     sortMap:{
       descending:'desc',
       ascending:'asc'
-    }
+    },
+    objType:"{$objType}"
   }).setForm('search',{
-      dist:'<?= Date('Y-m-d', time()-86400) ?>',
+      dist:'{$dist}',
+      id:"<?php echo I('get.id', 0)?>",
+      objType:"{$objType}"
       // object:'user',
       // realname:'',
       // group:'user_id',
@@ -192,6 +201,14 @@
      if (index == this.dataList.length -1) {
       return 'last'
      }
-  });
+  }).setMethod('resetBack', function(){
+      window.location.href="{:U('index')}";
+  }).setMethod('getUrl', function(v){
+      var s = [];
+      if (this.searchForm.dist.length) {
+        s.push("dist="+this.searchForm.dist);
+      }
+      return "{:U('index')}" + "?objType=" + this.objType + "&id=" + v +"&"+s.join("&");
+    });
 </script>
 </block>
