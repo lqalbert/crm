@@ -29,7 +29,7 @@ class CustomersCountSecondController extends CommonController {
                      'Departments'=>'Groups',  //总经办
 
 
-                     'departmentMaster'=> 'Users',
+                     'departmentMaster'=> 'Groups',
                      'Groups' => 'Users'
                     );
         if (isset($map[$roleEname])) {
@@ -83,19 +83,23 @@ class CustomersCountSecondController extends CommonController {
             
             return call_user_func(array($this, "get".$objType),  $relate_id);
         }
-
-
-        /*if ( !empty($objType) && $id !=0) {
-            
-            return call_user_func(array($this, "get".$objType),  $department_id);
-        } else {
-            return $this->getDepartments();
-        }*/
         
     }
 
     private function departmentMasterCondition(){
-        return $this->getGroups(session('account')['userInfo']['department_id']);
+
+        $objType =  I('get.objType');
+        $id = I('get.id', 0);
+        
+
+        if ($id==0) {
+            return $this->getGroups(session('account')['userInfo']['department_id']);
+        } else {
+            
+            $relate_id = M('statistics_usercustomers')->where(array('id'=>$id))->getField('group_id');
+            
+            return call_user_func(array($this, "get".$objType),  $relate_id);
+        }
     }
 
     private function captainCondition(){
