@@ -1,0 +1,69 @@
+<el-dialog title="录入跟踪" v-model="addTrackFormDialog" @open="beforeAddTrack">
+  <el-form  ref="addTrackForm" :label-width="dialogLabelWidth" :model="addTrackForm">
+  <el-row>
+    <el-col :span="10">
+      <el-form-item label="客户姓名"  prop="name">
+        <el-input v-model="addTrackForm.name" :disabled="true"></el-input>
+      </el-form-item>
+    </el-col>
+    <el-col :span="14">
+      <el-form-item label="客户类型" prop="to_type">
+        <el-select v-model="addTrackForm.to_type" placeholder="请选择">
+          <el-option v-for="(type, key) in customerType" :label="type" :value="key" :disabled="key=='F' ||  key=='VX'  || key=='N'"></el-option>
+        </el-select>
+      </el-form-item>
+    </el-col>
+  </el-row>
+  <el-row>
+   	<el-col :span="10">
+   		<el-form-item label="下次跟踪时间" prop="next_datetime">
+		    <el-date-picker
+		      v-model="addTrackForm.next_datetime"
+		      type="datetime"
+		      placeholder="选择日期时间"
+          :editable="false"
+		      >
+		    </el-date-picker>
+    	</el-form-item>
+   	</el-col>
+   	<el-col :span="12">
+   		<el-form-item label="跟踪步骤" prop="step">
+        <el-select v-model="addTrackForm.step" placeholder="请选择跟踪步骤">
+          <el-option
+            v-for="(type, typeIndex) in steps"
+            :label="typeIndex+1 +'、'+type"
+            :value="typeIndex">
+          </el-option>
+        </el-select>
+      </el-form-item>
+   	</el-col>
+  </el-row>
+    <el-col :span="10">
+      <el-form-item label="跟踪类型" prop="track_type">
+        <el-select v-model="addTrackForm.track_type" placeholder="请选择跟踪类型">
+          <el-option
+            v-for="(type, key) in logType"
+            :label="type"
+            :value="key">
+          </el-option>
+        </el-select>
+      </el-form-item>
+    </el-col>
+    <el-col :span="14">
+      <el-form-item label="跟踪内容"  prop="content">
+        <el-input
+        type="textarea"
+        :autosize="{ minRows: 2, maxRows: 2}"
+        placeholder="请输入内容"
+        v-model="addTrackForm.content"></el-input>
+      </el-form-item>
+    </el-col>
+  </el-form>
+
+  <div slot="footer" class="dialog-footer">
+   <el-button @click="closeDialog('addTrack')">取 消</el-button>
+   <el-button type="primary" v-show="!addTrackFormSubmitStatus" @click="addTrackFormSubmit(page.addTrackFormUrl, 'addTrack')" >确 定</el-button>
+   <el-button type="primary" v-show="addTrackFormSubmitStatus" :loading="true" >添加中</el-button>
+  </div>
+
+</el-dialog>

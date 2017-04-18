@@ -115,8 +115,13 @@ class CustomerLogModel extends Model {
     	}
     }
 
-    public function getSteps(){
+    public function getSteps($index){
+      if (is_int($index)){
+        return $this->steps[$index];
+      }else{
         return $this->steps;
+      }
+        
     }
 
 

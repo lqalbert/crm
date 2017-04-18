@@ -88,6 +88,7 @@
               element-loading-text="{:L('DATA_LOGIN')}"
               empty-text="暂无数据,销售妹子正在努力中！"
               highlight-current-row ref="select">
+            <el-table-column width="50" align="center" type="selection"></el-table-column>
             
 		  	    <el-table-column label="{:L('INDEX')}" type="index" width="65"  ></el-table-column>
 
@@ -154,11 +155,13 @@
 		    <el-col :span="12" >
 		      <div class="grid-content bg-purple">
 		      	<span class="wrapper">
-
+              <el-tooltip content="选择客户录入跟踪信息" placement="right">
+                <el-button size="small" @click="openDialog('addTrack')" type="primary">录入跟踪</el-button>
+              </el-tooltip>
 			      </span>
 		      </div>
 		    </el-col>
-		    <el-col :span="12" :offset="12">
+		    <el-col :span="12">
 		      <div class="grid-content bg-purple-light pull-right">
 		        <!-- page -->
 		        <include file="Common:_pagination" />
@@ -215,6 +218,10 @@
 
 	              <el-table-column prop="track_text" label="跟踪类型" header-align="center">
 	              </el-table-column>
+
+                <el-table-column prop="step" label="跟踪步骤" header-align="center">
+                </el-table-column>
+
 	            </el-table>
 	          </el-tab-pane>
 	          <el-tab-pane label="客户资料">
@@ -250,6 +257,11 @@
 	<div class="dialogWrapper" v-show="show" style="display: none">
 	  <!-- 跟踪内容 -->
 	  <include file="_traceContent" />
+    <!-- / 跟踪内容 -->
+    <!-- 录入跟踪  -->
+    <include file="_track" />
+    <!-- / 录入跟踪 -->
+
 	</div>
 
 </div>
@@ -261,6 +273,8 @@
   	sexType:{:json_encode($sexType)},
   	GoodsType:{:json_encode($GoodsType)},
   	ServiceCycle:{:json_encode($ServiceCycle)},
+    logType:{:json_encode($logType)},
+    steps:{:json_encode($steps)},
   	multipleSelection: [],
   	provinces:[],
     cities:[],
@@ -270,7 +284,8 @@
 	     'type':'',
 	     'track_type':'',
 	     'content':'',
-	     'user':''
+	     'user':'',
+       'step':''
     }],
     tableDataTwo:[{
        'user':'',
@@ -303,6 +318,15 @@
     phone:"",
     track_start:"",
     track_end:"",
+  },true).setForm('addTrack',{
+    cus_id:"",
+    next_datetime:'',
+    track_type:'',
+    to_type:"",
+    content:'',
+    name:"",
+    step:"",
+    track_type:'',
   },true).setForm('traceContent',{
     content:'',
   },true).setMethod('getType', function(type, field){
@@ -364,6 +388,20 @@
     this.commonFind("{:U('CommonFindDetail/trackInfo')}",'tableDataOne',row);
     this.commonFind("{:U('CommonFindDetail/findDealInfo')}",'tableDataTwo',row);
     this.commonFind("{:U('CommonFindDetail/softwareInfo')}",'tableDataThree',row);
+  }).setMethod('beforeAddTrack',function(){
+    var vmThis = this;
+    if (this.multipleSelection.length ==0 ||  this.multipleSelection.length>1) {
+      this.closeDialog('addTrack');
+      this.$message.error('请选择其中一位客户');
+      return false;
+    } else {
+      var  row = this.multipleSelection.pop();
+      this[FormName.getForm('addTrack')].name = row.name;
+      this[FormName.getForm('addTrack')].cus_id = row.cus_id;
+      this[FormName.getForm('addTrack')].to_type = row.type;
+      this.row=row;
+      return row;
+    }
   });
 </script>
 </block>

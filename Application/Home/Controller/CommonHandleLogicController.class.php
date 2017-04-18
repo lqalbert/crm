@@ -14,6 +14,7 @@ class CommonHandleLogicController extends CommonController{
   *
   */
   public function addTrackLogs(){
+    //die();
     $LogM = D('CustomerLog');
     $cusM = D('Customer');
     $to_type = I('post.to_type', '');
@@ -22,6 +23,7 @@ class CommonHandleLogicController extends CommonController{
         $LogM->rollback();
         return L('ADD_ERROR').$LogM->getError();
     }
+    //var_dump($LogM->create());die();
     $cusM->find($LogM->cus_id);
     if ($to_type !== "" &&  $to_type != $cusM->type) {
         $LogM->contentSetChangeType($cusM->type, $to_type);

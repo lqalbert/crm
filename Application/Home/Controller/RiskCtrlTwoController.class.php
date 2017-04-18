@@ -16,10 +16,12 @@ class RiskCtrlTwoController extends CommonController{
   }
 
   public function index(){
-		$this->assign('customerType', D('Customer')->getType());
-		$this->assign('sexType',      D('Customer')->getSexType());
-		$this->assign('GoodsType',    D('CustomerLog')->getGoodsType());
-		$this->assign('ServiceCycle', D('CustomerLog')->getServiceCycle());
+    $this->assign('customerType', D('Customer')->getType());
+    $this->assign('steps',        D('CustomerLog')->getSteps());
+    $this->assign('logType',      D('CustomerLog')->getType());
+    $this->assign('sexType',      D('Customer')->getSexType());
+    $this->assign('GoodsType',    D('CustomerLog')->getGoodsType());
+    $this->assign('ServiceCycle', D('CustomerLog')->getServiceCycle());
   	$this->display();
   }
 

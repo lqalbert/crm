@@ -21,6 +21,7 @@ class CommonFindDetailController extends CommonController{
     	$arr[$key]['user']=M('user_info')->where(array('user_id'=>$value['user_id']))->getField('realname');
     	$arr[$key]['name']=I('post.name');
     	$arr[$key]['track_type']=D('CustomerLog')->getType((int)$arr[$key]['track_type']);
+      $arr[$key]['step']=D('CustomerLog')->getSteps((int)$value['step']);
     }
 		if (IS_AJAX) {
 			$this->ajaxReturn($arr);
