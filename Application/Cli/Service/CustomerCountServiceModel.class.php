@@ -51,11 +51,15 @@ class CustomerCountServiceModel extends \Think\Model{
     private $pullCount = array();
 
     /**
-    * 录入
+    * 当日录入
     * 
     */
     private $createCount = array();
 
+    /**
+    *  自锁总数
+    */
+    private $ownCount = array();
 
 
     /**
@@ -73,7 +77,8 @@ class CustomerCountServiceModel extends \Think\Model{
 
     public function getFields(){
         $this->customerTypes = array_keys(D('Home/Customer')->getType());
-        return array_merge( $this->customerTypes, array('today_v', 'conflict_to', 'conflict_from', 'pulls_num', 'create_num', 'all_num'));
+        return array_merge( $this->customerTypes, array('today_v', 'conflict_to', 'conflict_from', 'pulls_num', 'create_num', 'all_num', 
+            'own_num'));
     }
 
     /**
@@ -87,11 +92,11 @@ class CustomerCountServiceModel extends \Think\Model{
     }
 
     private function setGroups(){
-        $this->groups = M('group_basic')->where(array('status'=>array('GT', 0)))->getField('id,name');
+        $this->groups = M('group_basic')->where(array('status'=>array('EGT', 0)))->getField('id,name');
     }
 
     private function setDepartments(){
-        $this->departments = M('department_basic')->where(array('status'=>array('GT', 0)))->getField('id,name');
+        $this->departments = M('department_basic')->where(array('status'=>array('EGT', 0)))->getField('id,name');
     }
 
 
@@ -189,6 +194,10 @@ class CustomerCountServiceModel extends \Think\Model{
         // ]
     }
 
+
+    /**
+    * 当日 添加的客户
+    */
     private function setCreateCount(){
         $sql = "select count(id) as c  , user_id from customers_basic where created_at > '".$this->date['start']."' and created_at <'".$this->date['end']."' group by user_id  ";
 
@@ -204,6 +213,21 @@ class CustomerCountServiceModel extends \Think\Model{
         // ]
     }
 
+    /**
+    * 自锁客户 总数
+    */
+    private function setOwnCount(){
+        $sql = "select count(id) as c  , user_id from customers_basic  group by user_id  ";
+        $re = M()->query($sql);
+        foreach ($re as  $value) {
+            $this->ownCount[$value['user_id']] = $value['c'];
+        }
+    }
+
+
+
+
+
 
     public function index($date){
         
@@ -217,6 +241,7 @@ class CustomerCountServiceModel extends \Think\Model{
         $this->setPullCount();
         $this->setVCount();
         $this->setCreateCount();
+        $this->setOwnCount();
         $this->setGroups();
         $this->setDepartments();
 
@@ -413,6 +438,17 @@ class CustomerCountServiceModel extends \Think\Model{
 
         }
         return $tmp;
+    }
+
+    /**
+    * 存储层 
+    */
+    public function getOwnNum($id){
+        if (isset($this->ownCount[$id])) {
+            return $this->ownCount[$id];
+        } else {
+            return 0;
+        }
     }
 }
 

@@ -4,6 +4,9 @@ namespace Home\Controller;
 use Home\Service\CustomersCount;
 use Common\Lib\User;
 
+/**
+* 要考虑 一页显示所有数据
+*/
 class CustomersCountSecondController extends CommonController {
 
     protected $table = "";
@@ -18,9 +21,30 @@ class CustomersCountSecondController extends CommonController {
     }
 
 
+
+    private function getObjType(){
+        $roleEname =  I('get.objType', $this->getRoleEname()) ;
+        $map = array(
+                     'gold'=>'Departments',  //总经办
+                     'Departments'=>'Groups',  //总经办
+
+
+                     'departmentMaster'=> 'Groups',
+                     'Groups' => 'Users'
+                    );
+        if (isset($map[$roleEname])) {
+            return $map[$roleEname];
+        } else {
+            return 'Groups';
+        }
+    }
+
+
     public function index(){
 
-        
+        $this->assign('objType', $this->getObjType());
+        $this->assign('dist', I('get.dist',Date('Y-m-d', time()-86400)));
+
         $this->display();
     }
 
@@ -36,11 +60,46 @@ class CustomersCountSecondController extends CommonController {
     }
 
     private function goldCondition(){
-        return $this->getDepartments();
+        $objType =  I('get.objType');
+        $id = I('get.id', 0);
+        
+
+        if ($id==0) {
+            return $this->getDepartments();
+        } else {
+            
+            switch ($objType) {
+                case 'Groups':
+                    $relate_id = M('statistics_usercustomers')->where(array('id'=>$id))->getField('department_id');
+                    
+                    break;
+                case 'Users':
+                    $relate_id = M('statistics_usercustomers')->where(array('id'=>$id))->getField('group_id');
+                    break;
+                default:
+                    
+                    break;
+            }
+            
+            return call_user_func(array($this, "get".$objType),  $relate_id);
+        }
+        
     }
 
     private function departmentMasterCondition(){
-        return $this->getGroups(session('account')['userInfo']['department_id']);
+
+        $objType =  I('get.objType');
+        $id = I('get.id', 0);
+        
+
+        if ($id==0) {
+            return $this->getGroups(session('account')['userInfo']['department_id']);
+        } else {
+            
+            $relate_id = M('statistics_usercustomers')->where(array('id'=>$id))->getField('group_id');
+            
+            return call_user_func(array($this, "get".$objType),  $relate_id);
+        }
     }
 
     private function captainCondition(){
@@ -48,11 +107,7 @@ class CustomersCountSecondController extends CommonController {
     }
 
     private function setCondition(){
-
-        $this->user = new User();
-        $this->roleEname = $this->user->getRole()['ename'];
-
-
+        $this->roleEname = $this->getRoleEname();
         $funcName = $this->roleEname."Condition";
         if (method_exists($this, $funcName)) {
             return call_user_func(array($this, $funcName));
@@ -82,6 +137,6 @@ class CustomersCountSecondController extends CommonController {
     }
 
     private function getUsers($group_id){
-        return $this->getService()->getGroups($group_id);
+        return $this->getService()->getUsers($group_id);
     }
 }
