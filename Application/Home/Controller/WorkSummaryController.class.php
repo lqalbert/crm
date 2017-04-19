@@ -47,12 +47,12 @@ class WorkSummaryController extends CommonController{
 
 
   private function setRoleQuery(){
-     $funcName = $this->getRoleEname()."Condition";
-     if (method_exists($this, $funcName)) {
-       call_user_func(array($this,$funcName));
-     } else {
-       $this->commonCondition();
-     }
+    $funcName = $this->getRoleEname()."Condition";
+    if (method_exists($this, $funcName)) {
+      call_user_func(array($this,$funcName));
+    } else {
+      $this->commonCondition();
+    }
   }
 
   private function commonCondition(){
