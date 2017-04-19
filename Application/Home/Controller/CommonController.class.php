@@ -21,14 +21,15 @@ class CommonController extends Controller {
 		if (!session("uid")) {
 			$this->redirect('Login/logOut');
 		}
-
-		$re=D('rbac_user')->where(array('id'=>session('uid')))->getField('ss_id');
-    if($re!=session('ssid')){
-    	M('rbac_user')->where(array('id'=>session('uid')))->save(array('out_time'=>time()));
-    	session('[destroy]');
-    	$this->redirect('Login/index');
+    if(!APP_DEBUG){
+		  $re=D('rbac_user')->where(array('id'=>session('uid')))->getField('ss_id');
+	    if($re!=session('ssid')){
+	    	M('rbac_user')->where(array('id'=>session('uid')))->save(array('out_time'=>time()));
+	    	session('[destroy]');
+	    	$this->redirect('Login/index');
+	    }
     }
- 
+	
 		Rbac::AccessDecision() || $this->error(L('NO_AUTHORIZED'));
 
 		$this->parseJsonParams();
