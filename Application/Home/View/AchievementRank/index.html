@@ -32,15 +32,6 @@
     <el-row>
       <el-col :span="24">
         <el-form :inline="true" ref="searchForm" :model="searchForm" label-width="100px">
-
-<!--           <el-form-item label="选择时间范围" prop="start">
-            <el-date-picker v-model="searchForm.start" placeholder="请选择起日期" @change="startDateChange">
-            </el-date-picker>
-          </el-form-item>_
-          <el-form-item prop="end" label-width="5px">
-            <el-date-picker v-model="searchForm.end" placeholder="请选择止日期" @change="endDateChange">
-            </el-date-picker>
-          </el-form-item> -->
           <el-form-item label="选择时间范围" prop="start">  
 				    <el-date-picker v-model="searchForm.dist" type="daterange" style="width:230px;" placeholder="选择日期范围" :picker-options="pickerOptions2">
 				    </el-date-picker>
