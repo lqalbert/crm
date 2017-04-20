@@ -25,7 +25,7 @@
 					  <el-form-item>
 					    <el-button type="primary" icon="search" @click="loadDatalist" >查询</el-button> 
 					    <el-tooltip content="清空搜索框并刷新表格数据" placement="right">
-					     <el-button icon="close" @click="searchReset">重置</el-button>
+					     <el-button  @click="searchReset">重置</el-button>
                         </el-tooltip>
 			        	<!-- <el-button  @click="openDialog('advancedSearch')" icon="search">高级查询</el-button>  -->
 					  </el-form-item>
@@ -56,18 +56,18 @@
 					    </el-table-column>
 					    <el-table-column label="类型" align="center" prop="typeText" >
 					    </el-table-column>
-						<el-table-column label="事业/财富区" align="center" prop="p_name" width="110">
+						<!-- <el-table-column label="事业/财富区" align="center" prop="p_name" width="110">
 					    </el-table-column>
 					    <el-table-column label="片区" align="center" prop="zone">
-					    </el-table-column>
-					    <el-table-column label="联系人" align="center" prop="contact">
+					    </el-table-column> -->
+					    <el-table-column label="联系人"  prop="contact">
 					    </el-table-column>
 					    <el-table-column label="联系电话" align="center" prop="tel" width="140">
 					    </el-table-column>
-					    <el-table-column label="拓展一" align="center" prop="expand1">
+					    <!-- <el-table-column label="拓展一" align="center" prop="expand1">
 					    </el-table-column>
 					    <el-table-column  label="拓展二" align="center" prop="expand2">
-					    </el-table-column>
+					    </el-table-column> -->
 						<el-table-column label="是否启用" :context="_self" align="center" prop="status">
 					      <template scope="scope">
   							<div>
@@ -80,14 +80,14 @@
   							</div>
                          </template>
 					    </el-table-column>
-					    <el-table-column  inline-template :context="_self"  align="center" label="形象照片" width="100">
+					    <!-- <el-table-column  inline-template :context="_self"  align="center" label="形象照片" width="100">
 
 						    <div v-if="row.img.length">
 						    	<el-tooltip content="点击放大图片" placement="right">
 						    	 <img :src="imgUrl(row.img)" @click="bigImg(row.img)" alt="点击放大图片" width="45px" height="45px">
 						    	<el-tooltip content="添加新的组织单位！" placement="right">	
 						    </div>
-					    </el-table-column>
+					    </el-table-column> -->
                         <el-table-column label="地址"  prop="address" width="180">
                         </el-table-column>
                         <!-- <el-table-column label="财务编号" align="center" prop="f_num" width="100">
@@ -145,9 +145,7 @@
 		</div>
 
 		<div v-show="show" style="display: none">
-			<!-- 高级查询 -->
-			<include file="_search" />
-			<!-- / 高级查询 -->
+			
 
 			<!-- 添加 -->
 			<include file="_add" />
@@ -202,19 +200,19 @@
                 { required: true, message: '请选择类型', trigger: 'blur' ,type: 'number'},
                 // { validator: checkType, message: '请选择类型', trigger: 'blur' },
              ],
-             division_id:[
+             /*division_id:[
                 { required: true, message: '请选择事业/财富区', trigger: 'blur' },
              ],
              zone_id:[
                 { required: true, message: '请选择片区', trigger: 'blur' },
-             ],
+             ],*/
 
-             public:[
+             /*public:[
                 { required: true, message: '请选择是否公示', trigger: 'blur' },
              ],
              address:[
                 { required: true, message: '请填写地址', trigger: 'blur' },
-             ],
+             ],*/
 		},
 		typeList:{:json_encode($typeList)},
 		zoneList:{:json_encode($zoneList)},
@@ -267,31 +265,29 @@
 		return response.path;
 	}).setMethod('uploadImg_E',function(response, file, fileList){
     	this.editForm.img = response.path;
-    }).setAdvancedSearch().setMethod("handleEdit", function(index, row){
+    }).setMethod("handleEdit", function(index, row){
 		//将此行数据赋给editForm
 		var type='edit';
-		//console.log(row);
 		row['public']=row['public'] == "是"?"1":"0";
 		this.initObject(this[FormName.getFormName(type)] , row); 
 
-		//设置显示的图片
 		this.fileList = [{name:row.img, url: this.imgUrl(row.img)}];
 		this.editIndex = index;
 		this.openDialog(type);
 
 	}).setMethod('organization', function(){
 
-	    var vmThis = this;
+	    /*var vmThis = this;
 	    this.$http.get("{:U('getDivision')}").then(function(response){
 	    	vmThis.topO = response.body;
 	    })
-        this.getUsers(0);
+        this.getUsers(0);*/
 	}).setMethod('beforeList',function(dataList){
 		var vmThis = this;
 		dataList.forEach(function(currentValue, index){
             currentValue['type']     = parseInt(currentValue['type']);
 			currentValue['typeText'] = vmThis.typeList[currentValue['type']];
-			currentValue['zone']     = vmThis.zoneList[currentValue['zone_id']];
+			// currentValue['zone']     = vmThis.zoneList[currentValue['zone_id']];
   		    currentValue['switch']   = currentValue.status==1?true:false;
             currentValue.status = parseInt(currentValue.status);
 		})
@@ -306,7 +302,7 @@
 	    	vmThis.topO = response.body;
 	    });
 		// this.computedusers = this.userList;
-        this.getUsers(this.dataList[this.editIndex].user_id);
+        this.getUsers(this.dataList[this.editIndex].type,  this.dataList[this.editIndex].user_id);
 	}).setMethod('switchHandle',function(index,row){
 	    row.status=row.switch?'1':'0';
 	    this.initObject(this.statusForm, row);
@@ -321,22 +317,31 @@
 	    	});
 	    	vmThis.dataList[vmThis.statusIndex].switch = !vmThis.dataList[vmThis.statusIndex].switch;
 	    });
-    }).setMethod('getUsers', function(id){
+    }).setMethod('getUsers', function(type,id){
         /**
         * 获取备选的主管
         */
         if (!id) {
             id = 0;
         }
-        this.$http.get(page.getUsersUrl, {params:{id:id}}).then(function(response){
-            this.computedusers = response.body;
-        }, function(response){
 
+        if (!type) {
+            type = 0;
+        }
+        this.$http.get(page.getUsersUrl, {params:{id:id, type:type}}).then(function(response){
+            this.computedusers = response.body;
+            console.log(this.computedusers);
+        }, function(response){
+            vmThis.$message({
+                message:'获取失败',
+                type:'error'
+            });  
         });
 
     }).setMethod('outPut', function(id){
         window.location.href="{:U('outPutExecle')}?id=" + id;
-        
+    }).setMethod('typeChange', function(v){
+        this.getUsers(v,0)
     });
 </script>
 

@@ -9,12 +9,13 @@
     </el-col>
     <el-col :span="12">
       <el-form-item label="类型" prop="type">
-        <el-select  v-model="editForm.type" >
+        <el-select  v-model="editForm.type"  disabled >
           <el-option  v-for='(item,key) in typeList' :label="item" :value="key"></el-option>
         </el-select>
       </el-form-item>
     </el-col>
   </el-row>
+  <!--  
    <el-row>
     <el-col :span="12">
       <el-form-item label="事业/财富区"  prop="division_id" >
@@ -43,7 +44,7 @@
            <el-input v-model="editForm.expand2"  auto-complete="off"></el-input>
         </el-form-item>
       </el-col>
-    </el-row>
+    </el-row>-->
     <el-row>
       <el-col :span="12">
         <el-form-item label="联系人"  prop="contact" >
@@ -78,7 +79,7 @@
       </el-col>
     </el-row> -->
     <el-row>
-      <el-col :span="12">
+      <!-- <el-col :span="12">
         <input type="hidden" name="img" v-model="editForm.img">
         <el-upload action="{:U('Upload/index')}" :on-success="uploadImg_E" :data="pathInfo" :thumbnail-mode="true" :default-file-list="fileList" type="drag" :multiple="false" style="margin-left:25%;;">
           <i class="el-icon-upload" style="margin:10px 0 16px;"></i>
@@ -87,15 +88,20 @@
           <div class="el-upload__tip" slot="tip" style="margin-right:115px;">只能上传jpg/png/gif文件，且不超过2M</div>
         </el-upload>
 
-      </el-col>
-      <el-col :span="12">
+      </el-col> -->
+      <el-col :span="24">
         <el-form-item label="地址"  prop="address">
           <el-input  auto-complete="off" v-model="editForm.address"></el-input>
         </el-form-item>
+        
+        
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="24">
         <el-form-item label="备注"  prop="remark">
           <el-input  auto-complete="off" v-model="editForm.remark"></el-input>
         </el-form-item>
-        <p style="color:red;margin-left:100px;">*ps:未修改任何数据提交则会提示“编辑失败”</p>
       </el-col>
     </el-row>
   </el-form>

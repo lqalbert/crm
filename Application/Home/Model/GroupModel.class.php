@@ -26,6 +26,8 @@ class GroupModel extends Model {
         if (!empty($field)) {
             $this->field($field);
         }
+
+        $this->where(array('status'=>array('NEQ', self::DELETE_STATUS)));
         
         return $this->select();
     }

@@ -45,12 +45,12 @@ class UserModel extends  Model{
              ->select();
     }
 
-    public function getGroupEmployee($group_id){
+    public function getGroupEmployee($group_id, $field="id,account,realname"){
         $roleModel = new RoleModel;
 
         return $this->m->join('user_info on rbac_user.id = user_info.user_id')
              ->where(array('group_id'=>$group_id, 'rbac_user.status'=>array('NEQ', RbacUserModel::DELETE_SATUS)))
-             ->field('id,account,realname')
+             ->field($field)
              ->select();
     }
 
