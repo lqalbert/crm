@@ -17,7 +17,6 @@ return array(
 	'DB_PWD' =>'rii2008rii',
 	'DB_DSN' => 'mysql:host=192.168.0.12;dbname=dev_crm_test;charset=utf8',
 
-
 /*	'DB_TYPE' => 'mysql',
 	'DB_USER' => 'beta_crm',
 	'DB_PWD' =>'beta2008beta',

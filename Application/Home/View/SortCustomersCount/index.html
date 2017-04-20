@@ -1,5 +1,11 @@
 <extend name="Common:base"/>
-<block name="head"></block>
+<block name="head">
+  <style>
+    .el-table__body tr.current-row>td{
+      background: rgba(157, 195, 232, 0.7);
+    }
+  </style>
+</block>
 <block name="body">
   <div id="app" class="container">
     <div class="wrapp" v-show="show" style="display:none;">
@@ -45,7 +51,7 @@
         <el-col :span="12">
           <el-table 
           :data="dataList" 
-          border 
+          border highlight-current-row
           v-loading="dataLoad" 
           element-loading-text="{:L('DATA_LOGIN')}">
                     <el-table-column label="序号"  align="center" width="65" :formatter="handleIndex"  >
