@@ -1,0 +1,299 @@
+<extend name="Common:base" />
+<block name="head">
+  <style>
+    .superaddition{
+      height:44px;
+      width:400px;
+      position: relative;
+      top : 12px;
+      z-index: 50;
+      left:90px;
+    }
+    .el-tabs__header{
+      border-top:2px solid #ea4b4b;
+      border-bottom: 1px solid #c51f1f;
+    }
+    .el-dialog .el-tabs__header{
+      border-top:none;
+    }
+    .el-tabs--border-card .el-tabs__item{
+      border-left: none;
+    }
+    .el-tabs--border-card .el-tabs__item.is-active {
+      background-color: #fff;
+      border-right-color: #d3dce6;
+      background: #544b8f;
+      color: #fff;
+    }
+    .el-tabs--border-card .el-tabs__header {
+      background-color: #fff;
+      margin: 0;
+    }
+    .container > .wrapp > .a > .el-row {
+      margin-bottom: 6px;
+    }
+    .el-tabs--border-card .el-tabs__content{
+      padding:0 9px 5px 9px;
+    }
+    .el-card, .el-menu--horizontal .el-submenu>.el-menu, .el-tabs--border-card{
+      box-shadow: none;
+    }
+    .el-tabs--border-card{
+      border: none;
+    }
+    .el-table__body tr.current-row>td{
+      background: rgba(157, 195, 232, 0.7);
+    }
+  </style>
+</block>
+<block name="body">
+  
+
+<div id="app" class="container">
+
+<div class="wrapp" id="appx" v-show="show" style="display: none;">
+  <!-- <div class="a" style="border:1px solid red;"> -->
+  <div class="a" id="app3">
+  <el-row>
+    <el-col :span="24">
+      <el-form :inline="true" ref="searchForm" :model="searchForm">
+        <el-form-item prop="start" label="">
+            <el-date-picker v-model="advancedQueryForm.start" size="small" placeholder="请选择日期">
+        </el-date-picker>
+        </el-form-item>
+        <el-form-item prop="name" style="width:170px">
+          <el-input v-model="searchForm.name" size="small" placeholder="员工/单位"></el-input>
+        </el-form-item>
+
+        <el-form-item prop="contact" style="width:170px">
+          <el-input v-model="searchForm.contact" size="small" placeholder="手机|qq|微信号"></el-input>
+        </el-form-item>
+
+        <el-form-item prop="group" style="width:80px">
+          <el-select v-model="searchForm.group" size="small" placeholder="请选择">
+            <el-option v-for="item in searchGroup" :label="item.key" :value="item.value" :disabled="item.disabled"></el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item prop="field" v-show="false">
+          <input type="hidden" size="small" v-model="searchForm.field">
+        </el-form-item>
+
+        <el-form-item>
+          <el-button type="info" size="small" icon="search" @click="loadDatalist">查询</el-button> 
+          
+          <el-tooltip content="录入高级查询条件"  style="margin-left:10px;">
+            <el-button  @click="openDialog('advancedQuery')" size="small" type="primary">{:L('ADVANCED_QUERY')}</el-button>
+          </el-tooltip>
+
+          <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
+            <el-button  size="small" @click="searchReset2">重置</el-button>
+          </el-tooltip>
+
+          <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:10px;">
+            <el-button @click="refresh" size="small" type="danger">刷新</el-button>
+          </el-tooltip>
+
+        </el-form-item>
+      </el-form>
+      </el-col>
+  </el-row>
+  <!-- max-height="500" -->
+
+  <el-row>
+    <el-col :span="24">
+      <el-table 
+      :data="dataList" 
+      border   >
+
+        <el-table-column width="50" align="center" type="selection"></el-table-column>
+        <el-table-column label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  ></el-table-column>
+        <el-table-column  prop="name" header-align="center"    label="员工/单位"    width="170"></el-table-column>
+        <el-table-column  prop="date" header-align="center"    label="日期"         width="170"></el-table-column>
+        <el-table-column  prop="total_performance"             label="总业绩"       width="170" align="center"></el-table-column>
+        <el-table-column  prop="marketing_performance"         label="营销业绩"     width="170" align="center"></el-table-column>
+        <el-table-column  prop="new_transaction_performence"   label="新成交业绩"   width="170" align="center"></el-table-column>
+        <el-table-column  prop="renew_performance"             label="续费业绩"     width="170" align="center"></el-table-column>
+        <el-table-column  prop="cooperation_new_performance"   label="合作新成交业绩"  width="170" align="center"></el-table-column>
+        <el-table-column  prop="upgrade_performance"           label="升级业绩"     width="110" align="center"></el-table-column>
+        <el-table-column  prop="cooperation_renew_performance" label="合作续费业绩" width="170" align="center"></el-table-column>
+        <el-table-column  prop="cooperation_upgrade_performance" label="合作升级业绩" align="center" width="170"></el-table-column>
+        <el-table-column  prop="new_turnover"                  label="新成交数" width="170" align="center"></el-table-column>
+        <el-table-column  prop="new_commission"                label="新成交提成" width="170"  align="center"></el-table-column>
+        <el-table-column  prop="cooperation_new_turnover"      label="合作新成交数" width="170"  align="center"></el-table-column>
+        <el-table-column  prop="cooperation_new_commission"    label="新成交合作提成" width="170"  align="center"></el-table-column>
+        <el-table-column  prop="upgrade_num"                   label="升级数" width="170"  align="center"></el-table-column>
+        <el-table-column  prop="upgrade_commission"            label="升级提成" width="170"  align="center"></el-table-column>
+        <el-table-column  prop="cooperation_upgrade_num"       label="合作升级数" width="170"  align="center"></el-table-column>
+        <el-table-column  prop="cooperation_upgrade_commission"  label="升级合作提成" width="170"  align="center"></el-table-column>
+        <el-table-column  prop="renew_num"                     label="续费数" width="170"  align="center"></el-table-column>
+        <el-table-column  prop="renew_commission"              label="续费提成" width="170"  align="center"></el-table-column>
+        <el-table-column  prop="cooperation_renew_num"         label="合作续费数" width="170"  align="center"></el-table-column>
+        <el-table-column  prop="cooperation_renew_commission"  label="续费合作提成" width="170"  align="center"></el-table-column>
+      </el-table>
+    </el-col>
+  </el-row>
+
+  <!-- toolbar -->
+  <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
+
+    <el-col :span="12" :offset="12">
+      <div class="grid-content bg-purple-light pull-right">
+
+        <!-- page -->
+        <include file="Common:_pagination" />
+        <!-- / page -->
+        
+      </div>
+    </el-col>
+
+  </el-row>
+  </div>
+
+  <div id="app2" class="b" style="margin:5px -10px 5px;">
+    <el-row style="position: relative;top:-40px;">
+     <el-col :span="24">
+        <el-tabs  type="border-card">
+          <el-tab-pane label="员工订单">
+            <el-table :data="tableData"  empty-text="请点击员工显示员工订单信息" border style="width: 100%"  >
+              <el-table-column prop="user" label="订单ID" header-align="center"></el-table-column>
+              <el-table-column prop="type" label="订单日期" header-align="center"></el-table-column>
+              <el-table-column prop="name" label="软件账号" header-align="center"></el-table-column>
+              <el-table-column label="成交金额" header-align="center"></el-table-column>
+              <el-table-column prop="created_at" label="销售业绩" width="180" align="center"></el-table-column>
+              <el-table-column prop="track_text" label="产品类型" header-align="center"></el-table-column>
+              <el-table-column prop="track_text" label="成交产品" header-align="center"></el-table-column>
+              <el-table-column prop="track_text" label="业绩类型" header-align="center"></el-table-column>
+              <el-table-column prop="track_text" label="成交客户" header-align="center"></el-table-column>
+              <el-table-column prop="track_text" label="订单详情" header-align="center"></el-table-column>
+            </el-table>
+          </el-tab-pane>
+        </el-tabs>
+     </el-col>
+    </el-row>
+  </div>
+
+</div>
+
+<div class="dialogWrapper" v-show="show" style="display: none">
+  <!-- 录入高级查询条件 -->
+  <include file="_advancedQuery" />
+  <!-- 客户预查 -->
+</div>
+
+</div>
+</block>
+<block name="scripts">
+<script>
+function toInt(v){
+  return parseInt(v);
+}
+</script>
+<script>
+
+
+
+  window.defaultOption.setDatas({
+    dataList: [{'name':'张一',
+                'date':'2017-04-20',
+                'total_performance':'1',
+                'marketing_performance':'2',
+                'new_transaction_performence':'3',
+                'renew_performance':'4',
+                'cooperation_new_performance':'5',
+                'upgrade_performance':'6',
+                'cooperation_renew_performance':'7',
+                'cooperation_upgrade_performance':'8',
+                'new_turnover':'9',
+                'new_commission':'10',
+                'cooperation_new_turnover':'11',
+                'cooperation_new_commission':'12',
+                'upgrade_num':'13',
+                'upgrade_commission':'14',
+                'cooperation_upgrade_num':'15',
+                'cooperation_upgrade_commission':'16',
+                'renew_num':'16',
+                'renew_commission':'16',
+                'cooperation_renew_num':'16',
+                'cooperation_renew_commission':'16',
+    },
+    {'name':'张二',
+                'date':'2017-04-21',
+                'total_performance':'1',
+                'marketing_performance':'2',
+                'new_transaction_performence':'3',
+                'renew_performance':'4',
+                'cooperation_new_performance':'5',
+                'upgrade_performance':'6',
+                'cooperation_renew_performance':'7',
+                'cooperation_upgrade_performance':'8',
+                'new_turnover':'9',
+                'new_commission':'10',
+                'cooperation_new_turnover':'11',
+                'cooperation_new_commission':'12',
+                'upgrade_num':'13',
+                'upgrade_commission':'14',
+                'cooperation_upgrade_num':'15',
+                'cooperation_upgrade_commission':'16',
+                'renew_num':'16',
+                'renew_commission':'16',
+                'cooperation_renew_num':'16',
+                'cooperation_renew_commission':'16',
+    },
+    {'name':'张三',
+                'date':'2017-04-21',
+                'total_performance':'1',
+                'marketing_performance':'2',
+                'new_transaction_performence':'3',
+                'renew_performance':'4',
+                'cooperation_new_performance':'5',
+                'upgrade_performance':'6',
+                'cooperation_renew_performance':'7',
+                'cooperation_upgrade_performance':'8',
+                'new_turnover':'9',
+                'new_commission':'10',
+                'cooperation_new_turnover':'11',
+                'cooperation_new_commission':'12',
+                'upgrade_num':'13',
+                'upgrade_commission':'14',
+                'cooperation_upgrade_num':'15',
+                'cooperation_upgrade_commission':'16',
+                'renew_num':'16',
+                'renew_commission':'16',
+                'cooperation_renew_num':'16',
+                'cooperation_renew_commission':'16',
+    }],
+    searchGroup:{:json_encode($searchGroup)},
+  }).setForm('search', {
+    name:'',
+    contact:'',
+    field: '',
+    group:'user_id',
+    ctrl:'search',
+  }).setForm('advancedQuery',{
+    name:'',
+    phone:'',
+    date:'',
+  },true).setMethod('refresh',function(){
+    window.location.reload();
+  }).setMethod('advancedQueryReset',function(){
+    this.closeDialog('advancedQuery');
+  }).setMethod('advanceSearch',function(){
+
+       for (var x  in  this.advancedQueryForm) {
+         if (this.advancedQueryForm[x] instanceof  Date) {
+          this.advancedQueryForm[x] = this.advancedQueryForm[x].toLocaleDateString();
+         }
+       }
+    
+      this.searchForm = Oassign({},  this.advancedQueryForm);
+      this.loadDatalist();
+      this.closeDialog('advancedQuery');
+
+  }).setMethod("searchReset2", function(){
+    this.searchForm = Oassign({}, this._search) ;
+    this.dataLoad = true;
+    this.loadDatalist();
+  });
+</script>
+</block>

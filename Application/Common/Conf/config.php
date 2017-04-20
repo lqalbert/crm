@@ -11,7 +11,7 @@ return array(
 	// 'DB_PWD' =>'dev2008dev',
 	// 'DB_DSN' => 'mysql:host=192.168.0.12;dbname=dev_crm_02;charset=utf8',
 
-// 本地
+// 公共的测试数据库
 	'DB_TYPE' => 'mysql',
 	'DB_USER' => 'dev_crm_test',
 	'DB_PWD' =>'rii2008rii',
