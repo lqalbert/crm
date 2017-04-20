@@ -1,0 +1,209 @@
+<extend name="Common:base" />
+<block name="head">
+	<style>
+    .el-table__body tr.current-row>td{
+      background: rgba(157, 195, 232, 0.7);
+    }
+		.el-card__body {
+		    padding: 15px;
+		}
+    .el-card__header {
+    	padding: 0;
+	    border-bottom: 1px solid #D3DCE6;
+	    box-sizing: border-box;
+    }
+		.el-alert {
+		  border-radius: 0;
+		  width: 101%;
+		}
+		.el-alert__title {
+		    font-size: 16px;
+		    line-height: 18px;
+		}
+		.el-date-editor.el-input{
+			width: 100%;
+			max-width: 300px;
+		}
+	</style>
+</block>
+<block name="body">
+<div id="app" class="container">
+  <div class="wrapp" id="appx" v-show="show" style="display:none;">
+    <el-row>
+      <el-col :span="24">
+        <el-form :inline="true" ref="searchForm" :model="searchForm" label-width="100px">
+
+<!--           <el-form-item label="选择时间范围" prop="start">
+            <el-date-picker v-model="searchForm.start" placeholder="请选择起日期" @change="startDateChange">
+            </el-date-picker>
+          </el-form-item>_
+          <el-form-item prop="end" label-width="5px">
+            <el-date-picker v-model="searchForm.end" placeholder="请选择止日期" @change="endDateChange">
+            </el-date-picker>
+          </el-form-item> -->
+          <el-form-item label="选择时间范围" prop="start">  
+				    <el-date-picker v-model="searchForm.dist" type="daterange" style="width:230px;" placeholder="选择日期范围" :picker-options="pickerOptions2">
+				    </el-date-picker>
+          </el-form-item>
+
+				  <el-form-item label="业绩类型" label-width="70px">
+				    <el-radio-group v-model="searchForm.type">
+				      <el-radio :label="1">成交客户</el-radio>
+				      <el-radio :label="2">录入客户</el-radio>
+				    </el-radio-group>
+				  </el-form-item>
+
+	        <el-form-item prop="field" v-show="false">
+	          <input type="hidden" size="small" v-model="searchForm.field"/>
+	        </el-form-item>
+
+	        <el-form-item label-width="5px">
+	          <el-button type="info" size="small" icon="search"  @click="loadDatalist" >查询</el-button> 
+	          <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
+	            <el-button  size="small" @click="searchReset2"  >重置</el-button>
+	          </el-tooltip>
+	          <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:10px;">
+	            <el-button  size="small" type="danger" @click="refresh" >刷新</el-button>
+	          </el-tooltip>
+	        </el-form-item>
+
+        </el-form>
+      </el-col>
+    </el-row>
+    <el-row :gutter="20" type="flex">
+      <el-col :span="8">
+				<el-card class="box-card" style="border: 1px solid #ff4949;">
+				  <div slot="header">
+				    <el-alert :closable="false" title="部门/单位排名" type="error"></el-alert>
+				  </div>
+				  <div class="text item">
+				    <el-table :data="tableData" highlight-current-row empty-text="暂无数据,请录入客户！" :show-header="false">
+				      <el-table-column prop="name" label="姓名"></el-table-column>
+				      <el-table-column label="序号"  align="center" type="index" width="65"></el-table-column>
+				    </el-table>
+				  </div>
+				</el-card>
+      </el-col>
+      <el-col :span="8" >
+				<el-card class="box-card" style="border: 1px solid #50bfff;">
+				  <div slot="header">
+				    <el-alert :closable="false" title="团队/小组排名" type="info"></el-alert>
+				  </div>
+				  <div class="text item">
+				    <el-table :data="tableDataOne" highlight-current-row empty-text="暂无数据,请录入客户！" :show-header="false">
+				      <el-table-column prop="name" label="姓名"></el-table-column>
+				      <el-table-column label="序号"  align="center" type="index" width="65"></el-table-column>
+				    </el-table>
+				  </div>
+				</el-card>
+      </el-col>
+      <el-col :span="8" >
+				<el-card class="box-card" style="border: 1px solid #f7ba2a;">
+				  <div slot="header">
+				    <el-alert :closable="false" title="个人排名" type="warning"></el-alert>
+				  </div>
+				  <div class="text item">
+				    <el-table :data="tableDataTwo" highlight-current-row empty-text="暂无数据,请录入客户！" :show-header="false">
+				      <el-table-column prop="name" label="姓名"></el-table-column>
+				      <el-table-column label="序号"  align="center" type="index" width="65"></el-table-column>
+				    </el-table>
+				  </div>
+				</el-card>
+      </el-col>
+    </el-row>
+    <el-row type="flex" justify="space-between" align="middle" class="row-bg">
+      <el-col :span="12" :offset="12">
+
+      </el-col>
+    </el-row>
+
+  </div>
+</div>
+</block>
+<block name="scripts">
+<script>
+  window.defaultOption.setDatas({
+    tableData: [
+	    {name: '天龙七部 - 成都'}, 
+	    {name: '天龙八部 - 成都'}, 
+	    {name: '天龙九部 - 成都'}, 
+	    {name: '天龙十部 - 成都'},
+	    {name: '天龙十一部 - 成都'},
+	    {name: '天龙十二部 - 成都'},
+	    {name: '天龙十三部 - 成都'},
+	    {name: '天龙十四部 - 成都'},
+	    {name: '天龙十五部 - 成都'},
+	    {name: '天龙十六部 - 成都'}
+    ],
+    tableDataOne: [
+	    {name: '烈火组 - 成都'}, 
+	    {name: '东风组 - 成都'}, 
+	    {name: '大力神组 - 成都'}, 
+	    {name: '银河组 - 成都'},
+	    {name: '萨德组 - 成都'},
+	    {name: '萨姆组 - 成都'},
+	    {name: '金刚石组 - 成都'},
+	    {name: '日炙组 - 成都'},
+	    {name: '秋月组 - 成都'},
+	    {name: '爱宕组 - 成都'}
+    ],
+    tableDataTwo: [
+	    {name: '安倍晋三 - 日本'}, 
+	    {name: '野田佳彦 - 日本'}, 
+	    {name: '菅直人 - 日本'}, 
+	    {name: '鸠山由纪夫 - 日本'},
+	    {name: '麻生太郎 - 日本'},
+	    {name: '福田康夫 - 日本'},
+	    {name: '小泉纯一郎 - 日本'},
+	    {name: '森喜朗 - 日本'},
+	    {name: '小渊惠三 - 日本'},
+	    {name: '村山富市 - 日本'}
+    ],
+    pickerOptions2: {
+      shortcuts: [{
+        text: '最近一周',
+        onClick(picker) {
+          const end = new Date();
+          const start = new Date();
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+          picker.$emit('pick', [start, end]);
+        }
+      }, {
+        text: '最近一个月',
+        onClick(picker) {
+          const end = new Date();
+          const start = new Date();
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+          picker.$emit('pick', [start, end]);
+        }
+      }, {
+        text: '最近三个月',
+        onClick(picker) {
+          const end = new Date();
+          const start = new Date();
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+          picker.$emit('pick', [start, end]);
+        }
+      }]
+    },
+  }).setForm('search',{
+  	dist:'',
+    start:'',
+    end:'',
+    name:'',
+    field:'',
+    type:1,
+    department:''
+  }).setMethod('refresh',function(){
+  	window.location.reload();
+  }).setMethod('searchReset2',function(){
+    this.searchForm = Oassign({}, this._search) ;
+    this.dataLoad = true;
+    this.loadDatalist();
+  }).setMethod('startDateChange', function(v){
+    this.searchForm.start = v;
+  }).setMethod('endDateChange', function(v){
+    this.searchForm.end = v;
+  });
+</script>
+</block>
