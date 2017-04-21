@@ -29,11 +29,11 @@ class LoginController extends Controller {
         session('ssid', $sessionId);
        // $userModel->where(array('id'=>$result['id']))->save(array('ss_id'=>$sessionId));
         
-				$location=new \Ip\Taobaoip\taobaoIp();//利用淘宝地址库
-				$arr=$location->getLocation();
+				// $location=new \Ip\Taobaoip\taobaoIp();//利用淘宝地址库
+				// $arr=$location->getLocation();
 				$data=array(
                    'ip'=>$arr['ip'],
-                   'location'=>$arr['country'].$arr['region'].$arr['city'].$arr['county'],
+                   // 'location'=>$arr['country'].$arr['region'].$arr['city'].$arr['county'],
                    'lg_time'=>time(),
                    'ss_id'  =>$sessionId
 				);
