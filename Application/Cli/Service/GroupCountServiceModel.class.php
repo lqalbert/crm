@@ -1,11 +1,11 @@
 <?php
 namespace  Cli\Service;
 
-use Common\Model\StatisticsGroupModel;
+// use Common\Model\StatisticsGroupModel;
+use Home\Model\DepartmentModel;
 
 
-
-class GroupCountServiceModel extends \Think\Model {
+class GroupCountServiceModel  {
 
     /**
     * 存储层
@@ -21,28 +21,28 @@ class GroupCountServiceModel extends \Think\Model {
     /**
     * 成交多少个
     */
-    private vCount = array(); 
+    private $vCount = array(); 
 
     /**
     * 员工多少个
     */
-    private eCount = array();
+    private $eCount = array();
 
     /**
     * 录入多少个
     */
-    private aCount = array();
+    private $aCount = array();
 
     /**
     * 所有的小组
     */
-    private groups = array();
+    private $groups = array();
 
     public function init(){
-        $this->StGroupModel = new StatisticsGroupModel;
-        $this->userModel    = D('\Home\Model\UserModel');
+        $this->StGroupModel = D('StatisticsGroup');// new StatisticsGroupModel;
+        $this->userModel    = D('Home/User');
         $this->StUserModel  = M('statistics_usercustomers');
-        $this->groupModel   = D('\Home\Model\GroupModel');
+        $this->groupModel   = D('Home/Group');
     }
 
     public function index($date){
@@ -80,29 +80,30 @@ class GroupCountServiceModel extends \Think\Model {
     }
 
     private function setGroups(){
-        $sql = "select gb.id,gb.name , db.name as department_name from group_basic as gb inner join department_basic as db on gb.department_id = db.id";
-        $this->gorups = arr_to_map(M()->query($sql), 'id');
+        $sql = "select gb.id,gb.name , db.name as department_name from group_basic as gb inner join department_basic as db on gb.department_id = db.id where db.type=". DepartmentModel::SALES_DEPARTMENT;
+        $this->groups = arr_to_map(M()->query($sql), 'id');
+
     }
 
     private function getVnum($id){
-        if (isset($this->vCount($id))) {
-            return $this->vCount($id);
+        if (isset($this->vCount[$id])) {
+            return $this->vCount[$id];
         } else {
             return 0;
         }
     }
 
     private function getEnum($id){
-        if (isset($this->eCount($id))) {
-            return $this->eCount($id);
+        if (isset($this->eCount[$id])) {
+            return $this->eCount[$id];
         } else {
             return 0;
         }
     }
 
     private function getAnum($id){
-        if (isset($this->aCount($id))) {
-            return $this->aCount($id);
+        if (isset($this->aCount[$id])) {
+            return $this->aCount[$id];
         } else {
             return 0;
         }
@@ -113,18 +114,21 @@ class GroupCountServiceModel extends \Think\Model {
 
     private function run(){
         $re = array();
+
         foreach ($this->groups as $key => $value) {
             $tmp = array(
                 'group_id' =>$key,
                 'group_name' =>$value['name'],
                 'department_name' => $value['department_name'],
-                'date' => $this->date;
-                'v_num' = $this->getVnum($key);
-                'employee_num' = $this->getEnum($key);
-                'add_num' = $this->getAnum($key);
-            )
+                'date' => $this->date,
+                'v_num' => $this->getVnum($key),
+                'employee_num' => $this->getEnum($key),
+                'add_num' => $this->getAnum($key)
+            );
             $re[] = $tmp;
         }
+
+
 
         return $this->StGroupModel->addAll($re);
     }

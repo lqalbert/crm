@@ -193,7 +193,7 @@ class CustomerController extends CommonController {
             $this->M->order(I('get.sort_field')." ". I('get.sort_order'));
         }
         $list = $this->M->order('customers_basic.id desc')->page(I('get.p',0). ','. $this->pageSize)->select();
-
+        
         $result = array('list'=>$list, 'count'=>$count);
         
         return $result;

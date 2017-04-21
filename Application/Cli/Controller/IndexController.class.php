@@ -23,10 +23,10 @@ class IndexController extends Controller {
 
         $this->setDate();
 
-
         if (defined('MODE_NAME') && MODE_NAME =="cli") {
             foreach ($this->runList as $value) {
-                R($value, $this->date);
+                echo R($value, array($this->date));
+                echo "\n";
             }
         }
         

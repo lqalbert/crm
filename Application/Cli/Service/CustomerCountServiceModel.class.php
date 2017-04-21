@@ -2,7 +2,7 @@
 namespace Cli\Service;
 
 use Home\Model\RoleModel;
-
+use Home\Model\DepartmentModel;
 /**
 * 纪录应该是死的 
 * 不能因为 人员变动 纪录也变
@@ -96,7 +96,8 @@ class CustomerCountServiceModel extends \Think\Model{
     }
 
     private function setDepartments(){
-        $this->departments = M('department_basic')->where(array('status'=>array('EGT', 0)))->getField('id,name');
+        // $this->departments = M('department_basic')->where(array('status'=>array('EGT', 0)))->getField('id,name');
+        $this->departments = D('Home/Department')->where(array('status'=>array('EGT', 0), 'type'=>array('IN', array(DepartmentModel::SALES_DEPARTMENT))))->getField('id,name');
     }
 
 

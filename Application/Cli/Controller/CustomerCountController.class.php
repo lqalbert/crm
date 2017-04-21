@@ -14,9 +14,10 @@ class CustomerCountController extends Controller {
 
 
     public function index($date){
+        var_dump($date);
         // 初始化
         $this->date = $date;
         $this->m = new CustomerCountServiceModel;
-        var_dump($this->m->index($this->date));  
+        return $this->m->index($this->date);  
     }
 }
