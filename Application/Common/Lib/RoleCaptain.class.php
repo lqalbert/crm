@@ -14,7 +14,7 @@ class RoleCaptain {
         foreach ($arr as $key => $value) {
 
             if ($value['value']=="group" || $value['value']=="department") {
-                $arr[$key]['disabled'] = true;
+                $arr[$key]['disabled'] = false;
             }
         }
         return $arr;

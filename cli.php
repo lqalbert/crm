@@ -29,6 +29,7 @@ define('MODE_NAME', 'cli');
 
 // 自定义常量
 
+chdir(dirname(__FILE__));
 
 // 引入ThinkPHP入口文件
 require './ThinkPHP/ThinkPHP.php';

@@ -39,9 +39,9 @@
 
         <el-form-item>
           <el-button type="info" size="small" icon="search"  @click="loadDatalist" >查询</el-button> 
-          <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
+          <!-- <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
             <el-button  size="small" @click="searchReset"  >重置</el-button>
-          </el-tooltip>
+          </el-tooltip> -->
           <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:10px;">
             <el-button  size="small" type="danger" @click="resetBack" >刷新</el-button>
           </el-tooltip>
@@ -67,7 +67,7 @@
 
             <el-table-column label="序号"  align="center" width="65" :formatter="handleIndex"  >
             </el-table-column>
-            <el-table-column  align="center" prop="name"  label="名称"  align="center" width="150">
+            <el-table-column  align="center" prop="name"  label="名称"   width="150">
               <template scope="scope">
                 <span v-if="objType != 'Users' && id!=0 ">
                   <a :href="getUrl(scope.row.id)">{{ scope.row.name }}</a>
