@@ -1,5 +1,10 @@
 function phoneValidata(rule, value, callback) {
     var phoneReg = /^1[34578]\d{9}$/;
+
+    if (null == value) {
+      return callback();
+    }
+
     if (value.length==0) {
       return callback();
     }
@@ -18,6 +23,10 @@ function phoneValidata(rule, value, callback) {
 
 function QQValidata(rule, value, callback){
     var QQReg = /^\d+$/;
+
+    if (null == value) {
+      return callback();
+    }
 
     if (value.length==0) {
       return callback();
@@ -44,7 +53,7 @@ function WxValidata(rule, value, callback){
     }
 
     if(!reg.test(value)){
-      return callback('仅支持、数字、下划线或减号，以字母开头');
+      return callback('仅支持数字、下划线或减号，以字母开头');
     }
 
     Vue.http.get(page.checContactUrl, {params:{value:value, type:'weixin'}}).then(function(response){

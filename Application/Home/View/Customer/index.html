@@ -443,26 +443,19 @@
           { validator: WxValidata, trigger:'blur' },
       ],
       type:[
-        { required:true, message:'请选择客户类型',trigger:'blur'},
+        { required:true, message:'请选择客户类型',trigger:'change'},
       ],
       money:[
-        { required:true, message:'请选择客户资金量',trigger:'blur', min: 1},  
+        { required:true, message:'请选择客户资金量',trigger:'change', },  
       ],
       source:[
-        {required:true, message:'请选择客户来源', trigger:'blur'}
+        {required:true, message:'请选择客户来源', trigger:'change'}
       ]
     },
     editRules:{
       name:[
         { required: true, message: '请输入客户姓名', trigger: 'blur' },
       ],
-      /*phone2:[
-        { validator: phoneValidata, trigger: 'blur' }
-      ],
-      qq2:[
-        { validator: QQValidata, trigger:'blur' },
-      ],*/
-
       phone:[
         { required: true, message: '请输入客户手机', trigger: 'blur' },
         { validator: phoneValidata , trigger: 'blur' },
@@ -488,13 +481,13 @@
       ],
 
       type:[
-        { required:true, message:'请选择客户类型',trigger:'blur'},
+        { required:true, message:'请选择客户类型',trigger:'change'},
       ],
       money:[
-        { required:true, message:'请选择客户资料量',trigger:'blur'},
+        { required:true, message:'请选择客户资料量',trigger:'change'},
       ],
       source:[
-        { required:true, message:'请选择客户来源', trigger:'blur'},
+        { required:true, message:'请选择客户来源', trigger:'change'},
       ]
     },
 
