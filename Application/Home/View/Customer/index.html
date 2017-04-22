@@ -355,32 +355,13 @@
 </div>
 </block>
 <block name="scripts">
+<script src="__PUBLIC__/js/contactValidate.js"></script>
 <script>
   page.addPlanFormUrl = "{:U('addPlanLogs')}";
   page.addRemindFormUrl = "{:U('setRemid')}";
   page.addChoiceFormUrl = "{:U('setImportant')}";
   page.addRealInfoUrl = "{:U('realInfo')}";
-  //表单验证
-  var checkPhone=function(rule,value,callback){
-     var phoneReg = /^1[34578]\d{9}$/;
-     if(value==='' || value===null){
-       callback();
-     }else if(!phoneReg.test(value)){
-       callback('手机号格式错误');
-     }else{
-       callback();
-     }
-  }
-  var checkQQ=function(rule,value,callback){
-    var number=/^\d+$/;
-    if(value==='' || value===null){
-      callback();
-    }else if(!number.test(value)){
-      callback('QQ号格式错误');
-    }else{
-      callback();
-    }
-  }
+
   var checkIdNum=function(rule,value,callback){
     var number=/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
     if(!number.test(value)){
@@ -439,24 +420,33 @@
       ],
       phone:[
         { required: true, message: '请输入客户手机', trigger: 'blur' },
-        //{ type: 'number', message: '手机必须为数字'},
-        { validator: checkPhone, trigger: 'blur' }
+        { validator: phoneValidata , trigger: 'blur' },
       ],
       phone2:[
-        { validator: checkPhone, trigger: 'blur' }
+        // { required: false, message: '请输入客户手机', trigger: 'blur' },
+        {  validator: phoneValidata, trigger: 'blur' }
       ],
       qq:[
-        //{ type: 'number', message: 'QQ号必须为数字'},
-        { validator: checkQQ, trigger:'blur' },
+        { pattern:/^\d+$/, message: 'QQ号必须为数字'},
+        { validator: QQValidata, trigger:'blur' },
       ],
       qq2:[
-        { validator: checkQQ, trigger:'blur' },
+        { pattern:/^\d+$/, message: 'QQ号必须为数字'},
+        { validator: QQValidata, trigger:'blur' },
+      ],
+      weixin:[
+          { min: 6, max: 20, trigger:'blur', message:"长度为6-20个字符" },
+          { validator: WxValidata, trigger:'blur' },
+      ],
+      weixin2:[
+          {min: 6, max: 20, trigger:'blur', message:"长度为6-20个字符" },
+          { validator: WxValidata, trigger:'blur' },
       ],
       type:[
         { required:true, message:'请选择客户类型',trigger:'blur'},
       ],
       money:[
-        { required:true, message:'请选择客户资料量',trigger:'blur'},  
+        { required:true, message:'请选择客户资金量',trigger:'blur', min: 1},  
       ],
       source:[
         {required:true, message:'请选择客户来源', trigger:'blur'}
@@ -466,12 +456,37 @@
       name:[
         { required: true, message: '请输入客户姓名', trigger: 'blur' },
       ],
-      phone2:[
-        { validator: checkPhone, trigger: 'blur' }
+      /*phone2:[
+        { validator: phoneValidata, trigger: 'blur' }
       ],
       qq2:[
-        { validator: checkQQ, trigger:'blur' },
+        { validator: QQValidata, trigger:'blur' },
+      ],*/
+
+      phone:[
+        { required: true, message: '请输入客户手机', trigger: 'blur' },
+        { validator: phoneValidata , trigger: 'blur' },
       ],
+      phone2:[
+        { validator: phoneValidata, trigger: 'blur' }
+      ],
+      qq:[
+        { pattern:/^\d+$/, message: 'QQ号必须为数字'},
+        { validator: QQValidata, trigger:'blur' },
+      ],
+      qq2:[
+        { pattern:/^\d+$/, message: 'QQ号必须为数字'},
+        { validator: QQValidata, trigger:'blur' },
+      ],
+      weixin:[
+          { min: 6, max: 20, trigger:'blur', message:"长度为6-20个字符" },
+          { validator: WxValidata, trigger:'blur' },
+      ],
+      weixin2:[
+          {min: 6, max: 20, trigger:'blur', message:"长度为6-20个字符" },
+          { validator: WxValidata, trigger:'blur' },
+      ],
+
       type:[
         { required:true, message:'请选择客户类型',trigger:'blur'},
       ],

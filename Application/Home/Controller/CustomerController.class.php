@@ -540,4 +540,15 @@ class CustomerController extends CommonController {
        }
     }
 
+
+    public function checContact($value, $type){
+        if (M('customers_contacts')->where(array($type=>$value))->find()) {
+            $this->error("存在");
+        } else {
+            $this->success();
+        }
+    }
+
+    
+
 }

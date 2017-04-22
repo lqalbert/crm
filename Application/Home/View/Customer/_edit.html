@@ -17,6 +17,23 @@
             </el-form-item>
           </el-col>
         </el-row>
+
+        <el-row>
+          <el-col :span="12">
+            <el-form-item  label="资金量" prop="money">
+              <el-select v-model="editForm.money"   placeholder="选择客户资金量" >
+                <el-option v-for="(money,key) in Money" :label="money"  :value="key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="性别" >
+              <el-radio class="radio" v-model="editForm.sex" label="1">男</el-radio>
+              <el-radio class="radio" v-model="editForm.sex" label="2">女</el-radio>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        
         <el-row>
           <el-col :span="12">
             <el-form-item label="手机号1">
@@ -90,21 +107,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item  label="资金量" prop="money">
-              <el-select v-model="editForm.money"   placeholder="选择客户资金量" >
-                <el-option v-for="(money,key) in Money" :label="money"  :value="key"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="性别" >
-              <el-radio class="radio" v-model="editForm.sex" label="1">男</el-radio>
-              <el-radio class="radio" v-model="editForm.sex" label="2">女</el-radio>
-            </el-form-item>
-          </el-col>
-        </el-row>
+        
       </el-tab-pane>
       <el-tab-pane label="一般资料" name="second">
         <el-row>
