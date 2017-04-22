@@ -259,6 +259,14 @@ class DepartmentCustomerController extends CommonController {
                 $this->error('转让失败');
             }
 
+
+
+            $re = D('Customer')->where(array('id'=>$value))->data(array('salesman_id'=>$rec_user ))->save();
+            if ($re===false) {
+                $d->rollback();
+                $this->error('转让失败');
+            }
+
             $data = $preDate;
             $data['cus_id'] = $value;
             $userInfo = $this->getEmploye( intval($value) );
