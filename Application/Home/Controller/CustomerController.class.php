@@ -16,7 +16,7 @@ class CustomerController extends CommonController {
         // var_dump(D('Customer','Logic')->sb);die();
         $user = new User();
         $searchGroup = $user->getRoleObject()
-                            ->getCustomerSearchGroup(array(array('value'=>'user_id','key'=>"本人" ) , array('value'=>'group','key'=>"团组" )));
+                            ->getCustomerSearchGroup(array('user_id'=>'0','name'=>"团组" ));
         $groupMemberList = M('user_info')->where(array('group_id'=>session('account')['userInfo']['group_id']))->getField("user_id,realname");
 
         $this->assign('searchGroup',  $searchGroup);
@@ -44,6 +44,7 @@ class CustomerController extends CommonController {
 		$this->assign('steps',        D('CustomerLog')->getSteps());
 		$this->assign('Proportion',   D('CustomerLog')->getProportion());
 		$this->assign('Remind',       D('CustomerLog')->getRemind());
+        $this->assign('uid', session('uid'));
 
 
 		//统计
@@ -75,20 +76,15 @@ class CustomerController extends CommonController {
 
     
     public function setGroupCondition($condition){
-        switch ($condition) {
-                case 'user_id':
-                    $this->M->where(array("salesman_id"=> session('uid')));
-                    break;
-                case 'group':
-                    $user = new User();
-                    $user->getRoleObject()->setMemberUserCondition($this->M);
-                    break;
-                case 'precheck':
 
-                    break;
-                default:
-                    break;
-            }
+        if ($condition==0) {
+            $user = new User();
+            $user->getRoleObject()->setMemberUserCondition($this->M);
+        } else {
+            $this->M->where(array("salesman_id"=> $condition ));
+        }
+
+
     }
 
     /**
@@ -111,7 +107,7 @@ class CustomerController extends CommonController {
     * 设置高级查询条件
     */
     public function advanceSearch(){
-        $this->setGroupCondition(I('get.group',"user_id"));
+        $this->setGroupCondition(I('get.group',session('uid')));
 
         if (I('get.name')) {
             $this->M->where(array("name"=> array('like', I('get.name')."%")));

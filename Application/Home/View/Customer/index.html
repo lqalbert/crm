@@ -67,7 +67,7 @@
 
         <el-form-item prop="group" style="width:80px">
           <el-select v-model="searchForm.group" size="small" placeholder="请选择">
-            <el-option v-for="item in searchGroup" :label="item.key" :value="item.value" :disabled="item.disabled"></el-option>
+            <el-option v-for="item in searchGroup" :label="item.name" :value="item.user_id" :disabled="item.disabled"></el-option>
           </el-select>
         </el-form-item>
 
@@ -371,6 +371,45 @@
     }
   }
 
+  var CustomerRule = {
+      name:[
+        { required: true, message: '请输入客户姓名', trigger: 'blur' },
+      ],
+      phone:[
+        { required: true, message: '请输入客户手机', trigger: 'blur' },
+        { validator: phoneValidata , trigger: 'blur' },
+      ],
+      phone2:[
+        { validator: phoneValidata, trigger: 'blur' }
+      ],
+      qq:[
+        { pattern:/^\d+$/, message: 'QQ号必须为数字'},
+        { validator: QQValidata, trigger:'blur' },
+      ],
+      qq2:[
+        { pattern:/^\d+$/, message: 'QQ号必须为数字'},
+        { validator: QQValidata, trigger:'blur' },
+      ],
+      weixin:[
+          { min: 6, max: 20, trigger:'blur', message:"长度为6-20个字符" },
+          { validator: WxValidata, trigger:'blur' },
+      ],
+      weixin2:[
+          {min: 6, max: 20, trigger:'blur', message:"长度为6-20个字符" },
+          { validator: WxValidata, trigger:'blur' },
+      ],
+
+      type:[
+        { required:true, message:'请选择客户类型',trigger:'change'},
+      ],
+      money:[
+        { required:true, message:'请选择客户资料量',trigger:'change'},
+      ],
+      source:[
+        { required:true, message:'请选择客户来源', trigger:'change'},
+      ]
+    };
+
   window.defaultOption.setDatas({
     realInfo:false,
     gridData:[],
@@ -413,84 +452,8 @@
     searchGroup:{:json_encode($searchGroup)},
     memberList:[],
     curCheckedItem:{},
-    addRules:{
-      name:[
-        { required: true, message: '请输入客户姓名', trigger: 'blur' },
-        
-      ],
-      phone:[
-        { required: true, message: '请输入客户手机', trigger: 'blur' },
-        { validator: phoneValidata , trigger: 'blur' },
-      ],
-      phone2:[
-        // { required: false, message: '请输入客户手机', trigger: 'blur' },
-        {  validator: phoneValidata, trigger: 'blur' }
-      ],
-      qq:[
-        { pattern:/^\d+$/, message: 'QQ号必须为数字'},
-        { validator: QQValidata, trigger:'blur' },
-      ],
-      qq2:[
-        { pattern:/^\d+$/, message: 'QQ号必须为数字'},
-        { validator: QQValidata, trigger:'blur' },
-      ],
-      weixin:[
-          { min: 6, max: 20, trigger:'blur', message:"长度为6-20个字符" },
-          { validator: WxValidata, trigger:'blur' },
-      ],
-      weixin2:[
-          {min: 6, max: 20, trigger:'blur', message:"长度为6-20个字符" },
-          { validator: WxValidata, trigger:'blur' },
-      ],
-      type:[
-        { required:true, message:'请选择客户类型',trigger:'change'},
-      ],
-      money:[
-        { required:true, message:'请选择客户资金量',trigger:'change', },  
-      ],
-      source:[
-        {required:true, message:'请选择客户来源', trigger:'change'}
-      ]
-    },
-    editRules:{
-      name:[
-        { required: true, message: '请输入客户姓名', trigger: 'blur' },
-      ],
-      phone:[
-        { required: true, message: '请输入客户手机', trigger: 'blur' },
-        { validator: phoneValidata , trigger: 'blur' },
-      ],
-      phone2:[
-        { validator: phoneValidata, trigger: 'blur' }
-      ],
-      qq:[
-        { pattern:/^\d+$/, message: 'QQ号必须为数字'},
-        { validator: QQValidata, trigger:'blur' },
-      ],
-      qq2:[
-        { pattern:/^\d+$/, message: 'QQ号必须为数字'},
-        { validator: QQValidata, trigger:'blur' },
-      ],
-      weixin:[
-          { min: 6, max: 20, trigger:'blur', message:"长度为6-20个字符" },
-          { validator: WxValidata, trigger:'blur' },
-      ],
-      weixin2:[
-          {min: 6, max: 20, trigger:'blur', message:"长度为6-20个字符" },
-          { validator: WxValidata, trigger:'blur' },
-      ],
-
-      type:[
-        { required:true, message:'请选择客户类型',trigger:'change'},
-      ],
-      money:[
-        { required:true, message:'请选择客户资料量',trigger:'change'},
-      ],
-      source:[
-        { required:true, message:'请选择客户来源', trigger:'change'},
-      ]
-    },
-
+    addRules:CustomerRule,
+    editRules:CustomerRule,
     qq_disabled:false,
     weixin_disabled:false,
     phone2_disabled:false,
@@ -514,7 +477,7 @@
     name:'',
     contact:'',
     field: '',
-    group:'user_id',
+    group:'{$uid}',
     ctrl:'search',
   }).setForm('add',{
     name:"",

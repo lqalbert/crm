@@ -11,13 +11,16 @@ class RoleCaptain {
     }
 
     public function getCustomerSearchGroup($arr){
-        foreach ($arr as $key => $value) {
-
-            if ($value['value']=="group" || $value['value']=="department") {
-                $arr[$key]['disabled'] = false;
+        $gorup_id = session('account')['userInfo']['group_id'];
+        $users = M('user_info')->where(array('group_id'=>$gorup_id ))->field('user_id, realname as name')->select();
+        foreach ($users as $key => $value) {
+            if ($value['user_id'] == session('uid')) {
+                $users[$key]['name'] = '本人';
             }
         }
-        return $arr;
+        $arr['disabled'] = false;
+        $users[] = $arr;
+        return $users;
     }
     
 }

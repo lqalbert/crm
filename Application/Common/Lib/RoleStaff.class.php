@@ -10,13 +10,10 @@ class RoleStaff {
 
     public function getCustomerSearchGroup($arr){
        
-        foreach ($arr as $key => $value) {
-
-            if ($value['value']=="group") {
-                $arr[$key]['disabled'] = true;
-            }
-        }
-
-        return $arr;
+        $users = array();
+        $users[] = array('user_id'=>session('uid'), 'name'=> session('account')['userInfo']['realname']);
+        $arr['disabled'] = true;
+        $users[] = $arr;
+        return $users;
     }
 }
