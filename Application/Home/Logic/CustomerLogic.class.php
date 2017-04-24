@@ -134,6 +134,9 @@ class CustomerLogic extends Model{
                         'ct.created_at'=>array('EGT', $this->ThreeMonthsAge())))
                         ->join('customer_transflog as ct on customers_basic.id=ct.cus_id');
                 }else{
+                    // 多条相同的客户转让记录 会出现多条数据
+                    // 用子查询 join (select from  这里选出 一条纪录 ) on customers_basic.id=ct.cus_id
+                    // 这种思路 
                    $D->where(array(
                         'transfer_status'=>1, 
                         'to_id'=> session('uid'),
