@@ -11,6 +11,8 @@ class DimissionCustomersController extends CommonController {
     private $model = null;
 
     private $department_id = "";
+
+    protected $pageSize = 7;
     
     public function _initialize(){
         parent::_initialize();
@@ -29,7 +31,7 @@ class DimissionCustomersController extends CommonController {
 
 
     public function getList(){
-        $this->ajaxReturn($this->model->getList(I('get.p',0), 7));
+        $this->ajaxReturn($this->model->getList(I('get.p',0), $this->pageSize));
     }
 
 

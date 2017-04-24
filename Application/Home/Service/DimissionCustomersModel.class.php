@@ -73,14 +73,14 @@ class DimissionCustomersModel extends \Think\Model{
         if ($count != 0) {
 
             $recount = $this->applyCriteria()->count();
+            
 
             $list = $this->applyCriteria()->join('user_info on customers_basic.salesman_id = user_info.user_id')
                                           ->join('left join customers_contacts as cc on (customers_basic.id = cc.cus_id and cc.is_main=1)')
                                           ->field("customers_basic.*, user_info.realname, cc.phone,cc.qq,cc.weixin")
                                           ->page($page. ','. $size)
                                           ->order('id desc')
-                                          ->select();
-                                        
+                                          ->select();                          
             return array('list'=>$list, 'count'=>$recount);
         } else {
             return array('list'=>[], 'count'=>0);

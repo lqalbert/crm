@@ -200,23 +200,11 @@
                 { required: true, message: '请选择类型', trigger: 'blur' ,type: 'number'},
                 // { validator: checkType, message: '请选择类型', trigger: 'blur' },
              ],
-             /*division_id:[
-                { required: true, message: '请选择事业/财富区', trigger: 'blur' },
-             ],
-             zone_id:[
-                { required: true, message: '请选择片区', trigger: 'blur' },
-             ],*/
 
-             /*public:[
-                { required: true, message: '请选择是否公示', trigger: 'blur' },
-             ],
-             address:[
-                { required: true, message: '请填写地址', trigger: 'blur' },
-             ],*/
 		},
 		typeList:{:json_encode($typeList)},
 		zoneList:{:json_encode($zoneList)},
-		// userList:{:json_encode($departmentMaster)},
+
 		computedusers:[]
 
 	}).setForm('add', {
