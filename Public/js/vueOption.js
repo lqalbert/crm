@@ -133,6 +133,7 @@ VueOption.prototype.setForm = function(name, obj){
 	return this;
 }
 
+
 VueOption.prototype.setRowStyle = function() {
 	this.setMethod('tableRowClassName', function(row, index){
 		var i = index+1;

@@ -25,8 +25,8 @@
             <!-- datatables  -->
             <el-row>
                 <el-col :span="24">
-                    <el-table 
-                  :data="dataList" 
+                    <el-table
+                  :data="dataList1" 
                   border
                   v-loading="dataLoad" 
                   element-loading-text="{:L('DATA_LOGIN')}"
@@ -64,7 +64,7 @@
                     
                   </div>
                   </el-col>
-                  <el-col :span="12">
+                  <el-col :span="12" :offset="12">
                   <div class="grid-content bg-purple-light pull-right">
                     <!-- page -->
                     <include file="Common:_pagination" />
@@ -83,7 +83,20 @@
         page.getUserUrl = "{:U('getUser')}";
         window.defaultOption.setDatas({
           customerType:{:json_encode($customerType)},
-          isShow:false
+          isShow:false,
+
+          dataList1:[
+            {name:'11111',sex:'女'},
+            {name:'22222',sex:'女'},
+            {name:'13331',sex:'女'},
+            {name:'11441',sex:'女'},
+            {name:'15551',sex:'女'},
+            {name:'16661',sex:'女'},
+            {name:'17771',sex:'女'},
+
+          ]
+
+
         }).setForm('search',{
             name:""
         }).setMethod('searchCustomer', function(){
@@ -112,5 +125,5 @@
         }).setMethod('closeAlert', function(){
           this.isShow = false;
         })
-    </script>
+    </script>    
 </block>
