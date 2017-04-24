@@ -31,24 +31,21 @@
           >
             <!-- <el-table-column type="selection" align="center" width="50"></el-table-column> -->
             <el-table-column label="序号"  :formatter="handleIndex" width="65"></el-table-column>
-            <el-table-column label="公告类型" prop="type" align="center" width="100">
+            <el-table-column label="公告类型" prop="type" align="center" width="150">
                <template scope="scope">
                   {{ getType(scope.row.type, 'NoticeType') }}
                </template>
             </el-table-column>
-            <el-table-column label="公告标题" prop="title"  width="100"></el-table-column>
+            <el-table-column label="公告标题" prop="title"></el-table-column>
             <el-table-column label="公告内容(点击查看详细)" prop="content" >
               <template scope="scope">
                 {{ scope.row.content | handleString(20) }}
               </template>
             </el-table-column>
-            <el-table-column label="开始日期" prop="start" align="center" width="180"></el-table-column> 
-            <el-table-column label="截止日期" prop="end" align="center" width="180"></el-table-column> 
-            <el-table-column label="发布人" prop="user" width="120"></el-table-column>
+            <el-table-column label="开始日期" prop="start" align="center"></el-table-column> 
+            <el-table-column label="截止日期" prop="end" align="center"></el-table-column> 
+            <el-table-column label="发布人" prop="user"></el-table-column>
             {:$viewDecorator['oprate']}
-            
-
-
           </el-table>
         </el-col>
       </el-row>
