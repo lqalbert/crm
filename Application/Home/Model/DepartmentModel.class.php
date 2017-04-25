@@ -71,6 +71,11 @@ class DepartmentModel extends Model {
         return $this->where(array('id'=>array('in', $ids )))->save(array('status'=>-1, 'user_id'=>null));
     }
 
+
+    public function getSalesDepartments($fields="id,name"){
+        return $this->where(array('type'=>self::SALES_DEPARTMENT, 'status'=> array('NEQ', -1)))->field($fields)->select();
+    }
+
     
 
 }

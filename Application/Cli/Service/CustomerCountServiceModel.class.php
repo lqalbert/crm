@@ -10,6 +10,9 @@ use Home\Model\DepartmentModel;
 * 不能因为部门 变动 纪录也变
 * 所以 生成这条纪录时 对应的 小组名称  部门等 就应该写死在里面
 * 添加 小组id 部门id 可以以后核对用
+*
+*
+* 应该用策略模式。这里没有用 失败
 */
 class CustomerCountServiceModel extends \Think\Model{
 
@@ -228,8 +231,6 @@ class CustomerCountServiceModel extends \Think\Model{
 
 
 
-
-
     public function index($date){
         
         //业务逻辑层
@@ -276,7 +277,7 @@ class CustomerCountServiceModel extends \Think\Model{
                 'department_name' =>$this->departments[$value['department_id']],
                 'date'=>$date);
 
-            $content = array();
+            // $content = array();
             foreach ($fields as $v2) {
                 $tmp_row[$v2] = call_user_func(array($this, 'get'.parse_name($v2, 1)), $value['id']);
             }
