@@ -22,7 +22,7 @@
       <el-row>
         <el-col :span="24">
           <el-table :data="dataList" border  v-loading="dataLoad" element-loading-text="{:L('DATA_LOGIN')}" ref="select"
-           @selection-change="handleSelectionChange">
+           @selection-change="handleSelectionChange" @row-click="showContent">
             <el-table-column type="selection" align="center" width="50"></el-table-column>
             <el-table-column label="序号" align="center" :formatter="handleIndex" width="65"></el-table-column>
             <el-table-column label="类型" prop="type"  >
@@ -31,11 +31,19 @@
               </template>
             </el-table-column>
             <el-table-column label="标题" prop="title"  ></el-table-column>
-            <el-table-column label="建议内容" prop="advice" ></el-table-column> 
+            <el-table-column label="建议内容" prop="advice" >
+              <template scope="scope">
+                {{ scope.row.advice | handleString }}
+              </template>
+            </el-table-column> 
             <el-table-column label="发表人" prop="ad_user"  >  
             </el-table-column>
             <el-table-column label="时间" prop="time" align="center" ></el-table-column> 
-            <el-table-column label="回复内容" prop="reply"  ></el-table-column> 
+            <el-table-column label="回复内容" prop="reply"  >
+              <template scope="scope">
+                {{ scope.row.reply | handleString }}
+              </template>
+            </el-table-column> 
             <el-table-column label="回复人" prop="re_user"  >
             </el-table-column>
             <el-table-column label="回复时间" prop="re_time" align="center" ></el-table-column>  
@@ -78,7 +86,9 @@
       <!-- 主管回复 -->
       <include file="_reply" />
       <!-- /主管回复 -->
-
+      <!-- 显示系统公告内容 -->
+      <include file="_showContent" />
+      <!-- / 显示系统公告内容 -->
     </div>
 
   </div>
@@ -108,6 +118,8 @@
         { max: 200, message: '200个字符以内哦', trigger: 'blur' }
       ],
     },
+    contentDialog:false,
+    showContentDetail:[],
   }).setForm('search',{
     name:'',
   }).setForm('add',{
@@ -160,6 +172,11 @@
       this.$message.error(response.body.info);
     })
 
+  }).setMethod('showContent',function(row,event,column){
+    if (column.label) {
+      this.contentDialog = true;
+      this.showContentDetail = row;
+    }; 
   });
 </script>
 </block>

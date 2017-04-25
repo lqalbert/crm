@@ -19,7 +19,7 @@
  <el-row>
    <el-col :span="20">
      <el-form-item label="总结内容" prop="content">
-        <el-input v-model="addForm.content" type="textarea" :autosize="{ minRows: 4, maxRows: 4}" placeholder="请填写总结内容,最多填写150字"></el-input>
+        <el-input v-model="addForm.content" type="textarea" :autosize="{ minRows: 4, maxRows: 4}" placeholder="请填写总结内容"></el-input>
      </el-form-item>
    </el-col>
  </el-row>
@@ -27,5 +27,4 @@
   <div slot="footer" class="dialog-footer">
     <include file="Common:_add" />
   </div>
-</el-dialog>
-
+</el-dialog> 
