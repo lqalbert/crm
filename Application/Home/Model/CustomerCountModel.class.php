@@ -71,6 +71,7 @@ abstract class CustomerCountModel extends \Think\Model{
 
     public function getFields(){
         $d = new CustomerCountServiceModel;
+        $this->customerTypes = array_keys(D('Home/Customer')->getType());
         return $d->getFields();
     }
 
