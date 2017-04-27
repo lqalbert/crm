@@ -12,7 +12,7 @@
             <el-form-item>
              <el-button type="primary" icon="search" @click="loadDatalist">查询</el-button>
              <el-tooltip content="清空搜索框并刷新表格数据" placement="right">
-              <el-button  @click="searchReset">重置</el-button>
+              <el-button  @click="searchReset" style="margin-left:10px;">重置</el-button>
              </el-tooltip>
             </el-form-item>
           </el-form>
@@ -39,7 +39,7 @@
             <el-table-column label="公告标题" prop="title"></el-table-column>
             <el-table-column label="公告内容(点击查看详细)" prop="content" >
               <template scope="scope">
-                {{ scope.row.content | handleString(20) }}
+                {{ scope.row.content | handleString(10) }}
               </template>
             </el-table-column>
             <el-table-column label="开始日期" prop="start" align="center"></el-table-column> 
@@ -100,6 +100,15 @@
       ],
       type:[
          { required: true, message: '请选择公告类型', trigger: 'blur'},
+      ],
+      content:[
+        {required: true, message: '请输入公告内容', trigger: 'blur'},
+      ],
+      start:[
+        {required: true, message: '请选择开始时间', trigger: 'blur'},
+      ],
+      end:[
+        {required: true, message: '请选择截止时间', trigger: 'blur'},
       ],
     }
   }).setForm('search',{

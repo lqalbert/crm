@@ -23,12 +23,12 @@
  </el-row>
  <el-row>
    <el-col :span="10">
-     <el-form-item label="开始日期" prop="start">
+     <el-form-item label="开始日期" prop="start" required>
         <el-date-picker v-model="addForm.start" type="datetime" placeholder="请选择开始日期"></el-date-picker>
      </el-form-item>
    </el-col>
    <el-col :span="12">
-     <el-form-item label="截止日期" prop="end">
+     <el-form-item label="截止日期" prop="end" required>
         <el-date-picker v-model="addForm.end" type="datetime" placeholder="请选择截止日期"></el-date-picker>
      </el-form-item>
    </el-col>

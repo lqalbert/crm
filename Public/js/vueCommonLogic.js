@@ -241,7 +241,7 @@ function setForm(opt, type){
 			}
 
 			this.$refs[formName].validate(function(valid){
-				// console.log(valid);
+				console.log(valid);
 				if (valid) {
 					vmThis.commonSubmitLogic(url, form);
 				} else {

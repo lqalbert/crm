@@ -8,13 +8,13 @@ class SysNoticeModel extends Model{
 	  protected $tableName = 'sys_notice';
    
     protected $NoticeType = array(
-       '1'=>'功能升级',
-       '2'=>'新功能上线',
-       '3'=>'功能测试',
-       '4'=>'系统更新',
-       '5'=>'系统BUG',
-       '6'=>'系统维护',
-       '7'=>'其它公告',
+     '1'=>'功能升级',
+     '2'=>'新功能上线',
+     '3'=>'功能测试',
+     '4'=>'系统更新',
+     '5'=>'系统BUG',
+     '6'=>'系统维护',
+     '7'=>'其它公告',
     );
 
     protected $_auto = array(
@@ -89,7 +89,7 @@ class SysNoticeModel extends Model{
       $oprateColumn = <<<'EOD'
 <el-table-column label="操作"  align="center" width="180">
    <template scope="scope">
-      <el-button type="success" @click.stop="handleEdit(scope.$index, scope.row)"     size="small">编辑</el-button>
+      <el-button type="info" @click.stop="handleEdit(scope.$index, scope.row)"     size="small">编辑</el-button>
       <el-button type="danger"  @click.stop="handleDelete(scope.$index, scope.row)"   size="small" >删除</el-button>
    </template>
 </el-table-column>  
