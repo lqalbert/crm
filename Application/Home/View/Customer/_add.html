@@ -1,4 +1,4 @@
-<el-dialog title="录入客户" v-model="addFormDialog">
+<el-dialog title="录入客户" v-model="addFormDialog" :close-on-click-modal="false">
   <el-form ref="addForm" :rules="addRules" :model="addForm" v-model="addForm" :label-width="dialogLabelWidth">
     <el-tabs type="card">
       <el-tab-pane label="核心资料" name="first">

@@ -1,4 +1,4 @@
-<el-dialog title="编辑客户资料" v-model="editFormDialog" @open="beforeEdit">
+<el-dialog title="编辑客户资料" v-model="editFormDialog" @open="beforeEdit" :close-on-click-modal="false">
 <!-- <el-form :model="form"> -->
 <el-form ref="editForm" :rules="editRules" :model="editForm" v-model="editForm" :label-width="dialogLabelWidth">
     <el-tabs type="card">

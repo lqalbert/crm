@@ -15,7 +15,7 @@ class PreCheckController extends CommonController {
 
     public function serach(){
         $result = $this->_getList();
-        // var_dump($this->M->getLastSql());
+        
         if (IS_AJAX) {
             $this->ajaxReturn($result); 
         }  else {
@@ -35,11 +35,26 @@ class PreCheckController extends CommonController {
                 ->join('left join department_basic as db on ui.department_id = db.id');
 
         if (!empty($queryName)) {
-            $this->M->where(array("cc1.phone|cc1.qq|cc1.weixin|customers_basic.name"=> array('like', I('get.name')."%")));
-            //var_dump($this->M->getLastSql());
-        } else {
-            $this->M->where(array("customers_basic.name"=> '00000000000000000000000'));
-        }           
+            $this->M->where(array('customers_basic.name'=> $queryName));
+        } 
+
+        $queryAgu = array('qq', 'phone', 'weixin');
+        $cus_ids = array();
+        foreach ($queryAgu as $value) {
+            $arg = I('get.'.$value);
+            if (!empty($arg)) {
+                $cus_ids = array_merge(M('customers_contacts')->where(array($value=>$arg))->getField('cus_id', true), $cus_ids);
+            }
+        }
+
+        if (count($cus_ids) !=0) {
+            $this->M->where(array('customers_basic.id'=>array('IN', $cus_ids)));
+        } else if(empty($queryName)) {
+            $this->M->where(array('customers_basic.name'=> '00000000000000000000000'));
+        }
+
+        
+        
     }
 
 
