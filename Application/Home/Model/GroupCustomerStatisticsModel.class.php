@@ -129,7 +129,9 @@ class GroupCustomerStatisticsModel extends CustomerCountModel {
 
 
     public function getTargets(){
-        return D('Group')->getAllGoups($this->depart_id, 'id,name');
+        $re = D('Group')->getAllGoups($this->depart_id, 'id,name');
+
+        return array_merge(array(array('id'=>0,'name'=>'其它')), $re);
     }
 
 }
