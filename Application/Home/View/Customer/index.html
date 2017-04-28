@@ -44,6 +44,9 @@
     .el-table__body tr.current-row>td{
       background: rgba(157, 195, 232, 0.7);
     }
+    .on{
+      opacity:0.5;
+    }
   </style>
 </block>
 <block name="body">
@@ -92,51 +95,51 @@
 
           <el-tooltip content="本人跟踪的客户" placement="bottom-start">
             <el-badge :value="{$aggregation.log}" :max="9" style="margin-left:10px;">
-              <el-button type="info" size="small" @click="setField('log')">跟踪</el-button>
+              <el-button type="info" size="small" v-bind:class="{on:flag==1}" @click="setField('log',1)">跟踪</el-button>
             </el-badge>
           </el-tooltip>
 
           <el-tooltip content="本人没有跟踪的客户" placement="bottom-start">
 
             <el-badge :value="{$aggregation.unlog}" :max="9" style="margin-left:15px;">
-              <el-button type="info" size="small" @click="setField('unlog')">未跟踪</el-button>
+              <el-button type="info" size="small" v-bind:class="{'on':flag==2}" @click="setField('unlog',2)">未跟踪</el-button>
             </el-badge>
           </el-tooltip>
 
           <el-tooltip content="本人计划跟踪的客户" placement="bottom-start">
             <el-badge :value="{$aggregation.plan}" :max="9" style="margin-left:15px;">
-              <el-button type="info" size="small" @click="setField('plan')" >计划</el-button>
+              <el-button type="info" size="small" v-bind:class="{'on':flag==3}" @click="setField('plan',3)" >计划</el-button>
             </el-badge>
           </el-tooltip>
 
          <el-tooltip content="本人把客户转给他人的客户(分成)" placement="bottom-start">
             <el-badge :value="{$aggregation.transfto}" :max="9" style="margin-left:15px;">
-              <el-button type="info" size="small" @click="setField('transfto')">转让</el-button>
+              <el-button type="info" size="small" v-bind:class="{'on':flag==4}" @click="setField('transfto',4)">转让</el-button>
             </el-badge>
           </el-tooltip>
 
           <el-tooltip content="他人把客户转给本人的客户(分成)" placement="bottom-start">
 
             <el-badge :value="{$aggregation.transfin}" :max="9" style="margin-left:15px;">
-              <el-button type="info" size="small" @click="setField('transfin')">转入</el-button>
+              <el-button type="info" size="small" v-bind:class="{'on':flag==5}" @click="setField('transfin',5)">转入</el-button>
             </el-badge>
           </el-tooltip>
 
           <el-tooltip content="本人跟踪且成交了的客户" placement="bottom-start">
             <el-badge :value="{$aggregation.type}" :max="9" style="margin-left:15px;">
-              <el-button type="primary" size="small" @click="setField('type')">服务</el-button>
+              <el-button type="primary" size="small" v-bind:class="{'on':flag==6}" @click="setField('type',6)">服务</el-button>
             </el-badge>
           </el-tooltip>
 
           <el-tooltip content="对客户进行筛选后重点跟踪" placement="bottom-start">
             <el-badge :value="{$aggregation.important}" :max="9" style="margin-left:15px;">
-              <el-button type="info" size="small" @click="setField('important')">自选</el-button>
+              <el-button type="info" size="small" v-bind:class="{'on':flag==7}" @click="setField('important',7)">自选</el-button>
             </el-badge>
           </el-tooltip>
 
           <el-tooltip content="他人的客户与您的客户有冲突" placement="bottom-start">
             <el-badge :value="{$aggregation.conflict}" :max="9" style="margin-left:15px;">
-    		      <el-button size="small" type="warning" @click="setField('conflict')">冲突</el-button>
+    		      <el-button size="small" type="danger" v-bind:class="{'on':flag==8}" @click="setField('conflict',8)">冲突</el-button>
             </el-badge>
           </el-tooltip>
 
@@ -411,6 +414,7 @@
     };
 
   window.defaultOption.setDatas({
+    flag:false,
     realInfo:false,
     gridData:[],
     ddprops:'name',
@@ -787,10 +791,14 @@
       });
 
       this.handleEdit(index, row);
-  }).setMethod('setField', function(v){
+  }).setMethod('setField', function(v,id){
+
+      this.flag=id;//-------------------------------------------------------------------------------------------------------
+      //alert(this.flag);
       this[FormName.getFormName('search')].field = v;
       this[FormName.getFormName('search')].group = 'user_id';
       this.loadDatalist();
+      //this.flag=id;
   }).setMethod('beforeImportc', function(){
       var vmThis = this;
       this.$http.get('{:U("checkCucstomers")}').then(function(response){
