@@ -68,7 +68,7 @@ class CustomersCountSecondController extends CommonController {
             return $this->getDepartments();
         } else {
             
-            switch ($objType) {
+            /*switch ($objType) {
                 case 'Groups':
                     $relate_id = M('statistics_usercustomers')->where(array('id'=>$id))->getField('department_id');
                     
@@ -79,9 +79,9 @@ class CustomersCountSecondController extends CommonController {
                 default:
                     
                     break;
-            }
+            }*/
             
-            return call_user_func(array($this, "get".$objType),  $relate_id);
+            return call_user_func(array($this, "get".$objType),  $id);
         }
         
     }
@@ -96,9 +96,9 @@ class CustomersCountSecondController extends CommonController {
             return $this->getGroups(session('account')['userInfo']['department_id']);
         } else {
             
-            $relate_id = M('statistics_usercustomers')->where(array('id'=>$id))->getField('group_id');
+            // $relate_id = M('statistics_usercustomers')->where(array('id'=>$id))->getField('group_id');
             
-            return call_user_func(array($this, "get".$objType),  $relate_id);
+            return call_user_func(array($this, "get".$objType),  $id);
         }
     }
 

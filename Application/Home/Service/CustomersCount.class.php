@@ -67,7 +67,7 @@ class CustomersCount {
 
     public function getDepartment(){
         if ($this->date != $this->today) {
-            $list = M('statistics_usercustomers')->field($this->getSqlFields().", id, department_name as name")
+            $list = M('statistics_usercustomers')->field($this->getSqlFields().", department_id as id, department_name as name")
                                                         ->where(array('date'=> $this->date))
                                                         ->group('department_id')
                                                         ->order($this->order)
@@ -81,7 +81,7 @@ class CustomersCount {
 
     public function getGroups($department_id = 0){
         if ($this->date != $this->today) {
-            $list = M('statistics_usercustomers')->field($this->getSqlFields().",id , group_name as name")
+            $list = M('statistics_usercustomers')->field($this->getSqlFields().",group_id as id , group_name as name")
                                             ->where(array('date'=> $this->date, 'department_id'=>$department_id ))
                                             ->group('group_id')
                                             ->order($this->order)

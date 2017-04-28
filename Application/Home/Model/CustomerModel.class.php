@@ -181,7 +181,7 @@ class CustomerModel extends Model {
       if ($d == false) {
         $this->rollback();
         $this->error = $D_contact->getError();
-        $this->addConflict($mainData );
+        // $this->addConflict($mainData );
 
         return false;
       }
@@ -197,7 +197,7 @@ class CustomerModel extends Model {
           if ( !($D_contact->create($data) && $D_contact->add())) {
             $this->rollback();
             $this->error = $D_contact->getError($data );
-           $this->addConflict($data);
+           // $this->addConflict($data);
             return false;
           }
         }
@@ -211,8 +211,11 @@ class CustomerModel extends Model {
       }
     }
 
+    /**
+    * 废弃不用了
+    */
     private function addConflict($data){
-      $error = $this->error;
+      /*$error = $this->error;
       if (mb_strpos($error, '存在')!==false) {
 
          if (mb_strpos($error, '手机')!==false) {
@@ -228,7 +231,7 @@ class CustomerModel extends Model {
            D('CustomerConflict')->addWx($cus_id, $data['weixin']);
          }
 
-      }
+      }*/
     }
 
     private function getConflictCusId($field, $data){
