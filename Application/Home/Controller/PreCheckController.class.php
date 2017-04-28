@@ -45,7 +45,7 @@ class PreCheckController extends CommonController {
             if (!empty($arg)) {
                 $re = M('customers_contacts')->where(array($value=>$arg))->getField('cus_id', true);
                 $cus_ids = array_merge($re, $cus_ids);
-                if (!session('?'.$value."_".$arg)) {
+                if ( !empty($re) &&  !session('?'.$value."_".$arg)) {
                     $pa = array('list'=>$re, 'uid'=>session('uid'), 'type'=>$value, 'value'=> $arg);
                     tag('precheck_que' , $pa);
                     session($value."_".$arg, true);
