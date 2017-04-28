@@ -538,7 +538,14 @@ class CustomerController extends CommonController {
 
 
     public function checContact($value, $type){
-        if (M('customers_contacts')->where(array($type=>$value))->find()) {
+        $row = M('customers_contacts')->where(array($type=>$value))->find();
+        if ($row) {
+            if ( !session('?'.$type."_".$value."_addContact_que")) {
+                $pa = array('list'=>array($row['cus_id']), 'uid'=>session('uid'), 'type'=>$type, 'value'=> $value);
+                tag('addContact_que' , $pa);
+                session($type."_".$value."__addContact_que", true);
+            }
+
             $this->error("存在");
         } else {
             $this->success();

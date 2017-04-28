@@ -8,12 +8,15 @@ class precheckBehavior extends \Think\Behavior {
     private $uid = 0;
     private $type ="";
 
+    private $map = array(
+        'phone'=>'手机号冲突',
+        'qq'=>'qq号冲突',
+        'weixin'=>'微信号冲突',
+    );
+
 
     //行为执行入口
     public function run(&$param){
-
-
-        
 
         $this->list = $param['list'];
         $this->uid = $param['uid'];
@@ -36,7 +39,26 @@ class precheckBehavior extends \Think\Behavior {
             $funcname = "add". ucfirst($this->type);
             
             if (method_exists($this->D, $funcname)) {
-                call_user_func(array($this->D, $funcname), $value, $this->uid, $this->value);
+                $re = call_user_func(array($this->D, $funcname), $value, $this->uid, $this->value);
+                if ($re) {
+                    // 生成预查
+                    $content = $this->map[$this->type].":".$this->value;
+                    //冲突的跟踪纪录
+                    D('CustomerLog')->add(array(
+                        'cus_id'=>$value,
+                        'user_id'=> $this->uid,
+                        'track_text'=> '预查冲突',
+                        'content'=> $content
+                    ));
+
+                    //生成消息盒子的纪录
+                    D("MsgBox")->add(array(
+                        'title'=>'预查冲突',
+                        'content'=>$content ,
+                        'from_id' => $this->uid,
+                        'to_id' => M('customers_basic')->where(array('id'=>$value))->getField('salesman_id')
+                    ));
+                }
             }
         }
     }

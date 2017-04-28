@@ -40,6 +40,7 @@ class CommonController extends Controller {
 		$this->M = D($this->table);
 
 		\Think\Hook::add('precheck_que','Home\\Behaviors\\precheckBehavior');
+		\Think\Hook::add('addContact_que','Home\\Behaviors\\checkContactBehavior');
 
 		
 	}

@@ -13,21 +13,21 @@ class CustomerConflictModel extends Model {
 
     public function addPhone($cus_id, $userid, $value){
         
-        $this->addMsgBox('手机号预查冲突:'.$value, $userid, $this->getCusSaleId($cus_id));
+        // $this->addMsgBox('手机号预查冲突:'.$value, $userid, $this->getCusSaleId($cus_id));
 
         $this->create(array('user_id'=>$userid, 'cus_id'=>$cus_id, 'type'=>0, 'value'=>$value));
         return $this->add();
     }
 
     public function addQq($cus_id, $userid, $value){
-        $this->addMsgBox('QQ号预查冲突:'.$value, $userid, $this->getCusSaleId($cus_id));
+        // $this->addMsgBox('QQ号预查冲突:'.$value, $userid, $this->getCusSaleId($cus_id));
         $this->create(array('user_id'=>$userid, 'cus_id'=>$cus_id, 'type'=>1, 'value'=>$value));
         return $this->add();
     }
 
 
     public function addWeixin($cus_id,$userid, $value){
-        $this->addMsgBox('微信号预查冲突:'.$value, $userid, $this->getCusSaleId($cus_id));
+        // $this->addMsgBox('微信号预查冲突:'.$value, $userid, $this->getCusSaleId($cus_id));
         $this->create(array('user_id'=>$userid, 'cus_id'=>$cus_id, 'type'=>2, 'value'=>$value));
         return $this->add();
     }
