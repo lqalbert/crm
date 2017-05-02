@@ -5,7 +5,7 @@ class DepNoticeModel extends Model{
 	
 	const DELETE_STATUS = -1;
   
-  protected $tableName = "dep_notice";
+  protected $tableName = "department_notice";
 
   protected $NoticeType = array(
 	 '1'=>'全体公告',
