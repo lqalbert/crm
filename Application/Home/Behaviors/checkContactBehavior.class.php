@@ -2,8 +2,7 @@
 namespace Home\Behaviors;
 
 
-class precheckBehavior extends \Think\Behavior {
-
+class checkContactBehavior extends \Think\Behavior {
     private $list = array();
     private $uid = 0;
     private $type ="";
@@ -19,7 +18,7 @@ class precheckBehavior extends \Think\Behavior {
     public function run(&$param){
 
         $this->list = $param['list'];
-        $this->uid = $param['uid'];
+        $this->uid  = $param['uid'];
         $this->type = $param['type'];
         $this->value = $param['value'];
 
@@ -36,6 +35,7 @@ class precheckBehavior extends \Think\Behavior {
 
     public function deal(){
         foreach ($this->list as $value) {
+            
             $funcname = "add". ucfirst($this->type);
             
             if (method_exists($this->D, $funcname)) {
@@ -47,13 +47,13 @@ class precheckBehavior extends \Think\Behavior {
                     D('CustomerLog')->add(array(
                         'cus_id'=>$value,
                         'user_id'=> $this->uid,
-                        'track_text'=> '预查冲突',
+                        'track_text'=> '添加冲突',
                         'content'=> $content
                     ));
 
                     //生成消息盒子的纪录
                     D("MsgBox")->add(array(
-                        'title'=>'预查冲突',
+                        'title'=>'添加冲突',
                         'content'=>$content ,
                         'from_id' => $this->uid,
                         'to_id' => M('customers_basic')->where(array('id'=>$value))->getField('salesman_id')

@@ -15,7 +15,7 @@ class PreCheckController extends CommonController {
 
     public function serach(){
         $result = $this->_getList();
-
+        // var_dump($this->M->getlastsql());
         if (IS_AJAX) {
             $this->ajaxReturn($result); 
         }  else {
@@ -34,8 +34,9 @@ class PreCheckController extends CommonController {
                 ->join('left join user_info as ui on customers_basic.salesman_id = ui.user_id')
                 ->join('left join department_basic as db on ui.department_id = db.id');
 
+        $where = array();
         if (!empty($queryName)) {
-            $this->M->where(array('customers_basic.name'=> $queryName));
+            $where['customers_basic.name'] = $queryName;
         } 
 
         $queryAgu = array('qq', 'phone', 'weixin');
@@ -44,21 +45,27 @@ class PreCheckController extends CommonController {
             $arg = I('get.'.$value);
             if (!empty($arg)) {
                 $re = M('customers_contacts')->where(array($value=>$arg))->getField('cus_id', true);
-                $cus_ids = array_merge($re, $cus_ids);
-                if ( !empty($re) &&  !session('?'.$value."_".$arg)) {
-                    $pa = array('list'=>$re, 'uid'=>session('uid'), 'type'=>$value, 'value'=> $arg);
-                    tag('precheck_que' , $pa);
-                    session($value."_".$arg, true);
+                if ($re) {
+                    $cus_ids = array_merge($re, $cus_ids);
+                    
+                    if ( !session('?'.$value."_".$arg)) {
+                        $pa = array('list'=>$re, 'uid'=>session('uid'), 'type'=>$value, 'value'=> $arg);
+                        tag('precheck_que' , $pa);
+                        session($value."_".$arg, true);
+                    }
                 }
+                
             }
         }
 
         if (count($cus_ids) !=0) {
-            $this->M->where(array('customers_basic.id'=>array('IN', $cus_ids)));
+            $where['customers_basic.id'] = array('IN', $cus_ids);
         } else if(empty($queryName)) {
-            $this->M->where(array('customers_basic.name'=> '00000000000000000000000'));
+            $where['customers_basic.name'] = '00000000000000000000000';
         }
-
+        $where['_logic'] = 'OR';
+        
+        $this->M->where($where);
         
         
     }

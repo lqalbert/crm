@@ -96,6 +96,7 @@ class CustomerCountServiceModel extends \Think\Model{
 
     private function setGroups(){
         $this->groups = M('group_basic')->where(array('status'=>array('EGT', 0)))->getField('id,name');
+        $this->groups = array_merge(array(array('id'=>0,'name'=>'其它')), $this->groups);
     }
 
     private function setDepartments(){
