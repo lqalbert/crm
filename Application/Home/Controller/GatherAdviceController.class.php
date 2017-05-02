@@ -34,10 +34,30 @@ class GatherAdviceController extends CommonController{
     if (I('get.name')) {
       $this->M->where(array("title"=> array('like', "%".I('get.name')."%")));
     }
-
     $this->M->where(array('status'=>array('NEQ', AdvicesBasicModel::DELETE_STATUS)));
+    $this->setRoleCondition();
 
   }
+
+  private function commonCondition(){
+    $this->M->where(array('ad_user'=> session('uid')));
+  }
+
+  private function goldCondition(){
+
+  }
+
+
+  private function setRoleCondition(){
+    $ename = $this->getRoleEname();
+    $funcName = $ename."Condition";
+    if (method_exists($this, $funcName)) {
+       call_user_func(array($this, $funcName));
+    } else {
+      $this->commonCondition();
+    }
+  }
+
 
   /**
    * 添加建议
