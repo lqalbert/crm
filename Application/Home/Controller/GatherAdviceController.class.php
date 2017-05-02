@@ -6,9 +6,15 @@ use Home\Model\AdvicesBasicModel;
 
 
 class GatherAdviceController extends CommonController{
+  
   protected $table = 'AdvicesBasic';
   protected $pageSize = 11;
+
   public function index(){
+
+    $ename = $this->getRoleEname();
+    $this->assign('viewDecorator', $this->M->decoratorView($ename));
+
     $this->assign('AdviceType', D('GatherAdvice')->getAdviceType());
     $this->display();
 
