@@ -45,8 +45,10 @@ class DepartmentCustomerController extends CommonController {
         $searchGroup = $this->getGoups();
         array_unshift($searchGroup, array('id'=>0, 'name'=>'本部门'));
         
-        $D = D('Customer');
+         $D = D('Customer');
+         $id = I('get.id', '');
 
+         $this->assign('user_id', $id);
          $this->assign('customerType', $D->getType());
          $this->assign('sexType',      $D->getSexType());
          $this->assign('Quality',      $D->getQuality());
