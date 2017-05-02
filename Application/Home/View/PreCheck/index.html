@@ -9,12 +9,48 @@
             <el-row>
                 <el-col :span="24">
                     <el-form :inline="true"  ref="searchForm" :model="searchForm">
-                      <el-form-item prop="name" style="width:280px">
-                       <el-input v-model="searchForm.name"  placeholder="QQ|手机号|微信号|姓名" >
+                      <el-form-item prop="qq" >
+                       <el-input 
+                       v-model="searchForm.qq" 
+                       
+                       size="small" 
+                       placeholder="QQ号" 
+                       >
                        </el-input>
                       </el-form-item>
+
+                      <el-form-item prop="phone" >
+                       <el-input 
+                       v-model="searchForm.phone" 
+                       
+                       size="small"  
+                       placeholder="手机号" 
+                       >
+                       </el-input>
+                      </el-form-item>
+
+                      <el-form-item prop="weixin" >
+                       <el-input 
+                       v-model="searchForm.weixin" 
+                       
+                       size="small"  
+                       placeholder="微信号" 
+                       >
+                       </el-input>
+                      </el-form-item>
+
+                      <el-form-item prop="name" >
+                       <el-input 
+                       v-model="searchForm.name" 
+                       
+                       size="small" 
+                       placeholder="姓名" 
+                       >
+                       </el-input>
+                      </el-form-item>
+
                       <el-form-item> 
-                        <el-button type="primary" icon="search" @click="searchCustomer">查询</el-button> 
+                        <el-button type="primary" icon="search" size="small" @click="searchCustomer">查询</el-button> 
                       </el-form-item>
                     </el-form>
                 </el-col>
@@ -33,22 +69,29 @@
                   >
                     <el-table-column prop="name"  label="客户姓名" width="140">
                     </el-table-column>
-                    
-                    <el-table-column prop="type" label="客户类型"  :context="_self">
-                      <template scope="scope">
-                        {{ getType(scope.row.type, 'customerType') }}
-                      </template>
-                    </el-table-column>
                     <el-table-column  prop="user_name" label="跟踪员工"  >
+                    <template scope="scope">
+                      <span v-if="scope.row.db_name">
+                        {{ scope.row.db_name }}-
+                      </span>{{ scope.row.user_name }}
+                    </template>
                     </el-table-column>
                     <el-table-column  prop="created_at" label="录入时间" align="center" >
                     </el-table-column>
 
+                    <el-table-column   label="状态" >
+                      <template scope="scope">
+                        <el-tag v-if="scope.row.type!='V' && scope.row.type!='F'" type="gray">已冲突</el-tag>
+                        <el-tag v-if="scope.row.type=='V'" type="warning">已成交</el-tag>
+                        <el-tag v-if="scope.row.type=='F'" type="danger">黑名单</el-tag>
+                      </template>
+                    </el-table-column>
+                    
                     <el-table-column  label="操作" align="center" :context="_self">
                       <template scope="scope">
-                       <el-button type="primary" size="small" v-if="scope.row.s<=0" @click="getCustomer(scope.row.id)">索取</el-button>
-                      </template>
                     
+                       <el-button type="primary" size="small" v-if="scope.row.s<=0" @click="getCustomer(scope.row.id)">可以索取</el-button>
+                      </template>
                     </el-table-column>
 
 
@@ -98,14 +141,17 @@
 
 
         }).setForm('search',{
-            name:""
+            name:"",
+            qq:"",
+            phone:"",
+            weixin:""
         }).setMethod('searchCustomer', function(){
            var vmThis = this;
            this.dataLoad = true;
-           vmThis.$http.get(page.searchUrl, {params:{name:this.searchForm.name}}).then(function(response){
+           vmThis.$http.get(page.searchUrl, {params:this.searchForm}).then(function(response){
               vmThis.$set(vmThis, 'dataList', response.body.list);
               if (vmThis.dataList.length==0) {
-                  this.$message('该客户还未锁定');
+                  this.$message({message:'该客户还未锁定', showClose: true});
               }
               vmThis.dataLoad  = false;
            }, function(response){
@@ -115,7 +161,7 @@
         }).setMethod('getType', function(type, field){
             return this[field][type];
         }).setMethod('getCustomer', function(id){
-          var vmThis = this;
+           var vmThis = this;
            
            vmThis.$http.post(page.getUserUrl, {id:id}).then(function(response){
               vmThis.$message.success(response.body.info);
@@ -124,6 +170,16 @@
            })
         }).setMethod('closeAlert', function(){
           this.isShow = false;
+        }).setMethod('clearInput', function(v){
+          this.searchForm[v]="";
+        }).setMethod('qqInput', function(){
+          this.clearInput('qq');
+        }).setMethod('phoneInput', function(){
+          this.clearInput('phone');
+        }).setMethod('weixinInput', function(){
+          this.clearInput('weixin');
+        }).setMethod('nameInput', function(){
+          this.clearInput('name');
         })
     </script>    
 </block>

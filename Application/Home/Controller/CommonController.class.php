@@ -29,12 +29,14 @@ class CommonController extends Controller {
 	    	$this->redirect('Login/index');
 	    }
     }
-	
 		Rbac::AccessDecision() || $this->error(L('NO_AUTHORIZED'));
 
 		$this->parseJsonParams();
 
 		$this->M = D($this->table);
+
+		\Think\Hook::add('precheck_que','Home\\Behaviors\\precheckBehavior');
+		\Think\Hook::add('addContact_que','Home\\Behaviors\\checkContactBehavior');
 
 		
 	}
@@ -51,7 +53,7 @@ class CommonController extends Controller {
 	* 重载父类的error
 	* $message = '', $jumpUrl = '', $ajax =
 	*/ 
-	public function error($message,$jumpUrl='',$ajax=false){
+	public function error($message='',$jumpUrl='',$ajax=false){
 		$this->setErrorHeader();
 		parent::error($message,$jumpUrl,$ajax);
 	}
@@ -63,8 +65,10 @@ class CommonController extends Controller {
 	* 这里就把这个转成 数组并赋值给 $_POST
 	*/
 	private function parseJsonParams(){
+		
 		if (IS_POST && strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false  ) {
 			$_POST = json_decode(file_get_contents("php://input"), true);
+			
 		}
 	}
 
@@ -181,6 +185,14 @@ class CommonController extends Controller {
 				$this->error("还没有分配部门给你，暂时不能添加");
 			}
 		}
+	}
+
+	/**
+	* 得到ename
+	* 
+	*/
+	protected function getRoleEname(){
+		return (new RoleModel)->getEnameById(session('account')['userInfo']['role_id']);
 	}
 
 

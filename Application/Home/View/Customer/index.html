@@ -44,6 +44,9 @@
     .el-table__body tr.current-row>td{
       background: rgba(157, 195, 232, 0.7);
     }
+    .on{
+      opacity:0.5;
+    }
   </style>
 </block>
 <block name="body">
@@ -67,7 +70,7 @@
 
         <el-form-item prop="group" style="width:80px">
           <el-select v-model="searchForm.group" size="small" placeholder="请选择">
-            <el-option v-for="item in searchGroup" :label="item.key" :value="item.value" :disabled="item.disabled"></el-option>
+            <el-option v-for="item in searchGroup" :label="item.name" :value="item.user_id" :disabled="item.disabled"></el-option>
           </el-select>
         </el-form-item>
 
@@ -92,51 +95,51 @@
 
           <el-tooltip content="本人跟踪的客户" placement="bottom-start">
             <el-badge :value="{$aggregation.log}" :max="9" style="margin-left:10px;">
-              <el-button type="info" size="small" @click="setField('log')">跟踪</el-button>
+              <el-button type="info" size="small" v-bind:class="{on:flag==1}" @click="setField('log',1)">跟踪</el-button>
             </el-badge>
           </el-tooltip>
 
           <el-tooltip content="本人没有跟踪的客户" placement="bottom-start">
 
             <el-badge :value="{$aggregation.unlog}" :max="9" style="margin-left:15px;">
-              <el-button type="info" size="small" @click="setField('unlog')">未跟踪</el-button>
+              <el-button type="info" size="small" v-bind:class="{'on':flag==2}" @click="setField('unlog',2)">未跟踪</el-button>
             </el-badge>
           </el-tooltip>
 
           <el-tooltip content="本人计划跟踪的客户" placement="bottom-start">
             <el-badge :value="{$aggregation.plan}" :max="9" style="margin-left:15px;">
-              <el-button type="info" size="small" @click="setField('plan')" >计划</el-button>
+              <el-button type="info" size="small" v-bind:class="{'on':flag==3}" @click="setField('plan',3)" >计划</el-button>
             </el-badge>
           </el-tooltip>
 
          <el-tooltip content="本人把客户转给他人的客户(分成)" placement="bottom-start">
             <el-badge :value="{$aggregation.transfto}" :max="9" style="margin-left:15px;">
-              <el-button type="info" size="small" @click="setField('transfto')">转让</el-button>
+              <el-button type="info" size="small" v-bind:class="{'on':flag==4}" @click="setField('transfto',4)">转让</el-button>
             </el-badge>
           </el-tooltip>
 
           <el-tooltip content="他人把客户转给本人的客户(分成)" placement="bottom-start">
 
             <el-badge :value="{$aggregation.transfin}" :max="9" style="margin-left:15px;">
-              <el-button type="info" size="small" @click="setField('transfin')">转入</el-button>
+              <el-button type="info" size="small" v-bind:class="{'on':flag==5}" @click="setField('transfin',5)">转入</el-button>
             </el-badge>
           </el-tooltip>
 
           <el-tooltip content="本人跟踪且成交了的客户" placement="bottom-start">
             <el-badge :value="{$aggregation.type}" :max="9" style="margin-left:15px;">
-              <el-button type="primary" size="small" @click="setField('type')">服务</el-button>
+              <el-button type="primary" size="small" v-bind:class="{'on':flag==6}" @click="setField('type',6)">服务</el-button>
             </el-badge>
           </el-tooltip>
 
           <el-tooltip content="对客户进行筛选后重点跟踪" placement="bottom-start">
             <el-badge :value="{$aggregation.important}" :max="9" style="margin-left:15px;">
-              <el-button type="info" size="small" @click="setField('important')">自选</el-button>
+              <el-button type="info" size="small" v-bind:class="{'on':flag==7}" @click="setField('important',7)">自选</el-button>
             </el-badge>
           </el-tooltip>
 
           <el-tooltip content="他人的客户与您的客户有冲突" placement="bottom-start">
             <el-badge :value="{$aggregation.conflict}" :max="9" style="margin-left:15px;">
-    		      <el-button size="small" type="warning" @click="setField('conflict')">冲突</el-button>
+    		      <el-button size="small" type="danger" v-bind:class="{'on':flag==8}" @click="setField('conflict',8)">冲突</el-button>
             </el-badge>
           </el-tooltip>
 
@@ -145,7 +148,7 @@
           </el-tooltip>
 
           <el-tooltip content="客户预查" placement="bottom-start"  style="margin-left:10px;">
-            <el-button size="small"  @click="openDialog('preCheck')" type="primary">{:L('CUSTOMER_PRE_CHECK')}</el-button>
+            <el-button size="small"  @click="openDialog('preCheck')"  type="primary">{:L('CUSTOMER_PRE_CHECK')}</el-button>
           </el-tooltip>
 
           <el-tooltip content="3个月内被索取数量" placement="right">
@@ -155,7 +158,7 @@
           </el-tooltip>
 
           <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:10px;">
-            <el-button @click="refresh" size="small" type="danger">刷新</el-button>
+            <el-button @click="refresh" size="small" type="danger" >刷新</el-button>
           </el-tooltip>
 
   		  </el-form-item>
@@ -182,20 +185,17 @@
   	    <el-table-column width="50" align="center" type="selection"></el-table-column>
 
   	    <el-table-column label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  ></el-table-column>
-  	    <el-table-column  header-align="center" prop="name"  label="客户姓名" width="150"></el-table-column>
-  	    <el-table-column  header-align="center" prop="type" label="客户类型" sortable width="170">
+  	    <el-table-column  prop="name"  label="客户姓名" width="110"></el-table-column>
+  	    <el-table-column   prop="type" label="客户类型" sortable width="140">
           <template scope="scope">
             {{ getType(scope.row.type, 'customerType') }}
           </template>
   	    </el-table-column>
 
-        <el-table-column  header-align="center"  prop="user_id" label="跟踪员工" sortable width="190">
-            <template scope="scope">
-              {{ getType(scope.row.user_id, 'memberList') }}
-            </template>
-          </el-table-column>
+        <el-table-column    prop="realname" label="跟踪员工" sortable width="190">
+        </el-table-column>
 
-          <el-table-column  header-align="center" prop="qq" label="QQ号"  width="170">
+          <el-table-column   prop="qq" label="QQ号"  width="170">
             <template scope="scope">
               {{ scope.row.qq }}
               <a v-if="scope.row.qq" :href="getTenct(scope.row.qq)">
@@ -203,11 +203,8 @@
               </a>
             </template>
           </el-table-column>
-
-          <el-table-column  header-align="center" prop="qq_nickname" label="QQ昵称"  width="170"></el-table-column>
-
+          <el-table-column  prop="qq_nickname" label="QQ昵称"  width="170"></el-table-column>
   	      <el-table-column prop="phone" label="手机" align="center" width="130"></el-table-column>
-
           <el-table-column  header-align="center" prop="weixin" label="微信号" align="left" width="170">
             <template scope="scope">
               {{ scope.row.weixin }}
@@ -361,38 +358,13 @@
 </div>
 </block>
 <block name="scripts">
+<script src="__PUBLIC__/js/contactValidate.js"></script>
 <script>
-function toInt(v){
-  return parseInt(v);
-}
-</script>
-<script>
-  page.addTrackFormUrl = "{:U('addTrackLogs')}";
   page.addPlanFormUrl = "{:U('addPlanLogs')}";
   page.addRemindFormUrl = "{:U('setRemid')}";
   page.addChoiceFormUrl = "{:U('setImportant')}";
   page.addRealInfoUrl = "{:U('realInfo')}";
-  //表单验证
-  var checkPhone=function(rule,value,callback){
-     var phoneReg = /^1[34578]\d{9}$/;
-     if(value==='' || value===null){
-       callback();
-     }else if(!phoneReg.test(value)){
-       callback('手机号格式错误');
-     }else{
-       callback();
-     }
-  }
-  var checkQQ=function(rule,value,callback){
-    var number=/^\d+$/;
-    if(value==='' || value===null){
-      callback();
-    }else if(!number.test(value)){
-      callback('QQ号格式错误');
-    }else{
-      callback();
-    }
-  }
+
   var checkIdNum=function(rule,value,callback){
     var number=/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
     if(!number.test(value)){
@@ -402,7 +374,47 @@ function toInt(v){
     }
   }
 
+  var CustomerRule = {
+      name:[
+        { required: true, message: '请输入客户姓名', trigger: 'blur' },
+      ],
+      phone:[
+        { required: true, message: '请输入客户手机', trigger: 'blur' },
+        { validator: phoneValidata , trigger: 'blur' },
+      ],
+      phone2:[
+        { validator: phoneValidata, trigger: 'blur' }
+      ],
+      qq:[
+        { pattern:/^\d+$/, message: 'QQ号必须为数字'},
+        { validator: QQValidata, trigger:'blur' },
+      ],
+      qq2:[
+        { pattern:/^\d+$/, message: 'QQ号必须为数字'},
+        { validator: QQValidata, trigger:'blur' },
+      ],
+      weixin:[
+          { min: 6, max: 20, trigger:'blur', message:"长度为6-20个字符" },
+          { validator: WxValidata, trigger:'blur' },
+      ],
+      weixin2:[
+          {min: 6, max: 20, trigger:'blur', message:"长度为6-20个字符" },
+          { validator: WxValidata, trigger:'blur' },
+      ],
+
+      type:[
+        { required:true, message:'请选择客户类型',trigger:'change'},
+      ],
+      money:[
+        { required:true, message:'请选择客户资料量',trigger:'change'},
+      ],
+      source:[
+        { required:true, message:'请选择客户来源', trigger:'change'},
+      ]
+    };
+
   window.defaultOption.setDatas({
+    flag:false,
     realInfo:false,
     gridData:[],
     ddprops:'name',
@@ -442,53 +454,10 @@ function toInt(v){
     logType:{:json_encode($logType)},
     steps:{:json_encode($steps)},
     searchGroup:{:json_encode($searchGroup)},
-    memberList:{:json_encode($memberList)},
+    memberList:[],
     curCheckedItem:{},
-    addRules:{
-      name:[
-        { required: true, message: '请输入客户姓名', trigger: 'blur' },
-        
-      ],
-      phone:[
-        { required: true, message: '请输入客户手机', trigger: 'blur' },
-        //{ type: 'number', message: '手机必须为数字'},
-        { validator: checkPhone, trigger: 'blur' }
-      ],
-      phone2:[
-        { validator: checkPhone, trigger: 'blur' }
-      ],
-      qq:[
-        //{ type: 'number', message: 'QQ号必须为数字'},
-        { validator: checkQQ, trigger:'blur' },
-      ],
-      qq2:[
-        { validator: checkQQ, trigger:'blur' },
-      ],
-      type:[
-        { required:true, message:'请选择客户类型',trigger:'blur'},
-      ],
-      money:[
-        { required:true, message:'请选择客户资料量',trigger:'blur'},  
-      ],
-    },
-    editRules:{
-      name:[
-        { required: true, message: '请输入客户姓名', trigger: 'blur' },
-      ],
-      phone2:[
-        { validator: checkPhone, trigger: 'blur' }
-      ],
-      qq2:[
-        { validator: checkQQ, trigger:'blur' },
-      ],
-      type:[
-        { required:true, message:'请选择客户类型',trigger:'blur'},
-      ],
-      money:[
-        { required:true, message:'请选择客户资料量',trigger:'blur'},
-      ],
-    },
-
+    addRules:CustomerRule,
+    editRules:CustomerRule,
     qq_disabled:false,
     weixin_disabled:false,
     phone2_disabled:false,
@@ -502,8 +471,7 @@ function toInt(v){
       ],
       type:[{ required: true, message: '请选择产品类型', trigger: 'blur' },],
       expense:[
-        { required: true, message: '请输入产品金额', trigger: 'blur' },
-        { type: 'number', message: '请输入产品金额', trigger: 'blur' },
+        { required: true, message: '请输入产品金额', trigger: 'blur',type: 'number' },
       ],
       cycle:[{ required: true, message: '请选择服务周期', trigger: 'blur' },],
       address:[{ required: true, message: '请输入通讯地址', trigger: 'blur' },],
@@ -513,7 +481,7 @@ function toInt(v){
     name:'',
     contact:'',
     field: '',
-    group:'user_id',
+    group:'{$uid}',
     ctrl:'search',
   }).setForm('add',{
     name:"",
@@ -546,7 +514,7 @@ function toInt(v){
     start:'',
     end:'',
     type:'',
-    group:'user_id',
+    group:'',
     ctrl:'advance',
     name:"",
     phone:"",
@@ -823,10 +791,14 @@ function toInt(v){
       });
 
       this.handleEdit(index, row);
-  }).setMethod('setField', function(v){
+  }).setMethod('setField', function(v,id){
+
+      this.flag=id;//-------------------------------------------------------------------------------------------------------
+      //alert(this.flag);
       this[FormName.getFormName('search')].field = v;
       this[FormName.getFormName('search')].group = 'user_id';
       this.loadDatalist();
+      //this.flag=id;
   }).setMethod('beforeImportc', function(){
       var vmThis = this;
       this.$http.get('{:U("checkCucstomers")}').then(function(response){
@@ -895,32 +867,6 @@ function toInt(v){
 
   }).setVueHook('created', function(){
       this._search = Oassign({}, this.searchForm) ; //this.searchForm;
-
-     /* var vmThis = this;
-      var params = {p:this.currentPage};
-      for (var x in this.advancedQueryForm ){
-        if (this.advancedQueryForm[x]!="") {
-          params[x] = this.advancedQueryForm[x];
-        }
-      }
-      this.$http.get(page.listUrl, {params:params}).then(function(response){
-        vmThis.advancedQueryFormDialog = false;
-        // 在显示之前 对数据进行处理
-        if (this.beforeList) {
-          vmThis.$set(vmThis, 'dataList', this.beforeList(response.body.list));
-        } else {
-          vmThis.$set(vmThis, 'dataList', response.body.list);
-        }
-        vmThis.$set(vmThis, 'total',    parseInt(response.body.count));
-
-      }, function(response) {
-        vmThis.$message({
-          message: '获取数据失败：'+ response.body.info,
-          type: 'error'
-        });
-      }).finally(function(){
-        vmThis.$set(vmThis, 'dataLoad', false);
-    })*/
   }).setMethod('editSubmit',function(url, form){
     FormName.type = form;
     var  formName    =  FormName.getFormName();  //form+"Form"; 
@@ -983,9 +929,6 @@ function toInt(v){
     this.traceContentForm.content = row.content;
   });
 </script>
-<script>
-  // var sb=document.getElementsByClassName("el-dialog");
-  // console.log(sb.item(1));
 
-</script>
+
 </block>

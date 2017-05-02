@@ -1,9 +1,9 @@
-<el-dialog title="主管回复" v-model="replyFormDialog"  @open="beforeReply">
-<el-form ref="replyForm" :model="replyForm"  :label-width="dialogLabelWidth">
+<el-dialog title="经理回复" v-model="replyFormDialog"  @open="beforeReply">
+<el-form ref="replyForm" :rules="replyRules" :model="replyForm"  :label-width="dialogLabelWidth">
  <el-row>
    <el-col :span="20">
-     <el-form-item label="回复内容">
-        <el-input v-model="replyForm.reply" type="textarea" :autosize="{ minRows: 4, maxRows: 4}" placeholder="请填写回复内容,最多填写150字"></el-input>
+     <el-form-item label="回复内容" prop="reply">
+        <el-input v-model="replyForm.reply" type="textarea" :autosize="{ minRows: 4, maxRows: 4}" placeholder="请填写回复内容"></el-input>
      </el-form-item>
    </el-col>
  </el-row>

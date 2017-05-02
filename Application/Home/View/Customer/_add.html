@@ -18,7 +18,21 @@
           </el-col>
         </el-row>
 
-
+        <el-row>
+          <el-col :span="12">
+            <el-form-item  label="资金量" prop="money">
+              <el-select v-model="addForm.money"   placeholder="选择客户资金量" >
+                <el-option v-for="(money,key) in Money" :label="money"  :value="key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="性别" prop="sex">
+              <el-radio class="radio" v-model="addForm.sex" label="1">男</el-radio>
+              <el-radio class="radio" v-model="addForm.sex" label="2">女</el-radio>
+            </el-form-item>
+          </el-col>
+        </el-row>
 
         <el-row>
           <el-col :span="12">
@@ -26,8 +40,18 @@
               <el-input v-model="addForm.phone" auto-complete="off" placeholder="请填写手机号"></el-input>
             </el-form-item>
           </el-col>
+
+          <el-col :span="12">
+            <el-form-item  label="客户来源" prop="source">
+              <el-select v-model="addForm.source"   placeholder="选择客户来源" >
+                <el-option v-for="(source,key) in Source" :label="source"  :value="key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
           
         </el-row>
+
+
 
         <el-row>
           <el-col :span="12">
@@ -36,7 +60,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="QQ昵称1" >
+            <el-form-item label="QQ昵称1" prop="qq_nickname">
               <el-input v-model="addForm.qq_nickname" auto-complete="off" placeholder="请填写QQ昵称"></el-input>
             </el-form-item>
           </el-col>
@@ -45,12 +69,12 @@
 
         <el-row>
           <el-col :span="12">
-            <el-form-item label="微信号1" >
+            <el-form-item label="微信号1" prop="weixin">
               <el-input v-model="addForm.weixin"  auto-complete="off" placeholder="请填写微信号"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="微信昵称1" >
+            <el-form-item label="微信昵称1" prop="weixin_nickname">
               <el-input v-model="addForm.weixin_nickname"  auto-complete="off" placeholder="请填写微信昵称"></el-input>
             </el-form-item>
           </el-col>
@@ -74,7 +98,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="QQ昵称2" >
+            <el-form-item label="QQ昵称2" prop="qq_nickname2">
               <el-input v-model="addForm.qq_nickname2" auto-complete="off" placeholder="请填写QQ昵称"></el-input>
             </el-form-item>
           </el-col>
@@ -82,45 +106,31 @@
 
         <el-row >
           <el-col :span="12">
-            <el-form-item label="微信号2" >
+            <el-form-item label="微信号2" prop="weixin2">
               <el-input v-model="addForm.weixin2"  auto-complete="off" placeholder="请填写微信号"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="微信昵称2" >
+            <el-form-item label="微信昵称2" prop="weixin_nickname2">
               <el-input v-model="addForm.weixin_nickname2"  auto-complete="off" placeholder="请填写微信昵称"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <!-- / 第二套 -->
 
-        <el-row>
-          <el-col :span="12">
-            <el-form-item  label="资金量" prop="money">
-              <el-select v-model="addForm.money"   placeholder="选择客户资金量" >
-                <el-option v-for="(money,key) in Money" :label="money"  :value="key"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="性别" >
-              <el-radio class="radio" v-model="addForm.sex" label="1">男</el-radio>
-              <el-radio class="radio" v-model="addForm.sex" label="2">女</el-radio>
-            </el-form-item>
-          </el-col>
-        </el-row>
+        
       </el-tab-pane>
       <el-tab-pane label="一般资料" name="second">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="省份" >
+            <el-form-item label="省份" prop="area_province">
               <el-select v-model="addForm.area_province" filterable @change="provinceChange" placeholder="请选择省份" >
                 <el-option v-for="province in provinces" :label="province.name"  :value="province.id"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item  label="城市" >
+            <el-form-item  label="城市" prop="area_city">
               <el-select v-model="addForm.area_city"   placeholder="请选择城市" >
                 <el-option v-for="city in cities" :label="city.name"  :value="city.id"></el-option>
               </el-select>
@@ -129,14 +139,14 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item  label="客户质量" >
+            <el-form-item  label="客户质量" prop="quality">
               <el-select v-model="addForm.quality"   placeholder="请选择客户质量" >
                 <el-option v-for="(quality,key) in Quality" :label="quality"  :value="key"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item  label="股龄" >
+            <el-form-item  label="股龄" prop="year">
               <el-select v-model="addForm.year"   placeholder="请选择客户股龄" >
                 <el-option v-for="(year,key) in Year" :label="year"  :value="key"></el-option>
               </el-select>
@@ -145,14 +155,14 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item  label="近期收益" >
+            <el-form-item  label="近期收益" prop="re_income">
               <el-select v-model="addForm.re_income"   placeholder="选择客户近期收益" >
                 <el-option v-for="(re_income,key) in Income" :label="re_income"  :value="key"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item  label="投资风格" >
+            <el-form-item  label="投资风格" prop="style">
               <el-select v-model="addForm.style"   placeholder="选择客户投资风格" >
                 <el-option v-for="(style,key) in Sty" :label="style"  :value="key"></el-option>
               </el-select>
@@ -161,14 +171,14 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item  label="看盘精力" >
+            <el-form-item  label="看盘精力" prop="energy">
               <el-select v-model="addForm.energy"   placeholder="选择客户看盘精力" >
                 <el-option v-for="(energy,key) in Energy" :label="energy"  :value="key"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item  label="投资问题" >
+            <el-form-item  label="投资问题" prop="problem">
               <el-select v-model="addForm.problem"   placeholder="选择客户投资问题" >
                 <el-option v-for="(problem,key) in Problem" :label="problem"  :value="key"></el-option>
               </el-select>
@@ -177,14 +187,14 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item  label="盈利模式" >
+            <el-form-item  label="盈利模式" prop="mode">
               <el-select v-model="addForm.mode"   placeholder="选择客户盈利模式" >
                 <el-option v-for="(mode,key) in Mode" :label="mode"  :value="key"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item  label="态度" >
+            <el-form-item  label="态度" prop="attitude">
               <el-select v-model="addForm.attitude"   placeholder="选择客户态度" >
                 <el-option v-for="(attitude,key) in Attitude" :label="attitude"  :value="key"></el-option>
               </el-select>
@@ -193,14 +203,14 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item  label="职业" >
+            <el-form-item  label="职业" prop="profession">
               <el-select v-model="addForm.profession"   placeholder="选择客户职业" >
                 <el-option v-for="(profession,key) in Profession" :label="profession"  :value="key"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item  label="软件意向" >
+            <el-form-item  label="软件意向" prop="intention">
               <el-select v-model="addForm.intention"   placeholder="客户对软件意向" >
                 <el-option v-for="(intention,key) in Intention" :label="intention"  :value="key"></el-option>
               </el-select>
@@ -208,15 +218,9 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="12">
-            <el-form-item  label="客户来源" >
-              <el-select v-model="addForm.source"   placeholder="选择客户来源" >
-                <el-option v-for="(source,key) in Source" :label="source"  :value="key"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
+          
           <el-col :span="10">
-            <el-form-item label="备注">
+            <el-form-item label="备注" prop="remark">
               <el-input
                 v-model="addForm.remark"
                 type="textarea"

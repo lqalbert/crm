@@ -52,11 +52,12 @@
 <div id="app" class="container">
 
 <div class="wrapp" id="appx" v-show="show" style="display: none;">
+  <!-- <div class="a" style="border:1px solid red;"> -->
   <div class="a" id="app3">
   <el-row>
-    <el-col :span="24" >
-      <el-alert title="未选择日期时默认显示当日24点前的统计数据！" type="info" show-icon close-text="明白" ></el-alert>
-    </el-col>
+            <el-col :span="23" >
+              <el-alert title="未选择日期时默认显示当日24点前的统计数据！" type="info" show-icon close-text="明白" ></el-alert>
+            </el-col>
   </el-row>
   <el-row>
     <el-col :span="24">
@@ -65,7 +66,7 @@
           <el-date-picker  v-model="searchForm.dist" placeholder="请选择日期"  @change="dateChange">
           </el-date-picker>
         </el-form-item>
-        <el-form-item prop="object">
+         <el-form-item prop="object">
           <el-select v-model="searchForm.object" placeholder="请选择对象" >
             <el-option v-for="item in searchGroup" :label="item.key" :value="item.value" :disabled="item.disabled"></el-option>
           </el-select>
@@ -94,33 +95,40 @@
 
   <el-row>
     <el-col :span="24">
-      <el-table :data="dataList" border id="he" v-loading="dataLoad" 
-       element-loading-text="{:L('DATA_LOGIN')}" highlight-current-row
-       empty-text="暂无数据,请录入客户！" ref="select" >
-        <el-table-column  label="序号"  align="center" width="65" :formatter="handleIndex"  >
-        </el-table-column>
-        <el-table-column  header-align="center" prop="name" label="姓名" width="150">
-        </el-table-column>
-        <el-table-column  align="center" prop="total_count" label="客户总数(个)">
-        </el-table-column>
-        <el-table-column  align="center" prop="A_count" label="A.准客户" >
-        </el-table-column>
-        <el-table-column  align="center" prop="B_count" label="B.意向客户" >
-        </el-table-column>
-        <el-table-column  align="center" prop="C_count" label="C.一般客户" >
-        </el-table-column>
-        <el-table-column  align="center" prop="D_count" label="D.未有意向客户">
-        </el-table-column>
-        <el-table-column  align="center" prop="F_count" label="F.黑名单(同行)" >
-        </el-table-column>
-        <el-table-column  align="center" prop="N_count" label="N.无效客户"  >
-        </el-table-column>
-        <el-table-column  align="center" prop="V_count" label="V.成交客户"  >
-        </el-table-column>
-        <el-table-column  align="center" prop="VX_count" label="VX.审核未通过" >
-        </el-table-column>
-        <el-table-column  align="center" prop="VT_count" label="VT.有意见并投诉" >
-        </el-table-column>
+      <el-table 
+      :data="dataList" 
+      border  
+      id="he"
+      v-loading="dataLoad" 
+      element-loading-text="{:L('DATA_LOGIN')}"
+      highlight-current-row
+      empty-text="暂无数据,请录入客户！"
+      ref="select" >
+
+            <el-table-column label="序号"  align="center" width="65" :formatter="handleIndex"  >
+            </el-table-column>
+            <el-table-column  align="center" prop="name"  label="名称"  align="center" width="150">
+            </el-table-column>
+            <el-table-column  align="center" prop="total_count" label="客户总数(个)"  width="150">
+            </el-table-column>
+            <el-table-column  align="center" prop="A_count" label="A.准客户"  width="150">
+            </el-table-column>
+            <el-table-column  align="center" prop="B_count" label="B.意向客户"  width="150">
+            </el-table-column>
+            <el-table-column  align="center" prop="C_count" label="C.一般客户"  width="150">
+            </el-table-column>
+            <el-table-column  align="center" prop="D_count" label="D.未有意向客户"  width="150">
+            </el-table-column>
+            <el-table-column  align="center" prop="F_count" label="F.黑名单(同行)"  width="150">
+            </el-table-column>
+            <el-table-column  align="center" prop="N_count" label="N.无效客户"  width="150">
+            </el-table-column>
+              <el-table-column  align="center" prop="V_count" label="V.成交客户"  width="150">
+            </el-table-column>
+            <el-table-column  align="center" prop="VX_count" label="VX.审核未通过"  width="150">
+            </el-table-column>
+            <el-table-column  align="center" prop="VT_count" label="VT.有意见并投诉"  width="150">
+            </el-table-column>
       </el-table>
     </el-col>
   </el-row>
@@ -141,10 +149,10 @@
   </el-row>
   </div>
 
-</div>
+
 
 </div>
-
+</div>
 </block>
 <block name="scripts">
 <script>
@@ -166,7 +174,4 @@
     window.location.reload();
   });
 </script>
-
-
-
 </block>

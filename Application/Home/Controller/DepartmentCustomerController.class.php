@@ -7,6 +7,7 @@ use Common\Lib\User;
 use Home\Model\CustomerModel;
 use Home\Logic\CustomerLogic;
 use Home\Model\CustomerLogModel;
+use Think\Model;
 
 class DepartmentCustomerController extends CommonController {
     private $depart_id = 0;
@@ -15,13 +16,13 @@ class DepartmentCustomerController extends CommonController {
 
     public function _initialize(){
         parent::_initialize();
-        // $this->depart_id = $this->getDepartMentID();
+        $this->depart_id = $this->getDepartMentID();
     }
 
     private function getDepartMentID(){
         $re =  M('department_basic')->where(array('user_id'=>session('uid')))->getField('id');
         if (is_numeric($re)) {
-            return $depart_id;
+            return $re;
         } else {
             return 0;
         }
@@ -102,25 +103,27 @@ class DepartmentCustomerController extends CommonController {
 
 
     private function setTrackField(){
-
         $start = I('get.track_start');
         $end   = I('get.track_end');
-        
         $this->M->setTimeDiv('last_track', $start, $end); 
 
-        
     }
 
     private function setGroupField(){
         $group_id = I('get.group',0);
         switch ($group_id) {
             case 0:
-                $userIds = M("user_info")->where(array('department_id'=>$this->depart_id, 'user_id'=>array('NEQ', session('uid'))))->getField('user_id', true);
+                if (empty($this->depart_id)) {
+                    $userIds = array();
+                } else {
+                    $userIds = M("user_info")->where(array('department_id'=>$this->depart_id, 'user_id'=>array('NEQ', session('uid'))))->getField('user_id', true);
+                }
                 break;
             default:
                 $userIds = M("user_info")->where(array('group_id'=>$group_id))->getField('user_id', true);
                 break;
         }
+
         if ($userIds) {
             $this->M->where(array('salesman_id'=>array('IN', $userIds)));
         } else {
@@ -180,12 +183,13 @@ class DepartmentCustomerController extends CommonController {
              && empty(I('get.end')) 
              && empty(I('get.track_start')) 
              && empty(I('get.track_end')) 
-             && strpos(I('get.fiedl'),'transf') === false
+             && strpos(I('get.field'),'transf') === false
              ) {
             $this->M->setStart('created_at', D('Customer','Logic')->ThreeMonthsAge());
         }
 
-        $this->M->join('customers_contacts as cc on customers_basic.id = cc.cus_id and cc.is_main=1');
+        $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id  and cc.is_main = 1')
+                ->join('left join customers_contacts as cc2 on customers_basic.id =  cc2.cus_id and cc2.is_main = 0');
     }
 
 
@@ -194,12 +198,14 @@ class DepartmentCustomerController extends CommonController {
         $this->setQeuryCondition();
         //没有 is_main
         $count = (int)$this->M->count();
+        
         $this->setQeuryCondition();
         D('Customer','Logic')->getJoinCondition($this->M);
         if (I('get.sort_field', null)) {
             $this->M->order(I('get.sort_field')." ". I('get.sort_order'));
         }
-        $list = $this->M->page(I('get.p',0). ','. $this->pageSize)->select();
+        $list = $this->M->order('customers_basic.id desc')->page(I('get.p',0). ','. $this->pageSize)->select();
+        
         $result = array('list'=>$list, 'count'=>$count);
         return $result;
     }
@@ -234,11 +240,14 @@ class DepartmentCustomerController extends CommonController {
         $cus_ids = I('post.cus_id');
         $rec_dep = I('post.rec_dep');
         $proportion = I('post.proportion');
-        
+        $rec_group = I('post.rec_group');
+        $rec_user = I('post.rec_user');
 
         $preDate = array(
             'from_department_id' => $this->depart_id,
             'to_department_id'   => $rec_dep,
+            'to_id'              => $rec_user,
+            'to_group_id'        => $rec_group,
             'content'            => I('post.content'),
         );
         $d->startTrans();
@@ -246,6 +255,14 @@ class DepartmentCustomerController extends CommonController {
         $d->commit();*/
         foreach ($cus_ids as  $value) {
             if ( $this->M->setTransf($value) === false) {
+                $d->rollback();
+                $this->error('转让失败');
+            }
+
+
+
+            $re = D('Customer')->where(array('id'=>$value))->data(array('salesman_id'=>$rec_user ))->save();
+            if ($re===false) {
                 $d->rollback();
                 $this->error('转让失败');
             }
@@ -294,6 +311,107 @@ class DepartmentCustomerController extends CommonController {
 			return $arr;
 		}
 	}
+
+     /**
+    * 编辑
+    *
+    * 知道 丑丑丑丑丑丑丑丑丑丑丑丑  
+    * if 超过三层了 fuck customerContact 的逻辑需要重构封装 
+    */
+    public function edit() {
+        $this->M->startTrans();
+        if ($this->M->create($_POST, Model::MODEL_UPDATE) && ($this->M->save() !== false) )  {
+            $D_cc  = D('CustomerContact');
+            $D_cc->where(array('is_main'=>1, 'cus_id'=>$_POST['id']))->find();
+            $re = $D_cc->edit($D_cc->getMainPost());
+            if ($re === false) {
+                $this->M->rollback();
+                $this->error($D_cc->getError());
+            }
+
+            $data2 = $D_cc->getSecondPost();
+
+            if ($D_cc->where(array('is_main'=>0, 'cus_id'=>$_POST['id']))->find()) {
+                $re = $D_cc->edit($data2, true);
+                if ($re !== false) {
+                    $this->M->commit();
+                    $this->success('编辑成功1');
+                } else {
+                     $this->M->rollback();
+                    $this->error($D_cc->getError());
+                }
+            } else {
+                // 
+                if ( empty($data2['phone']) 
+                    && empty($data2['qq']) 
+                    && empty($data2['weixin'])
+                    && empty($data2['qq_nickname'])
+                    && empty($data2['weixin_nickname'])
+                    ) {
+                    $this->M->commit();
+                    $this->success('编辑成功2');
+                }
+                $data2['cus_id'] = $_POST['id'];
+                if ( $D_cc->create($data2) && $D_cc->add()  ) {
+                    $this->M->commit();
+                    $this->success('编辑成功3_');
+                } else {
+                    $this->M->rollback();
+                    $this->error($D_cc->getError());
+                }
+            }
+            $this->M->commit();
+            $this->success('编辑成功4');
+            //$this->success(L('EDIT_SUCCESS'));
+        } else {
+            $this->M->rollback();
+            $this->error($this->M->getError());
+        }
+    }
+
+    /**
+    * 跟据depart_id 获取小组
+    * 直接用 1 这个数字不好啊 ，暂进这样了
+    */
+    public function getDepartGroups(){
+        $id = I('get.id');
+        $re = D('Group')->field('id,name')->where(array('department_id'=>$id, 'status'=>1))->select();
+        $this->ajaxReturn($re);
+    }
+
+    public function getRecUser(){
+        $id = I('get.id');
+        // $re = D('User')->field('user_id,realname as name')->where(array('group_id'=>$id, 'status'=>array))->select();
+        $re = D('User')->getGroupEmployee($id);
+        $this->ajaxReturn($re);
+    }
+
+    /**
+    *  添加客户真实资料
+    *  
+    */
+    public function realInfo(){ 
+        $ob=D('RealInfo');
+        $cus_id = I('post.cus_id');
+        $_POST['user_id']= D('Customer')->where(array('id'=>$cus_id))->getField('salesman_id');//session('uid'); 
+        if($ob->where(array('cus_id'=>I('post.cus_id'),'identity'=>I('post.identity')))->find()){
+            $ob->where(array('cus_id'=>I('post.cus_id')))->save(I('post.'));
+            M('customers_service')->where(array('cus_id'=>I('post.cus_id'),'user_id'=>I('post.user_id')))->setField('call_back','1');
+        }else{
+            if($ob->create($_POST) && $ob->add()){
+                $data=array(
+                    'cus_id'=>I('post.cus_id'),
+                    'user_id'=>I('post.user_id'),
+                    'risk_one'=>'1'     
+                );
+                M('customers_service')->add($data);
+                $this->success(L('真实资料添加成功'));
+            }else{
+                $this->error($ob->getError());    
+                
+            }
+        }
+    }
 
 }
 

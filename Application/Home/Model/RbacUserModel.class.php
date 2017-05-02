@@ -3,6 +3,9 @@ namespace Home\Model;
 use Think\Model\RelationModel;
 
 class RbacUserModel extends RelationModel {
+
+    const  DELETE_SATUS = -1;
+
     protected $tableName = 'rbac_user';
 
     protected $_validate = array(
@@ -33,19 +36,33 @@ class RbacUserModel extends RelationModel {
         // return $this->where(array('id'=>array('in', $ids )))->save(array('status'=>-1));
         $id_arr = explode(",", $ids);
         $date   = Date('Y-m-d');
-        $sql    = "update ".$this->tableName. " set `status`=-1, `account` = CONCAT(`account`, '_$date') where id=%d";
+        $sql     = "update ".$this->tableName. " set `status`=-1, `account` = CONCAT(`account`, '_$date') where id=%d";
+        $sql2    = "update user_info set  `realname` = CONCAT(`realname`, '_$date_删除') where user_id=%d";
         $this->startTrans();
         
         
         foreach ($id_arr as $key => $value) {
             $re = M()->execute($sql, $value);
-            if ($re=== false) {
+            $re2= M()->execute($sql2, $value);
+            if ($re === false || $re2 === false) {
                 $this->rollback();
                 return false;
             }
         }
-
         $this->commit();
         return true;
+    }
+
+
+    /**
+    * @param int $depart_id
+    *
+    * @return array
+    */
+    public function getDepartmentDimissionEmployee($depart_id){
+        return $this->join('user_info on rbac_user.id = user_info.user_id')
+             ->where(array('department_id'=>$depart_id, 'rbac_user.status'=>array('EQ', self::DELETE_SATUS)))
+             ->field('id,account,realname')
+             ->select();
     }
 }

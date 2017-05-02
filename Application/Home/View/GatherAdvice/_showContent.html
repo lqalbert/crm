@@ -1,0 +1,17 @@
+<el-dialog title="建议/回复内容" v-model="contentDialog">
+  <el-row style="font-size:16px;padding-left:30px;">
+    <el-col :span="24">
+      <a style="font-weight:bold;">建议内容：</a>
+      <p>{{showContentDetail.advice}}</p>
+    </el-col>
+  </el-row>
+  <el-row style="font-size:16px;padding-left:30px;">
+    <el-col :span="24">
+      <a style="font-weight:bold;">回复内容：</a>
+      <p>{{showContentDetail.reply}}</p>
+    </el-col>
+  </el-row>
+ <span slot="footer" class="dialog-footer">
+   <el-button type="primary" @click="contentDialog = false">知道了</el-button>
+ </span>
+</el-dialog>

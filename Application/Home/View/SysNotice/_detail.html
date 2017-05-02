@@ -1,0 +1,9 @@
+<el-dialog title="公告内容" v-model="detailFormDialog">
+<span>
+  {{ detailContent }}
+</span>
+  <div slot="footer" class="dialog-footer">
+    <el-button type="primary" @click="closeDialog('detail')">确 定</el-button>
+  </div>
+</el-dialog>
+

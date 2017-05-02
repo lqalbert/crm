@@ -14,7 +14,7 @@ class RoleGold {
         $captainId = D('Role')->getIdByEname(RoleModel::CAPTAIN);
         /*return M('user_info')->where(array('role_id'=>$captainId))->select();*/
 
-        $sql = "select user_id,mid(realname, 1, 5) as realname from user_info where (role_id=$captainId and user_id not in(select user_id from group_basic) ) or user_id=$id";
+        $sql = "select user_id,mid(realname, 1, 5) as realname from user_info where (role_id=$captainId and user_id not in (select user_id from group_basic where user_id is not null) ) or user_id=$id";
         return M()->query($sql);
     }
 
@@ -37,6 +37,8 @@ class RoleGold {
     public function setEmployQueryCondition($m){
         $goldId = D('Role')->getIdByEname(RoleModel::GOLD);
         $m->where(array('user_info.role_id'=>array('neq', $goldId)));
+        /*$depart_id = D('Role')->getIdByEname(RoleModel::DEPARTMENTMASTER);
+        $m->where(array('user_info.role_id'=>array('eq', $depart_id)));*/
     }
 
     public function setGroupQueryCondition($m, $obj){

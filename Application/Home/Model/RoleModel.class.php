@@ -14,6 +14,8 @@ class RoleModel extends Model {
 	const CALL_BACK = 'callBack';
 	const SUP_SERVICE = 'supService';
 	const GEN_SERVICE = 'genService';
+	const SERVICEMASTER = 'serviceMaster';
+	const RISKEMASTER = 'riskMaster';
 
 	protected $tableName = 'rbac_role';
 
@@ -27,7 +29,9 @@ class RoleModel extends Model {
 		'riskTwo',//风控一
 		'callBack',//回访专员
 		'supService',//客服主管
-		'genService'//普通客服
+		'genService',//普通客服
+		'serviceMaster', //客服经理
+		'riskMaster' //风控经理
 	);
 
 	public function getEnames(){
@@ -35,17 +39,22 @@ class RoleModel extends Model {
 	}
 
 	/**
-	* 跟据区域类型返回对应的 英文名
-	* 1 => areaMaster
-	* 2 => careerMaster
-	* 3 => generaMaster
-	* 这个 1、2、3 是 Department模型里面types的数字索引
-	* 这里正好与 enames索引对应上了
+	* 跟据类型返回对应的 英文名
+	* 0 => departmentMaster
+	* 1 => serviceMaster
+	* 2 => riskMaster
+	* 这个 0、1、2 是 Department模型里面types的数字索引
+	* 0 => 1
+	* 1 => 9,
+	* 2 => 10,
 	* @param int
 	* @return String
 	*/
 	public function getEnameByType($type){
-		return $this->enames[$type];
+		$map = array(
+			1,9,10
+		);
+		return $this->enames[$map[$type]];
 	}
 
 	
@@ -55,5 +64,9 @@ class RoleModel extends Model {
 
 	public function getIdByType($type){
 		return $this->getIdByEname($this->getEnameByType($type));
+	}
+
+	public function getEnameById($id){
+		return $this->where(array("id"=>$id))->getField('ename');
 	}
 }

@@ -1,6 +1,7 @@
 <?php
 namespace Home\Controller;
 
+use Home\Model\RoleModel;
 /**
 * 
 */
@@ -69,7 +70,7 @@ class ExcelController extends CommonController {
 
 
     public function customerImport(){
-
+        die('暂不可用');
         if (IS_GET) {
             $this->assign('pageSize', $this->pageSize);
             $this->assign('groups',   M('group_basic')->field('id,name')->select());
@@ -176,7 +177,7 @@ class ExcelController extends CommonController {
         $this->display();
     }
 
-    public function employeeImport(){
+    /*public function employeeImport(){
          if (IS_GET) {
             $this->assign('pageSize', $this->pageSize);
             $this->assign('departments',   M('department_basic')->field('id,name')->select());
@@ -199,14 +200,21 @@ class ExcelController extends CommonController {
                     }
 
                     
-                    /*var_dump($value);
-                    die();*/
+                    
 
                     //rbac_user
                     $user = array();
                     $user['account'] = $value['C'];
                     $user['password'] = md5('111111');
-                    M('rbac_user')->create($user);
+                    $re = M('rbac_user')->create($user);
+
+                    if (!$re) {
+                        echo $user['account']."失败";
+                        echo "\n";
+                        continue;
+                    }
+
+
                     $user_id = M('rbac_user')->add();
                     if (!$user_id) {
                         // $this->error("操作出错")
@@ -224,7 +232,7 @@ class ExcelController extends CommonController {
 
                     $info['department_id'] = $department_id ;
 
-                    $group = trim($value['F']);
+                    $group = mb_substr(trim($value['F']), -1, 3);
                     if (in_array($group, $gorups_name)) {
                         $info['group_id'] = $groups[trim($value['F'])];
                     } else {
@@ -232,8 +240,8 @@ class ExcelController extends CommonController {
                     }
 
                     
-
-                    $info['role_id'] = 8;
+                    //
+                    $info['role_id'] = D('Role')->getIdByEname(RoleModel::STAFF);
 
                     M('user_info')->create($info);
                     $re = M('user_info')->add();
@@ -243,6 +251,113 @@ class ExcelController extends CommonController {
                     $role_user = array();
                     $role_user['user_id'] = $user_id;
                     $role_user['role_id'] = 8;
+                    M('rbac_role_user')->create($role_user);
+                    M('rbac_role_user')->add();
+
+                    
+                    
+                    // 重复测栓
+                    // if ($this->conformPhone($row['phone']) && $this->conformQQ($row['qq']) ) {
+                    //     $insert_data[] = $row;
+                    // } else {
+                    //     $fault_data[] = $row;
+                    // }
+ 
+                }
+                
+                if (!empty($fault_data)) {
+                    $this->success("导入成功，有".count($fault_data)."条导入失败");
+                }else{
+                    $this->success("导入成功");
+                }
+               
+                
+            } else {
+                
+                $this->error("文件不存在:".".".__ROOT__.$filename);
+            }
+            
+        } 
+    }*/
+
+     public function employeeImport(){
+         if (IS_GET) {
+            $this->assign('pageSize', $this->pageSize);
+            $this->assign('departments',   M('department_basic')->field('id,name')->select());
+            $this->display('employeeImport');
+        } else {
+            $filename = I('post.file');
+            $department_id = I('post.department_id',0);
+            
+            if (file_exists(".".__ROOT__.$filename)) {
+                $data = getExcelArrayData(".".__ROOT__.$filename);
+                $groups = M('group_basic')->where(array('department_id'=>$department_id))->getField('name,id');
+                $gorups_name = array_keys($groups);
+                
+                $fault_data = array();
+
+                $role_id = D('Role')->getIdByEname(RoleModel::STAFF);
+                
+                foreach ($data as $value) {
+
+                    
+                    if (empty($value['B'])  ||  0 === mb_stripos($value['B'], "简称") ) {
+                        continue;
+                    }
+
+                    
+                    
+
+                    //rbac_role_user
+                    $user = array();
+                    $user['account'] = $value['B'];
+                    $user['password'] = md5('111111');
+                    $re = M('rbac_user')->create($user);
+
+                    
+
+
+                    $user_id = M('rbac_user')->add();
+                    // $user_id  =-1;
+                    if (!$user_id) {
+                        // $this->error("操作出错")
+                        
+                        $fault_data[] = $value['B'];
+                        continue;
+                    }
+                    //user_info
+                    $info = array();
+                    $info['user_id']   = $user_id;
+                    $info['realname']  = $value['C'];
+                    $info['qq']        = $value['H'];
+                    $info['mphone']    = str_replace(' ', '', $value['G']);
+                    $info['id_card']   = $value['I'];
+                    // $info['join_time'] = $value['G'];
+
+                    $info['department_id'] = $department_id ;
+
+                    $group = mb_substr(trim($value['E']), -3);
+                   
+
+                    if (in_array($group, $gorups_name)) {
+                        $info['group_id'] = $groups[$group];
+                    } else {
+                        $info['gorup_id'] = 0;
+                    }
+                    
+                    
+                    //
+
+                    $info['role_id'] = $role_id ;
+
+                    M('user_info')->create($info);
+                    $re = M('user_info')->add();
+
+
+                    // rbac_role_user
+                    $role_user = array();
+                    $role_user['user_id'] = $user_id;
+                    $role_user['role_id'] = $role_id ;
                     M('rbac_role_user')->create($role_user);
                     M('rbac_role_user')->add();
 

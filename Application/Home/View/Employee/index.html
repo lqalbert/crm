@@ -48,42 +48,41 @@
 					    </el-table-column>
 					   <!-- <el-table-column prop="id"  label="员工ID" width="100">
 					    </el-table-column> -->
-					    <el-table-column prop="account" label="登录账号" width="100" header-align="center">
+					    <el-table-column prop="account" label="登录账号" width="100" >
 					    </el-table-column>
-						 <el-table-column prop="realname" label="员工姓名" width="150" header-align="center">
+						 <el-table-column prop="realname" label="员工姓名" width="150" align="center">
 					    </el-table-column>
 					    <el-table-column prop="sex"  label="性别" width="80" align="center">
 						    <template scope="scope">
 					          {{ getType(scope.row.sex, 'sexType') }}
-					      </template>
+					        </template>
 					    </el-table-column>
-					    <!--<el-table-column prop="status" label="是否有效" width="100">
-					    </el-table-column>
-					    <el-table-column prop="faccount" label="演示账号" width="150">
+					   <el-table-column prop="id_card" label="身份证号" width="192">
+					   </el-table-column>
+					    <!--<el-table-column prop="faccount" label="演示账号" width="150">
 					    </el-table-column>
 					    <el-table-column prop="department" label="所属组织" width="100">
 					    </el-table-column>
 					    <el-table-column prop="employeetype" label="员工类型" width="100">
 					    </el-table-column>
 					    <el-table-column prop="ishow" label="是否公示" width="100">
-					    </el-table-column>
-						 -->
-					    <el-table-column prop="phone" label="固话" width="140" header-align="center">
+					    </el-table-column> -->
+					    <el-table-column prop="phone" label="固话" width="140" align="center">
 					    </el-table-column>
 					     
 					    <el-table-column prop="mphone" label="手机" width="140" align="center">
 					    </el-table-column>
 					    
-					    <el-table-column prop="qq" label="QQ号" width="140" header-align="center">
+					    <el-table-column prop="qq" label="QQ号" width="140" align="center">
 					    </el-table-column>
-					    <el-table-column prop="qq_nickname" label="QQ昵称" width="180" header-align="center">
+					    <el-table-column prop="qq_nickname" label="QQ昵称" width="180" align="center">
 					    </el-table-column>
 						
-						  <el-table-column prop="weixin"  label="微信号" width="160" header-align="center">
+						<el-table-column prop="weixin"  label="微信号" width="160" align="center">
 					    </el-table-column>
-					    <el-table-column prop="weixin_nikname"  label="微信昵称" width="190" header-align="center">
+					    <el-table-column prop="weixin_nikname"  label="微信昵称" width="190" align="center">
 					    </el-table-column>
-					    <el-table-column prop="address" label="地址" width="190" header-align="center">
+					    <el-table-column prop="address" label="地址" width="190" align="center">
 					    </el-table-column>
 					    <el-table-column prop="ip" label="登录IP" width="170" header-align="center">
 					    </el-table-column>
@@ -270,7 +269,10 @@
 					{validator: checkQQ, trigger:'blur'},
 				],
 
-			}
+			},
+			card_img:"",
+			card_front:"",
+			card_back:""
 
 
 		}).setForm('add',{
@@ -290,7 +292,11 @@
 			qq:"",
 			qq_nickname:"",
 			weixin:"",
-			weixin_nikname:""
+			weixin_nikname:"",
+			id_card:"",
+			card_img:"",
+			card_front:"",
+			card_back:""
 		}).setForm('edit',{
 			account:"",
 			role_id:"",
@@ -308,7 +314,11 @@
 			qq:"",
 			qq_nickname:"",
 			weixin:"",
-			weixin_nikname:""
+			weixin_nikname:"",
+			id_card:"",
+			card_img:"",
+			card_front:"",
+			card_back:""
 		}).setForm('setRoles',{
 			user_id:0,
 			role_ids:0
@@ -427,6 +437,32 @@
 	  	return '__ROOT__' + url;
 	  }).setMethod('closeSetRole', function(){
 	  	 // this.dataReload();
+	  }).setMethod('cardImg', function(response, file, fileList){
+			// this.card_img = '__ROOT__'+ response.path;
+			this.addForm.card_img = response.path
+	  }).setMethod('cardFront', function(response, file, fileList){
+			// this.card_front = '__ROOT__'+ response.path;
+			this.addForm.card_front = response.path
+	  }).setMethod('cardBack', function(response, file, fileList){
+			// this.card_back = '__ROOT__'+ response.path;
+			this.addForm.card_back = response.path
+	  }).setMethod('editCardImg', function(response, file, fileList){
+			// this.card_img = '__ROOT__'+ response.path;
+			this.editForm.card_img = response.path
+	  }).setMethod('editCardFront', function(response, file, fileList){
+			// this.card_front = '__ROOT__'+ response.path;
+			this.editForm.card_front = response.path
+	  }).setMethod('editCardBack', function(response, file, fileList){
+			// this.card_back = '__ROOT__'+ response.path;
+			this.editForm.card_back = response.path
+	  }).setMethod('beforeAvatarUpload', function(file){
+	  	var  isLt8M = file.size / 1024 / 1024 < 8;
+
+	  	if (!isLt8M) {
+          this.$message.error('上传头像图片大小不能超过 8MB!');
+        }
+
+        return isLt8M;
 	  });
 	</script>
 	<script>

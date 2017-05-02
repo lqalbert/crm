@@ -1,12 +1,20 @@
 <?php
 namespace Home\Controller;
 
+use Home\Model\SysNoticeModel;
+use Home\Model\RoleModel;
+
 class SysNoticeController extends CommonController{
   protected $table="sys_notice";
   protected $pageSize = 12;
   
   public function index(){
     $this->assign('NoticeType', $this->M->getType());
+
+
+    $ename = $this->getRoleEname();
+
+    $this->assign('viewDecorator', $this->M->decoratorView($ename));
   	$this->display();
   }
   
@@ -31,6 +39,8 @@ class SysNoticeController extends CommonController{
 		if (I('get.name')) {
 			$this->M->where(array("title"=> array('like', "%".I('get.name')."%")));
 		}
+
+    $this->M->where( array('status'=>array('NEQ', SysNoticeModel::DELETE_STATUS) ) );
 
   }
 

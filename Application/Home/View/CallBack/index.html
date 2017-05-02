@@ -176,6 +176,11 @@
 			        <el-tooltip content="选择单个或多个客户分配给指定的客服主管" placement="right">
 			          <el-button size="small" @click="openDialog('batchAssign')" type="primary">分 配</el-button>
 			        </el-tooltip>
+
+              <el-tooltip content="选择客户录入跟踪信息" placement="right" style="margin-left:10px;">
+                <el-button size="small" @click="openDialog('addTrack')" type="primary">录入跟踪</el-button>
+              </el-tooltip>
+
 			      </span>
 		      </div>
 		    </el-col>
@@ -236,6 +241,10 @@
 
 	              <el-table-column prop="track_text" label="跟踪类型" header-align="center">
 	              </el-table-column>
+
+                <el-table-column prop="step" label="跟踪步骤" header-align="center">
+                </el-table-column>
+
 	            </el-table>
 	          </el-tab-pane>
 	          <el-tab-pane label="客户资料">
@@ -286,6 +295,9 @@
 	  <!-- /批量分配 -->
 	  <!-- 跟踪内容 -->
 	  <include file="_traceContent" />
+    <!-- 录入跟踪  -->
+    <include file="_track" />
+    <!-- / 录入跟踪 -->
 	</div>
 
 </div>
@@ -300,6 +312,8 @@
   	GoodsType:{:json_encode($GoodsType)},
   	ServiceCycle:{:json_encode($ServiceCycle)},
   	SupServiceMan:{:json_encode($SupServiceMan)},
+    logType:{:json_encode($logType)},
+    steps:{:json_encode($steps)},
   	multipleSelection: [],
   	provinces:[],
     cities:[],
@@ -310,7 +324,8 @@
 	     'type':'',
 	     'track_type':'',
 	     'content':'',
-	     'user':''
+	     'user':'',
+	     'step':''
     }],
     tableDataTwo:[{
        'user':'',
@@ -358,6 +373,15 @@
     mark:'',
     user_id:'',
     cus_id:'',
+  },true).setForm('addTrack',{
+    cus_id:"",
+    next_datetime:'',
+    track_type:'',
+    to_type:"",
+    content:'',
+    name:"",
+    step:"",
+    track_type:'',
   },true).setForm('assign',{
   	user_id:'',
   },true).setForm('batchAssign',{
@@ -434,6 +458,7 @@
       setTimeout(function(){
         vmThis.reviewFormSubmitStatus = false;
         vmThis.reviewPassFormDialog = true;
+        vmThis.reviewPassForm.type = vmThis.reviewForm.type;
       }, 2000); 
   }).setMethod('reviewPass',function(url){
   	 var  vmThis   = this;
@@ -537,6 +562,20 @@
     this.commonFind("{:U('CommonFindDetail/trackInfo')}",'tableDataOne',row);
     this.commonFind("{:U('CommonFindDetail/findDealInfo')}",'tableDataTwo',row);
     this.commonFind("{:U('CommonFindDetail/softwareInfo')}",'tableDataThree',row);
+  }).setMethod('beforeAddTrack',function(){
+    var vmThis = this;
+    if (this.multipleSelection.length ==0 ||  this.multipleSelection.length>1) {
+      this.closeDialog('addTrack');
+      this.$message.error('请选择其中一位客户');
+      return false;
+    } else {
+      var  row = this.multipleSelection.pop();
+      this[FormName.getForm('addTrack')].name = row.name;
+      this[FormName.getForm('addTrack')].cus_id = row.cus_id;
+      this[FormName.getForm('addTrack')].to_type = row.type;
+      this.row=row;
+      return row;
+    }
   });
 </script>
 </block>

@@ -21,6 +21,7 @@ class CommonFindDetailController extends CommonController{
     	$arr[$key]['user']=M('user_info')->where(array('user_id'=>$value['user_id']))->getField('realname');
     	$arr[$key]['name']=I('post.name');
     	$arr[$key]['track_type']=D('CustomerLog')->getType((int)$arr[$key]['track_type']);
+      $arr[$key]['step']=D('CustomerLog')->getSteps((int)$value['step']);
     }
 		if (IS_AJAX) {
 			$this->ajaxReturn($arr);
@@ -34,6 +35,7 @@ class CommonFindDetailController extends CommonController{
   *
   */
   public function findDealInfo(){
+    
     $arr=M('deal_info as di')->join('user_info as ui on di.user_id=ui.user_id')->field('ui.realname,di.*')
          ->where(array('di.user_id'=>I('post.user_id'),'di.cus_id'=>I('post.cus_id')))->select();
 		if (IS_AJAX) {

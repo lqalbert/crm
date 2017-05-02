@@ -16,11 +16,11 @@ class CustomerController extends CommonController {
         // var_dump(D('Customer','Logic')->sb);die();
         $user = new User();
         $searchGroup = $user->getRoleObject()
-                            ->getCustomerSearchGroup(array(array('value'=>'user_id','key'=>"本人" ) , array('value'=>'group','key'=>"团组" )));
+                            ->getCustomerSearchGroup(array('user_id'=>'0','name'=>"团组" ));
         $groupMemberList = M('user_info')->where(array('group_id'=>session('account')['userInfo']['group_id']))->getField("user_id,realname");
 
         $this->assign('searchGroup',  $searchGroup);
-        $this->assign('memberList',   $groupMemberList);
+        $this->assign('memberList',   array());
 		$this->assign('customerType', $this->M->getType());
 		$this->assign('sexType',      $this->M->getSexType());
 		$this->assign('Quality',      $this->M->getQuality());
@@ -44,6 +44,7 @@ class CustomerController extends CommonController {
 		$this->assign('steps',        D('CustomerLog')->getSteps());
 		$this->assign('Proportion',   D('CustomerLog')->getProportion());
 		$this->assign('Remind',       D('CustomerLog')->getRemind());
+        $this->assign('uid', session('uid'));
 
 
 		//统计
@@ -64,6 +65,8 @@ class CustomerController extends CommonController {
 			$_GET['field'] = $value;
 			$this->setQeuryCondition();
 			$aggregation[$value] = $this->M->count();
+            
+            
 		}
 		$this->assign('aggregation', $aggregation);
         $this->assign('pulled',      $this->getBeenPulld());
@@ -73,20 +76,15 @@ class CustomerController extends CommonController {
 
     
     public function setGroupCondition($condition){
-        switch ($condition) {
-                case 'user_id':
-                    $this->M->where(array("salesman_id"=> session('uid')));
-                    break;
-                case 'group':
-                    $user = new User();
-                    $user->getRoleObject()->setMemberUserCondition($this->M);
-                    break;
-                case 'precheck':
 
-                    break;
-                default:
-                    break;
-            }
+        if ($condition==0) {
+            $user = new User();
+            $user->getRoleObject()->setMemberUserCondition($this->M);
+        } else {
+            $this->M->where(array("salesman_id"=> $condition ));
+        }
+
+
     }
 
     /**
@@ -109,7 +107,7 @@ class CustomerController extends CommonController {
     * 设置高级查询条件
     */
     public function advanceSearch(){
-        $this->setGroupCondition(I('get.group',"user_id"));
+        $this->setGroupCondition(I('get.group',session('uid')));
 
         if (I('get.name')) {
             $this->M->where(array("name"=> array('like', I('get.name')."%")));
@@ -148,7 +146,7 @@ class CustomerController extends CommonController {
            $this->advanceSearch();
         }else{  
             $timeCondition = D('Customer','Logic')->ThreeMonthsAge();
-            $this->M->where(array("created_at"=>array('EGT',$timeCondition)));
+            $this->M->where(array("customers_basic.created_at"=>array('EGT',$timeCondition)));
 
             $this->setGroupCondition(I('get.group',"user_id"));
 
@@ -174,17 +172,13 @@ class CustomerController extends CommonController {
            
         }
 
-        $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id  and cc.is_main = 1');
+        $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id  and cc.is_main = 1')
+                ->join('left join customers_contacts as cc2 on customers_basic.id =  cc2.cus_id and cc2.is_main = 0')
+                ->where(array('customers_basic.status'=>array('NEQ', -1)));
 
 	}
 
-    private function setNamelike(){
-        /*if(I('get.ctrl') != 'advance'){ 
-            if (I('get.name')) {
-                $this->M->where(array("name|cc.phone|cc.qq|cc.qq_nickname|cc.weixin"=> array('like', I('get.name')."%")));
-            }
-        }*/
-    }
+
 
     protected function _getList(){
         $this->setQeuryCondition();
@@ -195,7 +189,7 @@ class CustomerController extends CommonController {
             $this->M->order(I('get.sort_field')." ". I('get.sort_order'));
         }
         $list = $this->M->order('customers_basic.id desc')->page(I('get.p',0). ','. $this->pageSize)->select();
-
+        
         $result = array('list'=>$list, 'count'=>$count);
         
         return $result;
@@ -283,7 +277,7 @@ class CustomerController extends CommonController {
     * 编辑
     *
     * 知道 丑丑丑丑丑丑丑丑丑丑丑丑  
-    * if 超过三层了 fuck customerContact 的逻辑需要重构封装 
+    * if 超过三层了  的逻辑需要重构封装 
     */
     public function edit() {
         $this->M->startTrans();
@@ -309,14 +303,19 @@ class CustomerController extends CommonController {
                 }
             } else {
                 // 
-                if ((empty($data2['phone']) && empty($data2['qq']) && empty($data2['weixin']))) {
+                if ( empty($data2['phone']) 
+                    && empty($data2['qq']) 
+                    && empty($data2['weixin'])
+                    && empty($data2['qq_nickname'])
+                    && empty($data2['weixin_nickname'])
+                    ) {
                     $this->M->commit();
                     $this->success('编辑成功2');
                 }
                 $data2['cus_id'] = $_POST['id'];
                 if ( $D_cc->create($data2) && $D_cc->add()  ) {
                     $this->M->commit();
-                    $this->success('编辑成功3_'.$D_cc->getLastSql());
+                    $this->success('编辑成功3_');
                 } else {
                     $this->M->rollback();
                     $this->error($D_cc->getError());
@@ -331,13 +330,13 @@ class CustomerController extends CommonController {
         }
     }
 
-	/**
-	* 添加跟踪纪录
-	*
-	*/
-	public function addTrackLogs(){
-        D('Customer','Logic')->addTrackLogs();
-    }
+	// /**
+	// * 添加跟踪纪录
+	// *
+	// */
+	// public function addTrackLogs(){
+    //     D('Customer','Logic')->addTrackLogs();
+    // }
 
     /**
     *   添加计划记录
@@ -526,31 +525,7 @@ class CustomerController extends CommonController {
         $this->ajaxReturn(array('c'=>$re, 't'=>$re2));
     }
     
-    /**
-    *  添加客户真实资料
-    *  
-    */
-    public function realInfo(){ 
-        $ob=D('RealInfo');
-        $_POST['user_id']=session('uid'); 
-        if($ob->where(array('cus_id'=>I('post.cus_id'),'identity'=>I('post.identity')))->find()){
-            $ob->where(array('cus_id'=>I('post.cus_id')))->save(I('post.'));
-            M('customers_service')->where(array('cus_id'=>I('post.cus_id'),'user_id'=>I('post.user_id')))->setField('call_back','1');
-        }else{
-            if($ob->create($_POST) && $ob->add()){
-                $data=array(
-                    'cus_id'=>I('post.cus_id'),
-                    'user_id'=>I('post.user_id'),
-                    'risk_one'=>'1'     
-                );
-                M('customers_service')->add($data);
-                $this->success(L('真实资料添加成功'));
-            }else{
-                $this->error($ob->getError());    
-                
-            }
-        }
-    }
+    
     
     public function findRealInfo($cus_id){
        $arr=M('deal_info')->where(array('cus_id'=>$cus_id))->find();
@@ -560,5 +535,23 @@ class CustomerController extends CommonController {
          return $arr; 
        }
     }
+
+
+    public function checContact($value, $type){
+        $row = M('customers_contacts')->where(array($type=>$value))->find();
+        if ($row) {
+            if ( !session('?'.$type."_".$value."_addContact_que")) {
+                $pa = array('list'=>array($row['cus_id']), 'uid'=>session('uid'), 'type'=>$type, 'value'=> $value);
+                tag('addContact_que' , $pa);
+                session($type."_".$value."__addContact_que", true);
+            }
+
+            $this->error("存在");
+        } else {
+            $this->success();
+        }
+    }
+
+    
 
 }

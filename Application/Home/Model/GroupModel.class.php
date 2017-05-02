@@ -3,6 +3,9 @@ namespace Home\Model;
 use Think\Model;
 
 class GroupModel extends Model {
+
+    const DELETE_STATUS = -1;
+
 	protected $tableName = 'group_basic';
 
 
@@ -23,6 +26,8 @@ class GroupModel extends Model {
         if (!empty($field)) {
             $this->field($field);
         }
+
+        $this->where(array('status'=>array('NEQ', self::DELETE_STATUS)));
         
         return $this->select();
     }

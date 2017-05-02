@@ -4,8 +4,23 @@ use Think\Model;
 
 class DepartmentModel extends Model {
 
-    const CAREER = 2;
-    const GENERALIZE = 3;
+    /*const CAREER = 2;
+    const GENERALIZE = 3;*/
+
+    /**
+    * 兼容以前的
+    */
+    const CAREER = 0;
+    const GENERALIZE = 0; 
+
+    //现在的
+    // 部门类型 
+    //销售部
+    const SALES_DEPARTMENT = 0 ;
+    //客服部
+    const CUSTOMER_SERVICE = 1 ;
+    //风控部
+    const RISK_DEPARTMENT  = 2 ;
 
 	protected $tableName = 'department_basic';
 
@@ -15,8 +30,9 @@ class DepartmentModel extends Model {
    );
 
 	private $types = array(
-		'事业部',
-		'推广部',
+		'销售部',
+        '客服部',
+        '风控部'
 	);
 
 
@@ -53,6 +69,11 @@ class DepartmentModel extends Model {
 
     public function delete($ids){
         return $this->where(array('id'=>array('in', $ids )))->save(array('status'=>-1, 'user_id'=>null));
+    }
+
+
+    public function getSalesDepartments($fields="id,name"){
+        return $this->where(array('type'=>self::SALES_DEPARTMENT, 'status'=> array('NEQ', -1)))->field($fields)->select();
     }
 
     

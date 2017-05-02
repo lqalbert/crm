@@ -181,6 +181,8 @@ class CustomerModel extends Model {
       if ($d == false) {
         $this->rollback();
         $this->error = $D_contact->getError();
+        // $this->addConflict($mainData );
+
         return false;
       }
 
@@ -194,7 +196,8 @@ class CustomerModel extends Model {
           $data['cus_id'] = $id;
           if ( !($D_contact->create($data) && $D_contact->add())) {
             $this->rollback();
-            $this->error = $D_contact->getError();
+            $this->error = $D_contact->getError($data );
+           // $this->addConflict($data);
             return false;
           }
         }
@@ -206,6 +209,33 @@ class CustomerModel extends Model {
         $this->rollback();
         return false;
       }
+    }
+
+    /**
+    * 废弃不用了
+    */
+    private function addConflict($data){
+      /*$error = $this->error;
+      if (mb_strpos($error, '存在')!==false) {
+
+         if (mb_strpos($error, '手机')!==false) {
+           $cus_id = $this->getConflictCusId('phone',$data);
+           D('CustomerConflict')->addPhone($cus_id, $data['phone']);
+         } else if(mb_strpos($error, 'QQ')!==false){
+
+           $cus_id = $this->getConflictCusId('qq', $data);
+           D('CustomerConflict')->addQQ($cus_id, $data['qq']);
+
+         } else if(mb_strpos($error, '微信')!==false){
+           $cus_id = $this->getConflictCusId('weixin', $data);
+           D('CustomerConflict')->addWx($cus_id, $data['weixin']);
+         }
+
+      }*/
+    }
+
+    private function getConflictCusId($field, $data){
+      return D('CustomerContact')->where(array($field=>$data[$field]))->getField('cus_id');
     }
 
     
@@ -407,7 +437,7 @@ class CustomerModel extends Model {
       //索取
       $data = array(
         'salesman_id'=>$user_id,
-        '重置service_time'=>time()
+        'service_time'=>time()
       );
       $re = $this->data($data)->where($condition)->save();
       if (!$re) {
@@ -453,7 +483,7 @@ class CustomerModel extends Model {
     }
 
     public function setEnd($field, $value){
-      $this->where(array($field=>array('ELT', $value." 00:00:00")));
+      $this->where(array($field=>array('ELT', $value." 23:59:59")));
     }  
 
     /**
@@ -480,7 +510,7 @@ class CustomerModel extends Model {
       if ($start && $end) {
          $this->where(
           array(
-            $field=>array( array('EGT', $start." 00:00:00"), array('ELT', $start." 00:00:00"))));
+            $field=>array( array('EGT', $start." 00:00:00"), array('ELT', $end." 23:59:59"))));
       }else if($start){
         $this->setStart($field, $start);
       } else if($end){

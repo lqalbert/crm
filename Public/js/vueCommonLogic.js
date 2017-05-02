@@ -115,6 +115,9 @@ function setCommonLogic(opt){
 		this.$refs.searchForm.resetFields();
 		this.dataLoad = true;
 		this.loadDatalist();
+
+		delete this.searchForm.sort_field;
+        delete this.searchForm.sort_order;
 		// window.location.reload();
 
 	})
@@ -238,11 +241,12 @@ function setForm(opt, type){
 			}
 
 			this.$refs[formName].validate(function(valid){
-				// console.log(valid);
+				console.log(valid);
 				if (valid) {
 					vmThis.commonSubmitLogic(url, form);
 				} else {
-					console.log('error submit!!');
+					// console.log('error submit!!');
+					console.log(vmThis[formName]);
 					return false;
 				}
 			})
@@ -309,8 +313,11 @@ function setResetForm(opt, type){
 
 //过滤器
 Vue.filter("handleString", function(v) {
-  if(v!=''){
-    var cnt=v.substring(0,3)+'......';   
+
+  if (v!=null && v.length > 3) {
+  	var length = (arguments[1] || 3);
+  	return v.substring(0,length)+'......';  
+  } else {
+  	return v;
   }
-    return cnt;
 });

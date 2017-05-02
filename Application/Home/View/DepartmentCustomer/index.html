@@ -89,13 +89,13 @@
           </el-form-item>
 
           <el-form-item prop="group" >
-            <el-select v-model="searchForm.group" size="small"   placeholder="请选择小组" @change="groupChange">
+            <el-select v-model="searchForm.group" size="small" clearable  placeholder="请选择小组" @change="groupChange">
               <el-option v-for="item in searchGroup" :label="item.name" :value="item.id" :disabled="item.disabled"></el-option>
             </el-select>
           </el-form-item>
 
           <el-form-item prop="user_id" >
-            <el-select v-model="searchForm.user_id" size="small"   placeholder="请选择队员">
+            <el-select v-model="searchForm.user_id" size="small" clearable  placeholder="请选择队员">
               <el-option v-for="item in memeberList" :label="item.realname" :value="item.user_id" :disabled="item.disabled"></el-option>
             </el-select>
           </el-form-item>
@@ -125,7 +125,7 @@
           </el-row>
 
          <el-form-item>
-           <el-button type="info"  size="small" icon="search" @click="loadDatalist">查询</el-button> 
+           <el-button type="info"  size="small" icon="search" @click="searchFunction">查询</el-button> 
            <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start">
              <el-button size="small" @click="searchReset">重置</el-button>
            </el-tooltip>
@@ -150,13 +150,13 @@
            <el-button type="info" size="small" @click="setField('plan')" >计划</el-button>
           </el-tooltip>
 
-          <el-tooltip content="把客户转给其它部门的客户" placement="bottom-start">
+          <!-- <el-tooltip content="把客户转给其它部门的客户" placement="bottom-start">
             <el-button type="info" size="small" @click="setField('transfto')">转让</el-button>
           </el-tooltip>
 
           <el-tooltip content="他人把客户转给本部门的客户" placement="bottom-start">
             <el-button type="info" size="small" @click="setField('transfin')">转入</el-button>
-          </el-tooltip>
+          </el-tooltip> -->
 
           <el-tooltip content="成交了的客户" placement="bottom-start">
             <el-button type="primary" size="small" @click="setField('type')">服务</el-button>
@@ -170,9 +170,15 @@
             <el-button  size="small" @click="openDialog('preCheck')" type="primary">{:L('CUSTOMER_PRE_CHECK')}</el-button>
           </el-tooltip>
 
+          <el-tooltip content="离职员工客户资料">
+            <el-button  size="small"  type="primary" @click="openDialog('quitOut')" >离职客户资料</el-button>
+          </el-tooltip>
+
           <el-tooltip content="点击刷新当前页面" placement="right">
             <el-button size="small" @click="refresh" type="danger">刷新</el-button>
           </el-tooltip>
+
+
     </el-col>
 
   </el-row>
@@ -193,18 +199,16 @@
 
         <el-table-column   label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  ></el-table-column>
 
-        <el-table-column prop="name" header-align="center" label="客户姓名" width="140" ></el-table-column>
+        <el-table-column prop="name"  label="客户姓名" width="140" ></el-table-column>
 
 
 
-        <el-table-column prop="type" header-align="center" sortable label="客户类型" width="180" >
+        <el-table-column prop="type"  sortable label="客户类型" width="180" >
           <template scope="scope">
             {{ getType(scope.row.type, 'customerType') }}
           </template>
         </el-table-column>
-        <el-table-column  prop="realname" header-align="center" sortable label="跟踪员工"  width="200">
-
-        </el-table-column>
+        <el-table-column  prop="realname"  sortable label="跟踪员工"  width="200"></el-table-column>
         <el-table-column prop="qq" label="QQ号" header-align="center" width="160">
           <template scope="scope">
             {{ scope.row.qq }}
@@ -267,7 +271,7 @@
       </el-tooltip>
 
 
-      <el-tooltip content="选择客户对其转让给他人(暂未实现)" placement="right">
+      <el-tooltip content="选择客户对其转让给他人" placement="right">
         <el-button size="small" @click="openDialog('addTransfer')"  type="warning" style="margin-left:10px;">转让</el-button>
       </el-tooltip>
     </div>
@@ -277,13 +281,14 @@
           <el-tab-pane label="跟踪记录">
             <el-table :data="tableData"  empty-text="请点击客户显示跟踪信息" border style="width: 100%" 
             @row-dblclick="viewtraceContents">
-              <el-table-column prop="user" header-align="center" label="操作员工" >
+              <el-table-column prop="user"  label="操作员工" >
               </el-table-column>
-              <el-table-column prop="user" header-align="center" label="客户类型" >
+              <el-table-column prop="type"  label="客户类型" >
+             
               </el-table-column>
-              <el-table-column prop="name" header-align="center" label="客户姓名">
+              <el-table-column prop="name"  label="客户姓名">
               </el-table-column>
-              <el-table-column label="跟踪内容" header-align="center" >
+              <el-table-column label="跟踪内容"  >
                 <template scope="scope">
                   {{scope.row.content | handleString}}
                 </template>
@@ -304,15 +309,15 @@
 
  
   <!-- 编辑 -->
-  <include file="Customer::_edit" />
+  <include file="_edit" />
   <!-- 显示客户一般资料 -->
   <include file="_userInfo"/>
   <!-- 录入跟踪  -->
-  <include file="Customer::_track" />
+  <include file="_track" />
   <!-- / 录入跟踪 -->
 
   <!-- 录入转让 -->
-  <include file="Customer::_transfer"/>
+  <include file="_transfer"/>
   <!-- /录入转让 -->
 
   <!-- V类客户资料 -->
@@ -324,11 +329,10 @@
   <!-- /客户全部资料 -->
 
   <include file="Customer::_preCheck" />
+  <include file="_quitOut" />
   <!-- 跟踪内容 -->
   <include file="Customer::_traceContent" />
   <!-- /跟踪内容 -->
-
-  
 
 </div>
 
@@ -336,6 +340,7 @@
 
 </block>
 <block name="scripts">
+<script src="__PUBLIC__/js/contactValidate.js"></script>
 <script>
 
 //表单验证
@@ -377,13 +382,15 @@ Vue.filter("handleString", function(v) {
 
 </script>
 <script>
+  page.addRealInfoUrl = "{:U('realInfo')}";
   page.addTrackFormUrl = "{:U('addTrackLogs')}";
   page.addPlanFormUrl = "{:U('addPlanLogs')}";
   page.addRemindFormUrl = "{:U('setRemid')}";
   page.addChoiceFormUrl = "{:U('setImportant')}";
   page.getGroupMemberListUrl = "{:U('getGroupMemberList')}";
-  page.getTrackLogUrl = "{:U('Customer/trackInfo')}";
+  page.getTrackLogUrl = "{:U('trackInfo')}";
   page.addTransferFormUrl = "{:U('trasnfCustomers')}";
+  page.getGroupsUrl= "{:U('getDepartGroups')}";
   window.defaultOption.setDatas({
     advanchShow:false,
     buttonText:"展开",
@@ -426,23 +433,46 @@ Vue.filter("handleString", function(v) {
     searchGroup:{:json_encode($searchGroup)},
     memeberList:[],
     Departments:{:json_encode($Departments)},
+    reGroup:[],
    
     editRules:{
       name:[
         { required: true, message: '请输入客户姓名', trigger: 'blur' },
       ],
       phone:[
-        //{ required: true, message: '请输入客户手机', trigger: 'blur' },
-        //{ type: 'number', message: '手机必须为数字'},
+        { required: true, message: '请输入客户手机', trigger: 'blur' },
+        { validator: checkPhone , trigger: 'blur' },
+      ],
+      phone2:[
         { validator: checkPhone, trigger: 'blur' }
       ],
       qq:[
-        //{ type: 'number', message: 'QQ号必须为数字'},
+        { pattern:/^\d+$/, message: 'QQ号必须为数字'},
         { validator: checkQQ, trigger:'blur' },
+      ],
+      qq2:[
+        { pattern:/^\d+$/, message: 'QQ号必须为数字'},
+        { validator: checkQQ, trigger:'blur' },
+      ],
+      weixin:[
+          { min: 6, max: 20, trigger:'blur', message:"长度为6-20个字符" },
+          { pattern:/^[a-zA-Z]{1}[-_a-zA-Z0-9]{5,19}$/, message:"仅支持数字、下划线或减号，以字母开头", trigger:'blur'},
+
+          // { validator: WxValidata, trigger:'blur' },
+      ],
+      weixin2:[
+          {min: 6, max: 20, trigger:'blur', message:"长度为6-20个字符" },
+          { pattern:/^[a-zA-Z]{1}[-_a-zA-Z0-9]{5,19}$/, message:"仅支持数字、下划线或减号，以字母开头", trigger:'blur'},
       ],
       type:[
         { required:true, message:'请选择客户类型',trigger:'blur'},
       ],
+      money:[
+        { required:true, message:'请选择客户资料量',trigger:'blur'},
+      ],
+      source:[
+        { required:true, message:'请选择客户来源', trigger:'blur'},
+      ]
     },
 
     qq_disabled:false,
@@ -458,12 +488,17 @@ Vue.filter("handleString", function(v) {
       ],
       type:[{ required: true, message: '请选择产品类型', trigger: 'blur' },],
       expense:[
-        { required: true, message: '请输入产品金额', trigger: 'blur' },
-        { type: 'number', message: '请输入产品金额', trigger: 'blur' },
+        { required: true, message: '请输入产品金额', trigger: 'blur',type: 'number' },
+        
       ],
       cycle:[{ required: true, message: '请选择服务周期', trigger: 'blur' },],
       address:[{ required: true, message: '请输入通讯地址', trigger: 'blur' },],
     },
+    transferRules:{
+      rec_user:[
+        { required:true, message:"接收员工必选", trigger:'blur'}
+      ]
+    }
 
   }).setForm('search', {
     field: '',
@@ -517,57 +552,13 @@ Vue.filter("handleString", function(v) {
     name:"",
     step:"",
     track_type:'',
-  },true).setForm('addPlan',{
-     cus_id:'',
-     name:'',
-     plan:'',
   },true).setForm('addTransfer',{
      cus_id:[],
      rec_dep:'',
+     rec_group:'',
+     rec_user:'',
      proportion:'100',
-  },true).setForm('addRemind',{
-     cus_id:'',
-     name:'',
-     remind:'',
-     remark:'',
-  },true).setForm('addChoice',{
-     cus_id:'',
-     name:'',
-     remark:'',
-     choose:1,
-     type:'',
-  },true).setForm('showDetail',{
-    id:"",
-    name:"",
-    type:"",
-    phone:"",
-    phone2:"",
-    qq:"",
-    qq2:"",
-    qq_nickname:"",
-    qq_nickname2:"",
-    sex:0,
-    weixin:"",
-    weixin_nickname:"",
-    area_province:null,
-    area_city:null,
-    quality:'',
-    year:'',
-    re_income:'',
-    style:'',
-    money:'',
-    energy:'',
-    problem:'',
-    mode:'',
-    attitude:'',
-    profession:'',
-    intention:'',
-    source:'',
-    remark:"",
-  },true).setForm('importc',{
-    c:0,
-    t:0
-  }, true).setForm('realInfo',{
+  },true).setForm('realInfo',{
     identity:'',
     type:'',
     expense:'',
@@ -577,6 +568,8 @@ Vue.filter("handleString", function(v) {
     fm:'',
   },true).setForm('traceContent',{
     content:'',
+  },true).setForm('quitOut',{
+
   },true).setMethod('getType', function(type, field){
       return this[field][type];
   }).setMethod('beforeList', function(data){
@@ -595,9 +588,6 @@ Vue.filter("handleString", function(v) {
           currentValue.intention = currentValue.intention == 0?"":currentValue.intention;      
           currentValue.source = currentValue.source == 0?"":currentValue.source;          
           //console.log(typeof(currentValue.quality));
-
-          
-
        })
      return data;
   }).setMethod('provinceChange', function(v){
@@ -612,10 +602,10 @@ Vue.filter("handleString", function(v) {
   }).setMethod('depChange',function(v){
      //console.log(v);
      var vmThis=this;
-     this.$http.get('{:U("getRecUser")}', {params:{p_name:v}}).then(function(response){
+     this.$http.get('{:U("getRecUser")}', {params:{id:v}}).then(function(response){
        var reUsers = [];
        response.body.forEach(function(currentValue,index){
-         reUsers.push({value:currentValue.value,name:currentValue.value});
+         reUsers.push({value:currentValue.id,name:currentValue.realname});
        })
        vmThis.$set(vmThis,'reUsers',reUsers);
      });
@@ -624,17 +614,7 @@ Vue.filter("handleString", function(v) {
       this.provinceChange(this.editForm.area_province);
     }
   }).setMethod('handleSelectionChange', function(val){
-    this.multipleSelection = [];
-    if(val.length >= 2){
-       if(val.length == this.dataList.length){
-         this.multipleSelection = val;
-       }else{
-         this.multipleSelection.push(val.shift());
-       }
-    } else {
-      this.multipleSelection = val;
-    }
-
+    this.multipleSelection = val;
   }).setMethod('commonSelect',function(x){
     var form = x;
     var vmThis = this;
@@ -655,8 +635,6 @@ Vue.filter("handleString", function(v) {
     this.commonSelect('addPlan');
     this.dialogLabelWidth = "140px";
   }).setMethod('beforeAddTransfer',function(){
-    // this.commonSelect('addTransfer');  
-
     if (this.multipleSelection.length ==0) {
       this.closeDialog('addTransfer');
       this.$message.error('请先至少选择一位客户');
@@ -706,13 +684,12 @@ Vue.filter("handleString", function(v) {
          this.realInfoForm.expense = response.body.expense;
          this.realInfoForm.cycle = response.body.cycle;
          this.realInfoForm.address = response.body.address;
-         this.realInfoForm.cus_id = response.body.cus_id;
+         // this.realInfoForm.cus_id = response.body.cus_id;
       });
 
       this.handleEdit(index, row);
   }).setMethod('setField', function(v){
       this[FormName.getFormName('search')].field = v;
-      this[FormName.getFormName('search')].group = 'user_id';
       this.loadDatalist();
   }).setMethod('refresh',function(){
     window.location.reload();
@@ -811,8 +788,17 @@ Vue.filter("handleString", function(v) {
     // var index = this.tableData.indexOf(row);
     this.traceContentFormDialog = true;
     this.traceContentForm.content = row.content;
-  }).setComputed('isTypeV', function(){
-    return this.editForm.type == 'V';
+  }).setMethod('searchFunction', function(){
+    this.searchForm.field = "";
+    this.dataLoad = true;
+    this.loadDatalist();
+  }).setMethod('departChange', function(v){
+    this.$http.get(page.getGroupsUrl,{params:{id:v}}).then(function(response){
+      this.addTransferForm.rec_group = "";
+      this.reGroup = response.body;
+    },function(response){
+
+    })
   });
 </script>
 </block>

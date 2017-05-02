@@ -1,4 +1,4 @@
-<el-dialog title="编辑客户资料" v-model="editFormDialog" @open="beforeEdit">
+<el-dialog title="编辑客户资料" v-model="editFormDialog" @open="beforeEdit" :close-on-click-modal="false">
 <!-- <el-form :model="form"> -->
 <el-form ref="editForm" :rules="editRules" :model="editForm" v-model="editForm" :label-width="dialogLabelWidth">
     <el-tabs type="card">
@@ -12,18 +12,41 @@
           <el-col :span="12">
             <el-form-item label="客户类型" prop="type">
               <el-select v-model="editForm.type" placeholder="请选择客户类型" :disabled="isTypeV">
-                <el-option v-for="(type, key) in customerType" :label="type" :value="key" :disabled="key=='F' || key=='VX' || key=='VT'"></el-option>
+                <el-option v-for="(type, key) in customerType" :label="type" :value="key" :disabled="key=='F' || key=='VX' || key=='VT'  || key=='V' || key=='N'"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
         </el-row>
+
+        <el-row>
+          <el-col :span="12">
+            <el-form-item  label="资金量" prop="money">
+              <el-select v-model="editForm.money"   placeholder="选择客户资金量" >
+                <el-option v-for="(money,key) in Money" :label="money"  :value="key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="性别" >
+              <el-radio class="radio" v-model="editForm.sex" label="1">男</el-radio>
+              <el-radio class="radio" v-model="editForm.sex" label="2">女</el-radio>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        
         <el-row>
           <el-col :span="12">
             <el-form-item label="手机号1">
               <el-input v-model="editForm.phone" auto-complete="off" placeholder="请填写手机号" :disabled="true"></el-input>
             </el-form-item>
           </el-col>
-          
+          <el-col :span="12">
+            <el-form-item  label="客户来源" prop="source">
+              <el-select v-model="editForm.source"   placeholder="选择客户来源" >
+                <el-option v-for="(source,key) in Source" :label="source"  :value="key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
@@ -84,21 +107,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item  label="资金量" prop="money">
-              <el-select v-model="editForm.money"   placeholder="选择客户资金量" >
-                <el-option v-for="(money,key) in Money" :label="money"  :value="key"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="性别" >
-              <el-radio class="radio" v-model="editForm.sex" label="1">男</el-radio>
-              <el-radio class="radio" v-model="editForm.sex" label="2">女</el-radio>
-            </el-form-item>
-          </el-col>
-        </el-row>
+        
       </el-tab-pane>
       <el-tab-pane label="一般资料" name="second">
         <el-row>
@@ -198,13 +207,7 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="12">
-            <el-form-item  label="客户来源" >
-              <el-select v-model="editForm.source"   placeholder="选择客户来源" >
-                <el-option v-for="(source,key) in Source" :label="source"  :value="key"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
+         
           <el-col :span="10">
             <el-form-item label="备注">
               <el-input

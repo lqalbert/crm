@@ -65,7 +65,11 @@ class CustomerLogic extends Model{
         $arr=M('customers_log')->where(array('cus_id'=>I('post.id')))->order('id desc')->select();
         foreach ($arr as $key => $value){
         	$arr[$key]['type']=$type;
-        	$arr[$key]['user']=M('user_info')->where(array('user_id'=>$value['user_id']))->getField('realname');
+            $dep_user=M('department_basic as db')->join('user_info as ui on ui.department_id=db.id')
+                     ->where(array('ui.user_id'=>$value['user_id']))->getField("concat(db.name,'-',ui.realname) as user");
+            foreach ($dep_user as $k => $v) {
+                $arr[$key]['user']=$v['user'];
+            }
         	$arr[$key]['name']=I('post.name');
         	$arr[$key]['track_type']=D('CustomerLog')->getType((int)$arr[$key]['track_type']);
         }
@@ -90,8 +94,7 @@ class CustomerLogic extends Model{
     *
     */
     public function getJoinCondition($D){
-      $D->join('left join customers_contacts as cc2 on customers_basic.id =  cc2.cus_id and cc.is_main = 0')
-        ->join('left join user_info as ui on customers_basic.salesman_id = ui.user_id')
+      $D->join('left join user_info as ui on customers_basic.salesman_id = ui.user_id')
         ->field('customers_basic.*,cc.qq,cc.phone,cc.weixin,cc.qq_nickname,cc.weixin_nickname, cc.is_main as cc_main,cc2.qq as qq2,cc2.phone as phone2,cc2.weixin as weixin2,cc2.qq_nickname as qq_nickname2,cc2.weixin_nickname as weixin_nickname2, ui.realname');
     }
 
@@ -115,10 +118,15 @@ class CustomerLogic extends Model{
                     $D->where(array(
                         'transfer_status'=>1, 
                         'from_department_id'=> $this->depart_id,
-                        'ct.created_at'=>array('EGT', D('Customer','Logic')->ThreeMonthsAge())))
+                        'ct.created_at'=>array('EGT', $this->ThreeMonthsAge())))
                         ->join('customer_transflog as ct on customers_basic.id=ct.cus_id');
                 }else{
-                   $D->where(array('transfer_status'=>1, 'transfer_to'=>array('NEQ', 0)));
+                   // $D->where(array('transfer_status'=>1, 'transfer_to'=>array('NEQ', 0)));
+                    $D->where(array(
+                        'transfer_status'=>1, 
+                        'from_id'=> session('uid'),
+                        'ct.created_at'=>array('EGT', D('Customer','Logic')->ThreeMonthsAge())))
+                        ->join('customer_transflog as ct on customers_basic.id=ct.cus_id');
                 }
                 
                 break;
@@ -127,10 +135,17 @@ class CustomerLogic extends Model{
                     $D->where(array(
                         'transfer_status'=>1, 
                         'to_department_id'=> $this->depart_id,
-                        'ct.created_at'=>array('EGT', D('Customer','Logic')->ThreeMonthsAge())))
+                        'ct.created_at'=>array('EGT', $this->ThreeMonthsAge())))
                         ->join('customer_transflog as ct on customers_basic.id=ct.cus_id');
                 }else{
-                   $D->where(array('transfer_status'=>array( array('EQ', 1), array('EQ', 2), 'or'), 'transfer_to'=>session('uid')));
+                    // 多条相同的客户转让记录 会出现多条数据
+                    // 用子查询 join (select from  这里选出 一条纪录 ) on customers_basic.id=ct.cus_id
+                    // 这种思路 
+                   $D->where(array(
+                        'transfer_status'=>1, 
+                        'to_id'=> session('uid'),
+                        'ct.created_at'=>array('EGT', $this->ThreeMonthsAge())))
+                        ->join('customer_transflog as ct on customers_basic.id=ct.cus_id');
                 }
                 
                 break;
@@ -142,6 +157,8 @@ class CustomerLogic extends Model{
                 break;
             case 'conflict':
                 $D->where(array('conflict'=> $between_today));
+                break;
+            
                 break;
             default:
                 

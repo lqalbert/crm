@@ -6,7 +6,9 @@ use Home\Model\DepartmentModel;
 use Home\Model\RoleModel;
 use Common\Lib\User;
 
-
+/**
+* 废弃不用了
+*/
 class AddCountController extends CommonController{
 	protected $pageSize = 15;
 	protected $table = "user_info";

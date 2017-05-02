@@ -10,20 +10,20 @@
     </el-col>
     <el-col :span="12">
       <el-form-item label="类型"  prop="type">
-        <el-select  v-model="addForm.type"  placeholder="请选择类型"  >
+        <el-select  v-model="addForm.type"  placeholder="请选择类型"  @change="typeChange">
          <el-option  v-for='(item,key) in typeList' :label="item" :value="key"></el-option>
         </el-select>
       </el-form-item>
     </el-col>
   </el-row>
-   <el-row>
-    <el-col :span="12">
+  <!-- <el-row>
+     <el-col :span="12">
       <el-form-item label="事业/财富区"  prop="division_id" >
         <el-select  v-model="addForm.division_id" placeholder="请选择事业/财富区">
           <el-option v-for='item in topO' :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
-    </el-col>
+    </el-col> 
     <el-col :span="12">
       <el-form-item label="片区"  prop="zone_id" >
         <el-select  v-model="addForm.zone_id" placeholder="请选择片区">
@@ -44,8 +44,8 @@
         </el-form-item>
       </el-col>
     </el-row>
-    <el-row>
-      
+    <el-row>-->
+      <el-row>
       <el-col :span="12">
 
         <el-form-item label="联系人"  prop="contact">
@@ -84,7 +84,7 @@
       </el-col>
     </el-row> -->
     <el-row>
-      <el-col :span="12">
+      <!-- <el-col :span="12">
 
         <el-upload action="{:U('Upload/index')}" :on-success="uploadImg" :data="pathInfo" :thumbnail-mode="true" type="drag" :multiple="false" style="margin-left:30%;">
           <i class="el-icon-upload" style="margin:10px 0 16px;"></i>
@@ -92,11 +92,16 @@
           <div class="el-upload__tip" slot="tip" style="margin-right:115px;">只能上传jpg/png/gif文件，且不超过3M</div>
         </el-upload>
 
-      </el-col>
-      <el-col :span="12">
+      </el-col> -->
+      <el-col :span="24">
         <el-form-item label="地址"  prop="address">
           <el-input  auto-complete="off" v-model="addForm.address" placeholder="请填写地址"></el-input>
         </el-form-item>
+        
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="24">
         <el-form-item label="备注"  prop="remark">
           <el-input  auto-complete="off" v-model="addForm.remark" placeholder="请填写备注"></el-input>
         </el-form-item>

@@ -165,9 +165,15 @@
 		    <el-col :span="12">
 		      <div class="grid-content bg-purple">
 		      	<span class="wrapper">
+
 			        <el-tooltip content="选择单个或多个客户分配给指定的回访专员" placement="right">
 			          <el-button size="small" type="primary" @click="openDialog('dipacth')">分 配</el-button>
 			        </el-tooltip>
+
+              <el-tooltip content="选择客户录入跟踪信息" placement="right" style="margin-left:10px;">
+                <el-button size="small" @click="openDialog('addTrack')" type="primary">录入跟踪</el-button>
+              </el-tooltip>
+
 			      </span>
 		      </div>
 		    </el-col>
@@ -207,6 +213,10 @@
 
 	              <el-table-column prop="track_text" label="跟踪类型" header-align="center">
 	              </el-table-column>
+
+                <el-table-column prop="step" label="跟踪步骤" header-align="center">
+                </el-table-column>
+
 	            </el-table>
 	          </el-tab-pane>
 	          <el-tab-pane label="客户资料">
@@ -243,6 +253,9 @@
 	  <!-- 录入高级查询条件 -->
 	  <include file="_advancedQuery" />
 	  <!-- /录入高级查询条件 -->
+    <!-- 录入跟踪  -->
+    <include file="_track" />
+    <!-- / 录入跟踪 -->
     <!-- 批量分配 -->
     <include file="_dispacth" />
 	  <!-- 跟踪内容 -->
@@ -259,6 +272,8 @@
   	sexType:{:json_encode($sexType)},
   	goodsType:{:json_encode($GoodsType)},
     callBackMan:{:json_encode($callBackMan)},
+    logType:{:json_encode($logType)},
+    steps:{:json_encode($steps)},
   	multipleSelection:[],
   	provinces:[],
     cities:[],
@@ -278,9 +293,9 @@
 	     'type':'',
 	     'track_type':'',
 	     'content':'',
-	     'user':''
+	     'user':'',
+       'step':''
     }],
-
 
   }).setForm('search',{
     name:'',
@@ -302,6 +317,15 @@
     user_id:"",
   }, true).setForm('traceContent',{
     content:'',
+  },true).setForm('addTrack',{
+    cus_id:"",
+    next_datetime:'',
+    track_type:'',
+    to_type:"",
+    content:'',
+    name:"",
+    step:"",
+    track_type:'',
   },true).setMethod('getType', function(type, field){
       return this[field][type];
   }).setMethod('beforeList', function(data){
@@ -399,6 +423,20 @@
     },function(response){
       vmThis.$message.error("操作出错啦");
     });
+  }).setMethod('beforeAddTrack',function(){
+    var vmThis = this;
+    if (this.multipleSelection.length ==0 ||  this.multipleSelection.length>1) {
+      this.closeDialog('addTrack');
+      this.$message.error('请选择其中一位客户');
+      return false;
+    } else {
+      var  row = this.multipleSelection.pop();
+      this[FormName.getForm('addTrack')].name = row.name;
+      this[FormName.getForm('addTrack')].cus_id = row.cus_id;
+      this[FormName.getForm('addTrack')].to_type = row.type;
+      this.row=row;
+      return row;
+    }
   });
 </script>
 </block>

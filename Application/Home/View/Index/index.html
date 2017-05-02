@@ -252,20 +252,12 @@
 			  // })
 			  myWorker.postMessage({type:"start", data:"{:U('Customer/getTodays')}"});
 
+			  // 每过5分钟就重新获取
+			  setInterval(function(){
+			  	myWorker.postMessage({type:"start", data:"{:U('Customer/getTodays')}"});
+			  }, 300000);
 
-			  /*var n = new Notification("您有一个新计划",{icon:"__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg",body:"客户：比",tag:"837737931"});
-			  n.addEventListener("click", function(){
-			  	trigger.setAttribute('href', "tencent://message/?uin="+ this.tag +"&Site=&menu=yes")
-			  	// "tencent://message/?uin="+837737931+"&Site=&menu=yes";
-			  	// var evt = document.createEvent("MouseEvents");    
-	     //        evt.initEvent("click", true, true);    
-	     //        trigger.dispatchEvent(evt);  
-			  	// console.log(this.tag);
-			  	trigger.click();
-
-			  	this.close();
-			  })*/
-         //setInterval("timer.innerHTML=new Date().toLocaleString()+' 星期'+'日一二三四五六'.charAt(new Date().getDay());",1000);
+			  
         
 		</script>
 	</body>

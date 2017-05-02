@@ -10,7 +10,7 @@ class WorkSummaryModel extends Model{
        '4'=>'季度总结',
        '5'=>'年度总结',
        '6'=>'月度计划',
-       '7'=>'主管建议',
+       // '7'=>'主管建议',
     );
 
     protected $_auto = array(

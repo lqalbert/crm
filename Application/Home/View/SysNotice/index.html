@@ -12,7 +12,7 @@
             <el-form-item>
              <el-button type="primary" icon="search" @click="loadDatalist">查询</el-button>
              <el-tooltip content="清空搜索框并刷新表格数据" placement="right">
-              <el-button icon="loading" @click="searchReset">重置</el-button>
+              <el-button  @click="searchReset" style="margin-left:10px;">重置</el-button>
              </el-tooltip>
             </el-form-item>
           </el-form>
@@ -21,19 +21,31 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-table :data="dataList" v-loading="dataLoad"  border  stripe element-loading-text="{:L('DATA_LOGIN')}" ref="select">
-            <el-table-column type="selection" align="center" width="50"></el-table-column>
-            <el-table-column label="序号" align="center" :formatter="handleIndex" width="65"></el-table-column>
-            <el-table-column label="公告类型" prop="type" align="center" >
+          <el-table 
+          :data="dataList" 
+          v-loading="dataLoad"  
+          border  stripe 
+          element-loading-text="{:L('DATA_LOGIN')}" 
+          ref="select"
+          @row-click="showDetail"
+          >
+            <!-- <el-table-column type="selection" align="center" width="50"></el-table-column> -->
+            <el-table-column label="序号"  :formatter="handleIndex" width="65"></el-table-column>
+            <el-table-column label="公告类型" prop="type" align="center" width="150">
                <template scope="scope">
                   {{ getType(scope.row.type, 'NoticeType') }}
                </template>
             </el-table-column>
-            <el-table-column label="公告标题" prop="title" align="center" ></el-table-column>
-            <el-table-column label="公告内容" prop="content" header-align="center"></el-table-column>
-            <el-table-column label="开始日期" prop="start" align="center" ></el-table-column> 
-            <el-table-column label="截止日期" prop="end" align="center" ></el-table-column> 
-            <el-table-column label="发布人" prop="user" align="center" ></el-table-column> 
+            <el-table-column label="公告标题" prop="title"></el-table-column>
+            <el-table-column label="公告内容(点击查看详细)" prop="content" >
+              <template scope="scope">
+                {{ scope.row.content | handleString(10) }}
+              </template>
+            </el-table-column>
+            <el-table-column label="开始日期" prop="start" align="center"></el-table-column> 
+            <el-table-column label="截止日期" prop="end" align="center"></el-table-column> 
+            <el-table-column label="发布人" prop="user"></el-table-column>
+            {:$viewDecorator['oprate']}
           </el-table>
         </el-col>
       </el-row>
@@ -41,10 +53,11 @@
       <el-row type="flex"  justify="space-between" align="middle"  class="row-bg">
             <el-col :span="12">
               <div class="grid-content bg-purple">
-                 <el-tooltip content="点击填写公告并发布" placement="right">
-                   <el-button size="small" type="info" @click="openDialog('add')" icon="edit">发布公告
-                   </el-button>
-                 </el-tooltip>
+                {:$viewDecorator['button']}
+
+                 
+
+
               </div>
             </el-col>
             <el-col :span="12">
@@ -59,9 +72,17 @@
 
     <div class="dialogWrapper" v-show="show" style="display: none">
 
-      <!-- 录入客户 -->
+      <!-- 添加公告 -->
       <include file="_add" />
-      <!-- / 录入客户 -->
+      <!-- / 添加公告 -->
+
+      <!-- 编辑 -->
+      <include file="_edit" />
+      <!-- / 编辑 -->
+
+      <!-- 编辑 -->
+      <include file="_detail" />
+      <!-- / 编辑 -->
 
     </div>
 
@@ -70,6 +91,8 @@
 <block name="scripts">
 <script>
   window.defaultOption.setDatas({
+    detailContent:"",
+    detailFormDialog:false,
     NoticeType:{:json_encode($NoticeType)},
     addRules:{
       title:[
@@ -77,6 +100,15 @@
       ],
       type:[
          { required: true, message: '请选择公告类型', trigger: 'blur'},
+      ],
+      content:[
+        {required: true, message: '请输入公告内容', trigger: 'blur'},
+      ],
+      start:[
+        {required: true, message: '请选择开始时间', trigger: 'blur'},
+      ],
+      end:[
+        {required: true, message: '请选择截止时间', trigger: 'blur'},
       ],
     }
   }).setForm('search',{
@@ -87,8 +119,18 @@
     content:'',
     start:'',
     end:'',
+  }).setForm('edit',{
+    id:"",
+    type:'',
+    title:'',
+    content:'',
+    start:'',
+    end:'',
   }).setMethod('getType', function(type, field){
      return this[field][type];
+  }).setMethod('showDetail', function(row){
+    this.detailContent = row.content;
+    this.openDialog('detail');
   });
 </script>
 </block>

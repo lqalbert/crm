@@ -49,6 +49,11 @@ class GroupController extends CommonController {
 
 	public function _before_add(){
 		$this->rightProcted();
+		if (empty(I('post.user_id'))) {
+			// unset($_POST['user_id']);
+			$_POST['user_id'] = null;
+			
+		}
 	}
 
 
@@ -84,14 +89,11 @@ class GroupController extends CommonController {
     */
 	public function getUsers(){
 
-
 		// 暂进没想到更好的方式了
-		$id = I("get.id", 0); //user_id;
+		$id = I("get.id", 0, 'intval'); //user_id;
 		$user = new User();
 		$user->getRoleObject();
 		$contactList = $user->getRoleGroupContacts($id);
-
-		
 
 		$this->ajaxReturn($contactList);
 	}

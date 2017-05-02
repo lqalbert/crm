@@ -6,17 +6,21 @@ class RoleCaptain {
     public function setMemberUserCondition($m){
     
         $userList = M('user_info')->where(array('group_id'=>session('account')['userInfo']['group_id']))->getField('user_id', true);
+
         $m->where(array("salesman_id"=>array('in', $userList)));
     }
 
     public function getCustomerSearchGroup($arr){
-        foreach ($arr as $key => $value) {
-
-            if ($value['value']=="group" || $value['value']=="department") {
-                $arr[$key]['disabled'] = true;
+        $gorup_id = session('account')['userInfo']['group_id'];
+        $users = M('user_info')->where(array('group_id'=>$gorup_id ))->field('user_id, realname as name')->select();
+        foreach ($users as $key => $value) {
+            if ($value['user_id'] == session('uid')) {
+                $users[$key]['name'] = '本人';
             }
         }
-        return $arr;
+        $arr['disabled'] = false;
+        $users[] = $arr;
+        return $users;
     }
     
 }

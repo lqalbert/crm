@@ -1,6 +1,7 @@
 <?php
 return array(
 	//'配置项'=>'配置值'
+	'LOAD_EXT_CONFIG' => 'db',
 
     //调试
 	'SHOW_PAGE_TRACE' => false, 
@@ -36,8 +37,9 @@ return array(
 	'USER_AUTH_TYPE' => 1,       // 认证类型
 	'USER_AUTH_KEY' => 'uid',    // 认证识别号
 	//REQUIRE_AUTH_MODULE  需要认证模块
-	'NOT_AUTH_MODULE' => 'Index,nav,Area,PreCheck,Upload',// 无需认证模块
-	'NOT_AUTH_ACTION' =>  'main,index,getList,checkCucstomers,importMyc,getUsers', //无需认证操作
+	'NOT_AUTH_MODULE' => 'Index,nav,Area,PreCheck,Upload,UserDetail,Department,SysNotice,MsgBox,CommonFindDetail,CustomersCountSecond',// 无需认证模块
+
+	'NOT_AUTH_ACTION' =>  'main,index,getList,checkCucstomers,importMyc,getUsers,getdepartgroups,getRecUser,findRealInfo,realInfo,trasnfCustomers,checContact', //无需认证操作
 	//USER_AUTH_GATEWAY 认证网关
 	//RBAC_DB_DSN  数据库连接DSN
 	'RBAC_ROLE_TABLE' => 'rbac_role',      //角色表名称  
@@ -45,5 +47,5 @@ return array(
 	'RBAC_ACCESS_TABLE'=>'rbac_access',   //权限表  
 	'RBAC_NODE_TABLE'=>  'rbac_node',       //节点表  
 	// 'RBAC_SUPERADMIN' => 'admin',
-	'ADMIN_AUTH_KEY'=>'superAdmin',       //超级管理员识别  
+	'ADMIN_AUTH_KEY'=>'superAdmin',       //超级管理员识别
 );

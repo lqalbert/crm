@@ -1,0 +1,99 @@
+<extend name="Common:base" />
+<block name="head">
+
+</block>
+<block name="body">
+    <div id="app" class="container">
+        <div class="wrapp" v-show="show" style="display: none">
+            <!-- datatables  -->
+            <el-row>
+                <el-col :span="24">
+                    <el-table 
+                  :data="dataList" 
+                  border
+                  v-loading="dataLoad" 
+                  element-loading-text="{:L('DATA_LOGIN')}"
+                   @selection-change="handleSelectionChange"
+                  >
+                    <el-table-column width="50" align="center" type="selection"></el-table-column>
+
+                    <el-table-column label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  ></el-table-column>
+                    <el-table-column  prop="name"  label="客户姓名" width="110"></el-table-column>
+                    <el-table-column   prop="type" label="客户类型"  width="140">
+                      
+                    </el-table-column>
+
+                    <el-table-column    prop="realname" label="跟踪员工" sortable width="190">
+                    </el-table-column>
+
+                      <el-table-column   prop="qq" label="QQ号"  width="170">
+                      </el-table-column>
+                      
+                      <el-table-column prop="phone" label="手机" align="center" width="130"></el-table-column>
+                      <el-table-column   prop="weixin" label="微信号" align="left" >
+                      </el-table-column>
+                  </el-table>
+                </el-col>
+            </el-row>
+            <!-- / datatables  -->
+            
+            <!-- toolbar -->
+                <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
+                  <el-col :span="12">
+                  <div class="grid-content bg-purple">
+                    <span class="wrapper">
+                    <el-tooltip content="重分配" placement="right">
+                      <el-button size="small"  @click="openDialog('resetUser')"  type="primary">分配</el-button>
+                    </el-tooltip>
+                  </div>
+                  </el-col>
+                  <el-col :span="12">
+                  <div class="grid-content bg-purple-light pull-right">
+                    <!-- page -->
+                    <include file="Common:_pagination" />
+                    <!-- / page -->
+                    
+                  </div></el-col>
+                </el-row>
+            <!-- / toolbar -->
+
+            <div v-show="show" style="display: none">
+              
+
+              <!-- 编辑 -->
+              <include file="_resetUser" />
+              <!-- / 编辑 -->
+
+
+              
+            </div>
+        </div>
+    </div>
+</block>
+<block name="scripts">
+
+    <script>
+        page.resetUserFormUrl="{:U('update')}";
+        window.defaultOption.setDatas({
+          salesmans:{:json_encode($users)},
+          isShow:false,
+          multipleSelection: []
+        }).setForm('resetUser',{
+            salesman_id:"",
+            cus_id:[]
+        }, true).setMethod('beforeReset', function(){
+          if (this.multipleSelection.length > 0) {
+            this.resetUserForm.cus_id = [];
+            for (var i = this.multipleSelection.length - 1; i >= 0; i--) {
+              this.resetUserForm.cus_id.push(this.multipleSelection[i].id);
+            }
+          } else {
+            this.resetUserFormDialog = false;
+            this.$message.error('请至少选择一位客户');
+            return false;
+          }
+        }).setMethod('handleSelectionChange', function(v){
+          this.multipleSelection = v;
+        })
+    </script>
+</block>

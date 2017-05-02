@@ -24,7 +24,7 @@ class RoleDepartmentMaster {
         $captainId = D('Role')->getIdByEname(RoleModel::CAPTAIN);
         /*return M('user_info')->where(array('department_id'=>$depart_id, 'role_id'=>$captainId, 'group_id'=>0 ))->select();*/
 
-        $sql = "select user_id,mid(realname, 1, 5) as realname from user_info where (role_id=$captainId and user_id not in ( select user_id from group_basic where department_id = $depart_id ) and department_id = $depart_id )  or user_id=$id ";
+        $sql = "select user_id,mid(realname, 1, 5) as realname from user_info where (role_id=$captainId and user_id not in ( select user_id from group_basic where department_id = $depart_id and user_id is not null ) and department_id = $depart_id )  or user_id=$id ";
         return M()->query($sql);
 
 
@@ -32,7 +32,7 @@ class RoleDepartmentMaster {
 
     public function setEmployQueryCondition($m, $obj){
         $depart_id = $this->getDepartId($obj->id);
-        $m->where(array('user_info.department_id'=>array('eq', $depart_id)));
+        $m->where(array('user_info.department_id'=>array('eq', $depart_id), 'user_info.user_id'=>array('NEQ', session('uid'))));
     }
 
     public function getGroupUpsOrg($obj){
@@ -46,9 +46,9 @@ class RoleDepartmentMaster {
 
     public function getAllBenC($obj){
         $depart_id = $this->getDepartId($obj->id);
-        $captainId = D('Role')->getIdByEname(RoleModel::CAPTAIN);
+        $staffId = D('Role')->getIdByEname(RoleModel::STAFF);
         if ($depart_id) {
-            $sql = "select user_info.user_id,realname, group_basic.name as group_name  from user_info left join group_basic on user_info.group_id = group_basic.id where   user_info.role_id <> $captainId and user_info.department_id = ".$depart_id;
+            $sql = "select user_info.user_id,realname, group_basic.name as group_name  from user_info left join group_basic on user_info.group_id = group_basic.id where   user_info.role_id = $staffId and user_info.department_id = ".$depart_id;
 
                     $members = M()->query($sql);
                     return $members;
