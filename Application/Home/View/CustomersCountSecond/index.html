@@ -47,6 +47,10 @@
           </el-tooltip>
 
         </el-form-item>
+        <el-form-item>
+          <el-button size="small" @click="setField('week')">本周</el-button>
+          <el-button size="small" @click="setField('month')">本月</el-button>
+        </el-form-item>
       </el-form>
       </el-col>
   </el-row>
@@ -75,8 +79,8 @@
                 <span v-else>{{ scope.row.name }}</span>
               </template>
             </el-table-column>
-            <el-table-column sortable="custom"  align="center" prop="all_num" label="当日客户总数"  width="160">
-            </el-table-column>
+            <!-- <el-table-column sortable="custom"  align="center" prop="all_num" label="当日客户总数"  width="160">
+            </el-table-column> -->
             <el-table-column sortable="custom"  align="center" prop="create_num" label="当日自锁数"  width="150">
             </el-table-column>
 
@@ -147,7 +151,8 @@
   }).setForm('search',{
       dist:'{$dist}',
       id:"<?php echo I('get.id', 0)?>",
-      objType:"{$objType}"
+      objType:"{$objType}",
+      range:'day'
       // object:'user',
       // realname:'',
       // group:'user_id',
@@ -210,6 +215,9 @@
         s.push("dist="+this.searchForm.dist);
       }
       return "{:U('index')}" + "?objType=" + this.objType + "&id=" + v +"&"+s.join("&");
-    });
+  }).setMethod('setField', function(v){
+      this.searchForm.range = v;
+      this.loadDatalist();
+  });
 </script>
 </block>
