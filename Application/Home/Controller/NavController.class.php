@@ -81,15 +81,15 @@ class NavController extends CommonController {
 		$group_id = session('account')['userInfo']['group_id'];
 		if ($group_id!=0) {
 			$group_name = D('Group')->where(array('id'=>$group_id))->getField("name");
-			return array(
+			return array(array(
 				"href"=>"javascript:;",
 				"icon"=>"",
 				'spread'=>false,
 				"title" => $group_name,
 				"children" => $this->setUserMenu($group_id)
-			);
+			));
 		} else {
-			return [];
+			return array();
 		}
 	}
 
