@@ -1,0 +1,178 @@
+<extend name="Common:base" />
+<block name="head"></block>
+<block name="body">
+  <div id="app" class="container">
+    <div class="wrapp" v-show="show" style="display:none">
+      <el-row>
+        <el-col :span="12">
+          <el-form :inline="true" ref="searchForm" :model="searchForm">
+
+            <el-form-item prop="name">
+              <el-input placeholder="请输入产品名称关键字" size="small" v-model="searchForm.name"></el-input>
+            </el-form-item>
+
+            <el-form-item>
+							<el-button type="primary" size="small" icon="search" @click="loadDatalist">查询</el-button>
+
+							<el-tooltip content="清空搜索框并刷新表格数据" placement="right">
+							<el-button  @click="searchReset" size="small" style="margin-left:10px;">重置</el-button>
+							</el-tooltip>
+
+		          <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:10px;">
+		            <el-button @click="refresh" size="small" type="danger">刷新</el-button>
+		          </el-tooltip>
+
+            </el-form-item>
+          </el-form>
+        </el-col>
+
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-table 
+          :data="dataList" 
+          v-loading="dataLoad"  
+          border  stripe 
+          element-loading-text="{:L('DATA_LOGIN')}" 
+          ref="select"
+          @row-click="showMark">
+            <!-- <el-table-column type="selection" align="center" width="50"></el-table-column> -->
+            <el-table-column label="序号"  :formatter="handleIndex" width="65"></el-table-column>
+            <el-table-column label="产品名称" prop="name" header-align="center"></el-table-column>
+            <el-table-column label="产品价格" prop="price" header-align="center">
+              <template scope="scope">
+                {{ scope.row.price | handlePrice }}
+              </template>
+            </el-table-column>
+            <el-table-column label="服务周期" prop="service_cycle" header-align="center">
+              <template scope="scope">
+                {{ scope.row.service_cycle | handleSerCycle }}
+              </template>
+            </el-table-column>
+            <el-table-column label="产品说明" prop="mark" header-align="center">
+              <template scope="scope">
+                {{ scope.row.mark | handleString(10) }}
+              </template>
+            </el-table-column> 
+            <el-table-column label="发布人员" prop="operator" header-align="center"></el-table-column> 
+            <el-table-column label="发布时间" prop="time" align="center"></el-table-column>
+						<el-table-column label="操作" align="center">
+							<template scope="scope">
+							  <el-button type="info" @click.stop="handleEdit(scope.$index, scope.row)" size="small">编辑</el-button>
+							  <el-button type="danger"  @click.stop="handleDelete(scope.$index, scope.row)" size="small" >删除</el-button>
+							</template>
+						</el-table-column> 
+          </el-table>
+        </el-col>
+      </el-row>
+
+      <el-row type="flex"  justify="space-between" align="middle"  class="row-bg">
+        <el-col :span="12">
+          <div class="grid-content bg-purple">
+						<el-tooltip content="点击添加/发布新产品" placement="right">
+						  <el-button size="small" type="info" @click="openDialog('add')" icon="plus">添加产品</el-button>
+						</el-tooltip>
+          </div>
+        </el-col>
+        <el-col :span="12">
+          <div class="grid-content bg-purple-light pull-right">
+        <!-- page -->
+        <include file="Common:_pagination" />
+        <!-- / page -->
+          </div>
+        </el-col>
+      </el-row>
+    </div>
+
+    <div class="dialogWrapper" v-show="show" style="display: none">
+
+      <!-- 添加公告 -->
+      <include file="_add" />
+      <!-- / 添加公告 -->
+
+      <!-- 编辑 -->
+      <include file="_edit" />
+      <!-- / 编辑 -->
+
+      <!-- 编辑 -->
+      <include file="_mark" />
+      <!-- / 编辑 -->
+
+    </div>
+
+  </div>
+</block>
+<block name="scripts">
+<script>
+  //价格过滤器
+  Vue.filter("handlePrice", function(v){
+    if (v!=null) {
+      return v+' 元';  
+    } else {
+      return v+' 元';
+    }
+  });
+  Vue.filter("handleSerCycle",function(v){
+    if(v=='3'){
+      return '1个季度';
+    }else if(v=='6'){
+      return '半年';
+    }else if(v=='12'){
+      return '一年';
+    }else if(v=='18'){
+      return '一年半';
+    }else if(v=='24'){
+      return '两年';
+    }else if(v=='30'){
+      return '两年半';
+    }else{
+      return v+' 个月';
+    }
+    
+  });
+  window.defaultOption.setDatas({
+    markContent:"",
+    markFormDialog:false,
+    addRules:{
+      name:[
+         { required: true, message: '请输入产品名称', trigger: 'blur'},
+      ],
+      price:[
+         { required: true, message: '请产品价格', trigger: 'blur'},
+         { pattern:/\d+/,  message: '请产品价格为数字'}
+      ],
+      mark:[
+        {required: true, message: '请描述产品', trigger: 'blur'},
+      ],
+    },
+    editRules:{
+      name:[
+         { required: true, message: '请输入产品名称', trigger: 'blur'},
+      ],
+      price:[
+         { required: true, message: '请产品价格', trigger: 'blur'},
+         { pattern:/\d+/,  message: '请产品价格为数字'}
+      ],
+      mark:[
+        {required: true, message: '请描述产品', trigger: 'blur'},
+      ],
+    },
+  }).setForm('search',{
+    name:'',
+  }).setForm('add',{
+    name:'',
+    price:'',
+    service_cycle:'1',
+    mark:'',
+  }).setForm('edit',{
+    id:'',
+    name:'',
+    price:'',
+    service_cycle:'1',
+    mark:'',
+  }).setMethod('showMark', function(row){
+    this.markContent = row.mark;
+    this.openDialog('mark');
+  });
+</script>
+</block>

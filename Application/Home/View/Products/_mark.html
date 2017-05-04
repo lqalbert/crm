@@ -1,0 +1,9 @@
+<el-dialog title="产品说明/描述" v-model="markFormDialog">
+<span>
+  {{ markContent }}
+</span>
+  <div slot="footer" class="dialog-footer">
+    <el-button type="primary" @click="closeDialog('mark')">确 定</el-button>
+  </div>
+</el-dialog>
+

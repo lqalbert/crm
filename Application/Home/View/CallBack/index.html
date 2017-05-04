@@ -206,9 +206,9 @@
 	              <el-table-column prop="account_id" label="软件账号" align="center">
 	              </el-table-column>
 
-	              <el-table-column prop="production" label="产品" header-align="center">
+	              <el-table-column prop="pdt_id" label="产品名称" header-align="center">
 				          <template scope="scope">
-				            {{ getType(scope.row.type, 'GoodsType') }}
+				            {{ getPdt(scope.row.pdt_id, 'products') }}
 				          </template>
 	              </el-table-column>
 	              
@@ -255,10 +255,10 @@
 	              <el-table-column label="产品金额" prop="expense" header-align="center">
 	              </el-table-column>
 
-	              <el-table-column label="产品类型" prop="type" header-align="center">
-				          <template scope="scope">
-				            {{ getType(scope.row.type, 'GoodsType') }}
-				          </template>
+	              <el-table-column label="产品类型" prop="pdt_id" header-align="center">
+                  <template scope="scope">
+                    {{ getPdt(scope.row.pdt_id, 'products') }}
+                  </template>
 	              </el-table-column>
 	              
 	              <el-table-column label="身份证" prop="identity" align="center">
@@ -309,8 +309,7 @@
   window.defaultOption.setDatas({
   	customerType:{:json_encode($customerType)},
   	sexType:{:json_encode($sexType)},
-  	GoodsType:{:json_encode($GoodsType)},
-  	ServiceCycle:{:json_encode($ServiceCycle)},
+  	products:{:json_encode($Products)},
   	SupServiceMan:{:json_encode($SupServiceMan)},
     logType:{:json_encode($logType)},
     steps:{:json_encode($steps)},
@@ -330,7 +329,7 @@
     tableDataTwo:[{
        'user':'',
        'expense':'',
-       'type':'',
+       'pdt_id':'',
        'identity':'',
        'address':'',
        'time':''
@@ -338,7 +337,7 @@
     tableDataThree:[{
       	'user':'',
       	'account':'',
-      	'production':'',
+      	'pdt_id':'',
       	'mark':'',
       	'create_t':'',
     }],
@@ -361,7 +360,7 @@
   },true).setForm('review',{
   	name:'',
   	address:'',
-  	type:'',
+  	pdt_id:'',
   	identity:'',
   	expense:'',
   	cycle:'',
@@ -369,7 +368,7 @@
   	cus_id:'',
   },true).setForm('reviewPass',{
     accountID:'',
-    type:'',
+    pdt_id:'',
     mark:'',
     user_id:'',
     cus_id:'',
@@ -390,6 +389,14 @@
     content:'',
   },true).setMethod('getType', function(type, field){
       return this[field][type];
+  }).setMethod('getPdt',function(pdt, field){
+    var pdtName;
+    this[field].forEach(function(value,index){
+      if(value.id == pdt){
+        pdtName = value.name;
+      }
+    });
+    return pdtName;
   }).setMethod('beforeList', function(data){
      //console.log(this.callBackMan);
      return data;
@@ -417,7 +424,7 @@
 
   	 this.reviewForm.name=row.name;
   	 this.reviewForm.address=this.tableDataTwo[0].address;
-  	 this.reviewForm.type=this.tableDataTwo[0].type;
+  	 this.reviewForm.pdt_id=this.tableDataTwo[0].pdt_id;
   	 this.reviewForm.identity=this.tableDataTwo[0].identity;
   	 this.reviewForm.expense=this.tableDataTwo[0].expense;
   	 this.reviewForm.cycle=this.tableDataTwo[0].cycle;
@@ -472,7 +479,7 @@
 		      vmThis.closeDialog('review');
 		      vmThis.reviewPassFormSubmitStatus = false;
 		      vmThis.$refs.reviewPassForm.resetFields(); 
-		      this.loadDatalist();
+		      vmThis.loadDatalist();
 		    }, 2000);
   	 },function(){
         vmThis.$message.error("出错啦");

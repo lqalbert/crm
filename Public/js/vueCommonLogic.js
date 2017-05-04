@@ -199,6 +199,11 @@ function setCommonLogic(opt){
 		this.$refs[FormName.getForm(type)].resetFields();
 	})
 
+	opt.setMethod('refresh', function(){
+		window.location.reload();
+	})
+
+
 }
 
 /**

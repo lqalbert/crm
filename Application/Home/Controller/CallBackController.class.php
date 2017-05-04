@@ -7,6 +7,7 @@ use Home\Model\CustomerModel;
 use Home\Model\RealInfoModel;
 use Home\Logic\CustomerLogic;
 use Home\Model\CustomerLogModel;
+use Home\Model\ProductModel;
 class CallBackController extends CommonController{
 	protected $table = "customers_service";
 	protected $pageSize = 11;
@@ -16,12 +17,14 @@ class CallBackController extends CommonController{
   }
 
 	public function index(){
+    $Products= D('Product')->where( array('status'=>array('NEQ', ProductModel::DELETE_STATUS)))->select();
+    $this->assign('Products', $Products);
 		$this->assign('customerType', D('Customer')->getType());
     $this->assign('steps',        D('CustomerLog')->getSteps());
     $this->assign('logType',      D('CustomerLog')->getType());
 		$this->assign('sexType',      D('Customer')->getSexType());
-		$this->assign('GoodsType',    D('CustomerLog')->getGoodsType());
-		$this->assign('ServiceCycle', D('CustomerLog')->getServiceCycle());
+		// $this->assign('GoodsType',    D('CustomerLog')->getGoodsType());
+		// $this->assign('ServiceCycle', D('CustomerLog')->getServiceCycle());
 		$this->assign('badgeNum',     $this->badgeNum());
     $this->assign('SupServiceMan',  $this->getSupServiceMan());
 		$this->display();
@@ -40,9 +43,6 @@ class CallBackController extends CommonController{
       $yetNum=$allCount-$badgeNum['already'];
       $badgeNum['yet']=$yetNum>0 ? $yetNum : 0 ;
     }
-  	
-		
-
 		return $badgeNum;
   }
 
@@ -133,7 +133,7 @@ class CallBackController extends CommonController{
       'cus_id'=>I('post.cus_id'),
       'open_id'=>$open_id,
       'account_id'=>I('post.accountID'),
-      'type'=>I('post.type'),
+      'pdt_id'=>I('post.pdt_id'),
       'mark'=>I('post.mark')
   	);
     M('software_account')->create($data);

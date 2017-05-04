@@ -4,13 +4,13 @@
 	    <el-row>
 	      <el-col :span="10">
 	        <el-form-item label="身份证" prop="identity">
-            <el-input v-model="realInfoForm.identity" placeholder="请填写客户身份证号" :disabled="true"></el-input>
+            <el-input v-model="realInfoForm.identity" placeholder="请填写客户身份证号"></el-input>
 	        </el-form-item>
 	      </el-col>
 	      <el-col :span="12">
 	        <el-form-item label="产品类型" prop="pdt_id">
-            <el-select v-model="realInfoForm.pdt_id" placeholder="请选择客户产品类型" @change="pdtChange" :disabled="true">
-              <el-option v-for="product in products" :label="product.name"  :value="product.id" ></el-option>
+            <el-select v-model="realInfoForm.pdt_id" placeholder="请选择客户产品类型" @change="pdtChange">
+              <el-option v-for="product in products" :label="product.name"  :value="product.id"></el-option>
             </el-select>
 	        </el-form-item>
 	      </el-col>
@@ -18,12 +18,12 @@
 	    <el-row>
 	      <el-col :span="10">
 	        <el-form-item label="产品金额" prop="expense">
-            <el-input v-model.number="realInfoForm.expense" placeholder="纯数字金额例如'88888'" :disabled="true"></el-input>
+            <el-input v-model.number="realInfoForm.expense" placeholder="纯数字金额例如'88888'"></el-input>
 	        </el-form-item>
 	      </el-col>
 	      <el-col :span="12">
 	        <el-form-item label="服务周期" prop="cycle">
-				    <el-input-number size="small" v-model="realInfoForm.cycle" :min="0" style="line-height: 0;" :disabled="true"></el-input-number>
+				    <el-input-number size="small" v-model="realInfoForm.cycle" :min="0" style="line-height: 0;"></el-input-number>
             <span>个月</span>
 	        </el-form-item>
 	      </el-col>
@@ -35,7 +35,7 @@
               v-model="realInfoForm.address"
               type="textarea"
               :autosize="{ minRows: 2, maxRows: 2}"
-              placeholder="填写客户真实通讯地址" :disabled="true">
+              placeholder="填写客户真实通讯地址">
             </el-input>
           </el-form-item>
         </el-col>
@@ -43,7 +43,7 @@
 	</el-form> 
   <span slot="footer" class="dialog-footer">
     <el-button @click="closeDialog('realInfo')">取 消</el-button>
-    <el-button type="primary" v-show="!realInfoFormSubmitStatus" @click="closeDialog('realInfo')">确 定</el-button>
+    <el-button type="primary" v-show="!realInfoFormSubmitStatus" @click="addRealInfo(page.addRealInfoUrl)">确 定</el-button>
     <el-button type="primary" v-show="realInfoFormSubmitStatus" :loading="true">保存中</el-button>
   </span>
 </el-dialog>

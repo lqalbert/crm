@@ -7,6 +7,7 @@ use Home\Model\CustomerModel;
 use Home\Model\RealInfoModel;
 use Home\Logic\CustomerLogic;
 use Home\Model\CustomerLogModel;
+use Home\Model\ProductModel;
 class RiskCtrlOneController extends CommonController{
 	protected $table = "customers_service";
 	protected $pageSize = 11;
@@ -16,11 +17,12 @@ class RiskCtrlOneController extends CommonController{
   }
 
 	public function index(){
+    $Products= D('Product')->where( array('status'=>array('NEQ', ProductModel::DELETE_STATUS)))->select();
+    $this->assign('Products', $Products);
 		$this->assign('customerType', D('Customer')->getType());
     $this->assign('steps',        D('CustomerLog')->getSteps());
     $this->assign('logType',      D('CustomerLog')->getType());
 		$this->assign('sexType',      D('Customer')->getSexType());
-		$this->assign('GoodsType',    D('CustomerLog')->getGoodsType());
 		$this->assign('badgeNum',     $this->badgeNum());
     $this->assign('callBackMan',  $this->getCallBackMan());
 		$this->display();

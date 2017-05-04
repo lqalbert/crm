@@ -321,7 +321,7 @@
   <!-- /录入转让 -->
 
   <!-- V类客户资料 -->
-  <include file="Customer::_realInfo" />
+  <include file="_realInfo" />
   <!-- /V类客户资料 -->
 
   <!-- 客户全部资料 -->
@@ -422,6 +422,9 @@ Vue.filter("handleString", function(v) {
     Remind:{:json_encode($Remind)},
     GoodsType:{:json_encode($GoodsType)},
     ServiceCycle:{:json_encode($ServiceCycle)},
+
+    products:{:json_encode($Products)},
+
     provinces:[],
     cities:[],
     deps:[],//
@@ -560,7 +563,7 @@ Vue.filter("handleString", function(v) {
      proportion:'100',
   },true).setForm('realInfo',{
     identity:'',
-    type:'',
+    pdt_id:'',
     expense:'',
     cycle:'',
     address:'',
@@ -667,7 +670,6 @@ Vue.filter("handleString", function(v) {
       })
       vmThis.$set(vmThis, 'provinces', provinces);
     });
-
     this.dialogLabelWidth = "100px";
   }).setMethod('trackLog',function(row,event,column){
         this.$http.post(page.getTrackLogUrl,row).then(function(response){
@@ -680,7 +682,7 @@ Vue.filter("handleString", function(v) {
       this.realInfoForm.cus_id = row.id;
       this.$http.get('{:U("Customer/findRealInfo")}', {params:{cus_id:row.id} }).then(function(response){
          this.realInfoForm.identity = response.body.identity;
-         this.realInfoForm.type = response.body.type;
+         this.realInfoForm.pdt_id = response.body.pdt_id;
          this.realInfoForm.expense = response.body.expense;
          this.realInfoForm.cycle = response.body.cycle;
          this.realInfoForm.address = response.body.address;
@@ -739,7 +741,8 @@ Vue.filter("handleString", function(v) {
 
     
   }).setMethod('addRealInfo',function(url){
-      var  vmThis   = this;
+      var  vmThis = this;
+      this.realInfoFormSubmitStatus = true;
       this.$http.post(url,this.realInfoForm).then(function (response) {
         vmThis.$message({
               message: '操作成功',
@@ -799,6 +802,14 @@ Vue.filter("handleString", function(v) {
     },function(response){
 
     })
+  }).setMethod('pdtChange',function(v){
+   // alert(v);
+    var vmThis = this;
+    this.$http.get('{:U("Products/getProduct")}', {params:{id:v} }).then(function(response){
+      console.log(response);
+      vmThis.realInfoForm.expense=response.body.price;
+      vmThis.realInfoForm.cycle=response.body.service_cycle;
+    });
   });
 </script>
 </block>

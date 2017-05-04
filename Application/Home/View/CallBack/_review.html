@@ -18,9 +18,9 @@
     </el-row>
     <el-row>
       <el-col :span="12">
-        <el-form-item prop="type" label="产品类型:" style="margin-bottom:0;">
+        <el-form-item prop="pdt_id" label="产品类型:" style="margin-bottom:0;">
           <template scope="scope">
-            {{ getType(reviewForm.type, 'GoodsType') }}
+            {{ getPdt(reviewForm.pdt_id, 'products') }}
           </template>
         </el-form-item>
       </el-col>
@@ -37,7 +37,7 @@
       <el-col :span="12">
         <el-form-item prop="cycle" label="产品周期:" style="margin-bottom:0;">
           <template scope="scope">
-            {{ getType(reviewForm.cycle, 'ServiceCycle') }}
+            {{reviewForm.cycle}} 个月
           </template>
         </el-form-item>
       </el-col>

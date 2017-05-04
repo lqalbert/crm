@@ -7,6 +7,7 @@ use Home\Model\CustomerModel;
 use Home\Model\RealInfoModel;
 use Home\Logic\CustomerLogic;
 use Home\Model\CustomerLogModel;
+use Home\Model\ProductModel;
 class CustomerController extends CommonController {
 	protected $table = "Customer";
 	protected $pageSize = 11;
@@ -37,8 +38,11 @@ class CustomerController extends CommonController {
 
 		$this->assign('Source',       $this->M->getSource());
 
-        $this->assign('GoodsType',    D('CustomerLog')->getGoodsType());
-		$this->assign('ServiceCycle', D('CustomerLog')->getServiceCycle());
+  //       $this->assign('GoodsType',    D('CustomerLog')->getGoodsType());
+		// $this->assign('ServiceCycle', D('CustomerLog')->getServiceCycle());
+
+        $Products= D('Product')->where( array('status'=>array('NEQ', ProductModel::DELETE_STATUS)))->select();
+        $this->assign('Products', $Products);
 
 		$this->assign('logType',      D('CustomerLog')->getType());
 		$this->assign('steps',        D('CustomerLog')->getSteps());

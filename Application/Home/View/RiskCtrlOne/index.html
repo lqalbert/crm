@@ -227,9 +227,9 @@
 	              <el-table-column label="产品金额" prop="expense" header-align="center">
 	              </el-table-column>
 
-	              <el-table-column label="产品类型" prop="type" header-align="center">
+	              <el-table-column label="产品类型" prop="pdt_id" header-align="center">
 				          <template scope="scope">
-				            {{ getType(scope.row.type, 'goodsType') }}
+				            {{ getPdt(scope.row.pdt_id, 'products') }}
 				          </template>
 	              </el-table-column>
 	              
@@ -270,7 +270,9 @@
   window.defaultOption.setDatas({
   	customerType:{:json_encode($customerType)},
   	sexType:{:json_encode($sexType)},
-  	goodsType:{:json_encode($GoodsType)},
+
+    products:{:json_encode($Products)},
+    
     callBackMan:{:json_encode($callBackMan)},
     logType:{:json_encode($logType)},
     steps:{:json_encode($steps)},
@@ -281,7 +283,7 @@
     tableDataOne:[{
        'user':'',
        'expense':'',
-       'type':'',
+       'pdt_id':'',
        'identity':'',
        'address':'',
        'time':''
@@ -328,6 +330,14 @@
     track_type:'',
   },true).setMethod('getType', function(type, field){
       return this[field][type];
+  }).setMethod('getPdt',function(pdt, field){
+    var pdtName;
+    this[field].forEach(function(value,index){
+      if(value.id == pdt){
+        pdtName = value.name;
+      }
+    });
+    return pdtName;
   }).setMethod('beforeList', function(data){
      console.log(this.callBackMan);
      return data;

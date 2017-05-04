@@ -412,7 +412,6 @@
         { required:true, message:'请选择客户来源', trigger:'change'},
       ]
     };
-
   window.defaultOption.setDatas({
     flag:false,
     realInfo:false,
@@ -425,7 +424,7 @@
                  'type':'',
                  'track_type':'',
                  'content':'',
-                 'user':''
+                 'user':''     
     }],
     customerType:{:json_encode($customerType)},
     sexType:{:json_encode($sexType)},
@@ -443,8 +442,7 @@
     Source:{:json_encode($Source)},
     Proportion:{:json_encode($Proportion)},
     Remind:{:json_encode($Remind)},
-    GoodsType:{:json_encode($GoodsType)},
-    ServiceCycle:{:json_encode($ServiceCycle)},
+    products:{:json_encode($Products)},
     provinces:[],
     cities:[],
     // deps:[],//
@@ -619,7 +617,7 @@
     t:0
   },true).setForm('realInfo',{
     identity:'',
-    type:'',
+    pdt_id:'',
     expense:'',
     cycle:'',
     address:'',
@@ -755,10 +753,12 @@
     this.$http.get('{:U("Area/getAreasByPid")}', {params:{pid:1} }).then(function(response){
       var provinces = [];
       response.body.forEach(function(currentValue,index){
+        //console.log(currentValue);
         provinces.push({id: currentValue.id, name: currentValue.name});
       })
       vmThis.$set(vmThis, 'provinces', provinces);
     });
+
     //接收单位、员工
     /*this.$http.get('{:U("getRecDep")}',{params:{id:0}}).then(
       function(response){
@@ -769,36 +769,32 @@
       vmThis.$set(vmThis,'deps',deps);
       
     });*/
-
+    console.log(this.products);
     this.dialogLabelWidth = "100px";
   }).setMethod('trackLog',function(row,event,column){
-        // this.$refs.select.toggleRowSelection(row);
-        this.$http.post('{:U(trackInfo)}',row).then(function(response){
-          this.tableData = response.body;
-        },function(response){
-          console.log("操作失败");
-        });
+      // this.$refs.select.toggleRowSelection(row);
+      this.$http.post('{:U(trackInfo)}',row).then(function(response){
+        this.tableData = response.body;
+      },function(response){
+        console.log("操作失败");
+      });
   }).setMethod('userInfo',function(row,event){
       var index = this.dataList.indexOf(row);
       this.realInfoForm.cus_id = row.id;
       this.$http.get('{:U("findRealInfo")}', {params:{cus_id:row.id} }).then(function(response){
          this.realInfoForm.identity = response.body.identity;
-         this.realInfoForm.type = response.body.type;
+         this.realInfoForm.pdt_id = response.body.pdt_id;
          this.realInfoForm.expense = response.body.expense;
          this.realInfoForm.cycle = response.body.cycle;
          this.realInfoForm.address = response.body.address;
-         // this.realInfoForm.cus_id = response.body.cus_id;
       });
 
       this.handleEdit(index, row);
   }).setMethod('setField', function(v,id){
-
-      this.flag=id;//-------------------------------------------------------------------------------------------------------
-      //alert(this.flag);
+      this.flag=id;
       this[FormName.getFormName('search')].field = v;
       this[FormName.getFormName('search')].group = 'user_id';
       this.loadDatalist();
-      //this.flag=id;
   }).setMethod('beforeImportc', function(){
       var vmThis = this;
       this.$http.get('{:U("checkCucstomers")}').then(function(response){
@@ -927,6 +923,12 @@
     // var index = this.tableData.indexOf(row);
     this.traceContentFormDialog = true;
     this.traceContentForm.content = row.content;
+  }).setMethod('pdtChange',function(v){
+    var vmThis = this;
+    this.$http.get('{:U("Products/getProduct")}', {params:{id:v} }).then(function(response){
+      vmThis.realInfoForm.expense=response.body.price;
+      vmThis.realInfoForm.cycle=response.body.service_cycle;
+    });
   });
 </script>
 

@@ -7,6 +7,7 @@ use Common\Lib\User;
 use Home\Model\CustomerModel;
 use Home\Logic\CustomerLogic;
 use Home\Model\CustomerLogModel;
+use Home\Model\ProductModel;
 use Think\Model;
 
 class DepartmentCustomerController extends CommonController {
@@ -68,6 +69,10 @@ class DepartmentCustomerController extends CommonController {
          $this->assign('Departments',  D('Department')->getAllDepartments('id,name'));
          $this->assign('GoodsType',    D('CustomerLog')->getGoodsType());
          $this->assign('ServiceCycle', D('CustomerLog')->getServiceCycle());
+
+         $Products= D('Product')->where( array('status'=>array('NEQ', ProductModel::DELETE_STATUS)))->select();
+         $this->assign('Products', $Products);
+         
          $this->assign('searchGroup', $searchGroup);
          $this->display();
     }

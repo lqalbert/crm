@@ -3,34 +3,13 @@ return array(
 	//'配置项'=>'配置值'
 	'LOAD_EXT_CONFIG' => 'db',
 
-    //调试
+  //调试
 	'SHOW_PAGE_TRACE' => false, 
-
-//192.168.0.12
-	// 'DB_TYPE' => 'mysql',
-	// 'DB_USER' => 'dev_crm_02',
-	// 'DB_PWD' =>'dev2008dev',
-	// 'DB_DSN' => 'mysql:host=192.168.0.12;dbname=dev_crm_02;charset=utf8',
-
-// 公共的测试数据库
-	'DB_TYPE' => 'mysql',
-	'DB_USER' => 'dev_crm_test',
-	'DB_PWD' =>'rii2008rii',
-	'DB_DSN' => 'mysql:host=192.168.0.12;dbname=dev_crm_test;charset=utf8',
-
-/*	'DB_TYPE' => 'mysql',
-	'DB_USER' => 'beta_crm',
-	'DB_PWD' =>'beta2008beta',
-	'DB_DSN' => 'mysql:host=139.224.40.238;dbname=beta_crm;charset=utf8',*/
-
-
 	//语言
 	'LANG_SWITCH_ON'   => true,   // 开启语言包功能
 	'LANG_AUTO_DETECT' => true, // 自动侦测语言 开启多语言功能后有效
 	'LANG_LIST'        => 'zh-cn', // 允许切换的语言列表 用逗号分隔
 	'VAR_LANGUAGE'     => 'l', // 默认语言切换变量
-
-
 
 	//权限验证
 	'USER_AUTH_ON' => true,      // 是否需要认证

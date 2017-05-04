@@ -1,0 +1,28 @@
+<el-dialog title="添加/发布产品" v-model="addFormDialog">
+<el-form ref="addForm" :rules="addRules" :model="addForm" :label-width="dialogLabelWidth">
+
+  <el-form-item label="产品名称" prop="name">
+    <el-input v-model="addForm.name" placeholder="请填写产品名称" style="width:270px;"></el-input>
+  </el-form-item>
+
+  <el-form-item label="产品价格" prop="price">
+    <el-input v-model="addForm.price" placeholder="例如 8888" style="width:150px;"></el-input>
+    <span>元人民币</span>
+  </el-form-item>
+
+ <el-form-item label="服务周期" prop="service_cycle">
+    <el-input-number size="small" v-model="addForm.service_cycle" :min="0" style="line-height: 0;"></el-input-number>
+    <span>个月</span>
+ </el-form-item>
+
+ <el-form-item label="产品说明" prop="mark">
+    <el-input type="textarea" v-model="addForm.mark" :autosize="{ minRows: 2, maxRows: 4}"
+     placeholder="请描述产品说明" style="width:300px;"></el-input>
+ </el-form-item>
+
+</el-form>
+  <div slot="footer" class="dialog-footer">
+    <include file="Common:_add" />
+  </div>
+</el-dialog>
+
