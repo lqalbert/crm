@@ -46,8 +46,10 @@ class DepartmentCustomerController extends CommonController {
         $searchGroup = $this->getGoups();
         array_unshift($searchGroup, array('id'=>0, 'name'=>'本部门'));
         
-        $D = D('Customer');
+         $D = D('Customer');
+         $id = I('get.id', '');
 
+         $this->assign('user_id', $id);
          $this->assign('customerType', $D->getType());
          $this->assign('sexType',      $D->getSexType());
          $this->assign('Quality',      $D->getQuality());
@@ -195,6 +197,10 @@ class DepartmentCustomerController extends CommonController {
 
         $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id  and cc.is_main = 1')
                 ->join('left join customers_contacts as cc2 on customers_basic.id =  cc2.cus_id and cc2.is_main = 0');
+
+
+       
+        
     }
 
 
@@ -208,8 +214,10 @@ class DepartmentCustomerController extends CommonController {
         D('Customer','Logic')->getJoinCondition($this->M);
         if (I('get.sort_field', null)) {
             $this->M->order(I('get.sort_field')." ". I('get.sort_order'));
+        } else {
+            $this->M->order('customers_basic.id desc');
         }
-        $list = $this->M->order('customers_basic.id desc')->page(I('get.p',0). ','. $this->pageSize)->select();
+        $list = $this->M->page(I('get.p',0). ','. $this->pageSize)->select();
         
         $result = array('list'=>$list, 'count'=>$count);
         return $result;

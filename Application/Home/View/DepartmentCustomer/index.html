@@ -197,18 +197,18 @@
 
         <el-table-column type="selection"  width="50" ></el-table-column>
 
-        <el-table-column   label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  ></el-table-column>
+        <el-table-column   label="{:L('INDEX')}"   :formatter="handleIndex" width="65"  ></el-table-column>
 
         <el-table-column prop="name"  label="客户姓名" width="140" ></el-table-column>
 
 
 
-        <el-table-column prop="type"  sortable label="客户类型" width="180" >
+        <el-table-column prop="type"  sortable="custom" label="客户类型" width="180" >
           <template scope="scope">
             {{ getType(scope.row.type, 'customerType') }}
           </template>
         </el-table-column>
-        <el-table-column  prop="realname"  sortable label="跟踪员工"  width="200"></el-table-column>
+        <el-table-column  prop="realname"  sortable="custom" label="跟踪员工"  width="200"></el-table-column>
         <el-table-column prop="qq" label="QQ号" header-align="center" width="160">
           <template scope="scope">
             {{ scope.row.qq }}
@@ -221,7 +221,7 @@
 
         <el-table-column prop="phone" label="手机" align="center" width="140"></el-table-column>
 
-        <el-table-column  prop="last_track" sortable label="最后跟踪时间" align="center" width="175">
+        <el-table-column  prop="last_track" sortable="custom" label="最后跟踪时间" align="center" width="175">
         </el-table-column> 
         <el-table-column  prop="commission" label="跟踪方比例"  width="110"></el-table-column>
         <el-table-column  prop="plan" label="计划跟踪时间" align="center" width="175"></el-table-column>
@@ -515,7 +515,7 @@ Vue.filter("handleString", function(v) {
     qq:"",
     track_start:"",
     track_end:"",
-    user_id:""
+    user_id:"{$user_id}"
   }).setForm('edit',{
     id:"",
     name:"",

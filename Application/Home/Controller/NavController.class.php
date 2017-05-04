@@ -2,15 +2,95 @@
 namespace Home\Controller;
 
 class NavController extends CommonController {
+
 	public function index() {
 		$nav = $this->setMenu(); //C('MENU');
 		$this->transNavUrl($nav);
 		//$nav[0]['children'][5]['href']='http://up.riign.cn';
+
+		$ename = $this->getRoleEname();
+		$funcName = $ename."Menu";
+		if (method_exists($this, $funcName)) {
+			$addMenu = call_user_func(array($this, $funcName));
+			$nav = array_merge($nav, $addMenu);
+		}
+
 		$this->assign("nav", $nav);
 		$this->display();
 		/*echo 'var navs = '.json_encode($nav).';';
 		exit();*/
 		
+	}
+
+	private function getUsers($group_id){
+		return D('User')->getGroupEmployee($group_id, 'id,realname');
+	}
+
+	private function setUserMenu($group_id){
+		$users = $this->getUsers($group_id);
+		$re = array();
+		foreach ($users as $key => $value) {
+			$re[] = array(
+						"href"=> U('DepartmentCustomer/index', array('id'=>$value['id'])),
+						"icon"=>"",
+						'spread'=>false,
+						"title" => $value['realname'],
+					);
+		}
+		return $re;
+	}
+
+	/**
+	* 返回结果数组
+	* href
+	* icon
+	* spread
+	* title
+	* children
+	*/
+
+	private function departmentMasterMenu(){
+		$depart_id = session('account')['userInfo']['department_id'];
+		$groupMenu = array();
+		if ($depart_id!=0) {
+			$groups = D('Group')->getAllGoups($depart_id, 'id,name');
+			foreach ($groups as $key => $value) {
+				$groupMenu[] = array(
+							"href"=>"javascript:;",
+							"icon"=>"",
+							'spread'=>false,
+							"title" => "小组:".$value['name'],
+							"children" => $this->setUserMenu($value['id'])
+						);
+
+			}
+		} 
+		return $groupMenu;
+	}
+
+
+	/**
+	* 返回结果数组
+	* href
+	* icon
+	* spread
+	* title
+	* children
+	*/
+	private function captainMenu(){
+		$group_id = session('account')['userInfo']['group_id'];
+		if ($group_id!=0) {
+			$group_name = D('Group')->where(array('id'=>$group_id))->getField("name");
+			return array(array(
+				"href"=>"javascript:;",
+				"icon"=>"",
+				'spread'=>false,
+				"title" => $group_name,
+				"children" => $this->setUserMenu($group_id)
+			));
+		} else {
+			return array();
+		}
 	}
 
 

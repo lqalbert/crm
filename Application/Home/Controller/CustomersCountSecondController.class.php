@@ -124,7 +124,8 @@ class CustomersCountSecondController extends CommonController {
 
         $this->getService()
              ->setDate(I('get.dist', Date('Y-m-d', time()-86400)))
-             ->setOrder($sort_field." ".$sort_order);
+             ->setOrder($sort_field." ".$sort_order)
+             ->setRange(I('get.range'));
     }
 
 

@@ -1,12 +1,25 @@
 <?php
 namespace Home\Controller;
 
+use Common\Lib\GetWeek;
+use Common\Lib\GetMonth;
+
+
 class TestController extends CommonController {
 	protected $table="department_basic";
 	protected $pageSize = 1;
 
 	public function index() {
 		// $this->assign('pageSize', $this->pageSize);
+
+		$week = new GetWeek(Date("Y-m-d"));
+		$month = new GetMonth(Date("Y-m-d"));
+
+		var_dump($week->getDay());
+		var_dump($month->getDay());
+
+
+
 		$this->display();
 	}
 

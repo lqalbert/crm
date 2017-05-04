@@ -16,8 +16,8 @@ class DepNoticeModel extends Model{
   );
 
   protected $_auto = array(
-    array('start', 'transfer', 1, 'callback'),
-    array('end', 'transfer', 1, 'callback'),
+    // array('start', 'transfer', 1, 'callback'),
+    // array('end', 'transfer', 1, 'callback'),
     array('user_id', 'getUserId', 1, 'callback'),
     array('department_id', 'getDepId', 1, 'callback'),
   );

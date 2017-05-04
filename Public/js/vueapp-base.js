@@ -108,7 +108,7 @@ window.vmMethods.set("initObject", function(form, row){
 
 //序号处理
 window.vmMethods.set("handleIndex", function(row, column) {
-	return this.datalist.indexOf(row)  + ((this.currentPage-1)*this.pageSize) +1;
+	// return this.datalist.indexOf(row)  + ((this.currentPage-1)*this.pageSize) +1;
 })
 
 

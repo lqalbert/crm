@@ -58,14 +58,9 @@
                    <el-button size="small" type="info" @click="openDialog('add')" icon="edit">发表建议
                    </el-button>
                  </el-tooltip>
-                 <el-tooltip content="选择一条建议并回复" placement="right">
-                   <el-button size="small" type="primary" @click="openDialog('reply')" icon="plus">建议回复
-                   </el-button>
-                 </el-tooltip>
-                 <el-tooltip content="选择多条建议" placement="right">
-                   <el-button size="small" type="danger" @click="deletes" icon="circle-close">删除
-                   </el-button>
-                 </el-tooltip>
+
+                 {$viewDecorator['button']}
+
               </div>
             </el-col>
             <el-col :span="12">

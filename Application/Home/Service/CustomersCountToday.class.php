@@ -16,12 +16,7 @@ class CustomersCountToday {
         $this->entity = $entity;
     }
 
-    public function setOrder($order){
-        $fields  = explode(' ', $order);
-        $this->field = $fields[0];
-        $sortMap = array('asc'=>SORT_ASC, 'desc'=>SORT_DESC );
-        $this->sort = $sortMap[$fields[1]];
-    }
+    
 
 
     public function index($date){
@@ -58,13 +53,9 @@ class CustomersCountToday {
             }
             $re[] = $tmp_row;
         }
-        return  $this->reSort($re);
+        return  $re ; //$this->reSort($re);
         
     }
 
-    public function reSort($re){
-        $columen = array_column($re, $this->field);
-        array_multisort($columen, $this->sort , SORT_NUMERIC, $re);
-        return $re;
-    }
+    
 }
