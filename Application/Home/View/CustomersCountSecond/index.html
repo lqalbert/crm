@@ -73,7 +73,7 @@
             </el-table-column>
             <el-table-column  align="center" prop="name"  label="名称"   width="150">
               <template scope="scope">
-                <span v-if="objType != 'Users' && id!=0 ">
+                <span v-if="objType != 'Users' || scope.row.id!=0 ">
                   <a :href="getUrl(scope.row.id)">{{ scope.row.name }}</a>
                 </span>
                 <span v-else>{{ scope.row.name }}</span>
