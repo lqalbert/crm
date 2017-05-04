@@ -25,7 +25,7 @@ class GroupCustomerStatisticsModel extends CustomerCountModel {
     * 生成 类型 统计结果
     */
     public function setTypeCount(){
-        $sql = "select count(cb.id) as c , `type` , ui.group_id from customers_basic as cb inner join user_info as ui on cb.salesman_id= ui.user_id where ui.department_id=".$this->depart_id." group by cb.type, ui.group_id";
+        $sql = "select count(cb.id) as c , `type` , ui.group_id from customers_basic as cb inner join user_info as ui on cb.salesman_id= ui.user_id where ui.department_id=".$this->depart_id." and  cb.status=1 group by cb.type, ui.group_id";
         $re = M()->query($sql);
 
         foreach ($re as  $value) {
