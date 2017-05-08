@@ -13,18 +13,6 @@
 
 <div class="wrapp"  v-show="show" style="display: none;">
   <div class="a" id="app3">
-<el-row>
-    <el-col :span="23" >
-      <el-alert 
-      title="暂时只能看昨天及以前的" 
-      type="info" 
-      show-icon 
-      close-text="明白" 
-      description="每天晚上12点之后，系统会自成动统计昨天的数据并保存这些数据。所以暂时只能看昨天的"
-      >
-      </el-alert>
-    </el-col>
-  </el-row>
   <el-row>
     <el-col :span="24">
       <el-form :inline="true" ref="searchForm" :model="searchForm">
@@ -79,8 +67,8 @@
                 <span v-else>{{ scope.row.name }}</span>
               </template>
             </el-table-column>
-            <!-- <el-table-column sortable="custom"  align="center" prop="all_num" label="当日客户总数"  width="160">
-            </el-table-column> -->
+            <el-table-column sortable="custom"  align="center" prop="all_num" label="当日客户总数"  width="160">
+            </el-table-column>
             <el-table-column sortable="custom"  align="center" prop="create_num" label="当日自锁数"  width="150">
             </el-table-column>
 

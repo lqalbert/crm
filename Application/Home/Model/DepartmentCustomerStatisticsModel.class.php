@@ -93,6 +93,7 @@ class DepartmentCustomerStatisticsModel extends CustomerCountModel {
     */
     public function setCreateCount(){
         $sql = "select count(id) as c  , department_id from customers_basic as cb inner join user_info as ui on cb.user_id = ui.user_id where cb.created_at > '".$this->date['start']."' and cb.created_at <'".$this->date['end']."' group by ui.department_id  ";
+        
 
         $re = M()->query($sql);
         foreach ($re as  $value) {

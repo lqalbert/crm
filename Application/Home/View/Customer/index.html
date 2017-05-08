@@ -793,7 +793,7 @@
   }).setMethod('setField', function(v,id){
       this.flag=id;
       this[FormName.getFormName('search')].field = v;
-      this[FormName.getFormName('search')].group = 'user_id';
+      // this[FormName.getFormName('search')].group = 'user_id';
       this.loadDatalist();
   }).setMethod('beforeImportc', function(){
       var vmThis = this;
