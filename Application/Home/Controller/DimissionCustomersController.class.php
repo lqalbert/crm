@@ -12,7 +12,7 @@ class DimissionCustomersController extends CommonController {
 
     private $department_id = "";
 
-    protected $pageSize = 7;
+    protected $pageSize = 15;
     
     public function _initialize(){
         parent::_initialize();

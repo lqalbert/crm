@@ -20,7 +20,9 @@ class SortCustomersCountController extends CommonController{
 
 
                      'departmentMaster'=> 'Groups',
-                     'Groups' => 'Users'
+                     'Groups' => 'Users',
+
+                     'captain' => 'Users'
                     );
 
         if (isset($map[$roleEname])) {

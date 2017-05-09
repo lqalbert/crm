@@ -170,4 +170,22 @@ class CustomersGather {
         $list  = $this->mergeList($list2, $toDaylist);
         return $this->reSort($list);
     }
+
+    public function getAllGroups(){
+        $list2 = M('statistics_usercustomers')->field($this->getSqlFields().",group_id as id , group_name as name, department_id, department_name")
+                                                ->where(array('date'=> array(array('EGT',$this->start),array('ELT',$this->end))))
+                                                ->group('group_id')
+                                                ->select();
+        return $this->reSort($list2);
+    }
+
+    public function getAllUsers(){
+        $list2 = M('statistics_usercustomers')->join("user_info as ui on statistics_usercustomers.user_id=ui.user_id")
+                                                ->field($this->getSqlFields().", statistics_usercustomers.id, realname as name, statistics_usercustomers.department_id, statistics_usercustomers.department_name")
+                                                
+                                                ->where(array('date'=> array(array('EGT',$this->start),array('ELT',$this->end))))
+                                                ->group('statistics_usercustomers.user_id')
+                                                ->select();
+        return $this->reSort($list2);
+    }
 }

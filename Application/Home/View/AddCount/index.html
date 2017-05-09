@@ -1,177 +1,196 @@
-<extend name="Common:base" />
+<extend name="Common:base"/>
 <block name="head">
   <style>
-    .superaddition{
-      height:44px;
-      width:400px;
-      position: relative;
-      top : 12px;
-      z-index: 50;
-      left:90px;
-    }
-    .el-tabs__header{
-      border-top:2px solid #ea4b4b;
-      border-bottom: 1px solid #c51f1f;
-    }
-    .el-dialog .el-tabs__header{
-      border-top:none;
-    }
-    .el-tabs--border-card .el-tabs__item{
-      border-left: none;
-    }
-    .el-tabs--border-card .el-tabs__item.is-active {
-      background-color: #fff;
-      border-right-color: #d3dce6;
-      background: #544b8f;
-      color: #fff;
-    }
-    .el-tabs--border-card .el-tabs__header {
-      background-color: #fff;
-      margin: 0;
-    }
-    .container > .wrapp > .a > .el-row {
-      margin-bottom: 6px;
-    }
-    .el-tabs--border-card .el-tabs__content{
-      padding:0 9px 5px 9px;
-    }
-    .el-card, .el-menu--horizontal .el-submenu>.el-menu, .el-tabs--border-card{
-      box-shadow: none;
-    }
-    .el-tabs--border-card{
-      border: none;
-    }
     .el-table__body tr.current-row>td{
       background: rgba(157, 195, 232, 0.7);
     }
   </style>
 </block>
 <block name="body">
-  
+  <div id="app" class="container">
+    <div class="wrapp" v-show="show" style="display:none;">
+      <el-row>
+        <el-alert
+          title="除“部门”外，“个人”和“团组”暂时无法统计今天的!!!"
+          type="warning"
+          show-icon>
+        </el-alert>
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-form :inline="true" ref="searchForm" :model="searchForm">
+            <el-form-item prop="start">
+                <el-date-picker size="small" v-model="searchForm.start" 
+                  placeholder="请选择起日期" 
+                  @change="startDateChange"
+                  >
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item prop="end">
+                <el-date-picker 
+                  v-model="searchForm.end" 
+                  placeholder="请选择止日期" 
+                  @change="endDateChange"
+                  size="small"
+                  >
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item>
+              <el-select size="small" v-model="searchForm.type" placeholder="请选择">
+                <el-option v-for="item in searchGroup" :label="item.key" :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            
+            
+            <el-form-item>
+              <el-button type="info" size="small" icon="search" @click="search2">查询</el-button>
+              <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start">
+                <el-button size="small" @click="resetBack" style="margin-left:10px;">重置</el-button>
+              </el-tooltip>
+            </el-form-item>
+            <el-form-item>
+              <el-button size="small" @click="setField('week')">本周</el-button>
+              <el-button size="small" @click="setField('month')">本月</el-button>
+            </el-form-item>
+          </el-form>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-table 
+          :data="dataList" 
+          border highlight-current-row
+          v-loading="dataLoad" 
+          element-loading-text="{:L('DATA_LOGIN')}"
+          @sort-change="sortChange">
+                    <el-table-column label="序号"  align="center" width="65" :formatter="handleIndex"  >
+                    </el-table-column>
 
-<div id="app" class="container">
+                    <el-table-column  align="center" prop="name"  label="名称"   width="150">
+                    </el-table-column>
 
-<div class="wrapp" id="appx" v-show="show" style="display: none;">
-  <!-- <div class="a" style="border:1px solid red;"> -->
-  <div class="a" id="app3">
-  <el-row>
-            <el-col :span="23" >
-              <el-alert title="未选择日期时默认显示当日24点前的统计数据！" type="info" show-icon close-text="明白" ></el-alert>
-            </el-col>
-  </el-row>
-  <el-row>
-    <el-col :span="24">
-      <el-form :inline="true" ref="searchForm" :model="searchForm">
-        <el-form-item prop="dist">
-          <el-date-picker  v-model="searchForm.dist" placeholder="请选择日期"  @change="dateChange">
-          </el-date-picker>
-        </el-form-item>
-         <el-form-item prop="object">
-          <el-select v-model="searchForm.object" placeholder="请选择对象" >
-            <el-option v-for="item in searchGroup" :label="item.key" :value="item.value" :disabled="item.disabled"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item prop="enter_name" style="width:170px">
-          <el-input v-model="searchForm.enter_name" size="small" placeholder="个人|团组|部门的名字"></el-input>
-        </el-form-item>
-        <el-form-item prop="field" v-show="false">
-          <input type="hidden" size="small" v-model="searchForm.field">
-        </el-form-item>
+                    <el-table-column v-if="searchForm.type!='department'" align="center" prop="department_name"  label="部门"   width="150">
+                    </el-table-column>
 
-        <el-form-item>
-          <el-button type="info" size="small" icon="search"  @click="loadDatalist" >查询</el-button> 
-          <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
-            <el-button  size="small" @click="searchReset2"  >重置</el-button>
-          </el-tooltip>
-          <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:10px;">
-            <el-button  size="small" type="danger" @click="refresh" >刷新</el-button>
-          </el-tooltip>
+                    <el-table-column sortable="custom"  align="center" prop="create_num" label="自锁数"  >
+                    </el-table-column>
 
-        </el-form-item>
-      </el-form>
-      </el-col>
-  </el-row>
-  <!-- max-height="500" -->
+                    <el-table-column sortable="custom"  align="center" prop="today_v" label="成交数"  >
+                    </el-table-column>
 
-  <el-row>
-    <el-col :span="24">
-      <el-table 
-      :data="dataList" 
-      border  
-      id="he"
-      v-loading="dataLoad" 
-      element-loading-text="{:L('DATA_LOGIN')}"
-      highlight-current-row
-      empty-text="暂无数据,请录入客户！"
-      ref="select" >
+                    <el-table-column sortable="custom"  align="center" prop="conflict_to" label="冲突"  >
+                    </el-table-column>
 
-            <el-table-column label="序号"  align="center" width="65" :formatter="handleIndex"  >
-            </el-table-column>
-            <el-table-column  align="center" prop="name"  label="名称"  align="center" width="150">
-            </el-table-column>
-            <el-table-column  align="center" prop="total_count" label="客户总数(个)"  width="150">
-            </el-table-column>
-            <el-table-column  align="center" prop="A_count" label="A.准客户"  width="150">
-            </el-table-column>
-            <el-table-column  align="center" prop="B_count" label="B.意向客户"  width="150">
-            </el-table-column>
-            <el-table-column  align="center" prop="C_count" label="C.一般客户"  width="150">
-            </el-table-column>
-            <el-table-column  align="center" prop="D_count" label="D.未有意向客户"  width="150">
-            </el-table-column>
-            <el-table-column  align="center" prop="F_count" label="F.黑名单(同行)"  width="150">
-            </el-table-column>
-            <el-table-column  align="center" prop="N_count" label="N.无效客户"  width="150">
-            </el-table-column>
-              <el-table-column  align="center" prop="V_count" label="V.成交客户"  width="150">
-            </el-table-column>
-            <el-table-column  align="center" prop="VX_count" label="VX.审核未通过"  width="150">
-            </el-table-column>
-            <el-table-column  align="center" prop="VT_count" label="VT.有意见并投诉"  width="150">
-            </el-table-column>
-      </el-table>
-    </el-col>
-  </el-row>
+                    <el-table-column sortable="custom"  align="center" prop="conflict_from" label="被冲突"  >
+                    </el-table-column>
 
-  <!-- toolbar -->
-  <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
-
-    <el-col :span="12" :offset="12">
-      <div class="grid-content bg-purple-light pull-right">
-
-        <!-- page -->
-        <include file="Common:_pagination" />
-        <!-- / page -->
-        
-      </div>
-    </el-col>
-
-  </el-row>
+                    <el-table-column sortable="custom"  align="center" prop="pulls_num" label="索取"  >
+                    </el-table-column>
+          </el-table>
+        </el-col>
+      </el-row>
+      <el-row type="type" justify="start" align="middle" class="row-bg">
+        <el-col :span="12">
+              <div class="grid-content bg-purple-light pull-right">
+                <!-- page -->
+                <include file="Common:_pagination" />
+                <!-- / page -->
+              </div>
+        </el-col>
+      </el-row>
+    </div>
   </div>
-
-
-
-</div>
-</div>
 </block>
 <block name="scripts">
-<script>
-  window.defaultOption.setDatas({
-    searchGroup:{:json_encode($searchGroup)},
-  }).setForm('search',{
-      dist:'',
-      object:'user',
-      realname:'',
-      group:'user_id',
-      ctrl:'search',
-  }).setMethod('dateChange', function(v){
-    this.searchForm.dist = v;
-  }).setMethod("searchReset2", function(){
-    this.searchForm = Oassign({}, this._search) ;
-    this.dataLoad = true;
-    this.loadDatalist();
-  }).setMethod('refresh',function(){
-    window.location.reload();
+
+<script src="__PUBLIC__/js/calculate.js"></script>
+  <script>
+    window.defaultOption.hooks.delAll('mounted');
+
+    window.defaultOption.setDatas({
+      searchGroup:{:json_encode($searchGroup)},
+      sortMap:{
+        descending:'desc',
+        ascending:'asc'
+      },
+    }).setForm('search',{
+      start:'{$start}',
+      end:'{$end}',
+      type:"department"
+    }).setMethod('startDateChange', function(v){
+      this.searchForm.start = v;
+    }).setMethod('endDateChange', function(v){
+      this.searchForm.end = v;
+    }).setMethod('setField', function(v){
+      if (v=='week') {
+        this.searchForm.start = showWeekFirstDay();
+        this.searchForm.end   = showWeekLastDay();
+      } else if(v=='month'){
+        this.searchForm.start = showMonthFirstDay();
+        this.searchForm.end   = showMonthLastDay();
+      }
+      
+      this.loadDatalist();
+    }).setMethod('beforeList', function(data){
+        /*var h = {
+          name:"汇总",
+          conflict_from:0,
+          conflict_to:0,
+          create_num:0,
+          pulls_num:0,
+          today_v:0,
+          id:0
+        };
+        data.forEach(function(currentValue){
+          for (var x in h) {
+            if (x != 'name' && x !='id') {
+              h[x] += parseInt(currentValue[x]);
+            }
+          }
+        });
+        data.push(h);*/
+     return data;
+  }).setVueHook('mounted', function(){
+    this.show = true;
+    if (!this.readySearch()) {
+      this.loadDatalist();
+    }
+  }).setMethod('search2', function(){
+    if (this.readySearch()) {
+      this.$message({
+        message:"请选择止日期",
+        type:"error",
+        showClose: true
+      })
+    } else {
+      this.loadDatalist();
+    }
+  }).setMethod('getUrl', function(v){
+      var s = [];
+      s.push("start="+this.searchForm.start);
+      s.push("end="+this.searchForm.end);
+      return "{:U('index')}" + "?objType=" + this.objType + "&id=" + v +"&"+s.join("&");
+  }).setMethod('readySearch', function(){
+    return this.searchForm.start.length ==0 || this.searchForm.end.length==0;
+  }).setMethod('resetBack', function(){
+      window.location.href="{:U('index')}";
+  }).setMethod('sortChange', function(info){
+      if (info) {
+        this.searchForm.sort_field = info.prop;
+        this.searchForm.sort_order = this.sortMap[info.order];
+      } else {
+        delete this.searchForm.sort_field;
+        delete this.searchForm.sort_order;
+      }
+      this.dataReload();
+  }).setMethod('isLink', function(id){
+    return id!=0 && this.objType!='Users';
   });
-</script>
+
+
+
+
+
+  </script>
 </block>

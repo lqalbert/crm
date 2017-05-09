@@ -32,17 +32,18 @@ class EmployeeOutput {
     }
 
     private function setExcelGroupsEmployee(){
-        $this->PHPexcel->removeSheetByIndex(0);
-        foreach ($this->groups as $key =>  $value) {
-            // var_dump($value);
-            $myWorkSheet = $this->PHPexcel->createSheet();
-            $myWorkSheet->setTitle($value['name']);
+        if (count($this->groups)) {
+            $this->PHPexcel->removeSheetByIndex(0);
+            foreach ($this->groups as $key =>  $value) {
+                $myWorkSheet = $this->PHPexcel->createSheet();
+                $myWorkSheet->setTitle($value['name']);
 
-            $myWorkSheet->setCellValue('A1', '账号');
-            $myWorkSheet->setCellValue('B1', '密码');
-            $this->setExcelEmployees($myWorkSheet, $value['id']);
-            
+                $myWorkSheet->setCellValue('A1', '账号');
+                $myWorkSheet->setCellValue('B1', '密码');
+                $this->setExcelEmployees($myWorkSheet, $value['id']);
+            }
         }
+        
     }
 
     private function setExcelEmployees($sheet, $id){
