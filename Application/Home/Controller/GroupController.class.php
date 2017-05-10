@@ -3,6 +3,7 @@ namespace Home\Controller;
 
 use Common\Lib\User;
 use Home\Model\RoleModle;
+use Home\Model\GroupModel;
 
 class GroupController extends CommonController {
 	protected $table="group_basic";
@@ -38,6 +39,7 @@ class GroupController extends CommonController {
 		if (!empty(I('get.name'))) {
 			$map['group_basic.name']=array('like', I('get.name')."%");
 		}
+		$map['status'] = array('GT', GroupModel::DELETE_STATUS);
 
 		$user = new User();
 		$user->getRoleObject();

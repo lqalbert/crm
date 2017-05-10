@@ -108,6 +108,7 @@
       <el-row>
         <el-table 
           :data="detailTable" 
+          v-loading="detailLoad" 
           border highlight-current-row 
           element-loading-text="{:L('DATA_LOGIN')}"
           @sort-change="detailSortChange"
@@ -149,7 +150,8 @@
         ascending:'asc'
       },
       detailTable:[],
-      detailParams:{}
+      detailParams:{},
+      detailLoad:false
     }).setForm('search',{
       start:'{$start}',
       end:'{$end}',
@@ -232,12 +234,15 @@
 
       this.loadDetailTable();
   }).setMethod('loadDetailTable', function(){
+      this.detailLoad = true;
       this.$http.get("{:U('SortCustomersCount/getList')}", {params:this.detailParams}).then(function(response){
         this.detailTable = response.body.list;
+        this.detailLoad = false;
         if (this.detailTable.length==0) {
           this.$message("没有数据");
         }
       }, function(response){
+        this.detailLoad = false;
         this.$message.error("出错了，请联系开发");
       })
   });
