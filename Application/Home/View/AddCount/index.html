@@ -9,13 +9,13 @@
 <block name="body">
   <div id="app" class="container">
     <div class="wrapp" v-show="show" style="display:none;">
-      <el-row>
+      <!-- <el-row>
         <el-alert
           title="除“部门”外，“个人”和“团组”暂时无法统计今天的!!!"
           type="warning"
           show-icon>
         </el-alert>
-      </el-row>
+      </el-row> -->
       <el-row>
         <el-col :span="24">
           <el-form :inline="true" ref="searchForm" :model="searchForm">
@@ -63,15 +63,21 @@
           border highlight-current-row
           v-loading="dataLoad" 
           element-loading-text="{:L('DATA_LOGIN')}"
-          @sort-change="sortChange">
+          @sort-change="sortChange"
+          @row-dblclick="getRowDetail">
                     <el-table-column label="序号"  align="center" width="65" :formatter="handleIndex"  >
                     </el-table-column>
 
-                    <el-table-column  align="center" prop="name"  label="名称"   width="150">
+                    <el-table-column   prop="name"  label="名称"   width="150">
                     </el-table-column>
 
-                    <el-table-column v-if="searchForm.type!='department'" align="center" prop="department_name"  label="部门"   width="150">
+                    <el-table-column v-if="searchForm.type=='group'"  prop="realname"  label="主管"   width="150">
                     </el-table-column>
+
+                    <el-table-column v-if="searchForm.type!='department'"  prop="department_name"  label="部门"   width="150">
+                    </el-table-column>
+
+
 
                     <el-table-column sortable="custom"  align="center" prop="create_num" label="自锁数"  >
                     </el-table-column>
@@ -99,6 +105,34 @@
               </div>
         </el-col>
       </el-row>
+      <el-row>
+        <el-table 
+          :data="detailTable" 
+          border highlight-current-row 
+          element-loading-text="{:L('DATA_LOGIN')}"
+          @sort-change="detailSortChange"
+          >
+                <el-table-column label="序号"  align="center" width="65" type="index"  >
+                </el-table-column>
+                <el-table-column   prop="name"  label="名称"   width="150">
+                </el-table-column>
+
+                <el-table-column sortable="custom"  align="center" prop="create_num" label="自锁数"  >
+                </el-table-column>
+
+                <el-table-column sortable="custom"  align="center" prop="today_v" label="成交数"  >
+                </el-table-column>
+
+                <el-table-column sortable="custom"  align="center" prop="conflict_to" label="冲突"  >
+                </el-table-column>
+
+                <el-table-column sortable="custom"  align="center" prop="conflict_from" label="被冲突"  >
+                </el-table-column>
+
+                <el-table-column sortable="custom"  align="center" prop="pulls_num" label="索取"  >
+                </el-table-column>
+          </el-table>
+      </el-row>
     </div>
   </div>
 </block>
@@ -114,6 +148,8 @@
         descending:'desc',
         ascending:'asc'
       },
+      detailTable:[],
+      detailParams:{}
     }).setForm('search',{
       start:'{$start}',
       end:'{$end}',
@@ -132,29 +168,12 @@
       }
       
       this.loadDatalist();
-    }).setMethod('beforeList', function(data){
-        /*var h = {
-          name:"汇总",
-          conflict_from:0,
-          conflict_to:0,
-          create_num:0,
-          pulls_num:0,
-          today_v:0,
-          id:0
-        };
-        data.forEach(function(currentValue){
-          for (var x in h) {
-            if (x != 'name' && x !='id') {
-              h[x] += parseInt(currentValue[x]);
-            }
-          }
-        });
-        data.push(h);*/
-     return data;
-  }).setVueHook('mounted', function(){
+      this.detailReset();
+    }).setVueHook('mounted', function(){
     this.show = true;
     if (!this.readySearch()) {
       this.loadDatalist();
+      // this.detailReset();
     }
   }).setMethod('search2', function(){
     if (this.readySearch()) {
@@ -164,13 +183,10 @@
         showClose: true
       })
     } else {
+      this.currentPage = 1;
       this.loadDatalist();
+      this.detailReset();
     }
-  }).setMethod('getUrl', function(v){
-      var s = [];
-      s.push("start="+this.searchForm.start);
-      s.push("end="+this.searchForm.end);
-      return "{:U('index')}" + "?objType=" + this.objType + "&id=" + v +"&"+s.join("&");
   }).setMethod('readySearch', function(){
     return this.searchForm.start.length ==0 || this.searchForm.end.length==0;
   }).setMethod('resetBack', function(){
@@ -184,12 +200,57 @@
         delete this.searchForm.sort_order;
       }
       this.dataReload();
+      this.detailReset();
   }).setMethod('isLink', function(id){
     return id!=0 && this.objType!='Users';
+  }).setMethod('getRowDetail', function(row, event){
+      if (this.searchForm.type!='user') {
+
+        var map = {
+          'department':'Groups',
+          'group':'Users'
+        }
+
+        this.detailParams['start'] = this.searchForm.start;
+        this.detailParams['end']   = this.searchForm.end;
+        this.detailParams['id']    = row.id;
+        this.detailParams['objType']    = map[this.searchForm.type];
+
+        this.loadDetailTable();
+      }
+     
+  }).setMethod('detailReset', function(){
+    this.detailTable = [];
+  }).setMethod('detailSortChange', function(info){
+     if (info) {
+        this.detailParams.sort_field = info.prop;
+        this.detailParams.sort_order = this.sortMap[info.order];
+      } else {
+        delete this.detailParams.sort_field;
+        delete this.detailParams.sort_order;
+      }
+
+      this.loadDetailTable();
+  }).setMethod('loadDetailTable', function(){
+      this.$http.get("{:U('SortCustomersCount/getList')}", {params:this.detailParams}).then(function(response){
+        this.detailTable = response.body.list;
+        if (this.detailTable.length==0) {
+          this.$message("没有数据");
+        }
+      }, function(response){
+        this.$message.error("出错了，请联系开发");
+      })
   });
 
 
-
+  function titleCase(str) {
+    var array = str.toLowerCase().split(" ");
+    for (var i = 0; i < array.length; i++){
+      array[i] = array[i][0].toUpperCase() + array[i].substring(1, array[i].length);
+    }
+    var string = array.join(" ");
+    return string;
+  }
 
 
   </script>

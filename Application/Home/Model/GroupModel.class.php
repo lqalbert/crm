@@ -33,6 +33,8 @@ class GroupModel extends Model {
     }
 
     public function delete($ids){
+        $users = M('user_info')->where(array('group_id'=>array('in', $ids)))->getField('user_id', true);
+        D('RbacUser')->delete($users);
         return $this->where(array('id'=>array('in', $ids )))->save(array('status'=>-1, 'user_id'=>null));
     }
 

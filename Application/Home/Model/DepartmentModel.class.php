@@ -68,6 +68,8 @@ class DepartmentModel extends Model {
     }
 
     public function delete($ids){
+        $groups = D('Group')->where(array('department_id'=>array('in', $ids)))->getField('id', true);
+        D('Group')->delete($groups);
         return $this->where(array('id'=>array('in', $ids )))->save(array('status'=>-1, 'user_id'=>null));
     }
 

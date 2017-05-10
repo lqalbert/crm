@@ -171,21 +171,60 @@ class CustomersGather {
         return $this->reSort($list);
     }
 
+    /**
+    * 包装一个部门
+    */
+    private function wrapDepartment($department_id, $department_name, $list){
+        foreach ($list as $key => $value) {
+            $list[$key]['department_id'] = $department_id;
+            $list[$key]['department_name'] = $department_name;
+        }
+        return $list;
+    }
+
     public function getAllGroups(){
-        $list2 = M('statistics_usercustomers')->field($this->getSqlFields().",group_id as id , group_name as name, department_id, department_name")
+        $toDaylist = array();   
+        if ($this->end >=  $this->today) {
+            $departments = D('Department')->getSalesDepartments();
+            foreach ($departments as $value) {
+                $toDaylist = array_merge($toDaylist, $this->wrapDepartment($value['id'], $value['name'], $this->getTodayGroups($value['id'])));
+            }
+        } 
+
+
+        $list2 = M('statistics_usercustomers')->field($this->getSqlFields().",statistics_usercustomers.group_id as id , group_name as name,  department_name, ui.realname")
+                                              ->join('group_basic as gb on statistics_usercustomers.group_id = gb.id ', 'left')
+                                              ->join('user_info as ui on gb.user_id = ui.user_id', 'left')
                                                 ->where(array('date'=> array(array('EGT',$this->start),array('ELT',$this->end))))
-                                                ->group('group_id')
+                                                ->group('statistics_usercustomers.group_id')
                                                 ->select();
-        return $this->reSort($list2);
+        $list  = $this->mergeList($list2, $toDaylist);
+        return $this->reSort($list);
     }
 
     public function getAllUsers(){
+
+        $toDaylist = array();   
+        if ($this->end >=  $this->today) {
+            $departments = D('Department')->getSalesDepartments('id,name');
+            $groups = D('Group')->getAllGoups(array_column($departments,'id'), 'id, name, department_id');
+            $departmentsMap = arr_to_map($departments, 'id');
+            foreach ($groups as $value) {
+                
+                $toDaylist = array_merge($toDaylist, 
+                    $this->wrapDepartment($value['department_id'], $departmentsMap[$value['department_id']]['name'], $this->getTodayUsers($value['id']))
+                    );
+            }
+        } 
+
+
         $list2 = M('statistics_usercustomers')->join("user_info as ui on statistics_usercustomers.user_id=ui.user_id")
                                                 ->field($this->getSqlFields().", statistics_usercustomers.id, realname as name, statistics_usercustomers.department_id, statistics_usercustomers.department_name")
                                                 
                                                 ->where(array('date'=> array(array('EGT',$this->start),array('ELT',$this->end))))
                                                 ->group('statistics_usercustomers.user_id')
                                                 ->select();
-        return $this->reSort($list2);
+        $list  = $this->mergeList($list2, $toDaylist);
+        return $this->reSort($list);
     }
 }
