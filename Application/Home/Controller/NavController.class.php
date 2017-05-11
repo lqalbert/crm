@@ -40,6 +40,20 @@ class NavController extends CommonController {
 		return $re;
 	}
 
+	private function setCaptainUserMenu($group_id){
+		$users = $this->getUsers($group_id);
+		$re = array();
+		foreach ($users as $key => $value) {
+			$re[] = array(
+						"href"=> U('Customer/index', array('id'=>$value['id'])),
+						"icon"=>"",
+						'spread'=>false,
+						"title" => $value['realname'],
+					);
+		}
+		return $re;
+	}
+
 	/**
 	* 返回结果数组
 	* href
@@ -86,7 +100,7 @@ class NavController extends CommonController {
 				"icon"=>"",
 				'spread'=>false,
 				"title" => $group_name,
-				"children" => $this->setUserMenu($group_id)
+				"children" => $this->setCaptainUserMenu($group_id)
 			));
 		} else {
 			return array();

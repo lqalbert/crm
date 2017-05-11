@@ -48,8 +48,8 @@ class CustomerController extends CommonController {
 		$this->assign('steps',        D('CustomerLog')->getSteps());
 		$this->assign('Proportion',   D('CustomerLog')->getProportion());
 		$this->assign('Remind',       D('CustomerLog')->getRemind());
-        $this->assign('uid', session('uid'));
-
+        $this->assign('uid',  I('get.id', session('uid') ));
+       
 
 		//统计
 		//条件的数组
