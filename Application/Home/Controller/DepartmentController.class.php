@@ -15,6 +15,8 @@ class DepartmentController extends CommonController {
 		$this->assign("typeList", $type);
 		$this->assign("totalCount", $count);
 		$this->assign("zoneList", M('department_zone')->getField('id,name'));
+		$this->assign("divisions", D('DepartmentDivision')->field('id,name')->select());
+		$this->assign('hr', $this->getHr());
 		$this->display();
 	}
 
@@ -82,6 +84,10 @@ class DepartmentController extends CommonController {
 		$outExcel->setDepartmentId($id);
 		$outExcel->setTitle(D('Department')->where(array('id'=>$id))->getField('name'));
 		outPutExcel($outExcel);
+	}
+
+	private function getHr(){
+		return D('User')->getUnSHr();
 	}
 
 

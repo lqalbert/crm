@@ -16,6 +16,8 @@ class RoleModel extends Model {
 	const GEN_SERVICE = 'genService';
 	const SERVICEMASTER = 'serviceMaster';
 	const RISKEMASTER = 'riskMaster';
+	const HR  = 'humanResource';
+	const DIVISIONMASTER='divisionMaster';
 
 	protected $tableName = 'rbac_role';
 
@@ -31,7 +33,9 @@ class RoleModel extends Model {
 		'supService',//客服主管
 		'genService',//普通客服
 		'serviceMaster', //客服经理
-		'riskMaster' //风控经理
+		'riskMaster', //风控经理
+		'humanResource', //人事专员
+		'divisionMaster'  //区域经理
 	);
 
 	public function getEnames(){

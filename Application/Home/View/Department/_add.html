@@ -16,7 +16,7 @@
       </el-form-item>
     </el-col>
   </el-row>
-  <!-- <el-row>
+   <el-row>
      <el-col :span="12">
       <el-form-item label="事业/财富区"  prop="division_id" >
         <el-select  v-model="addForm.division_id" placeholder="请选择事业/财富区">
@@ -25,14 +25,26 @@
       </el-form-item>
     </el-col> 
     <el-col :span="12">
+
+        <el-form-item label="人事专员"  prop="contact">
+          <el-select v-model='addForm.hr_id'>
+            <el-option v-for="user in hr" :label="user.realname" :value="user.user_id">
+              
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+      </el-col>
+
+    <!-- <el-col :span="12">
       <el-form-item label="片区"  prop="zone_id" >
         <el-select  v-model="addForm.zone_id" placeholder="请选择片区">
           <el-option v-for='(item,key) in zoneList' :label="item" :value="key"></el-option>
         </el-select>
       </el-form-item>
-    </el-col>
+    </el-col> -->
    </el-row>
-    <el-row>
+   <!-- <el-row>
       <el-col :span="12">
         <el-form-item label="拓展一"  prop="expand1" >
            <el-input v-model="addForm.expand1"  auto-complete="off" placeholder="没有可以不填"></el-input>
@@ -48,7 +60,7 @@
       <el-row>
       <el-col :span="12">
 
-        <el-form-item label="联系人"  prop="contact">
+        <el-form-item label="部门经理"  prop="contact">
           <el-select v-model='addForm.user_id'>
             <el-option v-for="user in computedusers" :label="user.realname" :value="user.user_id">
               
@@ -93,12 +105,12 @@
         </el-upload>
 
       </el-col> -->
-      <el-col :span="24">
+      <!-- <el-col :span="24">
         <el-form-item label="地址"  prop="address">
           <el-input  auto-complete="off" v-model="addForm.address" placeholder="请填写地址"></el-input>
         </el-form-item>
         
-      </el-col>
+      </el-col> -->
     </el-row>
     <el-row>
       <el-col :span="24">

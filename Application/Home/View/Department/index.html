@@ -80,36 +80,17 @@
   							</div>
                          </template>
 					    </el-table-column>
-					    <!-- <el-table-column  inline-template :context="_self"  align="center" label="形象照片" width="100">
-
-						    <div v-if="row.img.length">
-						    	<el-tooltip content="点击放大图片" placement="right">
-						    	 <img :src="imgUrl(row.img)" @click="bigImg(row.img)" alt="点击放大图片" width="45px" height="45px">
-						    	<el-tooltip content="添加新的组织单位！" placement="right">	
-						    </div>
-					    </el-table-column> -->
                         <el-table-column label="地址"  prop="address" width="180">
                         </el-table-column>
-                        <!-- <el-table-column label="财务编号" align="center" prop="f_num" width="100">
-                        </el-table-column>
-                        <el-table-column label="是否公示" align="center" prop="public" width="100">
-                        </el-table-column> -->
                         <el-table-column label="备注" align="center" prop="remark" width="200">
                         </el-table-column>
 
 					    <el-table-column  :context="_self"  align="center" width="250" fixed="right"  label="操作"  >
 					      <template scope="scope">
-<!-- 					      	<el-button v-if="scope.row.type==1" type="text"    @click="checkDown(scope.row.id)" >查看下级</el-button>
-					      	<el-button v-else type="text" @click="searchReset">返回上一级</el-button> -->
 					      	<el-button type="success" @click="handleEdit(scope.$index, scope.row)"     size="small">编辑</el-button>
 					      	<el-button type="danger"  @click="handleDelete(scope.$index, scope.row)"   size="small" >删除</el-button>
-
                             <el-button type="info" @click="outPut(scope.row.id)" size="small"> 导出人员 </el-button>
 					      </template>
-<!-- 					      <span>
-					        <el-button @click="handleEdit($index, row)"   type="success"  size="small">编辑</el-button>
-					        <el-button @click="handleDelete($index, row)" type="danger"  size="small" >删除</el-button>
-					      </span> -->
 					    </el-table-column>
 				    </el-table>
 				</el-col>
@@ -124,10 +105,6 @@
 			  	<span class="wrapper">
 			  		<el-tooltip content="添加新的组织单位！" placement="right">
 					    <el-button size="small"  @click="openDialog('add')" icon="plus" type="primary">添加</el-button>
-					    <!-- <el-button  @click="">录入客户</el-button>
-					    <el-button  @click="">修改客户</el-button> -->
-					    <!-- <el-button>计划</el-button>
-					    <el-button>推介</el-button> -->
 				    </el-tooltip>
 				</span>
 			  </div>
@@ -156,11 +133,6 @@
 			<!-- / 编辑 -->
 
 
-			<!-- bigimg -->
-			<el-dialog  title="图片放大" :modal="false" size="small" v-model="bigimg" style="z-index:1000;">
-			  <div style="margin:0;padding:0;text-align:center;z-index:1000;"><img :src="imageUrl" style="margin-left:-14px;width:850px;height:550px;"></div>
-			</el-dialog>
-            <!-- bigimg -->
 		</div>
 
 
@@ -204,9 +176,9 @@
 		},
 		typeList:{:json_encode($typeList)},
 		zoneList:{:json_encode($zoneList)},
-
-		computedusers:[]
-
+        topO:{:json_encode($divisions)},
+		computedusers:[],
+        hr:{:json_encode($hr)}
 	}).setForm('add', {
 		id:'',
 		name:"",
@@ -217,6 +189,7 @@
 		expand1:"",
 		expand2:"",
 		user_id:"",
+        hr_id:"",
 		f_num:"",
 		address:"",
 		remark:"",
@@ -233,6 +206,7 @@
 		expand1:"",
 		expand2:"",
 		user_id:"",
+        hr_id:"",
 		f_num:"",
 		address:"",
 		remark:"",
@@ -286,9 +260,9 @@
 		this.dataReload();
 	}).setMethod('editOpen', function(v){
 		var vmThis = this;
-	    this.$http.get("{:U('getDivision')}").then(function(response){
+	    /*this.$http.get("{:U('getDivision')}").then(function(response){
 	    	vmThis.topO = response.body;
-	    });
+	    });*/
 		// this.computedusers = this.userList;
         this.getUsers(this.dataList[this.editIndex].type,  this.dataList[this.editIndex].user_id);
 	}).setMethod('switchHandle',function(index,row){

@@ -10,6 +10,15 @@
   </el-row>
   <el-row>
     <el-col :span="14">
+      <el-form-item label="区域经理">
+        <el-select v-model="addForm.user_id">
+          <el-option v-for="user in dm" :label="user.realname" :value="user.user_id"></el-option>
+        </el-select>
+      </el-form-item>
+    </el-col>
+  </el-row>
+  <el-row>
+    <el-col :span="14">
       <el-form-item label="备注"  prop="type">
         <el-input
           type="textarea"

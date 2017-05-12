@@ -116,13 +116,16 @@
             brief:[
             {  max: 200, message: '长度在 200 字符之内', trigger: 'blur' }
             ]
-        }
+        },
+        dm:{:json_encode($dm)}
     }).setForm('add', {
         name:"",
+        user_id:null,
         brief:""
     }).setForm('edit', {
         id:"",
         name:"",
+        user_id:null,
         brief:""
     }).setForm('search', {
         name:"",

@@ -7,6 +7,7 @@ class DepartmentDivisionController extends CommonController {
 
 
     public function index(){
+        $this->assign('dm', $this->getDM());
         $this->display();
     }
 
@@ -21,6 +22,10 @@ class DepartmentDivisionController extends CommonController {
         } else {
             $this->error(L('DELETE_ERROR').$this->M->getError());
         }
+    }
+
+    private function getDM(){
+        return D("User")->getDM();
     }
 
 

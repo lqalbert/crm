@@ -54,6 +54,34 @@ class UserModel extends  Model{
              ->select();
     }
 
+    /**
+    * 未分配的hr
+    */
+    public function getUnSHr(){
+        $s_d = D('Department')->where(array('_string'=>" hr_id is not null or hr_id<>0 "))->getField('hr_id');   
+        if ($s_d) {
+            M('user_info')->where(array('user_id'=>array('NOT IN', $s_d)));
+        }
+        $roleId = D('Role')->getIdByEname(RoleModel::HR);
+        if ($roleId) {
+            M('user_info')->where(array('role_id'=>$roleId));
+        }
+        return M('user_info')->select();
+
+    }
+
+    public function getDM(){
+        $s_d = D('DepartmentDivision')->where(array('_string'=>" user_id is not null or user_id<>0 "))->getField('user_id');   
+        if ($s_d) {
+            M('user_info')->where(array('user_id'=>array('NOT IN', $s_d)));
+        }
+        $roleId = D('Role')->getIdByEname(RoleModel::DIVISIONMASTER);
+        if ($roleId) {
+            M('user_info')->where(array('role_id'=>$roleId));
+        }
+        return M('user_info')->select();
+    }
+
 
 
 }
