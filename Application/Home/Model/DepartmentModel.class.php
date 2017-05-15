@@ -80,6 +80,78 @@ class DepartmentModel extends Model {
         return $this->where(array('type'=>self::SALES_DEPARTMENT, 'status'=> array('NEQ', -1)))->field($fields)->select();
     }
 
+    /**
+    * 跟据不同的权限  index.html 显示不同的内容
+    * 列表的操作列
+    * 添加按钮
+    * @parame string 
+    *
+    * @return array
+    */
+
+    public function decoratorView($roleEname){
+      $funcName = $roleEname."GetView";
+      if (method_exists($this, $roleEname."GetView")) {
+        return call_user_func(array($this, $funcName));
+      } else {
+        return $this->getView();
+      }  
+
+    }
+
+    private function getView(){
+      return array(
+            'oprate' => '',
+            'button' => ''
+        );
+    }
+
+    private function goldGetView(){
+      $oprateColumn = <<<'EOD'
+<el-table-column  :context="_self"  align="center" width="250" fixed="right"  label="操作"  >
+  <template scope="scope">
+    <el-button type="success" @click="handleEdit(scope.$index, scope.row)"     size="small">编辑</el-button>
+    <el-button type="danger"  @click="handleDelete(scope.$index, scope.row)"   size="small" >删除</el-button>
+    <el-button type="info" @click="outPut(scope.row.id)" size="small"> 导出人员 </el-button>
+  </template>
+</el-table-column> 
+EOD;
+      $addButton = <<< 'BUTTON'
+<el-tooltip content="添加新的组织单位！" placement="right">
+    <el-button size="small"  @click="openDialog('add')" icon="plus" type="primary">添加</el-button>
+</el-tooltip>
+
+<el-tooltip content="分配人事专员" placement="right">
+    <el-button size="small"  @click="openDialog('hr')"  type="primary">人事专员</el-button>
+</el-tooltip>
+BUTTON;
+      return array(
+            'oprate' => $oprateColumn,
+            'button' => $addButton
+        );
+    }
+
+    private function hrMasterGetView(){
+        $oprateColumn = <<<'EOD'
+<el-table-column  :context="_self"  align="center" width="80" fixed="right"  label="操作"  >
+  <template scope="scope">
+    <el-button type="success" @click="handleEdit(scope.$index, scope.row)"     size="small">编辑</el-button>
+    
+  </template>
+</el-table-column> 
+EOD;
+      $addButton = <<< 'BUTTON'
+<el-tooltip content="分配人事专员" placement="right">
+    <el-button size="small"  @click="openDialog('hr')"  type="primary">人事专员</el-button>
+</el-tooltip>
+BUTTON;
+      return array(
+            'oprate' => $oprateColumn,
+            'button' => $addButton
+        );
+    }
+
+
     
 
 }

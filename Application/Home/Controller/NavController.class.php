@@ -11,6 +11,7 @@ class NavController extends CommonController {
 
 		$ename = $this->getRoleEname();
 		$funcName = $ename."Menu";
+
 		if (method_exists($this, $funcName)) {
 			$addMenu = call_user_func(array($this, $funcName));
 			$nav = array_merge($nav, $addMenu);
@@ -125,6 +126,7 @@ class NavController extends CommonController {
 			$sql = "select * from menu_basic where node_id in ($sql)";
 			
 			$result = $m->query($sql);
+			
 			$menu = arr_to_map($menu, 'id');
 			foreach ($result as $key => $value) {
 				if (isset($menu[$value['pid']])) {
