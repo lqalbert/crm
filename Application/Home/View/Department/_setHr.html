@@ -1,0 +1,29 @@
+<el-dialog title="设置人事专员" v-model="hrFormDialog" @open="hrBeforeOpen">
+<el-form ref="hrForm"  :model="hrForm" v-model="hrForm" :label-width="dialogLabelWidth">
+<el-row>
+    <el-col :span="24">
+        <el-tag
+          v-for="tag in hr"
+          :closable="true"
+          @close="tagClose(tag)"
+        >
+        {{tag.realname}}
+        </el-tag>
+    </el-col>
+</el-row>
+<el-row>
+    <el-col :span="10">
+        <el-form-item label="备选人事" prop="user_ids">
+            <el-select v-model="hrForm.user_ids" multiple >
+                <el-option v-for="user in dehrs" :label="user.realname" :value="user.user_id"></el-option>
+            </el-input>
+        </el-form-item>
+    </el-col>
+</el-row>
+<el-form-item>
+    <el-button @click="closeDialog('hr')">取 消</el-button>
+    <el-button type="primary" v-show="!hrFormSubmitStatus" @click="hrFormSubmit(page.sethrsUrl, 'hr')" >确 定</el-button>
+    <el-button type="primary" v-show="hrFormSubmitStatus" :loading="true" >修改中</el-button>
+</el-form-item>
+</el-form>
+</el-dialog>

@@ -9,7 +9,7 @@
     </el-col>
     <el-col :span="12">
       <el-form-item label="类型" prop="type">
-        <el-select  v-model="editForm.type"  disabled >
+        <el-select  v-model="editForm.type"   >
           <el-option  v-for='(item,key) in typeList' :label="item" :value="key"></el-option>
         </el-select>
       </el-form-item>
@@ -25,14 +25,7 @@
       </el-form-item>
       </el-form-item>
     </el-col>
-    <el-col :span="12">
-        <el-form-item label="人事专员"  prop="contact">
-          <el-select v-model='addForm.hr_id'>
-            <el-option v-for="user in hr" :label="user.realname" :value="user.user_id">
-            </el-option>
-          </el-select>
-        </el-form-item>
-      </el-col>
+    
     <!-- <el-col :span="12">
       <el-form-item label="片区"  prop="zone_id" >
         <el-select  v-model="editForm.zone_id">

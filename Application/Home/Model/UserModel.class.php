@@ -3,7 +3,7 @@ namespace Home\Model;
 
 use Think\Model;
 // use RbacUserModel;
-// use RoldeMode;
+use RoldeMode;
 
 class UserModel extends  Model{
     protected $autoCheckFields = false;
@@ -58,10 +58,8 @@ class UserModel extends  Model{
     * 未分配的hr
     */
     public function getUnSHr(){
-        $s_d = D('Department')->where(array('_string'=>" hr_id is not null or hr_id<>0 "))->getField('hr_id');   
-        if ($s_d) {
-            M('user_info')->where(array('user_id'=>array('NOT IN', $s_d)));
-        }
+        
+        M('user_info')->where(array('department_id'=>0));
         $roleId = D('Role')->getIdByEname(RoleModel::HR);
         if ($roleId) {
             M('user_info')->where(array('role_id'=>$roleId));
@@ -69,18 +67,37 @@ class UserModel extends  Model{
         return M('user_info')->select();
 
     }
+    //分配的
+    public function getSnHr($id, $field='user_id,realname'){
+        $roleId = D('Role')->getIdByEname(RoleModel::HR);
+        return M('user_info')->where(array('role_id'=>$roleId, 'department_id'=>$id))->field($field)->select();
+    }
 
-    public function getDM(){
-        $s_d = D('DepartmentDivision')->where(array('_string'=>" user_id is not null or user_id<>0 "))->getField('user_id');   
-        if ($s_d) {
-            M('user_info')->where(array('user_id'=>array('NOT IN', $s_d)));
+    public function getDM($id=0){ 
+         $roleId = D('Role')->getIdByEname(RoleModel::DIVISIONMASTER);
+        if ($id!=0) {
+            if ($roleId) {
+
+                $where['role_id']  = $roleId;
+                $where['department_id']  = 0;
+                
+                $map['_complex'] = $where;
+                $map['user_id']  = $id;
+                $map['_logic'] = 'or';
+                M('user_info')->where($map);
+            }
+        } else {
+           
+            if ($roleId) {
+                M('user_info')->where(array('role_id'=>$roleId, 'department_id'=>0));
+            }
         }
-        $roleId = D('Role')->getIdByEname(RoleModel::DIVISIONMASTER);
-        if ($roleId) {
-            M('user_info')->where(array('role_id'=>$roleId));
-        }
+
+
         return M('user_info')->select();
     }
+
+
 
 
 

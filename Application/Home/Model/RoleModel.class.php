@@ -35,7 +35,8 @@ class RoleModel extends Model {
 		'serviceMaster', //客服经理
 		'riskMaster', //风控经理
 		'humanResource', //人事专员
-		'divisionMaster'  //区域经理
+		'divisionMaster',  //区域经理
+		'hrMaster', //人事经理
 	);
 
 	public function getEnames(){
@@ -56,7 +57,7 @@ class RoleModel extends Model {
 	*/
 	public function getEnameByType($type){
 		$map = array(
-			1,9,10
+			1,9,10,13
 		);
 		return $this->enames[$map[$type]];
 	}

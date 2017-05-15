@@ -107,6 +107,11 @@
 </block>
 <block name="scripts">
 <script>
+    page.getUsersUrl = "{:U('getUsers')}";
+
+
+</script>
+<script>
     window.defaultOption.setDatas({
         rules:{
             name:[
@@ -117,7 +122,7 @@
             {  max: 200, message: '长度在 200 字符之内', trigger: 'blur' }
             ]
         },
-        dm:{:json_encode($dm)}
+        dm:[]
     }).setForm('add', {
         name:"",
         user_id:null,
@@ -132,6 +137,17 @@
         id:"0",
         sortFiled:"id",
         sortWay:"asc" // desc
+    }).setMethod('getUser', function(v){
+        this.$http.get(page.getUsersUrl,{params:{id:v}}).then(function(response){
+          this.dm = response.body;
+        }, function(response){
+
+        });
+    }).setMethod('beforeOpen', function(){
+        this.getUser(0);
+    }).setMethod('beforeEdit', function(){
+        console.log(this.editForm);
+        this.getUser(this.editForm.user_id);
     })
 </script>
 

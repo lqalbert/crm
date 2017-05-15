@@ -44,7 +44,9 @@
 					border    
 					highlight-current-row
 					v-loading="dataLoad"
-					element-loading-text="{:L('DATA_LOGIN')}">
+					element-loading-text="{:L('DATA_LOGIN')}"
+                    @selection-change="handleSelectionChange"
+                    >
 
 					    <el-table-column type="selection"  align="center" width="50" >
 					    </el-table-column>
@@ -106,6 +108,10 @@
 			  		<el-tooltip content="添加新的组织单位！" placement="right">
 					    <el-button size="small"  @click="openDialog('add')" icon="plus" type="primary">添加</el-button>
 				    </el-tooltip>
+
+                    <el-tooltip content="分配人事专员" placement="right">
+                        <el-button size="small"  @click="openDialog('hr')"  type="primary">人事专员</el-button>
+                    </el-tooltip>
 				</span>
 			  </div>
 			  </el-col>
@@ -132,6 +138,10 @@
 			<include file="_edit" />
 			<!-- / 编辑 -->
 
+            <!-- 人事专员 -->
+            <include file="_setHr" />
+            <!-- / 人事专员 -->
+
 
 		</div>
 
@@ -141,10 +151,13 @@
 <block name="scripts">
 <script>
 
-    function checkType(rule, value, callback){
-
-    }
+    
     page.getUsersUrl = "{:U('getUsers')}";
+    page.sethrsUrl   = "{:U('setHr')}";
+    page.gethrsUrl   = "{:U('getSnUHrs')}";
+    page.delhrUrl    = "{:U('delHrFromDepartment')}";
+
+
 	window.defaultOption.setDatas({
   	    //传输照片上传地址
   	    pathInfo:{folder:'department'},
@@ -178,7 +191,9 @@
 		zoneList:{:json_encode($zoneList)},
         topO:{:json_encode($divisions)},
 		computedusers:[],
-        hr:{:json_encode($hr)}
+        hr:[],
+        dehrs:[],
+        multipleSelection: []
 	}).setForm('add', {
 		id:'',
 		name:"",
@@ -217,23 +232,16 @@
 		id:"0",
 		sortFiled:"id",
 		sortWay:"asc" // desc
-	}).setMethod('imgUrl', function(url){
-			return "__ROOT__/Upload/department/"+url
-	}).setMethod('bigImg', function(url){
-		this.bigimg = true;
-		this.imageUrl = "__ROOT__/Upload/department/"+url;
-	}).setMethod('uploadImg', function(response, file, fileList){
-		this.addForm.img = response.path;
-		return response.path;
-	}).setMethod('uploadImg_E',function(response, file, fileList){
-    	this.editForm.img = response.path;
-    }).setMethod("handleEdit", function(index, row){
+	}).setForm('hr',{
+        id:null,
+        user_ids:[]
+    },true).setMethod("handleEdit", function(index, row){
 		//将此行数据赋给editForm
 		var type='edit';
 		row['public']=row['public'] == "是"?"1":"0";
 		this.initObject(this[FormName.getFormName(type)] , row); 
 
-		this.fileList = [{name:row.img, url: this.imgUrl(row.img)}];
+		// this.fileList = [{name:row.img, url: this.imgUrl(row.img)}];
 		this.editIndex = index;
 		this.openDialog(type);
 
@@ -304,6 +312,39 @@
         window.location.href="{:U('outPutExecle')}?id=" + id;
     }).setMethod('typeChange', function(v){
         this.getUsers(v,0)
+    }).setMethod('hrBeforeOpen', function(){
+        
+        if (!this.isSingle()) {
+            this.hrFormDialog = false;
+            return;
+        }
+
+        var id =this.multipleSelection[0].id;
+        this.hrForm.id = id;
+        this.$http.get(page.gethrsUrl, {params:{id:id}}).then(function(response){
+            this.hr = response.body.hrs;
+            this.dehrs = response.body.bhr;
+        }, function(response){
+
+        })
+
+    }).setMethod('isSingle', function(){
+        if (this.multipleSelection.length !=1) {
+            this.$message.error('请勾选一个');
+            return false;
+        } else {
+            return true;
+        }
+    }).setMethod('handleSelectionChange', function(val){
+        this.multipleSelection = val;
+    }).setMethod('tagClose', function(arg){
+        var i = this.dehrs.indexOf(arg);
+        this.hr.splice(i,1);
+        this.$http.post(page.delhrUrl, {user_id:arg.user_id}).then(function(response){
+            // this.$message.succe
+        }, function(response){
+            this.$message.error('出错了');
+        });
     });
 </script>
 

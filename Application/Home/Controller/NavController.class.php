@@ -5,6 +5,7 @@ class NavController extends CommonController {
 
 	public function index() {
 		$nav = $this->setMenu(); //C('MENU');
+
 		$this->transNavUrl($nav);
 		//$nav[0]['children'][5]['href']='http://up.riign.cn';
 
@@ -122,6 +123,7 @@ class NavController extends CommonController {
 			$sql = "select role_id from rbac_role_user where user_id = ". session('uid');
 			$sql = "select node_id from rbac_access where role_id in ($sql)";
 			$sql = "select * from menu_basic where node_id in ($sql)";
+			
 			$result = $m->query($sql);
 			$menu = arr_to_map($menu, 'id');
 			foreach ($result as $key => $value) {

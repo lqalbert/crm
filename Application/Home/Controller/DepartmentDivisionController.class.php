@@ -7,7 +7,7 @@ class DepartmentDivisionController extends CommonController {
 
 
     public function index(){
-        $this->assign('dm', $this->getDM());
+        // $this->assign('dm', $this->getDM());
         $this->display();
     }
 
@@ -24,8 +24,13 @@ class DepartmentDivisionController extends CommonController {
         }
     }
 
-    private function getDM(){
-        return D("User")->getDM();
+    private function getDM($id=0){
+        return D("User")->getDM($id=0);
+    }
+
+    public function getUsers(){
+        $id = I('get.id',0);
+        $this->ajaxReturn($this->getDM($id));
     }
 
 

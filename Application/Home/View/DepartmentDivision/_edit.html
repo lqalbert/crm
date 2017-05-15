@@ -1,4 +1,4 @@
-<el-dialog title="编辑修改" v-model="editFormDialog" >
+<el-dialog title="编辑修改" v-model="editFormDialog" @open='beforeEdit'>
 
   <el-form ref="editForm" :rules="rules" :model="editForm" v-model="editForm" :label-width="dialogLabelWidth">
     <el-row>

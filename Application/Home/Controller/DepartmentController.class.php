@@ -16,7 +16,7 @@ class DepartmentController extends CommonController {
 		$this->assign("totalCount", $count);
 		$this->assign("zoneList", M('department_zone')->getField('id,name'));
 		$this->assign("divisions", D('DepartmentDivision')->field('id,name')->select());
-		$this->assign('hr', $this->getHr());
+		
 		$this->display();
 	}
 
@@ -40,20 +40,46 @@ class DepartmentController extends CommonController {
 	public function getDivision(){
 		$this->ajaxReturn( D('DepartmentDivision')->getAll('id,name') );
 	}
+
+
+	private function setConfig(){
+		//临时写到这里
+		// '销售部', 0
+  //       '客服部', 1
+  //       '风控部'  2
+		//   ...     3
+		$configMap = array(
+			array('EmployeeQueryCondition'=>"DepartmentEmployee"),
+			array('EmployeeQueryCondition'=>"DepartmentEmployee"),
+			array('EmployeeQueryCondition'=>"DepartmentEmployee"),
+			array('EmployeeQueryCondition'=>"AllEmployee"),
+
+		);
+
+		$_POST['config'] = json_encode($configMap[$_POST['type']]);
+	}
+
+	public function _before_edit(){
+		$this->setConfig();
+	}
     
 
 	public function _before_add(){
 		if (empty($_POST['user_id'])) {
 			$_POST['user_id'] = null;
 		}
+
+		$this->setConfig();
 	}
 
 
     /**
     * 获取区域/部门 对应的备选负责人
-    * 1 获取 区域
-    * 2 获取 事业部门
-    * 3 获取 推广部门
+    *
+    * 销售部 部门经理
+    * 客服部 客服经理
+    * 风控部 风控经理
+    *  人事部 人事经理
     */
 	public function getUsers(){
 		$type = I('get.type', 0);
@@ -90,6 +116,58 @@ class DepartmentController extends CommonController {
 		return D('User')->getUnSHr();
 	}
 
+
+	public function setHr(){
+		$userids = I('post.user_ids');
+		$id = I('post.id');
+		if ($userids) {
+			$re = M('user_info')->data(array('department_id'=>$id))->where(array('user_id'=>array('in',$userids )))->save();
+			if ($re !== false) {
+				$this->success();
+			} else {
+				$this->error(M('user_info')->getError());
+			}
+		} else {
+			$this->success();
+		}
+	}
+
+	public function delHrFromDepartment(){
+		$user_id = I('post.user_id');
+		if ($user_id) {
+			$re = M("user_info")->data(array('department_id'=>0))->where(array('user_id'=>$user_id))->save();
+			if ($re) {
+				$this->success();
+			} else {
+				$this->error('出错了');
+			}
+		} else {
+			$this->success();
+		}
+	}
+
+
+
+	public function getDepartmentHr($id){
+		return D('User')->getSnHr($id);
+	}
+
+	/**
+	* 获取一个部门的人事专员并获取备选的人事专员
+	* @param $id int
+	*/
+	public function getSnUHrs(){
+		$bHr = $this->getHr();
+		$id = I('get.id',0);
+		if ($id !=0 ) {
+			$hrs = $this->getDepartmentHr(I('get.id'));
+		} else {
+			$hrs = array();
+		}
+		
+
+		$this->ajaxReturn(array('bhr'=>$bHr, 'hrs'=>$hrs));
+	}
 
 
 

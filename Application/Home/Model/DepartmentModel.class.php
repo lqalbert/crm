@@ -21,6 +21,7 @@ class DepartmentModel extends Model {
     const CUSTOMER_SERVICE = 1 ;
     //风控部
     const RISK_DEPARTMENT  = 2 ;
+    const HR_DEPARTMENT    = 3;
 
 	protected $tableName = 'department_basic';
 
@@ -32,7 +33,8 @@ class DepartmentModel extends Model {
 	private $types = array(
 		'销售部',
         '客服部',
-        '风控部'
+        '风控部',
+        '人事部'
 	);
 
 

@@ -1,4 +1,4 @@
-<el-dialog title="添加" v-model="addFormDialog" >
+<el-dialog title="添加" v-model="addFormDialog" @open="beforeOpen">
 <!-- <el-form :model="form"> -->
 <el-form :model="addForm" :rules="rules" ref="addForm" :label-width="dialogLabelWidth">
   <el-row>

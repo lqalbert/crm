@@ -25,9 +25,10 @@ class EmployeeController extends CommonController {
 		        	qq,qq_nickname,realname,role_ename,role_id,sex,status,user_id,weixin,weixin_nikname,id_card,card_img,card_front,card_back,ip,location,lg_time,out_time')->where(array('no_authorized'=>0))
 		        ->where(array('rbac_user.status'=>array('EGT',0)));
 
-		$user = new User;
+		/*$user = new User;
 		$user->getRoleObject();
-		$user->setEmployQueryCondition($this->M);
+		$user->setEmployQueryCondition($this->M);*/
+		$this->setRoleCondition();
 
 		if (isset($_GET['name'])) {
 			$this->M->where(array('account'=>array('like', I('get.name')."%")));
@@ -36,15 +37,64 @@ class EmployeeController extends CommonController {
 
 	}
 
+	private function getDepartmentId(){
+		return session('account')['userInfo']['department_id'];
+	}
+
+	private function goldCondition(){
+		$this->setAllEmployee();
+	}
+
+	private function setDeparmentQuery(){
+		$departmentRow = D('Department')->find($this->getDepartmentId());
+		$config = json_decode($departmentRow['config']);
+		if (isset($config['EmployeeQueryCondition'])) {
+			call_user_func(array($this, 'set'.$config['EmployeeQueryCondition']));
+		}
+	}
+
+
+
+	private function setDepartmentEmployee(){
+		$this->M->where(array(
+			'user_info.department_id'=>array('eq', $this->getDepartmentId()),
+			// 'role_id'=>array('NEQ', array()) 
+		));
+	}
+	private function setAllEmployee(){
+		
+	}
+
+	//人事
+	private function humanResourceCondition(){
+		$this->setDeparmentQuery();
+	}
+
+
+
+	//部门经理
+	private function departmentMasterCondition(){
+		$this->setDeparmentQuery();
+	}
+
+
+	public function setRoleCondition($M){
+		$this->roleEname = $this->getRoleEname();
+        $funcName = $this->roleEname."Condition";
+        if (method_exists($this, $funcName)) {
+             call_user_func(array($this, $funcName));
+        } else {
+        	$this->error("没有权限");
+        }
+	}
+
+	
+
+
+
 	public function getRoles(){
 		$row = M('rbac_role')->field('level')->find(session('account')['userInfo']['role_id']);
 		return D('rbac_role')->where(array('level'=>array('gt', $row['level'])))->select();
-
-		/*$user = new User;
-		$user->getRoleObject();
-		return $user->getEmployeeRoleList();*/
-
-
 	}
 
 
