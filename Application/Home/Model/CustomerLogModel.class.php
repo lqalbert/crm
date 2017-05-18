@@ -47,21 +47,33 @@ class CustomerLogModel extends Model {
 
     );
     
-    //服务比例
+    //跟踪比例分配
     private $proportion = array(
-      // '0'=>'0',
+      '1'=>'锁10%跟90%',
+      '2'=>'锁20%跟80%',
+      '3'=>'锁30%跟70%',
+      '4'=>'锁40%跟60%',
+      '5'=>'锁50%跟50%',
+    );
+    
+    //锁定方比例
+    private $addProportion = array(
       '1'=>'10',
       '2'=>'20',
       '3'=>'30',
       '4'=>'40',
       '5'=>'50',
-      '6'=>'60',
-      '7'=>'70',
-      '8'=>'80',
-      '9'=>'90',
-      '10'=>'100',
     );
-    
+
+    //跟踪方比例
+    private $trackProportion = array(
+      '1'=>'90',
+      '2'=>'80',
+      '3'=>'70',
+      '4'=>'60',
+      '5'=>'50',
+    );
+
     //提醒事项
     private $remind = array(
       '1'=>'客户重复加群，麻烦尽快跟踪',
@@ -143,6 +155,25 @@ class CustomerLogModel extends Model {
             return $this->proportion[$index];
         }else{
             return $this->proportion;
+        }
+    }
+
+    //获得锁定方比例
+    public function getAddProportion($index){
+        if(is_int($index)){
+            return $this->addProportion[$index];
+        }else{
+            return $this->addProportion;
+        }
+    }
+
+    //获得跟踪方比例
+    public function getTrackProportion($index){
+      var_dump(is_int($index));
+        if(is_int($index)){
+            return $this->trackProportion[$index];
+        }else{
+            return $this->trackProportion;
         }
     }
 

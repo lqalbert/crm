@@ -15,10 +15,14 @@ class CommonFindDetailController extends CommonController{
   */
 	public function trackInfo(){
     $type=D('Customer')->getType(I('post.type'));
-    $arr=M('customers_log')->where(array('cus_id'=>I('post.cus_id')))->order('id desc')->select();
+    $arr=M('customers_log')->where(array('cus_id'=>I('post.cus_id'),'track_type'=>array('NEQ',11)))->order('id desc')->select();
     foreach ($arr as $key => $value){
     	$arr[$key]['type']=$type;
-    	$arr[$key]['user']=M('user_info')->where(array('user_id'=>$value['user_id']))->getField('realname');
+      $dep_user=M('department_basic as db')->join('user_info as ui on ui.department_id=db.id')
+               ->where(array('ui.user_id'=>$value['user_id']))->getField("concat(db.name,'-',ui.realname) as user");
+      foreach ($dep_user as $k => $v) {
+          $arr[$key]['user']=$v['user'];
+      }
     	$arr[$key]['name']=I('post.name');
     	$arr[$key]['track_type']=D('CustomerLog')->getType((int)$arr[$key]['track_type']);
       $arr[$key]['step']=D('CustomerLog')->getSteps((int)$value['step']);
@@ -59,8 +63,33 @@ class CommonFindDetailController extends CommonController{
 		}
   }
 
+  /**
+  *   获取投诉信息
+  *
+  */
+  public function complainInfo(){
+    $cus_id = empty(I('post.condition')) ? I('post.id') : I('post.cus_id');
+    $type=D('Customer')->getType(I('post.type'));
+    $arr=M('customers_log')->where(array('cus_id'=>$cus_id,'track_type'=>array('EQ',11)))->order('id desc')->select();
+    foreach ($arr as $key => $value){
+      $arr[$key]['type']=$type;
+      $dep_user=M('department_basic as db')->join('user_info as ui on ui.department_id=db.id')
+               ->where(array('ui.user_id'=>$value['user_id']))->getField("concat(db.name,'-',ui.realname) as user");
+      foreach ($dep_user as $k => $v) {
+          $arr[$key]['user']=$v['user'];
+      }
+      $arr[$key]['name']=I('post.name');
+      $arr[$key]['track_type']=D('CustomerLog')->getType((int)$arr[$key]['track_type']);
+      $arr[$key]['step']=D('CustomerLog')->getSteps((int)$value['step']);
+    }
+    if (IS_AJAX) {
+      $this->ajaxReturn($arr);
+    }  else {
+      return $arr;
+    }
+  }   
 
-
+  
 
 
 

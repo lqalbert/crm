@@ -56,7 +56,7 @@ class RiskCtrlOneController extends CommonController{
       $count='0';
 	  }else{
 	    $list = M('customers_basic as cb')->join("customers_contacts as cc on cb.id = cc.cus_id and cc.is_main = 1 ")
-              ->join('left join user_info as ui on cb.user_id=ui.user_id')->field('ui.realname,cb.*,cc.*')
+              ->join('left join user_info as ui on cb.salesman_id=ui.user_id')->field('ui.realname,cb.*,cc.*')
               ->where(array('cb.id'=>array('IN',$cusList)))->order("cb.id desc")->limit($this->getOffset().','.$this->pageSize)->select();
 	    $count = $list==null ? '0' :$count;
     }

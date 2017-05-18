@@ -62,7 +62,7 @@ class CustomerLogic extends Model{
         $groupInfo=M('group_basic')->where(array('id'=>$group_id['group_id']))->field('name')->find();
         $userName=M('user_info')->where(array('user_id'=>I('user_id')))->field('realname')->find();
         $user=$groupInfo['name']."-".$userName['realname'];
-        $arr=M('customers_log')->where(array('cus_id'=>I('post.id')))->order('id desc')->select();
+        $arr=M('customers_log')->where(array('cus_id'=>I('post.id'),'track_type'=>array('NEQ',11)))->order('id desc')->select();
         foreach ($arr as $key => $value){
         	$arr[$key]['type']=$type;
             $dep_user=M('department_basic as db')->join('user_info as ui on ui.department_id=db.id')

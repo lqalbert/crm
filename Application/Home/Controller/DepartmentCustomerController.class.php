@@ -247,21 +247,26 @@ class DepartmentCustomerController extends CommonController {
     }
 
     public function trasnfCustomers(){
+        //var_dump($_POST);die();
         //比例也应该插入记录表 
         //但是比例的要求还没提出来 就先不加
         $d = D('CustomerTransflog');
         $cus_ids = I('post.cus_id');
         $rec_dep = I('post.rec_dep');
-        $proportion = I('post.proportion');
+        $proportion = I('post.proportion/d');
         $rec_group = I('post.rec_group');
-        $rec_user = I('post.rec_user');
+        $rec_user = I('post.rec_user');//跟踪方
+        $content = I('post.content');
+        $trackCommisson = D('CustomerLog')->getTrackProportion($proportion);//跟踪方比例
+        $addCommisson = D('CustomerLog')->getAddProportion($proportion);//锁定方比例
 
         $preDate = array(
             'from_department_id' => $this->depart_id,
             'to_department_id'   => $rec_dep,
             'to_id'              => $rec_user,
             'to_group_id'        => $rec_group,
-            'content'            => I('post.content'),
+            'content'            => $content,
+            'proportion'         => $proportion,
         );
         $d->startTrans();
         /*$d->rollback();
@@ -272,19 +277,11 @@ class DepartmentCustomerController extends CommonController {
                 $this->error('转让失败');
             }
 
-
-
-            $re = D('Customer')->where(array('id'=>$value))->data(array('salesman_id'=>$rec_user ))->save();
-            if ($re===false) {
-                $d->rollback();
-                $this->error('转让失败');
-            }
-
             $data = $preDate;
             $data['cus_id'] = $value;
             $userInfo = $this->getEmploye( intval($value) );
             if ($userInfo) {
-                $data['from_id'] = $userInfo[0]['user_id'];
+                $data['from_id'] = $userInfo[0]['user_id'];//锁定方
                 $data['from_group_id'] = $userInfo[0]['group_id'];
             } else {
                 $data['from_id']       = 0;
@@ -296,6 +293,20 @@ class DepartmentCustomerController extends CommonController {
                 $d->rollback();
                 $this->error('转让失败');
             }
+            
+            $cusData = array(
+                'salesman_id'=>$rec_user,
+                'commission'=>$trackCommisson,
+                'add_commission'=>$addCommisson
+            );
+            $res = D('Customer')->where(array('id'=>$value))->data($cusData)->save();
+            if ($res===false) {
+                $d->rollback();
+                $this->error('转让失败');
+            }
+            
+
+
         }
 
         $d->commit();

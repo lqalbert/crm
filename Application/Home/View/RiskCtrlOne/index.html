@@ -170,6 +170,10 @@
 			          <el-button size="small" type="primary" @click="openDialog('dipacth')">分 配</el-button>
 			        </el-tooltip>
 
+              <el-tooltip content="选择客户录入投诉意见" placement="right">
+                <el-button size="small" @click="openDialog('complain')" type="primary" style="margin-left:10px;">客户投诉</el-button>
+              </el-tooltip>
+
               <el-tooltip content="选择客户录入跟踪信息" placement="right" style="margin-left:10px;">
                 <el-button size="small" @click="openDialog('addTrack')" type="primary">录入跟踪</el-button>
               </el-tooltip>
@@ -196,7 +200,7 @@
 	              <el-table-column prop="user" label="操作员工" header-align="center">
 	              </el-table-column>
 
-	              <el-table-column prop="type" label="客户类型" header-align="center">
+	              <el-table-column prop="type" label="客户类型(当前)" header-align="center">
 	              </el-table-column>
 
 	              <el-table-column prop="name" label="客户姓名" header-align="center">
@@ -243,6 +247,30 @@
 	              </el-table-column>
 	            </el-table>
 	          </el-tab-pane>
+            <el-tab-pane label="投诉记录">
+              <el-table :data="tableDataTwo"  empty-text="请点击客户显示跟踪信息" border style="width: 100%"  @row-dblclick="viewComplainContents">
+                <el-table-column prop="user" label="操作员工" header-align="center">
+                </el-table-column>
+
+                <el-table-column prop="type" label="客户类型(当前)" align="center">
+                </el-table-column>
+
+                <el-table-column prop="name" label="客户姓名" align="center" >
+                </el-table-column>
+                
+                <el-table-column label="投诉内容" header-align="center">
+                  <template scope="scope">
+                    {{scope.row.content | handleString}}
+                  </template>
+                </el-table-column>
+
+                <el-table-column prop="created_at" label="投诉时间" width="180" align="center">
+                </el-table-column>
+
+                <el-table-column prop="track_text" label="投诉类型" align="center">
+                </el-table-column>
+              </el-table>
+            </el-tab-pane>
 	        </el-tabs>
 	     </el-col>
 	    </el-row>
@@ -260,6 +288,12 @@
     <include file="_dispacth" />
 	  <!-- 跟踪内容 -->
 	  <include file="_traceContent" />
+    <!-- 投诉内容 -->
+    <include file="Customer::_complainContent" />
+    <!-- /投诉内容 -->
+    <!-- 录入投诉 -->
+    <include file="Customer::_complain" />
+    <!-- 录入投诉 -->
 	</div>
 
 </div>
@@ -267,6 +301,7 @@
 <block name="scripts">
 <script>
   page.dipacthFormUrl = "{:U('dispacth')}";
+  page.addComplainFormUrl = "{:U('CommonHandleLogic/addComplain')}";
   window.defaultOption.setDatas({
   	customerType:{:json_encode($customerType)},
   	sexType:{:json_encode($sexType)},
@@ -298,7 +333,13 @@
 	     'user':'',
        'step':''
     }],
-
+    tableDataTwo: [{'name':'',
+                 'created_at':'',
+                 'type':'',
+                 'track_type':'',
+                 'content':'',
+                 'user':''     
+    }],
   }).setForm('search',{
     name:'',
     contact:'',
@@ -319,6 +360,8 @@
     user_id:"",
   }, true).setForm('traceContent',{
     content:'',
+  },true).setForm('complainContent',{
+    content:'',
   },true).setForm('addTrack',{
     cus_id:"",
     next_datetime:'',
@@ -328,7 +371,12 @@
     name:"",
     step:"",
     track_type:'',
-  },true).setMethod('getType', function(type, field){
+  },true).setForm('complain',{
+    cus_id:'',
+    type:'',
+    name:'',
+    content:'',
+  }, true).setMethod('getType', function(type, field){
       return this[field][type];
   }).setMethod('getPdt',function(pdt, field){
     var pdtName;
@@ -375,6 +423,9 @@
   }).setMethod('viewtraceContents',function(row,event){
     this.traceContentFormDialog = true;
     this.traceContentForm.content = row.content;
+  }).setMethod('viewComplainContents',function(row,event){
+    this.complainContentFormDialog = true;
+    this.complainContentForm.content = row.content;
   }).setMethod('sortChange', function(sortObject){
     console.log(sortObject);
     console.log(this.searchForm);
@@ -414,6 +465,13 @@
     },function(response){
       this.$message.error("查询出错啦");
     });
+
+    row.condition = 'service';
+    this.$http.post("{:U('CommonFindDetail/complainInfo')}",row).then(function(response){
+      this.tableDataTwo = response.body;
+    },function(response){
+      this.$message.error("查询出错啦");
+    });
   }).setMethod('dipacthFormSubmit',function(url){
     var  vmThis   = this;
     for (var x in this.multipleSelection) {
@@ -447,6 +505,38 @@
       this.row=row;
       return row;
     }
+  }).setMethod('complainSubmit',function(url){
+    var  vmThis   = this;
+    this.complainFormSubmitStatus = true;
+    this.$http.post(url,this.complainForm).then(function(response){
+      vmThis.$message({message: '操作成功',type: 'success'});
+      setTimeout(function(){
+        vmThis.complainFormDialog = false;
+        vmThis.complainFormSubmitStatus = false;
+        vmThis.$refs.complainForm.resetFields(); 
+        vmThis.refresh();
+      }, 2000);  
+    },function(response){
+      vmThis.$message.error("操作出错啦");
+    });
+  }).setMethod('commonSelect',function(x){
+    var form = x;
+    var vmThis = this;
+    if (this.multipleSelection.length ==0 ||  this.multipleSelection.length>1) {
+      this.closeDialog(form);
+      this.$message.error('请先选择一位客户');
+      return false;
+    } else {
+      var  row = this.multipleSelection.pop();
+      this[FormName.getForm(x)].name = row.name;
+      this[FormName.getForm(x)].cus_id = row.cus_id;
+      this.complainForm.type = row.type;
+      this.complainForm.to_id = row.salesman_id;
+      this.row=row;
+      return row;
+    }
+  }).setMethod('beforeAddComplain', function(){
+    this.commonSelect('complain');
   });
 </script>
 </block>
