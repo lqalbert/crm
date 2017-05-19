@@ -546,16 +546,69 @@ class CustomerController extends CommonController {
     public function checContact($value, $type){
         $row = M('customers_contacts')->where(array($type=>$value))->find();
         if ($row) {
-            if ( !session('?'.$type."_".$value."_addContact_que")) {
+            if ( !session('?'.$type."_".$value."_".HOOK_ADDCONTACT)) {
                 $pa = array('list'=>array($row['cus_id']), 'uid'=>session('uid'), 'type'=>$type, 'value'=> $value);
-                tag('addContact_que' , $pa);
-                session($type."_".$value."__addContact_que", true);
+                tag(HOOK_ADDCONTACT , $pa);
+                session($type."_".$value."__".HOOK_ADDCONTACT, true);
             }
 
             $this->error("存在");
         } else {
             $this->success();
         }
+    }
+
+    public function buy(){
+        //设成V
+        //更新客户资料 如果不一样 id_card address
+        //添加购买纪录
+
+        $row = $this->M->find(I("post.id"));
+        if (!$row) {
+            $this->error("没找到对应的数据");
+        }
+        $this->setVType($this->M);
+        $this->setDetail($this->M, array('id_card'=>I("post.id_card"), 'address'=>I('post.address'), 'name'=>I('post.name')));
+
+        $re = $this->M->save();
+        if ($re === false) {
+            $this->error('更新失败');
+        }
+
+        //购买纪录
+        unset($_POST['id']);
+        $data = M('customers_buy')->create($_POST, 1);
+        // unset($data['id']);
+        $data['cus_id'] = $row['id'];
+        $data['user_id'] = session("uid");
+
+        $id = $this->addBuy($data);
+        if (!$id) {
+            $this->error('购买失败');
+        }
+        $data['id'] = $id;
+
+        //自动分配给风控专员和回访专员
+        tag(HOOK_DISTRIBUTE_BUY_CUSTOMER, $data);
+
+    }
+
+    private function setVType($m){
+        if ( strpos($m->type, 'V') == false  ) {
+            $m->type = 'V';
+        }
+    }
+
+    private function setDetail($m, $data){
+        foreach ($data as $key => $value) {
+            if ($m->{$key} !== $value) {
+                $m->{$key} !== $value;
+            } 
+        }
+    }
+
+    private function addBuy($data){
+        return M('customers_buy')->data($data)->add();
     }
 
     

@@ -9,7 +9,7 @@ use Home\Logic\CustomerLogic;
 use Home\Model\CustomerLogModel;
 use Home\Model\ProductModel;
 class RiskCtrlOneController extends CommonController{
-	protected $table = "customers_service";
+	protected $table = "customers_buy";
 	protected $pageSize = 11;
 
   private function getOffset(){
@@ -29,8 +29,8 @@ class RiskCtrlOneController extends CommonController{
 	}
 
   public function badgeNum(){
-		$badgeNum['already']=$this->M->where(array('risk_one'=>'0'))->count();
-		$badgeNum['yet']=$this->M->where(array('risk_one'=>'1'))->count();
+		$badgeNum['already']=$this->M->where(array('risk_state'=>array('neq',0)))->count();
+		$badgeNum['yet']=$this->M->where(array('risk_state'=>'0'))->count();
 		return $badgeNum;
   }
 
@@ -45,11 +45,27 @@ class RiskCtrlOneController extends CommonController{
     return $man; 
   }
 
+  private function getMycust(){
+    $where = array('risk_id'=>session('uid'));
+    switch (I('get.field')) {
+      case 'already':
+        $where['risk_state'] = array('neq', 0);
+        break;
+      case 'yet':
+        $where['risk_state'] = 0;
+        break;
+      default:
+       
+        break;
+    }
+    return $this->M->where($where)->getField('cus_id', true);
+  }
+
   public function getList(){
   	$this->setQeuryCondition();
 	  $count=(int)$this->M->count();
 	  $this->setQeuryCondition();
-	  $cusArr=$this->M->getField('cus_id', true);  
+	  $cusArr= $this->getMycust();
 	  $cusList=implode(",", $cusArr);
 	  if(empty($cusList)){
 	    $list =null;
@@ -71,7 +87,9 @@ class RiskCtrlOneController extends CommonController{
 	*/
 	public function setQeuryCondition() {
 		
-    $this->M->where(array('risk_one'=>'1'));
+    // $this->M->where(array('risk_one'=>'1'));
+
+    M('customers_basic as cb')->where(array('cb.id'=>array('in', $this->getMycust())));
 
     if (I('get.name')) {
         M('customers_basic as cb')->where(array("cb.name"=> array('like', I('get.name')."%")));
@@ -82,7 +100,7 @@ class RiskCtrlOneController extends CommonController{
     	  M('customers_basic as cb')->where(array('cc.qq|cc.phone|cc.weixin'=>array('LIKE',$val."%")));
     }
 
-    switch (I('get.field')) {
+    /*switch (I('get.field')) {
     	case 'already':
 				$this->M->where(array('risk_one'=>'0'));
     		break;
@@ -92,7 +110,7 @@ class RiskCtrlOneController extends CommonController{
     	default:
     	  $this->M->where(array('risk_one'=>'1'));
     		break;
-    }
+    }*/
 
 	}
 
@@ -121,6 +139,20 @@ class RiskCtrlOneController extends CommonController{
     }
   }
 
+
+
+  public function check(){
+    $cus_ids  = I("post.cus_ids");
+    $state = I("post.state");
+
+    $re =  $this->M->where(array('cus_id'=>array('in', $cus_ids), 'risk_id'=>session('uid'), 'risk_state'=>0))
+            ->data(array('risk_state'=>$state))->save();
+    if ($re) {
+      $this->success('成功');
+    } else {
+      $this->error($this->M->getError());
+    }
+  }
 
 
 

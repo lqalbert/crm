@@ -128,13 +128,13 @@
 	            </template>
 		        </el-table-column>
 
-		        <el-table-column  prop="last_track" sortable='customer' label="最后跟踪时间" align="center" width="175"></el-table-column>
+		        <!-- <el-table-column  prop="last_track" sortable='customer' label="最后跟踪时间" align="center" width="175"></el-table-column>
 
 		        <el-table-column  prop="commission" label="跟踪方比例"  header-align="center" width="110"></el-table-column>
 
 		        <el-table-column  prop="plan" label="计划跟踪时间" align="center" width="175"></el-table-column>
 
-		        <el-table-column  prop="conflict" label="最后冲突时间" align="center" width="175"></el-table-column>
+		        <el-table-column  prop="conflict" label="最后冲突时间" align="center" width="175"></el-table-column> -->
 
 		        <el-table-column  header-align="center"  label="地区" width="135">
 		          <template scope="scope">
@@ -179,7 +179,7 @@
 	    <el-row>
 	     <el-col :span="24">
 	        <el-tabs  type="border-card">
-	          <el-tab-pane label="软件账号">
+	          <!-- <el-tab-pane label="软件账号">
 	            <el-table :data="tableDataThree" empty-text="请点击客户显示其软件账号" border style="width: 100%">
 	              <el-table-column prop="realname" label="创建员工" header-align="center">
 	              </el-table-column>
@@ -199,7 +199,7 @@
 	              <el-table-column prop="time" label="创建时间" width="180" align="center">
 	              </el-table-column>
 	            </el-table>
-	          </el-tab-pane>
+	          </el-tab-pane> -->
 	          <el-tab-pane label="跟踪记录">
 	            <el-table :data="tableDataOne" empty-text="请点击客户显示跟踪信息" border style="width: 100%" @row-dblclick="viewtraceContents">
 	              <el-table-column prop="user" label="操作员工" header-align="center">
@@ -253,29 +253,29 @@
                 </el-table-column>
               </el-table>
             </el-tab-pane>
-	          <el-tab-pane label="客户资料">
-	            <el-table :data="tableDataTwo" empty-text="请点击客户显示其客户资料" border style="width: 100%">
-	              <el-table-column label="操作员工" prop="realname" header-align="center">
-	              </el-table-column>
+	          <el-tab-pane label="购买纪录">
+	            <el-table :data="tableDataTwo" empty-text="请点击客户显示其购买纪录" border style="width: 100%">
+                <!-- <el-table-column label="操作员工" prop="realname" header-align="center">
+                </el-table-column> -->
 
-	              <el-table-column label="产品金额" prop="expense" header-align="center">
-	              </el-table-column>
+                <el-table-column label="产品金额" prop="product_money" header-align="center">
+                </el-table-column>
 
-	              <el-table-column label="产品类型" prop="pdt_id" header-align="center">
-                  <template scope="scope">
-                    {{ getPdt(scope.row.pdt_id, 'products') }}
-                  </template>
-	              </el-table-column>
-	              
-	              <el-table-column label="身份证" prop="identity" align="center">
-	              </el-table-column>
+                <el-table-column label="产品名称" prop="product_name" header-align="center">
+                </el-table-column>
 
-	              <el-table-column label="通讯地址" prop="address" header-align="center">
-	              </el-table-column>
+                <el-table-column label="产品周期" prop="product_t" header-align="center">
+                </el-table-column>
+                
+                <!-- <el-table-column label="身份证" prop="identity" align="center">
+                </el-table-column>
+                
+                <el-table-column label="通讯地址" prop="address" header-align="center">
+                </el-table-column> -->
 
-	              <el-table-column label="创建时间" prop="time" align="center">
-	              </el-table-column>
-	            </el-table>
+                <!-- <el-table-column label="创建时间" prop="time" align="center">
+                </el-table-column> -->
+              </el-table>
 	          </el-tab-pane>
 	        </el-tabs>
 	     </el-col>
@@ -411,8 +411,7 @@
   }).setMethod('handleSelectionChange', function(val){
       this.multipleSelection = val;
   }).setMethod('sortChange', function(sortObject){
-    console.log(sortObject);
-    console.log(this.searchForm);
+    
     var sortMap = {
       ascending: 'asc',
       descending: 'desc'
@@ -447,7 +446,7 @@
   }).setMethod('trackLog',function(row,event,column){
     this.commonFind("{:U('CommonFindDetail/trackInfo')}",'tableDataOne',row);
     this.commonFind("{:U('CommonFindDetail/findDealInfo')}",'tableDataTwo',row);
-    this.commonFind("{:U('CommonFindDetail/softwareInfo')}",'tableDataThree',row);
+    //this.commonFind("{:U('CommonFindDetail/softwareInfo')}",'tableDataThree',row);
 
     row.condition = 'service';
     this.$http.post("{:U('CommonFindDetail/complainInfo')}",row).then(function(response){

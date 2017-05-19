@@ -24,7 +24,7 @@ define('BIND_MODULE','Home');
 
 //  自定义常量
 
-define('CRM_SUPER_ADMIN', 1);
+require('./constant.php');
 
 
 // 自定义常量

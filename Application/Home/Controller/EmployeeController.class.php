@@ -101,7 +101,7 @@ class EmployeeController extends CommonController {
 
 	//部门经理
 	private function departmentMasterCondition(){
-		$this->setDeparmentQuery();
+		$this->setDepartmentEmployee();
 	}
 
 

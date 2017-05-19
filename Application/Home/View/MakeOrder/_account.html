@@ -1,0 +1,25 @@
+<el-dialog title="分配"  v-model="accountFormDialog">
+<el-form :model="accountForm"   ref="accountForm" :label-position="'top'" >
+    <el-form-item label="账号">
+        <el-input placeholder="请输入账号" v-model="accountForm.account_id"></el-input>
+    </el-form-item>
+    <el-form-item label="说明">
+        <el-input
+          type="textarea"
+          :rows="2"
+          placeholder="请输入内容"
+          v-model="accountForm.mark">
+        </el-input>
+    </el-form-item>
+</el-form>
+<div slot="footer" class="dialog-footer">
+    <el-button @click="closeDialog('account')">取 消</el-button>
+    <el-button type="primary" v-show="!accountFormSubmitStatus" @click="accountFormSubmit(page.setAccountUrl, 'account')" >确 定</el-button>
+    <el-button type="primary" v-show="accountFormSubmitStatus" :loading="true" >修改中</el-button>
+</div>
+</el-dialog>
+
+<!--     `open_id` INT(10) UNSIGNED NOT NULL COMMENT '账号开设人员id',
+`account_id` VARCHAR(20) NOT NULL COMMENT '软件账号id',
+`pdt_id` TINYINT(3) UNSIGNED NOT NULL COMMENT '产品id',
+`mark` VARCHAR(50) NOT NULL COMMENT '说明', -->
