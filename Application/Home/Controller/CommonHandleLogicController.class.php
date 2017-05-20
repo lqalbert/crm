@@ -14,7 +14,7 @@ class CommonHandleLogicController extends CommonController{
   *
   */
   public function addTrackLogs(){
-    //die();
+    die();
     $LogM = D('CustomerLog');
     $cusM = D('Customer');
     $to_type = I('post.to_type', '');

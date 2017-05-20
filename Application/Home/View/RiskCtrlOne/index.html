@@ -377,7 +377,7 @@
     name:'',
     content:'',
   }, true).setMethod('getType', function(type, field){
-      return this[field][type];
+    return this[field][type];
   }).setMethod('getPdt',function(pdt, field){
     var pdtName;
     this[field].forEach(function(value,index){
