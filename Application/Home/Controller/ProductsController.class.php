@@ -8,6 +8,7 @@ class ProductsController extends CommonController{
 	protected $pageSize = 13;
   
 	public function index(){
+    //var_dump($this->M->getUserId());die;
     $this->display();
 	}
 

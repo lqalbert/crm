@@ -14,7 +14,6 @@ class CommonHandleLogicController extends CommonController{
   *
   */
   public function addTrackLogs(){
-    die();
     $LogM = D('CustomerLog');
     $cusM = D('Customer');
     $to_type = I('post.to_type', '');
@@ -23,7 +22,6 @@ class CommonHandleLogicController extends CommonController{
         $LogM->rollback();
         return L('ADD_ERROR').$LogM->getError();
     }
-    //var_dump($LogM->create());die();
     $cusM->find($LogM->cus_id);
     if ($to_type !== "" &&  $to_type != $cusM->type) {
         $LogM->contentSetChangeType($cusM->type, $to_type);
@@ -34,7 +32,10 @@ class CommonHandleLogicController extends CommonController{
             return L('ADD_ERROR').$LogM->getError()."e";
         }
     }
-    if( $LogM->track_type == 0 || !empty($LogM->track_type)){
+
+    $LogM->track_type = $LogM->track_type == "" ? null : $LogM->track_type ;
+    $LogM->step = $LogM->step == "" ? null : $LogM->step ;
+    if( $LogM->track_type == '0' || !empty($LogM->track_type)){
         $LogM->track_text = D('CustomerLog')->getType((int)$LogM->track_type);
     }
     if ($LogM->add()) {
@@ -93,7 +94,7 @@ class CommonHandleLogicController extends CommonController{
       return $LogM->error;
     }
 
-    if( $LogM->track_type == 0 || !empty($LogM->track_type)){
+    if( $LogM->track_type == '0' || !empty($LogM->track_type)){
         $LogM->track_text = D('CustomerLog')->getType((int)$LogM->track_type);
     }
     if ($LogM->add()) {

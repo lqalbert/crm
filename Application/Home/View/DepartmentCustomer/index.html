@@ -871,21 +871,23 @@ Vue.filter("handleString", function(v) {
   }).setMethod('addTrackSubmit',function(url,form){
     FormName.type = form;
     var  formName    =  FormName.getFormName(); 
-    if(this[formName].to_type=='V'){
-       this.realInfoFormDialog=true;
-       this.realInfoForm.fm = 'addTrack'; 
-    }else{ 
-       this.addTrackFormSubmit(url, form);
-    } 
+    // if(this[formName].to_type=='V'){
+    //    this.realInfoFormDialog=true;
+    //    this.realInfoForm.fm = 'addTrack'; 
+    // }else{ 
+    //    this.addTrackFormSubmit(url, form);
+    // } 
+    this.addTrackFormSubmit(url, form);
   }).setMethod('editSubmit',function(url, form){
     FormName.type = form;
     var  formName    =  FormName.getFormName();  //form+"Form"; 
-    if(this[formName].type=='V'){
-       this.realInfoFormDialog=true;
-       this.realInfoForm.fm = 'edit'; 
-    }else{ 
-       this.editFormSubmit(url, form);
-    }   
+    // if(this[formName].type=='V'){
+    //    this.realInfoFormDialog=true;
+    //    this.realInfoForm.fm = 'edit'; 
+    // }else{ 
+    //    this.editFormSubmit(url, form);
+    // }   
+    this.editFormSubmit(url, form);
   }).setMethod('viewtraceContents',function(row,event){
     // var index = this.tableData.indexOf(row);
     this.traceContentFormDialog = true;

@@ -11,11 +11,11 @@ class CommonFindDetailController extends CommonController{
   
   /**
   *   获取跟踪信息
-  *
+  *   
   */
-	public function trackInfo(){
+	public function trackInfo(){                   
     $type=D('Customer')->getType(I('post.type'));
-    $arr=M('customers_log')->where(array('cus_id'=>I('post.cus_id'),'track_type'=>array('NEQ',11)))->order('id desc')->select();
+    $arr=M('customers_log')->where(" cus_id = ".I('post.cus_id')." AND (`track_type` <> 11 or `track_type` is null) ")->order('id desc')->select();
     foreach ($arr as $key => $value){
     	$arr[$key]['type']=$type;
       $dep_user=M('department_basic as db')->join('user_info as ui on ui.department_id=db.id')
@@ -24,8 +24,8 @@ class CommonFindDetailController extends CommonController{
           $arr[$key]['user']=$v['user'];
       }
     	$arr[$key]['name']=I('post.name');
-    	$arr[$key]['track_type']=D('CustomerLog')->getType((int)$arr[$key]['track_type']);
-      $arr[$key]['step']=D('CustomerLog')->getSteps((int)$value['step']);
+      $arr[$key]['track_type'] = $arr[$key]['track_type'] == null ?:D('CustomerLog')->getType((int)$arr[$key]['track_type']);
+      $arr[$key]['step'] = $arr[$key]['step'] == null ?:D('CustomerLog')->getType((int)$arr[$key]['step']);
     }
 		if (IS_AJAX) {
 			$this->ajaxReturn($arr);
@@ -80,8 +80,8 @@ class CommonFindDetailController extends CommonController{
           $arr[$key]['user']=$v['user'];
       }
       $arr[$key]['name']=I('post.name');
-      $arr[$key]['track_type']=D('CustomerLog')->getType((int)$arr[$key]['track_type']);
-      $arr[$key]['step']=D('CustomerLog')->getSteps((int)$value['step']);
+      $arr[$key]['track_type'] = $arr[$key]['track_type'] == null ?:D('CustomerLog')->getType((int)$arr[$key]['track_type']);
+      $arr[$key]['step'] = $arr[$key]['step'] == null ?:D('CustomerLog')->getType((int)$arr[$key]['step']);
     }
     if (IS_AJAX) {
       $this->ajaxReturn($arr);

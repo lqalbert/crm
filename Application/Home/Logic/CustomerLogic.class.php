@@ -39,7 +39,10 @@ class CustomerLogic extends Model{
                 return L('ADD_ERROR').$LogM->getError()."e";
             }
         }
-        if( $LogM->track_type == 0 || !empty($LogM->track_type)){
+
+        $LogM->track_type = $LogM->track_type == "" ? null : $LogM->track_type ;
+        $LogM->step = $LogM->step == "" ? null : $LogM->step ;
+        if( $LogM->track_type == '0' || !empty($LogM->track_type)){
             $LogM->track_text = D('CustomerLog')->getType((int)$LogM->track_type);
         }
         if ($LogM->add()) {
@@ -62,7 +65,7 @@ class CustomerLogic extends Model{
         $groupInfo=M('group_basic')->where(array('id'=>$group_id['group_id']))->field('name')->find();
         $userName=M('user_info')->where(array('user_id'=>I('user_id')))->field('realname')->find();
         $user=$groupInfo['name']."-".$userName['realname'];
-        $arr=M('customers_log')->where(array('cus_id'=>I('post.id'),'track_type'=>array('NEQ',11)))->order('id desc')->select();
+        $arr=M('customers_log')->where(" cus_id = ".I('post.id')." AND (`track_type` <> 11 or `track_type` is null) ")->order('id desc')->select();
         foreach ($arr as $key => $value){
         	$arr[$key]['type']=$type;
             $dep_user=M('department_basic as db')->join('user_info as ui on ui.department_id=db.id')
@@ -71,7 +74,8 @@ class CustomerLogic extends Model{
                 $arr[$key]['user']=$v['user'];
             }
         	$arr[$key]['name']=I('post.name');
-        	$arr[$key]['track_type']=D('CustomerLog')->getType((int)$arr[$key]['track_type']);
+            $arr[$key]['track_type'] = $arr[$key]['track_type'] == null ?:D('CustomerLog')->getType((int)$arr[$key]['track_type']);
+            $arr[$key]['step'] = $arr[$key]['step'] == null ?:D('CustomerLog')->getType((int)$arr[$key]['step']);
         }
        
         return $arr;
