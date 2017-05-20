@@ -9,7 +9,7 @@ use Home\Logic\CustomerLogic;
 use Home\Model\CustomerLogModel;
 use Home\Model\ProductModel;
 class GeneralServiceController extends CommonController{
-	protected $table = "customers_service";
+	protected $table = "customers_basic";
 	protected $pageSize = 11;
 
   private function getOffset(){
@@ -28,21 +28,13 @@ class GeneralServiceController extends CommonController{
   
 	public function getList(){
 		$this->setQeuryCondition();
-		$count=(int)$this->M->count();
-		$this->setQeuryCondition();
-		$cusArr=$this->M->getField('cus_id', true);
-		$cusList=implode(",", $cusArr);
-		if(empty($cusList)){
-		$list =null;
-		$count='0';
-		}else{
-		$list = M('customers_basic as cb')->join("customers_contacts as cc on cb.id = cc.cus_id and cc.is_main = 1 ")
-		    ->join('left join user_info as ui on cb.salesman_id=ui.user_id')->field('ui.realname,cb.*,cc.*')
-		    ->where(array('cb.id'=>array('IN',$cusList)))->order("cb.id desc")->limit($this->getOffset().','.$this->pageSize)->select();
-		$count = $list==null ? '0' :$count;
-		}
-		//echo M('customers_basic as cb')->getLastSql();
-		$result = array('list'=>$list, 'count'=>$count);
+        $count = $this->M->count();
+        $this->setQeuryCondition();
+        $list = $this->M->join("customers_contacts as cc on customers_basic.id = cc.cus_id and cc.is_main = 1 ")
+              ->join('left join user_info as ui on customers_basic.user_id=ui.user_id')->field('ui.realname,customers_basic.*,cc.*')
+              ->order("customers_basic.id desc")->limit($this->getOffset().','.$this->pageSize)->select();
+    
+        $result = array('list'=>$list, 'count'=>$count);
 		$this->ajaxReturn($result);
 	}
  
@@ -52,17 +44,15 @@ class GeneralServiceController extends CommonController{
 	* @return null
 	*/
 	public function setQeuryCondition() {
-		$operator_id=session('account')['userInfo']['user_id'];
-    $this->M->where(array('gen_service'=>'1','operator_id'=>$operator_id));
-
-    if (I('get.name')) {
-        M('customers_basic as cb')->where(array("cb.name"=> array('like', I('get.name')."%")));
-    }
-    
-    if(I('get.contact')){
-    	  $val=I('get.contact');
-    	  M('customers_basic as cb')->where(array('cc.qq|cc.phone|cc.weixin'=>array('LIKE',$val."%")));
-    }
+        $this->M->where(array('gen_id'=>session('uid')));
+        if (I('get.name')) {
+            $this->M->where(array("customers_basic.name"=> array('like', I('get.name')."%")));
+        }
+        
+        if(I('get.contact')){
+        	  $val=I('get.contact');
+        	  $this->M->where(array('cc.qq|cc.phone|cc.weixin'=>array('LIKE',$val."%")));
+        }
 
 	}
 

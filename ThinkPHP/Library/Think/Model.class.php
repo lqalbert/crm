@@ -1185,6 +1185,7 @@ class Model {
      * @return boolean
      */
     protected function autoValidation($data,$type) {
+
     	if(false === $this->options['validate'] ){
     		// 关闭自动验证
     		return true;
@@ -1243,6 +1244,7 @@ class Model {
      * @return boolean
      */
     protected function _validationField($data,$val) {
+
         if($this->patchValidate && isset($this->error[$val[0]]))
             return ; //当前字段已经有规则验证没有通过
         if(false === $this->_validationFieldItem($data,$val)){
@@ -1264,6 +1266,7 @@ class Model {
      * @return boolean
      */
     protected function _validationFieldItem($data,$val) {
+        
         switch(strtolower(trim($val[4]))) {
             case 'function':// 使用函数进行验证
             case 'callback':// 调用方法进行验证
@@ -1286,6 +1289,7 @@ class Model {
             case 'confirm': // 验证两个字段是否相同
                 return $data[$val[0]] == $data[$val[1]];
             case 'unique': // 验证某个值是否唯一
+
                 if(is_string($val[0]) && strpos($val[0],','))
                     $val[0]  =  explode(',',$val[0]);
                 $map = array();
@@ -1300,6 +1304,7 @@ class Model {
                 if(!empty($data[$pk]) && is_string($pk)) { // 完善编辑的时候验证唯一
                     $map[$pk] = array('neq',$data[$pk]);
                 }
+
                 if($this->where($map)->find())   return false;
                 return true;
             default:  // 检查附加规则

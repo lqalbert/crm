@@ -86,14 +86,8 @@
                         </el-table-column>
                         <el-table-column label="备注" align="center" prop="remark" width="200">
                         </el-table-column>
-
-					    <el-table-column  :context="_self"  align="center" width="250" fixed="right"  label="操作"  >
-					      <template scope="scope">
-					      	<el-button type="success" @click="handleEdit(scope.$index, scope.row)"     size="small">编辑</el-button>
-					      	<el-button type="danger"  @click="handleDelete(scope.$index, scope.row)"   size="small" >删除</el-button>
-                            <el-button type="info" @click="outPut(scope.row.id)" size="small"> 导出人员 </el-button>
-					      </template>
-					    </el-table-column>
+                        {$viewDecorator['oprate']}
+					    
 				    </el-table>
 				</el-col>
 			</el-row>
@@ -105,13 +99,9 @@
 			  <el-col :span="12">
 			  <div class="grid-content bg-purple">
 			  	<span class="wrapper">
-			  		<el-tooltip content="添加新的组织单位！" placement="right">
-					    <el-button size="small"  @click="openDialog('add')" icon="plus" type="primary">添加</el-button>
-				    </el-tooltip>
 
-                    <el-tooltip content="分配人事专员" placement="right">
-                        <el-button size="small"  @click="openDialog('hr')"  type="primary">人事专员</el-button>
-                    </el-tooltip>
+                    {$viewDecorator['button']}
+			  		
 				</span>
 			  </div>
 			  </el-col>

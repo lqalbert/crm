@@ -1,0 +1,235 @@
+<extend name="Common:base" />
+<block name="head">
+  <style>
+    .el-table__body tr.current-row>td{
+      background: rgba(157, 195, 232, 0.7);
+    }
+  </style>
+</block>
+<block name="body">
+    <div id="app" class="container">
+        <div class="wrapp" v-show="show" style="display: none">
+            <!-- seach form -->
+            <el-row>
+                <el-col :span="12">
+                    <el-form :inline="true"  ref="searchForm" :model="searchForm">
+                      <el-form-item  >
+                        <el-select v-model="searchForm.status" @change="loadDatalist">
+                            <el-option label="未开单" value="0"></el-option>
+                            <el-option label="已开单" value="1"></el-option>
+                        </el-select>
+                      </el-form-item>
+
+                      <el-form-item>
+                        <!-- <el-button type="primary" icon="search" @click="loadDatalist" >查询</el-button> 
+                        <el-tooltip content="清空搜索框并刷新表格数据" placement="right">
+                         <el-button  @click="searchReset">重置</el-button>
+                        </el-tooltip> -->
+                      </el-form-item>
+                    </el-form>
+                </el-col>
+                <el-col :span="12">
+                </el-col>   
+            </el-row>
+            <!-- / search form -->
+
+            <!-- datatables  -->
+            <el-row>
+                <el-col :span="24">
+                    <el-table 
+                    :data="dataList" 
+                    border    
+                    highlight-current-row
+                    v-loading="dataLoad"
+                    element-loading-text="{:L('DATA_LOGIN')}"
+                    >
+
+                        <el-table-column type="selection"  align="center" width="50" >
+                        </el-table-column>
+                        <el-table-column label="序号"  align="center" width="65" :formatter="handleIndex"  >
+                        </el-table-column>
+                        
+                        <el-table-column   label="操作员工"  width="180">
+                        <template scope="scope">
+                            {{scope.row.department_name}} {{scope.row.realname}}
+                        </template>
+                        </el-table-column>
+                        <el-table-column label="商品" align="center" prop="product_name" >
+                        </el-table-column>
+                        <el-table-column label="操作" align="center" >
+                            <template scope="scope">
+                                <el-button v-show="searchForm.status==0" size="small" type="primary" @click="setOrders(scope.row)">开单</el-button>
+                                <el-button v-show="searchForm.status==1" size="small" type="primary" @click="setDistrute(scope.row)">分配</el-button>
+                                <el-button v-show="searchForm.status==1" size="small" type="primary" @click="setAccount(scope.row)">账号</el-button>
+                            </template>
+                        </el-table-column>
+
+                    </el-table>
+                </el-col>
+            </el-row>
+            <!-- / datatables  -->
+            
+
+            <!-- toolbar -->
+            <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
+              <el-col :span="12">
+              <div class="grid-content bg-purple">
+                <span class="wrapper">
+
+                    
+                    
+                </span>
+              </div>
+              </el-col>
+              <el-col :span="12">
+                  <div class="grid-content bg-purple-light pull-right">
+                    <!-- page -->
+                    <include file="Common:_pagination" />
+                    <!-- / page -->
+                  </div>
+              </el-col>
+            </el-row>
+            <!-- / toolbar -->
+
+        </div>
+
+        <div v-show="show" style="display: none">
+            
+        <include file="_order" />
+        <include file="_distribute" />
+        <include file="_account" />
+
+        </div>
+
+
+    </div>
+</block>
+<block name="scripts">
+<script>
+
+    page.addOrderUrl = "{:U('addOrder')}";
+    page.getBuyDetailUrl = "{:U('getBuyDetail')}";
+    page.setDistributeUrl = "{:U('setDistribute')}";
+    page.setAccountUrl = "{:U('setAccount')}";
+
+    window.defaultOption.setDatas({
+        bphone:[],
+        orderRule:{
+            sale_money:[
+                { required: true, message:"请输入正确的金额", pattern:/^(([1-9]\d{0,9})|0)(\.\d{1,2})?$/ }
+            ],
+            receivable:[
+                { required: true, message:"请输入正确的金额", pattern:/^(([1-9]\d{0,9})|0)(\.\d{1,2})?$/ }
+            ],
+            paid_in:[
+                { required: true, message:"请输入正确的金额", pattern:/^(([1-9]\d{0,9})|0)(\.\d{1,2})?$/ }
+            ],
+        },
+        seMaster:{:json_encode($seMaster)}
+    }).setForm('add', {
+       
+    }).setForm('edit', {
+        
+    }).setForm('search', {
+        status:"0"
+    }).setForm('order',{
+        buy_id:null,
+        product_id:null,
+        sale_money:"0.00", //销售金额
+        receivable:"0.00", //应收金额
+        paid_in:"0.00", //实收金额
+        cus_id: 0, //客户id
+        user_id: 0, //锁定人员
+        salesman_id: 0, //跟踪人员
+        customer_name: "", //客户姓名
+        phone: "", //客户手机
+        name:"", //商品名称
+        user_name:"",//锁定人员
+        sale_name:"" //跟踪人员
+    }, true).setForm('distribute',{
+        semaster_id:null,
+        cus_id:null
+    },true).setForm('account',{
+        // `open_id` INT(10) UNSIGNED NOT NULL COMMENT '账号开设人员id',
+     account_id:"",
+     pdt_id:"",
+     mark:"",
+     cus_id:""
+    },true).setMethod('handleSelectionChange', function(val){
+        this.multipleSelection = val;
+    }).setMethod('setOrders', function(row){
+        this.orderForm.name   = row.product_name;
+        this.orderForm.sale_money = row.product_money;
+        this.orderForm.cus_id = row.cus_id;
+        this.orderForm.salesman_id = row.user_id;
+        this.orderForm.buy_id = row.id;
+        this.orderForm.product_id = row.product_id;
+
+        //通过ajax获取 
+        // 客户姓名
+        // 客户手机
+        // 锁定人员
+        // 跟踪人员
+
+        var param = {cus_id:row.cus_id};
+        this.$http.get(page.getBuyDetailUrl, {params: param}).then(function(response){
+            var body = response.body;
+            this.orderForm.customer_name = body.name;
+            this.orderForm.user_id = body.sale.user_id;
+            this.orderForm.user_name = body.user.name +' '+ body.user.realname;
+            this.orderForm.sale_name = body.sale.name +' '+ body.sale.realname;
+            this.bphone = body.phones;
+        }, function(response){
+            this.$message.error("出错了");
+        });
+
+
+        this.openDialog('order');
+    }).setMethod('submitOrder', function(url){
+        var  vmThis   = this;
+        this.$refs['orderForm'].validate(function(valid){
+            if (valid) {
+                FormName.type = 'order';
+                
+                var  formName    =  FormName.getFormName();       //form+"Form";
+                var  formStatus  =  FormName.getSubmitStatus();  // formName+"FormSubmitStatus";
+                var  formDialog  =  FormName.getDialog();         //form+"FormDialog";
+
+                this[formStatus] =  true;
+               
+                vmThis.$http.post(url, vmThis[formName]).then(function (response) {
+
+                    vmThis[formDialog] = false;
+                    vmThis[formStatus] = false;
+                    vmThis.$refs[formName].resetFields();
+                    // vmThis['distributeForm'].semaster_id = 
+                    vmThis['distributeForm'].cus_id = vmThis[formName].cus_id;
+                    
+
+                    vmThis.openDialog('distribute');
+                    // vmThis.dataReload();    
+                    // 弹一个分配的窗口
+                }, function(response){  
+                    vmThis.$message({
+                      message: '操作失败：'+response.body.info,
+                      type: 'error'
+                    });
+                    setTimeout(function(){
+                        vmThis[formStatus] = false;
+                    },2000);
+                });
+            } else {
+                
+                return false;
+            }
+        })
+    }).setMethod('setDistrute', function(row){
+        this.distributeForm.cus_id = row.cus_id;
+        this.openDialog('distribute');
+    }).setMethod('setAccount', function(row){
+        this.accountForm.cus_id = row.cus_id;
+        this.accountForm.pdt_id = row.product_id;
+        this.openDialog('account');
+    });
+</script>
+</block>

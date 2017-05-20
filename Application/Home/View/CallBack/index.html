@@ -142,13 +142,13 @@
 	            </template>
 		        </el-table-column>
 
-		        <el-table-column  prop="last_track" sortable='customer' label="最后跟踪时间" align="center" width="175"></el-table-column>
+		        <!-- <el-table-column  prop="last_track" sortable='customer' label="最后跟踪时间" align="center" width="175"></el-table-column>
 
 		        <el-table-column  prop="commission" label="跟踪方比例"  header-align="center" width="110"></el-table-column>
 
 		        <el-table-column  prop="plan" label="计划跟踪时间" align="center" width="175"></el-table-column>
 
-		        <el-table-column  prop="conflict" label="最后冲突时间" align="center" width="175"></el-table-column>
+		        <el-table-column  prop="conflict" label="最后冲突时间" align="center" width="175"></el-table-column> -->
 
 		        <el-table-column  header-align="center"  label="地区" width="135">
 		          <template scope="scope">
@@ -184,6 +184,10 @@
               <el-tooltip content="选择客户录入投诉意见" placement="right">
                 <el-button size="small" @click="openDialog('complain')" type="primary" style="margin-left:10px;">客户投诉</el-button>
               </el-tooltip>
+
+<el-tooltip content="选择客户" placement="right" style="margin-left:10px;">
+                    <el-button size="small" @click="openDialog('check')" type="primary">审核</el-button>
+                    </el-tooltip>
 			      </span>
 		      </div>
 		    </el-col>
@@ -331,6 +335,8 @@
     <!-- 录入投诉 -->
     <include file="Customer::_complain" />
     <!-- 录入投诉 -->
+
+<include file="RiskCtrlOne::_check" />
 	</div>
 
 </div>
@@ -340,7 +346,8 @@
   page.openAccountUrl = "{:U('openAccount')}";
   page.dipacthFormUrl = "{:U('dispacth')}";
   page.addComplainFormUrl = "{:U('CommonHandleLogic/addComplain')}";
-  window.defaultOption.setDatas({
+page.setCheckUrl = "{:U('check')}";  
+window.defaultOption.setDatas({
   	customerType:{:json_encode($customerType)},
   	sexType:{:json_encode($sexType)},
   	products:{:json_encode($Products)},
@@ -435,6 +442,9 @@
     type:'',
     name:'',
     content:'',
+  }, true).setForm('check',{
+    cus_ids:[],
+    state:"1"
   }, true).setMethod('getType', function(type, field){
       return this[field][type];
   }).setMethod('getPdt',function(pdt, field){
@@ -674,6 +684,17 @@
     },function(response){
       vmThis.$message.error("操作出错啦");
     });
+  }).setMethod('beforeCheck', function(){
+    if (this.multipleSelection.length == 0) {
+      this.$message.error("请至少选择一个客户");
+      return;
+    }
+    for (var i = this.multipleSelection.length - 1; i >= 0; i--) {
+      
+      this.checkForm.cus_ids.push(this.multipleSelection[i].cus_id);
+    }
+
+
   });
 </script>
 </block>

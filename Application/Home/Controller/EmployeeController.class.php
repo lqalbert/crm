@@ -1,6 +1,7 @@
 <?php
 namespace Home\Controller;
 use Common\Lib\User;
+use Home\Model\DepartmentModel;
 
 class EmployeeController extends CommonController {
 	protected $table="RbacUser";
@@ -8,6 +9,7 @@ class EmployeeController extends CommonController {
 
 
 	public function index (){
+
 		$this->assign("roleList", $this->getRoles());
 		$this->assign("groupList", D('Group')->where(array('status'=>1))->select());
 		$this->assign("sexType", array("未定义", "男", "女"));
@@ -15,6 +17,7 @@ class EmployeeController extends CommonController {
 	}
 
 	public function setQeuryCondition() {
+
 		// $this->M->relation(true)->field('password',true)->where(array('no_authorized'=>0));
 		$this->M->join('user_info ON rbac_user.id = user_info.user_id')
 		        ->field('account,address,
@@ -37,17 +40,27 @@ class EmployeeController extends CommonController {
 
 	}
 
+	private function isHrDeparment(){
+		if (!isset($this->departmentRow)) {
+			$departmentRow = D('Department')->find($this->getDepartmentId());
+		}
+		
+		if ($this->departmentRow['type'] == DepartmentModel::HR_DEPARTMENT) {
+			return true; //$_POST['department_id'] = 0;
+		} else {
+			return false; //$_POST['department_id'] = session('account')['userInfo']['department_id'];
+		}
+	}
+
 	private function getDepartmentId(){
 		return session('account')['userInfo']['department_id'];
 	}
 
-	private function goldCondition(){
-		$this->setAllEmployee();
-	}
+	
 
 	private function setDeparmentQuery(){
 		$departmentRow = D('Department')->find($this->getDepartmentId());
-		$config = json_decode($departmentRow['config']);
+		$config = json_decode($departmentRow['config'], true);
 		if (isset($config['EmployeeQueryCondition'])) {
 			call_user_func(array($this, 'set'.$config['EmployeeQueryCondition']));
 		}
@@ -64,17 +77,31 @@ class EmployeeController extends CommonController {
 	private function setAllEmployee(){
 		
 	}
+	// 
+	private function goldCondition(){
+		$this->setAllEmployee();
+	}
 
 	//人事
 	private function humanResourceCondition(){
-		$this->setDeparmentQuery();
+		if ($this->isHrDeparment()) {
+			$this->setAllEmployee();
+		} else {
+			$this->setDeparmentQuery();
+		}
+		
+	}
+
+	//人事经理
+	private function hrMasterCondition(){
+		$this->setAllEmployee();
 	}
 
 
 
 	//部门经理
 	private function departmentMasterCondition(){
-		$this->setDeparmentQuery();
+		$this->setDepartmentEmployee();
 	}
 
 
@@ -84,7 +111,7 @@ class EmployeeController extends CommonController {
         if (method_exists($this, $funcName)) {
              call_user_func(array($this, $funcName));
         } else {
-        	$this->error("没有权限");
+        	$this->error("没有权限EmployeeController");
         }
 	}
 
@@ -154,11 +181,22 @@ class EmployeeController extends CommonController {
 	*/
 	public function _before_add(){
 		$this->rightProcted();
-		$user = new User;
+		/*$user = new User;
 		$user->getRoleObject();
-		$user->setEmployeeAddData();
+		$user->setEmployeeAddData();*/
+
+		//如果是人事部 则添加的员工部门为 0
+		//如果不是人事部 则添加的员工部门为 当前员工的部门
 
 
+		// $departmentRow = D('Department')->find($this->getDepartmentId());
+		if ($this->isHrDeparment()) {
+			$_POST['department_id'] = 0;
+		} else {
+			$_POST['department_id'] = session('account')['userInfo']['department_id'];
+		}
+
+		
 	}
 
 	/**

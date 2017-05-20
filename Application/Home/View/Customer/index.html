@@ -162,6 +162,10 @@
             </el-badge>
           </el-tooltip>
 
+          <el-tooltip content="未通过的审核" placement="bottom-start"  style="margin-left:10px;">
+            <el-button size="small"  @click="setField('check')"  type="primary">未通过</el-button>
+          </el-tooltip>
+
           <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:10px;">
             <el-button @click="refresh" size="small" type="danger" >刷新</el-button>
           </el-tooltip>
@@ -246,6 +250,13 @@
             {{ getType(scope.row.sex, 'sexType') }}
           </template>
         </el-table-column>
+
+        <el-table-column label="操作" width="90" fixed="right">
+          <template scope="scope">
+            <el-button size="small" @click="buy(scope.row)" type="primary">购买</el-button>
+          </template>
+        </el-table-column>
+
       </el-table>
     </el-col>
   </el-row>
@@ -408,6 +419,10 @@
   <!-- 录入投诉 -->
   <include file="_complain" />
   <!-- 录入投诉 -->
+
+  <!-- 购买 -->
+  <include file="_buy" />
+  <!-- /购买 -->
 </div>
 
 </div>
@@ -420,7 +435,7 @@
   page.addChoiceFormUrl = "{:U('setImportant')}";
   page.addRealInfoUrl = "{:U('realInfo')}";
   page.addComplainFormUrl = "{:U('CommonHandleLogic/addComplain')}";
-
+  page.buyUrl = "{:U('buy')}";
   var checkIdNum=function(rule,value,callback){
     var number=/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
     if(!number.test(value)){
@@ -537,6 +552,24 @@
       cycle:[{ required: true, message: '请选择服务周期', trigger: 'blur' },],
       address:[{ required: true, message: '请输入通讯地址', trigger: 'blur' },],
     },
+
+    buyRules:{
+      name:[
+        { required: true, message:"请输入客户姓名"}
+      ],
+      id_card:[
+        { required: true, message:"请输入身份证号", trigger:'blur'},
+        { validator: checkIdNum, trigger:'blur' },
+      ],
+      address:[
+        {required: true, message:'请输入详细地址'}
+      ],
+      product_index:[
+        { required: true, message:"请选择产品", type:"number"}
+      ]
+
+    },
+    stepActive:0
 
   }).setForm('search', {
     name:'',
@@ -693,7 +726,17 @@
     type:'',
     name:'',
     content:'',
-  }, true).setMethod('getType', function(type, field){
+  }, true).setForm('buy',{
+    id:null,
+    id_card:"",
+    address:"",
+    product_id:null,
+    product_index:null,
+    product_name:"",
+    product_money:"",
+    product_t:"0",
+    name:"",
+  },true).setMethod('getType', function(type, field){
       return this[field][type];
   }).setMethod('searchCustomer', function(){
     var vmThis = this;
@@ -843,7 +886,7 @@
       vmThis.$set(vmThis,'deps',deps);
       
     });*/
-    console.log(this.products);
+   // console.log(this.products);
     this.dialogLabelWidth = "100px";
   }).setMethod('trackLog',function(row,event,column){
       // this.$refs.select.toggleRowSelection(row);
@@ -914,8 +957,8 @@
   }).setComputed('isTypeV', function(){
     return this.editForm.type == 'V';
   }).setMethod('sortChange', function(sortObject){
-    console.log(sortObject);
-    console.log(this.searchForm);
+    //console.log(sortObject);
+    //console.log(this.searchForm);
     var sortMap = {
       ascending: 'asc',
       descending: 'desc'
@@ -1027,6 +1070,28 @@
     },function(response){
       vmThis.$message.error("操作出错啦");
     });
+  }).setMethod('next', function(){
+    if (this.stepActive++ > 1) this.stepActive = 0;
+  }).setMethod('beforeBuy', function(){
+    this.stepActive = 0;
+  }).setMethod('prv', function(){
+    if (this.stepActive-- < 0) this.stepActive = 0;
+  }).setMethod('buySelectChange', function(val){
+    
+    var row = this.products[val];
+
+    this.buyForm.product_id = row.id;
+    this.buyForm.product_name = row.name;
+    this.buyForm.product_money = row.price;
+    this.buyForm.product_t = row.service_cycle;
+
+  }).setMethod('buy', function(row){
+    
+    this.buyForm.id = row.id;
+    this.buyForm.id_card = row.id_card;
+    this.buyForm.address = row.address;
+    this.buyForm.name = row.name;
+    this.openDialog('buy')
   });
 </script>
 

@@ -158,6 +158,9 @@ class CustomerLogic extends Model{
             case 'conflict':
                 $D->where(array('conflict'=> $between_today));
                 break;
+            case 'buy_check':
+                $D->where(array('buy_check'=> -1));
+                
             
                 break;
             default:

@@ -50,7 +50,7 @@ class PreCheckController extends CommonController {
                     
                     if ( !session('?'.$value."_".$arg)) {
                         $pa = array('list'=>$re, 'uid'=>session('uid'), 'type'=>$value, 'value'=> $arg);
-                        tag('precheck_que' , $pa);
+                        tag(HOOK_PRECHECK , $pa);
                         session($value."_".$arg, true);
                     }
                 }

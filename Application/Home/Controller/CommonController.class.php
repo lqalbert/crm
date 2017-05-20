@@ -35,8 +35,9 @@ class CommonController extends Controller {
 
 		$this->M = D($this->table);
 
-		\Think\Hook::add('precheck_que','Home\\Behaviors\\precheckBehavior');
-		\Think\Hook::add('addContact_que','Home\\Behaviors\\checkContactBehavior');
+		\Think\Hook::add(HOOK_PRECHECK,'Home\\Behaviors\\precheckBehavior');
+		\Think\Hook::add(HOOK_ADDCONTACT,'Home\\Behaviors\\checkContactBehavior');
+		\Think\Hook::add(HOOK_DISTRIBUTE_BUY_CUSTOMER,'Home\\Behaviors\\disBuyCustomerBehavior');
 
 		
 	}
@@ -131,7 +132,9 @@ class CommonController extends Controller {
 	}
 
 	protected function _getList(){
+
 		$this->setQeuryCondition();
+
 		$count = (int)$this->M->count();
 		$this->setQeuryCondition();
 		$list = $this->M->page(I('get.p',0). ','. $this->pageSize)->order('id desc')->select();
@@ -147,6 +150,7 @@ class CommonController extends Controller {
 	 * 
 	 **/
 	public function getList(){
+
 		$result = $this->_getList();
 		//echo $this->M->getLastSql();
 		if (IS_AJAX) {
@@ -177,13 +181,16 @@ class CommonController extends Controller {
 	*  是 团队、员工不能添加
 	*/
 	protected function rightProcted(){
-		$user = new User;
+		/*$user = new User;
 		$role_row = $user->getRole();
 		if ($role_row['ename'] == RoleModel::DEPARTMENTMASTER) {
 			$depart = D('department')->where(array('user_id'=>session('uid')))->find();
 			if (!$depart) {
 				$this->error("还没有分配部门给你，暂时不能添加");
 			}
+		}*/
+		if (session('account')['userInfo']['department_id']==0) {
+			$this->error("还没有分配部门给你，暂时不能添加");
 		}
 	}
 
