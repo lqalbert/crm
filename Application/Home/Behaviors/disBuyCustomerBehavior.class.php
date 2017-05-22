@@ -15,9 +15,10 @@ class disBuyCustomerBehavior extends \Think\Behavior {
     //行为执行入口
     public function run(&$param){
 
+
        $this->initRoll();
 
-       $this->deal();
+       $this->deal($param);
     }
 
 
@@ -46,19 +47,24 @@ class disBuyCustomerBehavior extends \Think\Behavior {
         } 
     }
 
-    private function deal(){
+    private function deal($param){
         $riskUsers = $this->getRisk();
         $callUsers = $this->getCallback();
+
         $risk_i = $this->riskRoll % count($riskUsers);
         $call_i = $this->callBackRoll % count($callUsers);
+
 
         $data = array(
             'risk_id'=>$riskUsers[$risk_i]['id'],
             'callback_id'=>$callUsers[$call_i]['id']
         );
+        
 
         $this->setRoll(++$risk_i, ++$call_i);
         
-        M('customers_buy')->data($data)->where(array('id'=>$param['id']))->save();
+        $re = M('customers_buy')->data($data)->where(array('id'=>$param['id']))->save();
+
+        
     }
 }

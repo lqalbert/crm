@@ -58,9 +58,11 @@
                         </el-table-column>
                         <el-table-column label="操作" align="center" >
                             <template scope="scope">
-                                <el-button v-show="searchForm.status==0" size="small" type="primary" @click="setOrders(scope.row)">开单</el-button>
-                                <el-button v-show="searchForm.status==1" size="small" type="primary" @click="setDistrute(scope.row)">分配</el-button>
-                                <el-button v-show="searchForm.status==1" size="small" type="primary" @click="setAccount(scope.row)">账号</el-button>
+                                <span v-for="button in scope.row.buttons">
+                                    <el-button v-show="button=='order'" size="small" type="primary" @click="setOrders(scope.row)">开单</el-button>
+                                    <el-button v-show="button=='distribute'" size="small" type="primary" @click="setDistrute(scope.row)">分配</el-button>
+                                    <el-button v-show="button=='account'" size="small" type="primary" @click="setAccount(scope.row)">账号</el-button>
+                                </span>
                             </template>
                         </el-table-column>
 
@@ -148,13 +150,15 @@
         sale_name:"" //跟踪人员
     }, true).setForm('distribute',{
         semaster_id:null,
-        cus_id:null
+        cus_id:null,
+        buy_id:null
     },true).setForm('account',{
         // `open_id` INT(10) UNSIGNED NOT NULL COMMENT '账号开设人员id',
      account_id:"",
      pdt_id:"",
      mark:"",
-     cus_id:""
+     cus_id:"",
+     buy_id:""
     },true).setMethod('handleSelectionChange', function(val){
         this.multipleSelection = val;
     }).setMethod('setOrders', function(row){
@@ -185,7 +189,7 @@
 
 
         this.openDialog('order');
-    }).setMethod('submitOrder', function(url){
+    })/*.setMethod('submitOrder', function(url){
         var  vmThis   = this;
         this.$refs['orderForm'].validate(function(valid){
             if (valid) {
@@ -223,12 +227,14 @@
                 return false;
             }
         })
-    }).setMethod('setDistrute', function(row){
+    })*/.setMethod('setDistrute', function(row){
         this.distributeForm.cus_id = row.cus_id;
+        this.distributeForm.buy_id     = row.id
         this.openDialog('distribute');
     }).setMethod('setAccount', function(row){
         this.accountForm.cus_id = row.cus_id;
         this.accountForm.pdt_id = row.product_id;
+        this.accountForm.buy_id = row.id
         this.openDialog('account');
     });
 </script>

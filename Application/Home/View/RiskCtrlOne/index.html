@@ -68,16 +68,16 @@
 		            <el-button  size="small" @click="searchReset">重置</el-button>
 		          </el-tooltip>
 
-		          <el-tooltip content="已经分配给回访专员的客户" placement="bottom-start" style="margin-left:10px;">
-		            <el-badge :value="{$badgeNum.already}" :max="9" >
-		              <el-button size="small" type="primary" @click="setField('already')">已分配</el-button>
-		            </el-badge>
+		          <el-tooltip content="已审核" placement="bottom-start" style="margin-left:10px;">
+		            <!-- <el-badge :value="{$badgeNum.already}" :max="9" >
+                </el-badge> -->
+                <el-button size="small" type="primary" @click="setField('already')">已审核</el-button>
 		          </el-tooltip>
 
-		          <el-tooltip content="还未分配给回访专员的客户" placement="bottom-start" style="margin-left:15px;">
-		            <el-badge :value="{$badgeNum.yet}" :max="9" >
-		              <el-button type="info" size="small" @click="setField('yet')">待分配</el-button>
-		            </el-badge>
+		          <el-tooltip content="待审核" placement="bottom-start" style="margin-left:15px;">
+		            <!-- <el-badge :value="{$badgeNum.yet}" :max="9" >
+		            </el-badge> -->
+                <el-button type="info" size="small" @click="setField('yet')">待审核</el-button>
 		          </el-tooltip>
 
 		          <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:15px;">
@@ -173,12 +173,12 @@
               <el-tooltip content="选择客户录入跟踪信息" placement="right" style="margin-left:10px;">
                 <el-button size="small" @click="openDialog('addTrack')" type="primary">录入跟踪</el-button>
               </el-tooltip>
-<el-tooltip content="选择客户录入投诉意见" placement="right">
+              <el-tooltip content="选择客户录入投诉意见" placement="right">
                 <el-button size="small" @click="openDialog('complain')" type="primary" style="margin-left:10px;">客户投诉</el-button>
               </el-tooltip>
-<el-tooltip content="选择客户审核" placement="right" style="margin-left:10px;">
+              <!-- <el-tooltip content="选择客户审核" placement="right" style="margin-left:10px;">
                 <el-button size="small" @click="openDialog('check')" type="primary">审核</el-button>
-              </el-tooltip>
+              </el-tooltip> -->
 
 			      </span>
 		      </div>
@@ -227,8 +227,7 @@
 	          </el-tab-pane>
 	          <el-tab-pane label="购买纪录">
 	            <el-table :data="tableDataOne" empty-text="请点击客户显示其客户资料" border style="width: 100%">
-	              <!-- <el-table-column label="操作员工" prop="realname" header-align="center">
-                </el-table-column> -->
+	              
 
                 <el-table-column label="产品金额" prop="product_money" header-align="center">
                 </el-table-column>
@@ -239,17 +238,10 @@
                 <el-table-column label="产品周期" prop="product_t" header-align="center">
                 </el-table-column>
                 
-                <!-- <el-table-column label="身份证" prop="identity" align="center">
-                </el-table-column>
-                
-                <el-table-column label="通讯地址" prop="address" header-align="center">
-                </el-table-column> -->
-
-                <!-- <el-table-column label="创建时间" prop="time" align="center">
-                </el-table-column> -->
+               
 	            </el-table>
 	          </el-tab-pane>
-<el-tab-pane label="投诉记录">
+            <el-tab-pane label="投诉记录">
               <el-table :data="tableDataTwo"  empty-text="请点击客户显示跟踪信息" border style="width: 100%"  @row-dblclick="viewComplainContents">
                 <el-table-column prop="user" label="操作员工" header-align="center">
                 </el-table-column>
@@ -467,7 +459,7 @@ window.defaultOption.setDatas({
       this.$message.error("查询出错啦");
     });
 
-    this.$http.post("{:U('CommonFindDetail/findDealInfo')}",row).then(function(response){
+    this.$http.post("{:U('CommonFindDetail/findDealInfo')}",{user_id:row.cus_id}).then(function(response){
       this.tableDataOne = response.body;
     },function(response){
       this.$message.error("查询出错啦");

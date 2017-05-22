@@ -29,21 +29,8 @@ class CallBackController extends CommonController{
 	}
 
   public function badgeNum(){
-    /*$cusList=M('software_account')->getField('cus_id',true);
-    $operatorList=M('software_account')->getField('open_id',true);
-  	$operator_id=session('account')['userInfo']['user_id'];
-    $allCount=$this->M->where(array('call_back'=>'1','operator_id'=>$operator_id))->count();
-    if($cusList==null || $operatorList==null){
-      $badgeNum['already']=0;
-      $badgeNum['yet']=0;
-    }else{
-      $badgeNum['already']=$this->M->where(array('call_back'=>'1','operator_id'=>array('IN',$operatorList),'cus_id'=>array('IN',$cusList)))->count();
-      $yetNum=$allCount-$badgeNum['already'];
-      $badgeNum['yet']=$yetNum>0 ? $yetNum : 0 ;
-    }
-		return $badgeNum;*/
-    $badgeNum['already']=$this->M->where(array('callback_state'=>array('neq',0)))->count();
-    $badgeNum['yet']=$this->M->where(array('callback_state'=>'0'))->count();
+    $badgeNum['already']=$this->M->where(array('callback_id'=>session('uid'),'callback_state'=>array('neq',0)))->distinct(true)->field('cus_id')->count();
+    $badgeNum['yet']=$this->M->where(array('callback_id'=>session('uid'),'callback_state'=>'0'))->distinct(true)->field('cus_id')->count();
     return $badgeNum;
   }
 

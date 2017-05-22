@@ -20,8 +20,7 @@
         </div>  
 
         <div class="tabs" v-show="stepActive==1">
-            <input type="hidden" v-model="buyForm.product_name">
-            <input type="hidden" v-model="buyForm.product_t">
+            
             <el-form-item label="商品" prop="product_index">
                 <el-select placheholder="请选择" v-model="buyForm.product_index" @change="buySelectChange">
                     <el-option v-for="(product,index) in products" :label="product.name" :value="index"></el-option>
@@ -45,7 +44,7 @@
 
     <el-button  @click="prv" v-show="stepActive==1">上一步</el-button>
     <el-button  @click="next" v-show="stepActive==0">下一步</el-button>
-    <el-button type="primary" v-show="!buyFormSubmitStatus" @click="editFormSubmit(page.buyUrl, 'buy')" >确 定</el-button>
+    <el-button type="primary" v-show="!buyFormSubmitStatus" @click="buyFormSubmit(page.buyUrl, 'buy')" >确 定</el-button>
     <el-button type="primary" v-show="buyFormSubmitStatus" :loading="true" >提交中</el-button>
 
 </el-dialog>

@@ -152,7 +152,7 @@ class CustomerController extends CommonController {
             $timeCondition = D('Customer','Logic')->ThreeMonthsAge();
             $this->M->where(array("customers_basic.created_at"=>array('EGT',$timeCondition)));
 
-            $this->setGroupCondition(I('get.group',"user_id"));
+            $this->setGroupCondition(I('get.group',session('uid')));
 
             if (I('get.name')) {
                 $this->M->where(array("name"=> array('like', I('get.name')."%")));
@@ -564,12 +564,12 @@ class CustomerController extends CommonController {
         //添加购买纪录
 
         $row = $this->M->find(I("post.id"));
+        
         if (!$row) {
             $this->error("没找到对应的数据");
         }
         $this->setVType($this->M);
         $this->setDetail($this->M, array('id_card'=>I("post.id_card"), 'address'=>I('post.address'), 'name'=>I('post.name')));
-
         $re = $this->M->save();
         if ($re === false) {
             $this->error('更新失败');
@@ -577,17 +577,18 @@ class CustomerController extends CommonController {
 
         //购买纪录
         unset($_POST['id']);
-        $data = M('customers_buy')->create($_POST, 1);
+        $data = D('CustomerBuy')->create($_POST);
         // unset($data['id']);
         $data['cus_id'] = $row['id'];
         $data['user_id'] = session("uid");
-
+       
         $id = $this->addBuy($data);
+        
         if (!$id) {
             $this->error('购买失败');
         }
         $data['id'] = $id;
-
+        
         //自动分配给风控专员和回访专员
         tag(HOOK_DISTRIBUTE_BUY_CUSTOMER, $data);
 
@@ -601,14 +602,15 @@ class CustomerController extends CommonController {
 
     private function setDetail($m, $data){
         foreach ($data as $key => $value) {
-            if ($m->{$key} !== $value) {
-                $m->{$key} !== $value;
+
+            if ($m->{$key} != $value) {
+                $m->{$key} = $value;
             } 
         }
     }
 
     private function addBuy($data){
-        return M('customers_buy')->data($data)->add();
+        return D('CustomerBuy')->data($data)->add();
     }
 
     

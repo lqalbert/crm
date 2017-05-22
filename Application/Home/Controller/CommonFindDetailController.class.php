@@ -39,7 +39,9 @@ class CommonFindDetailController extends CommonController{
   *
   */
   public function findDealInfo(){
+    
     $re= M('customers_buy')->where(array('cus_id'=> I('post.user_id'), 'status'=>1))->select();
+    
     $this->ajaxReturn($re);
     /*$arr=M('deal_info as di')->join('user_info as ui on di.user_id=ui.user_id')->field('ui.realname,di.*')
          ->where(array('di.user_id'=>I('post.user_id'),'di.cus_id'=>I('post.cus_id')))->select();
@@ -88,6 +90,19 @@ class CommonFindDetailController extends CommonController{
     }  else {
       return $arr;
     }
+  }
+
+  /**
+  * 获取客户信息
+  * @param int id
+  */
+  public function getCustomerInfo(){
+    $row = D('Customer')->find(I("get.id"));
+    if (!$row) {
+      $this->error("未找到对应的客户");
+    }
+    $row['contacts'] = D('customerContact')->where(array('cus_id'=>$row['id']))->select();
+    $this->ajaxReturn($row);
   }   
 
   

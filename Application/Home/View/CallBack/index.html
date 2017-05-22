@@ -73,15 +73,15 @@
 		          </el-tooltip>
 
 		          <el-tooltip content="已经审核通过但未转给客服主管" placement="bottom-start" style="margin-left:10px;">
-		            <el-badge :value="{$badgeNum.already}" :max="9" >
-		              <el-button @click="setField('already')" size="small" type="primary">已审核</el-button>
-		            </el-badge>
+		            <!-- <el-badge :value="{$badgeNum.already}" :max="9" >
+		            </el-badge> -->
+                <el-button @click="setField('already')" size="small" type="primary">已审核</el-button>
 		          </el-tooltip>
 
 		          <el-tooltip content="等待审核的客户" placement="bottom-start" style="margin-left:15px;">
-		            <el-badge :value="{$badgeNum.yet}" :max="9" >
-		              <el-button @click="setField('yet')" type="info" size="small">待审核</el-button>
-		            </el-badge>
+		            <!-- <el-badge :value="{$badgeNum.yet}" :max="9" >
+		            </el-badge> -->
+                <el-button @click="setField('yet')" type="info" size="small">待审核</el-button>
 		          </el-tooltip>
 
 		          <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:15px;">
@@ -173,9 +173,9 @@
 			          <el-button size="small" @click="openDialog('assign')" type="primary">分配</el-button>
 			        </el-tooltip> -->
 
-			        <el-tooltip content="选择单个或多个客户分配给指定的客服主管" placement="right">
+			        <!-- <el-tooltip content="选择单个或多个客户分配给指定的客服主管" placement="right">
 			          <el-button size="small" @click="openDialog('batchAssign')" type="primary">分 配</el-button>
-			        </el-tooltip>
+			        </el-tooltip> -->
 
               <el-tooltip content="选择客户录入跟踪信息" placement="right" style="margin-left:10px;">
                 <el-button size="small" @click="openDialog('addTrack')" type="primary">录入跟踪</el-button>
@@ -185,9 +185,9 @@
                 <el-button size="small" @click="openDialog('complain')" type="primary" style="margin-left:10px;">客户投诉</el-button>
               </el-tooltip>
 
-<el-tooltip content="选择客户" placement="right" style="margin-left:10px;">
+<!-- <el-tooltip content="选择客户" placement="right" style="margin-left:10px;">
                     <el-button size="small" @click="openDialog('check')" type="primary">审核</el-button>
-                    </el-tooltip>
+                    </el-tooltip> -->
 			      </span>
 		      </div>
 		    </el-col>

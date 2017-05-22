@@ -3,7 +3,7 @@ namespace Home\Controller;
 
 class MakeOrderController extends CommonController {
     protected $pageSize = 15;
-    protected $table  = 'customers_buy';
+    protected $table  = 'CustomerBuy';
 
     private $dCondition = array(
             'customers_buy.risk_state' => 1,
@@ -23,12 +23,25 @@ class MakeOrderController extends CommonController {
     public function setQeuryCondition(){
 
         $this->dCondition['customers_buy.status'] = I('get.status');
-
-
         $this->M->join('user_info as ui on customers_buy.user_id=ui.user_id')
                 ->join('department_basic as db on ui.department_id = db.id', 'left')
                 ->field('customers_buy.* , ui.realname, db.name as department_name')
                 ->where($this->dCondition);
+    }
+
+
+    public function getList(){
+        $result = $this->_getList();
+        //echo $this->M->getLastSql();
+        if (IS_AJAX) {
+            $result['list'] = $this->M->decoratorButtons($result['list']);
+
+            $this->ajaxReturn($result);
+            // $this->ajaxReturn($this->M->getLastSql());
+        }  else {
+            
+            return $result;
+        }
     }
 
     public function addOrder(){
@@ -40,10 +53,17 @@ class MakeOrderController extends CommonController {
         if (!$data) {
             $this->error(M('customers_order')->getError());
         }
+
         M('customers_order')->startTrans();
-        $saveRe = M('customers_buy')->where(array('id'=>$data['buy_id']))->data(array('status'=>1))->save();
+
+        $buyRow = $this->M->find($data['buy_id']);
+
+        $saveRe = $this->M->where(array('id'=>$data['buy_id']))
+                                    ->data(array('status'=>1, 'todo_list'=>$this->delToList( $buyRow['todo_list'], 'order') ))
+                                    ->save();
         if ($saveRe === false) {
             M('customers_order')->rollback();
+            $this->error(M('customers_buy')->getErro());
         }
         
         $data['creater_id'] = session('uid');
@@ -91,9 +111,17 @@ class MakeOrderController extends CommonController {
         $id = I('post.cus_id');
         $semaster_id = I('post.semaster_id');
 
-        $data = array('semaster_id'=>$semaster_id,"id"=>$id);
-        $re   = D("Customer")->data($data)->save();
-        if ($re) {
+        $data = array('semaster_id'=>$semaster_id);
+        $re   = D("Customer")->where(array('id'=>$id))->data($data)->save();
+
+        $buyRow = $this->M->find(I("post.buy_id"));
+
+        $saveRe = $this->M->where(array('id'=>$buyRow['id']))
+                                    ->data(array('todo_list'=>$this->delToList( $buyRow['todo_list'], 'distribute') ))
+                                    ->save();
+        
+
+        if ($re!== false) {
             $this->success();
         } else {
             $this->error(D("Customer")->getError());
@@ -107,7 +135,16 @@ class MakeOrderController extends CommonController {
         if (!$data) {
             $this->error(M('software_account')->getError());
         } else {
-            $re = M('software_account')->save();
+            $re = M('software_account')->add();
+
+
+            $buyRow = $this->M->find(I("post.buy_id"));
+
+            $saveRe = $this->M->where(array('id'=>$buyRow['id']))
+                                    ->data(array('todo_list'=>$this->delToList( $buyRow['todo_list'], 'account') ))
+                                    ->save();
+
+
             if ($re) {
                 $this->success('操作成功');
             } else {
@@ -116,7 +153,15 @@ class MakeOrderController extends CommonController {
         }
     }
 
+    private function delToList($arr, $field){
+        $tmp = json_decode($arr);
+        $i = array_search($field,$tmp);
+        
+        if ($i !== false) {
+            unset($tmp[$i]);
+        }
 
-
+        return json_encode(array_values($tmp));
+    }
 
 }

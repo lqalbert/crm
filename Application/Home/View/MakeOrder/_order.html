@@ -41,7 +41,7 @@
 </el-form>
 <div slot="footer" class="dialog-footer">
     <el-button @click="closeDialog('order')">取 消</el-button>
-    <el-button type="primary" v-show="!orderFormSubmitStatus" @click="submitOrder(page.addOrderUrl)" >确 定</el-button>
+    <el-button type="primary" v-show="!orderFormSubmitStatus" @click="orderFormSubmit(page.addOrderUrl, 'order')" >确 定</el-button>
     <el-button type="primary" v-show="orderFormSubmitStatus" :loading="true" >保存中</el-button>
 </div>
 </el-dialog>

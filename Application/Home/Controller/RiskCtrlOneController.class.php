@@ -29,8 +29,8 @@ class RiskCtrlOneController extends CommonController{
 	}
 
   public function badgeNum(){
-		$badgeNum['already']=$this->M->where(array('risk_state'=>array('neq',0)))->count();
-		$badgeNum['yet']=$this->M->where(array('risk_state'=>'0'))->count();
+		$badgeNum['already']=$this->M->where(array('risk_id'=>session('uid'),   'risk_state'=>array('neq',0)))->count();
+		$badgeNum['yet']=$this->M->where(array('risk_id'=>session('uid'), 'risk_state'=>'0'))->count();
 		return $badgeNum;
   }
 

@@ -102,7 +102,7 @@ class UserModel extends  Model{
         if ($roleId) {
 
                 $where['role_id']  = $roleId;
-                $where['rbac_user.status']  = array('NEQ', RbacUserModel::DELETE_SATUS);
+                $where['rbac_user.status']  = array('GT', RbacUserModel::DELETE_SATUS);
                 return $this->m->join('user_info on rbac_user.id = user_info.user_id')
                         ->where($where)
                         ->field($field)
@@ -117,7 +117,7 @@ class UserModel extends  Model{
         if ($roleId) {
 
                 $where['role_id']  = $roleId;
-                $where['rbac_user.status']  = array('NEQ', RbacUserModel::DELETE_SATUS);
+                $where['rbac_user.status']  = array('GT', RbacUserModel::DELETE_SATUS);
                 return $this->m->join('user_info on rbac_user.id = user_info.user_id')
                         ->where($where)
                         ->field($field)
@@ -132,7 +132,7 @@ class UserModel extends  Model{
         if ($roleId) {
 
                 $where['role_id']  = $roleId;
-                $where['rbac_user.status']  = array('NEQ', RbacUserModel::DELETE_SATUS);
+                $where['rbac_user.status']  = array('GT', RbacUserModel::DELETE_SATUS);
                 return $this->cache('callback', 300)->m->join('user_info on rbac_user.id = user_info.user_id')
                         ->where($where)
                         ->field($field)
@@ -147,7 +147,7 @@ class UserModel extends  Model{
         if ($roleId) {
 
                 $where['role_id']  = $roleId;
-                $where['rbac_user.status']  = array('NEQ', RbacUserModel::DELETE_SATUS);
+                $where['rbac_user.status']  = array('GT', RbacUserModel::DELETE_SATUS);
                 return $this->cache('callback', 300)->m->join('user_info on rbac_user.id = user_info.user_id')
                         ->where($where)
                         ->field($field)

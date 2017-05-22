@@ -278,10 +278,6 @@
             <el-button size="small" @click="openDialog('addPlan')" type="primary" style="margin-left:10px;">计划</el-button>
           </el-tooltip>
 
-<!--           <el-tooltip content="选择客户对其转让给他人" placement="right">
-            <el-button size="small" @click="openDialog('addTransfer')" :disabled="true" type="warning" style="margin-left:10px;">转让</el-button>
-          </el-tooltip> -->
-
           <el-tooltip content="选择客户录入其提醒事项及内容" placement="right">
             <el-button size="small" @click="openDialog('addRemind')" type="info" style="margin-left:10px;">提醒</el-button>
           </el-tooltip>
@@ -306,10 +302,6 @@
   </div>
 
   <div id="app2" class="b" style="margin:5px -10px 5px;">
-      <!--<div class="superaddition">
-
-      </div>-->
-    <!--style="position: relative;top:-40px;"-->
     <el-row >
      <el-col :span="24">
         <el-tabs  type="border-card">
@@ -1078,12 +1070,15 @@
     if (this.stepActive-- < 0) this.stepActive = 0;
   }).setMethod('buySelectChange', function(val){
     
-    var row = this.products[val];
+    if (val) {
+      var row = this.products[val];
 
-    this.buyForm.product_id = row.id;
-    this.buyForm.product_name = row.name;
-    this.buyForm.product_money = row.price;
-    this.buyForm.product_t = row.service_cycle;
+      this.buyForm.product_id = row.id;
+      this.buyForm.product_name = row.name;
+      this.buyForm.product_money = row.price;
+      this.buyForm.product_t = row.service_cycle;
+    }
+    
 
   }).setMethod('buy', function(row){
     
