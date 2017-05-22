@@ -15,7 +15,7 @@ class PreCheckController extends CommonController {
 
     public function serach(){
         $result = $this->_getList();
-        // var_dump($this->M->getlastsql());
+        
         if (IS_AJAX) {
             $this->ajaxReturn($result); 
         }  else {
@@ -30,7 +30,7 @@ class PreCheckController extends CommonController {
         $sixMonthAgo = time()-15552000;
 
         $this->M->field('customers_basic.id,customers_basic.name,customers_basic.type, customers_basic.created_at,(customers_basic.service_time-'.$sixMonthAgo.') as s, ui.realname as user_name, db.name as db_name')
-                ->join('inner join customers_contacts as cc1 on customers_basic.id = cc1.cus_id')
+                
                 ->join('left join user_info as ui on customers_basic.salesman_id = ui.user_id')
                 ->join('left join department_basic as db on ui.department_id = db.id');
 
@@ -57,6 +57,7 @@ class PreCheckController extends CommonController {
                 
             }
         }
+        $cus_ids = array_keys(array_flip($cus_ids));
 
         if (count($cus_ids) !=0) {
             $where['customers_basic.id'] = array('IN', $cus_ids);
