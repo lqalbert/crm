@@ -137,7 +137,9 @@ class CommonController extends Controller {
 
 		$count = (int)$this->M->count();
 		$this->setQeuryCondition();
+
 		$list = $this->M->page(I('get.p',0). ','. $this->pageSize)->order('id desc')->select();
+		// var_dump($this->M->getLastSql());
 		$result = array('list'=>$list, 'count'=>$count);
 		
 		return $result;

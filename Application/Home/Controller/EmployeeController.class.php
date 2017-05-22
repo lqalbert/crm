@@ -37,6 +37,8 @@ class EmployeeController extends CommonController {
 			$this->M->where(array('account'=>array('like', I('get.name')."%")));
 		}
 
+		$this->M->where(array('rbac_user.id'=>array('neq', session('uid'))));
+
 
 	}
 
@@ -53,6 +55,7 @@ class EmployeeController extends CommonController {
 	}
 
 	private function getDepartmentId(){
+		// var_dump(session('account')['userInfo']['department_id']);
 		return session('account')['userInfo']['department_id'];
 	}
 
@@ -73,6 +76,7 @@ class EmployeeController extends CommonController {
 			'user_info.department_id'=>array('eq', $this->getDepartmentId()),
 			// 'role_id'=>array('NEQ', array()) 
 		));
+
 	}
 	private function setAllEmployee(){
 		
