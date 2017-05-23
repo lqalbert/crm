@@ -527,7 +527,7 @@
     console.log(this.tableDataTwo);
   }).setMethod('trackLog',function(row,event,column){
     this.commonFind("{:U('CommonFindDetail/trackInfo')}",'tableDataOne',row);
-    this.commonFind("{:U('CommonFindDetail/findDealInfo')}",'tableDataTwo',row);
+    this.commonFind("{:U('CommonFindDetail/findDealInfo')}",'tableDataTwo',{user_id:row.cus_id});
     //this.commonFind("{:U('CommonFindDetail/softwareInfo')}",'tableDataThree',row);
 
     row.condition = 'service';

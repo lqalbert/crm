@@ -1,6 +1,7 @@
 <?php
 namespace Home\Model;
 use Think\Model;
+use Home\Model\RoleModel ;
 
 class DepartmentModel extends Model {
 
@@ -149,6 +150,33 @@ BUTTON;
             'oprate' => $oprateColumn,
             'button' => $addButton
         );
+    }
+
+    public function getEmployeeRoles($type){
+        switch ($type) {
+            case 1:
+                //客服部
+                $re = D("Role")->where(array('ename'=>array(
+                    array('eq',RoleModel::SUP_SERVICE),array('eq',RoleModel::GEN_SERVICE), 'or')))->select();
+                break;
+            case 2:
+                //风控部
+                $re = D("Role")->where(array('ename'=>array(
+                    array('eq',RoleModel::RISK_ONE),array('eq',RoleModel::CALL_BACK),array('eq',RoleModel::DATASTAFF), 'or')))->select();
+                break;
+            case 3:
+                //人事
+                $re = D("Role")->where(array('ename'=>RoleModel::RISK_ONE))->select();
+                break;
+            
+            default:
+                //销售部
+                $re = D("Role")->where(array('ename'=>array(
+                    array('eq',RoleModel::CAPTAIN),array('eq',RoleModel::STAFF), 'or')))->select();
+                break;
+        }
+
+        return $re;
     }
 
 

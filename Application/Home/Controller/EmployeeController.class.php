@@ -59,7 +59,18 @@ class EmployeeController extends CommonController {
 
 	private function getDepartmentId(){
 		// var_dump(session('account')['userInfo']['department_id']);
-		return session('account')['userInfo']['department_id'];
+		if ($this->getRoleEname()=='gold') {
+			return 0;
+		} else {
+			$depart_id = session('account')['userInfo']['department_id'];
+			
+			if ($depart_id == 0) {
+				return 9999999;
+			} else {
+				return $depart_id;
+			}
+		}
+		
 	}
 
 	
@@ -105,7 +116,12 @@ class EmployeeController extends CommonController {
 		$this->setAllEmployee();
 	}
 
+	//风控经理
 	private function riskMasterCondition(){
+		$this->setDepartmentEmployee();
+	}
+	//客服经理
+	private function serviceMasterCondition(){
 		$this->setDepartmentEmployee();
 	}
 
@@ -132,8 +148,15 @@ class EmployeeController extends CommonController {
 
 
 	public function getRoles(){
-		$row = M('rbac_role')->field('level')->find(session('account')['userInfo']['role_id']);
-		return D('rbac_role')->where(array('level'=>array('gt', $row['level'])))->select();
+		/*$row = M('rbac_role')->field('level')->find(session('account')['userInfo']['role_id']);
+		return D('rbac_role')->where(array('level'=>array('gt', $row['level'])))->select();*/
+		$departRow = D("Department")->find(session('account')['userInfo']['department_id']);
+		if ($departRow) {
+			return D("Department")->getEmployeeRoles($departRow['type']);
+		} else {
+			return D('rbac_role')->select();
+		}
+		
 	}
 
 

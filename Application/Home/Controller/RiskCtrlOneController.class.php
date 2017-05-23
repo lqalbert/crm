@@ -62,7 +62,7 @@ class RiskCtrlOneController extends CommonController{
   }
 
   public function getList(){
-    $cusArr= $this->getMycust();
+    $cusArr= array_keys(array_flip($this->getMycust()));
   	// $this->setQeuryCondition();
 	  $count= count($cusArr);
 	  $this->setQeuryCondition();

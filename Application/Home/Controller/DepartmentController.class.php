@@ -15,7 +15,7 @@ class DepartmentController extends CommonController {
 		$this->assign("typeList", $type);
 		$this->assign("totalCount", $count);
 		$this->assign("zoneList", M('department_zone')->getField('id,name'));
-		$this->assign("divisions", D('DepartmentDivision')->field('id,name')->select());
+		$this->assign("divisions", D('DepartmentDivision')->where(array('status'=>array('egt', 0)))->field('id,name')->select());
 
 		 $ename = $this->getRoleEname();
 
@@ -65,6 +65,13 @@ class DepartmentController extends CommonController {
 
 	public function _before_edit(){
 		$this->setConfig();
+		$this->old = $this->M->find(I('post.id'));
+
+		$newUserId = I('post.user_id');
+		if ($this->old['user_id'] != $newUserId) {
+			M('user_info')->where(array('user_id'=>$newUserId))
+					      ->data(array('department_id'=>$this->old['id']))->save();
+		}
 	}
     
 

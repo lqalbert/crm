@@ -64,7 +64,10 @@ class BuyCheckController extends CommonController{
         if ($re) {
             if ($state==-1) {
                 //跟踪纪录
-                $pa = array('ids'=>$ids,
+                //跟踪纪录
+                $cus_ids = $this->M->where(array('id'=>array('in', $ids)))->getField('cus_id', true);
+                
+                $pa = array('ids'=>$cus_ids,
                             'content'=>I("post.mark"),
                             'user_id'=>session("uid"));
                 tag(HOOK_CHECK , $pa);

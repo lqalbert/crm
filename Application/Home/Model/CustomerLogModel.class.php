@@ -142,7 +142,12 @@ class CustomerLogModel extends Model {
     }
 
     public function transfer($v){
-        return UTC_to_locale_time($v);
+        if ($v) {
+          return UTC_to_locale_time($v);
+        } else {
+          return null;
+        }
+        
     }
 
     public function getUser(){

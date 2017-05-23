@@ -103,14 +103,15 @@
 		  	    <el-table-column label="{:L('INDEX')}" type="index" width="65"  ></el-table-column>
 
 		  	    <el-table-column  header-align="center" prop="name" label="客户姓名" width="150"></el-table-column>
-
-		  	    <el-table-column  header-align="center" prop="type" label="客户类型" sortable width="170">
+            
+            <!-- sortable='customer' -->
+		  	    <el-table-column  header-align="center" prop="type" label="客户类型"  width="170">
 		          <template scope="scope">
 		            {{ getType(scope.row.type, 'customerType') }}
 		          </template>
 		  	    </el-table-column>
-
-		        <el-table-column  header-align="center"  prop="realname" label="跟踪员工" sortable width="190">
+            <!-- sortable='customer' -->
+		        <el-table-column  header-align="center"  prop="realname" label="跟踪员工"  width="190">
 		        </el-table-column>
 
 	          <el-table-column  header-align="center" prop="qq" label="QQ号"  width="170">
@@ -422,8 +423,8 @@ window.defaultOption.setDatas({
     this.complainContentFormDialog = true;
     this.complainContentForm.content = row.content;
   }).setMethod('sortChange', function(sortObject){
-    console.log(sortObject);
-    console.log(this.searchForm);
+    /*console.log(sortObject);
+    console.log(this.searchForm);*/
     var sortMap = {
       ascending: 'asc',
       descending: 'desc'
@@ -436,7 +437,7 @@ window.defaultOption.setDatas({
       this.searchForm.sort_order = sortMap[sortObject.order];
     }
     this.dataLoad = true;
-    //this.loadDatalist();    
+    this.loadDatalist();    
   }).setVueHook('mounted', function(){
     var vmThis = this;
     //省份、城市

@@ -63,12 +63,13 @@ class CallBackController extends CommonController{
 
 
   public function getList(){
-  	$cusArr= $this->getMycust();
+  	$cusArr= array_keys(array_flip($this->getMycust()));
     // $this->setQeuryCondition();
     $count= count($cusArr);
 	  $this->setQeuryCondition();
 	  // $cusArr= $this->getMycust();
 	  $cusList=implode(",", $cusArr);
+
 	  if(empty($cusList)){
 	    $list =null;
       $count='0';
@@ -76,6 +77,7 @@ class CallBackController extends CommonController{
 	    $list = M('customers_basic as cb')->join("customers_contacts as cc on cb.id = cc.cus_id and cc.is_main = 1 ")
           ->join('left join user_info as ui on cb.salesman_id=ui.user_id')->field('ui.realname,cb.*,cc.*')
           ->where(array('cb.id'=>array('IN',$cusList)))->order("cb.id desc")->limit($this->getOffset().','.$this->pageSize)->select();
+        // var_dump(M('customers_basic as cb')->getlastsql());
 	    $count = $list==null ? '0' :$count;
     }
     //echo M('customers_basic as cb')->getLastSql();

@@ -50,7 +50,7 @@
 					    </el-table-column> -->
 					    <el-table-column prop="account" label="登录账号" width="100" >
 					    </el-table-column>
-						 <el-table-column prop="realname" label="员工姓名" width="150" align="center">
+						 <el-table-column prop="realname" label="员工姓名" width="150" >
 					    </el-table-column>
 					    <el-table-column prop="sex"  label="性别" width="80" align="center">
 						    <template scope="scope">
@@ -339,7 +339,7 @@
 			if(v==null || v==""){
 				return v;
 			}else{
-		    var date = new Date(v*1000);
+		      var date = new Date(v*1000);
 			  var year = date.getFullYear();
 			  var month = date.getMonth()+1;
 			  var day = date.getDate();
