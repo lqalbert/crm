@@ -62,6 +62,13 @@ class BuyCheckController extends CommonController{
         $this->checkRoleCondition();
         $re = $this->M->save();
         if ($re) {
+            if ($state==-1) {
+                //跟踪纪录
+                $pa = array('ids'=>$ids,
+                            'content'=>I("post.mark"),
+                            'user_id'=>session("uid"));
+                tag(HOOK_CHECK , $pa);
+            }
           $this->success('成功');
         } else {
           $this->error($this->M->getError());

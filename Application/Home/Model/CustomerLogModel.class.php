@@ -169,7 +169,7 @@ class CustomerLogModel extends Model {
 
     //获得跟踪方比例
     public function getTrackProportion($index){
-      var_dump(is_int($index));
+     
         if(is_int($index)){
             return $this->trackProportion[$index];
         }else{
