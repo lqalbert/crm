@@ -32,7 +32,7 @@ class MakeOrderController extends CommonController {
 
     public function getList(){
         $result = $this->_getList();
-        //echo $this->M->getLastSql();
+        // echo $this->M->getLastSql();
         if (IS_AJAX) {
             $result['list'] = $this->M->decoratorButtons($result['list']);
 
