@@ -10,9 +10,12 @@ class EmployeeController extends CommonController {
 
 	public function index (){
 
+
 		$this->assign("roleList", $this->getRoles());
 		$this->assign("groupList", D('Group')->where(array('status'=>1))->select());
 		$this->assign("sexType", array("未定义", "男", "女"));
+		$ename = $this->getRoleEname();
+    	$this->assign('viewDecorator', $this->M->decoratorView($ename));
 		$this->display();
 	}
 
@@ -44,7 +47,7 @@ class EmployeeController extends CommonController {
 
 	private function isHrDeparment(){
 		if (!isset($this->departmentRow)) {
-			$departmentRow = D('Department')->find($this->getDepartmentId());
+			$this->departmentRow = D('Department')->find($this->getDepartmentId());
 		}
 		
 		if ($this->departmentRow['type'] == DepartmentModel::HR_DEPARTMENT) {
@@ -62,7 +65,7 @@ class EmployeeController extends CommonController {
 	
 
 	private function setDeparmentQuery(){
-		$departmentRow = D('Department')->find($this->getDepartmentId());
+		$departmentRow = $this->departmentRow;
 		$config = json_decode($departmentRow['config'], true);
 		if (isset($config['EmployeeQueryCondition'])) {
 			call_user_func(array($this, 'set'.$config['EmployeeQueryCondition']));
@@ -88,6 +91,7 @@ class EmployeeController extends CommonController {
 
 	//人事
 	private function humanResourceCondition(){
+
 		if ($this->isHrDeparment()) {
 			$this->setAllEmployee();
 		} else {
@@ -101,6 +105,10 @@ class EmployeeController extends CommonController {
 		$this->setAllEmployee();
 	}
 
+	private function riskMasterCondition(){
+		$this->setDepartmentEmployee();
+	}
+
 
 
 	//部门经理
@@ -109,7 +117,7 @@ class EmployeeController extends CommonController {
 	}
 
 
-	public function setRoleCondition($M){
+	public function setRoleCondition(){
 		$this->roleEname = $this->getRoleEname();
         $funcName = $this->roleEname."Condition";
         if (method_exists($this, $funcName)) {

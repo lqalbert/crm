@@ -65,4 +65,76 @@ class RbacUserModel extends RelationModel {
              ->field('id,account,realname')
              ->select();
     }
+
+    public function decoratorView($roleEname){
+        $funcName = $roleEname."GetView";
+        // var_dump($this);
+        $arr =  new \ReflectionClass($this);
+        if (method_exists($this, $roleEname."GetView")) {
+            return call_user_func(array($this, $funcName));
+        } else {
+            return $this->getView();
+        }  
+    }
+
+    private function getView(){
+      return array(
+            'oprate' => '',
+            'button' => ''
+        );
+    }
+
+    //人事专员
+    private function humanResourceGetView(){
+        return $this->goldGetView();
+    }
+    //风控经理
+   private function riskMasterGetView(){
+        $this->departmentMasterGetView();
+    }
+
+    //部门经理
+     private function departmentMasterGetView(){
+       $oprateColumn = <<<'EOD'
+<el-table-column inline-template :context="_self"  fixed="right"  label="操作" width="220" align="center">
+  <span>
+    <el-button @click="handleEdit($index, row)"  size="small">编辑</el-button>
+    <el-button @click="handleSetRoles($index, row)" type="info" size="small">职能</el-button>
+  </span>
+</el-table-column>
+EOD;
+      $addButton ='<el-button type="primary" size="small" @click="openDialog(\'editPassword\')">修改账号密码</el-button>';
+ 
+        return array(
+            'oprate' => $oprateColumn,
+            'button' => $addButton
+        );
+    }
+
+    private function hrMasterGetView(){
+        return $this->humanResourceGetView();
+    }
+
+
+    private function goldGetView(){
+      $oprateColumn = <<<'EOD'
+<el-table-column inline-template :context="_self"  fixed="right"  label="操作" width="220" align="center">
+  <span>
+    <el-button @click="handleEdit($index, row)"  size="small">编辑</el-button>
+    <el-button @click="handleSetRoles($index, row)" type="info" size="small">职能</el-button>
+    <el-button @click="handleDelete($index, row)"  type="danger" size="small">删除</el-button>
+  </span>
+</el-table-column>
+EOD;
+      $addButton = <<< 'BUTTON'
+<el-button type="primary" size="small" @click="openDialog('add')">添加员工</el-button>
+<el-button type="primary" size="small" @click="openDialog('editPassword')">修改账号密码</el-button>
+BUTTON;
+      return array(
+            'oprate' => $oprateColumn,
+            'button' => $addButton
+        );
+    }
+
+
 }

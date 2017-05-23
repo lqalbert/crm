@@ -101,13 +101,14 @@
 					    <el-table-column prop="created_at" label="创建时间" width="190" align="center">
 					    </el-table-column>
 
-					    <el-table-column inline-template :context="_self"  fixed="right"  label="操作" width="220" align="center">
+					    <!-- <el-table-column inline-template :context="_self"  fixed="right"  label="操作" width="220" align="center">
 					      <span>
 					        <el-button @click="handleEdit($index, row)"  size="small">编辑</el-button>
 					        <el-button @click="handleSetRoles($index, row)" type="info" size="small">职能</el-button>
 					        <el-button @click="handleDelete($index, row)"  type="danger" size="small">删除</el-button>
 					      </span>
-					    </el-table-column>
+					    </el-table-column> -->
+					    {$viewDecorator['oprate']}
 
 				    </el-table>
 				</el-col>
@@ -119,12 +120,14 @@
 				  <el-col :span="12">
 				  <div class="grid-content bg-purple">
 				  	<el-button-group>
-					    <el-button type="primary" size="small" @click="openDialog('add')">添加员工</el-button>
+				  		{$viewDecorator['button']}
+					    <!-- <el-button type="primary" size="small" @click="openDialog('add')">添加员工</el-button> -->
+					    
 					    <!-- <el-button type="primary" size="small">修改一般信息</el-button> -->
 					    <!-- <el-button type="primary" size="small">修改核心信息</el-button> -->
 
 						<!-- <el-button type="primary" size="small" >修改身份信息</el-button> -->
-						<el-button type="primary" size="small" @click="openDialog('editPassword')">修改账号密码</el-button>
+						
 						<!-- <el-button type="primary" size="small" >确认身份</el-button>
 						<el-button type="primary" size="small">微调权限</el-button> -->
 						<!-- <el-button type="primary" size="small">终止员工</el-button> -->
