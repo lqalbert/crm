@@ -122,7 +122,7 @@ EOD;
   <span>
     <el-button @click="handleEdit($index, row)"  size="small">编辑</el-button>
     <el-button @click="handleSetRoles($index, row)" type="info" size="small">职能</el-button>
-    <el-button @click="handleDelete($index, row)"  type="danger" size="small">删除</el-button>
+    <el-button @click="handleDelete($index, row)"  type="danger" size="small">离职</el-button>
   </span>
 </el-table-column>
 EOD;
