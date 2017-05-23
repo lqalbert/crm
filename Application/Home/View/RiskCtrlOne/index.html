@@ -170,7 +170,7 @@
 			          <el-button size="small" type="primary" @click="openDialog('dipacth')">分 配</el-button>
 			        </el-tooltip> -->
 
-              <el-tooltip content="选择客户录入跟踪信息" placement="right" style="margin-left:10px;">
+              <el-tooltip content="选择客户录入跟踪信息" placement="right" >
                 <el-button size="small" @click="openDialog('addTrack')" type="primary">录入跟踪</el-button>
               </el-tooltip>
               <el-tooltip content="选择客户录入投诉意见" placement="right">
@@ -220,8 +220,8 @@
 	              <el-table-column prop="track_text" label="跟踪类型" header-align="center">
 	              </el-table-column>
 
-                <el-table-column prop="step" label="跟踪步骤" header-align="center">
-                </el-table-column>
+<!--                 <el-table-column prop="step" label="跟踪步骤" header-align="center">
+                </el-table-column> -->
 
 	            </el-table>
 	          </el-tab-pane>

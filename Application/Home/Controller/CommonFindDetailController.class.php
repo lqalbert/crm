@@ -59,6 +59,7 @@ class CommonFindDetailController extends CommonController{
   public function softwareInfo(){
   	$arr=M('software_account as sa')->join('user_info as ui on ui.user_id=sa.open_id')->field('ui.realname,sa.*')
          ->where(array('sa.user_id'=>I('post.user_id'),'sa.cus_id'=>I('post.cus_id')))->select();
+    echo M('software_account as sa')->getLastSql();die();
 		if (IS_AJAX) {
 			$this->ajaxReturn($arr);
 		}  else {
