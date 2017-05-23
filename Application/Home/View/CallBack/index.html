@@ -254,30 +254,23 @@
 
 	            </el-table>
 	          </el-tab-pane>
-	          <el-tab-pane label="客户资料">
-	            <el-table :data="tableDataTwo" empty-text="请点击客户显示其客户资料" border style="width: 100%">
-	              <el-table-column label="操作员工" prop="realname" header-align="center">
-	              </el-table-column>
 
-	              <el-table-column label="产品金额" prop="expense" header-align="center">
-	              </el-table-column>
+            <el-tab-pane label="购买纪录">
+              <el-table :data="tableDataTwo" empty-text="请点击客户显示其客户资料" border style="width: 100%">
+              <el-table-column label="产品金额" prop="product_money" header-align="center">
+              </el-table-column>
 
-	              <el-table-column label="产品类型" prop="pdt_id" header-align="center">
-                  <template scope="scope">
-                    {{ getPdt(scope.row.pdt_id, 'products') }}
-                  </template>
-	              </el-table-column>
-	              
-	              <el-table-column label="身份证" prop="identity" align="center">
-	              </el-table-column>
+              <el-table-column label="产品名称" prop="product_name" header-align="center">
+              </el-table-column>
 
-	              <el-table-column label="通讯地址" prop="address" header-align="center">
-	              </el-table-column>
+              <el-table-column label="产品周期" prop="product_t" header-align="center">
+              </el-table-column>
 
-	              <el-table-column label="创建时间" prop="time" align="center">
-	              </el-table-column>
-	            </el-table>
-	          </el-tab-pane>
+              <el-table-column label="购买时间" prop="buy_time" header-align="center">
+              </el-table-column>
+              
+              </el-table>
+            </el-tab-pane>
             <el-tab-pane label="投诉记录">
               <el-table :data="tableDataFour"  empty-text="请点击客户显示跟踪信息" border style="width: 100%"  @row-dblclick="viewComplainContents">
                 <el-table-column prop="user" label="操作员工" header-align="center">

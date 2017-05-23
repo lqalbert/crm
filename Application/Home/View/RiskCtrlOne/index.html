@@ -227,18 +227,14 @@
 	          </el-tab-pane>
 	          <el-tab-pane label="购买纪录">
 	            <el-table :data="tableDataOne" empty-text="请点击客户显示其客户资料" border style="width: 100%">
-	              
-
                 <el-table-column label="产品金额" prop="product_money" header-align="center">
                 </el-table-column>
-
                 <el-table-column label="产品名称" prop="product_name" header-align="center">
                 </el-table-column>
-
                 <el-table-column label="产品周期" prop="product_t" header-align="center">
                 </el-table-column>
-                
-               
+                <el-table-column label="购买时间" prop="buy_time" header-align="center">
+                </el-table-column>
 	            </el-table>
 	          </el-tab-pane>
             <el-tab-pane label="投诉记录">
