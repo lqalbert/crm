@@ -558,7 +558,10 @@
       ],
       product_index:[
         { required: true, message:"请选择产品", type:"number"}
-      ]
+      ],
+      buy_time:[
+        { type: 'date',required: true, message:"请选择够买时间", trigger:'blur'}
+      ] 
 
     },
     stepActive:0
@@ -726,8 +729,9 @@
     product_index:null,
     product_name:"",
     product_money:"",
-    product_t:"0",
+    product_t:"",
     name:"",
+    buy_time:"",
   },true).setMethod('getType', function(type, field){
       return this[field][type];
   }).setMethod('searchCustomer', function(){
@@ -932,8 +936,12 @@
   }).setMethod('refresh',function(){
     window.location.reload();
   }).setMethod('advancedQueryReset',function(){
-    // this.$refs.advancedQueryForm.resetFields();
-    this.closeDialog('advancedQuery');
+
+    console.log(this.$refs.advancedQueryForm);
+
+     this.$refs.advancedQueryForm.resetFields();
+    //this.closeDialog('advancedQuery');
+    //this.advancedQueryForm = Oassign({}, this._search)
   }).setMethod('advanceSearch',function(){
 
        for (var x  in  this.advancedQueryForm) {
@@ -1069,10 +1077,8 @@
   }).setMethod('prv', function(){
     if (this.stepActive-- < 0) this.stepActive = 0;
   }).setMethod('buySelectChange', function(val){
-    
-    if (val) {
+    if (val!= undefined ) {
       var row = this.products[val];
-
       this.buyForm.product_id = row.id;
       this.buyForm.product_name = row.name;
       this.buyForm.product_money = row.price;
@@ -1087,6 +1093,10 @@
     this.buyForm.address = row.address;
     this.buyForm.name = row.name;
     this.openDialog('buy')
+  }).setMethod('setBuyTime',function(v){
+    this.buyForm.buy_time = v;
+  }).setMethod('getServiceTime',function(v){
+    return v != "" ? v+'个月' : '请先选择产品!';
   });
 </script>
 

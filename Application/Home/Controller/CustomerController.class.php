@@ -195,7 +195,8 @@ class CustomerController extends CommonController {
             $this->M->order('customers_basic.id desc');
         }
         $list = $this->M->page(I('get.p',0). ','. $this->pageSize)->select();
-        
+        //echo $this->M->getLastSql();
+
         $result = array('list'=>$list, 'count'=>$count);
         
         return $result;
@@ -562,7 +563,6 @@ class CustomerController extends CommonController {
         //设成V
         //更新客户资料 如果不一样 id_card address
         //添加购买纪录
-
         $row = $this->M->find(I("post.id"));
         
         if (!$row) {
@@ -580,6 +580,7 @@ class CustomerController extends CommonController {
         $data = D('CustomerBuy')->create($_POST);
         // unset($data['id']);
         $data['cus_id'] = $row['id'];
+        $data['user_id'] = session("uid");
         $data['user_id'] = session("uid");
        
         $id = $this->addBuy($data);

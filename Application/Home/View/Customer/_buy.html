@@ -6,37 +6,40 @@
     
     <el-form  :rules="buyRules" ref="buyForm" :model="buyForm" v-model="buyForm" :label-position="'top'">
         <div class="tabs" v-show="stepActive==0">
-            <el-form-item label="姓名" prop="name">
+            <el-form-item label="姓名:" prop="name">
                 <el-input placeholder="姓名" v-model="buyForm.name"></el-input>
             </el-form-item>
 
-            <el-form-item label="身份证" prop="id_card">
+            <el-form-item label="身份证:" prop="id_card">
                 <el-input placeholder="身份证" v-model="buyForm.id_card"></el-input>
             </el-form-item>
 
-            <el-form-item label="详细地址" prop="address">
+            <el-form-item label="详细地址:" prop="address">
                 <el-input type="textarea" placeholder="详细地址" v-model="buyForm.address"></el-input>
             </el-form-item>
         </div>  
 
         <div class="tabs" v-show="stepActive==1">
-            
-            <el-form-item label="商品" prop="product_index">
+            <el-form-item label="商品:" prop="product_index">
                 <el-select placheholder="请选择" v-model="buyForm.product_index" @change="buySelectChange">
                     <el-option v-for="(product,index) in products" :label="product.name" :value="index"></el-option>
                 </el-select>
             </el-form-item>
 
-            <el-form-item label="价格">
+            <el-form-item label="价格:">
                 <el-col :span="10">
                     <el-input placeholder="价格" v-model="buyForm.product_money"></el-input>
                 </el-col>
             </el-form-item>
 
-            <el-form-item label="服务周期">
-                {{buyForm.product_t}} 个月
+            <el-form-item label="服务周期:">
+                {{ getServiceTime(buyForm.product_t) }} 
             </el-form-item>
 
+            <el-form-item label="够买时间:"  prop="buy_time">
+               <el-date-picker v-model="buyForm.buy_time" :editable="false" type="date" placeholder="选择日期" @change="setBuyTime">
+               </el-date-picker>
+            </el-form-item>
 
         </div>    
         
