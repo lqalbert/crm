@@ -43,13 +43,16 @@ class CommonFindDetailController extends CommonController{
     $re= M('customers_buy')->where(array('cus_id'=> I('post.user_id'), 'status'=>1))->select();
     
     $this->ajaxReturn($re);
-    /*$arr=M('deal_info as di')->join('user_info as ui on di.user_id=ui.user_id')->field('ui.realname,di.*')
-         ->where(array('di.user_id'=>I('post.user_id'),'di.cus_id'=>I('post.cus_id')))->select();
-		if (IS_AJAX) {
-			$this->ajaxReturn($arr);
-		}  else {
-			return $arr;
-		}*/
+    // $arr=M('customers_buy as cy')->join('customers_basic as cb on cy.cus_id=cb.id')
+    // ->join('user_info as ui on ui.user_id=cy.user_id')
+    // ->field('ui.realname,cy.product_id as pdt_id,cy.product_name,cy.product_money as expense,cy.buy_time as time,cb.id_card as identity,cb.address')
+    // ->where(array('cus_id'=>I('post.cus_id')))->select();
+    //echo M('customers_buy as cy')->getLastSql();die();
+		// if (IS_AJAX) {
+		// 	$this->ajaxReturn($arr);
+		// }  else {
+		// 	return $arr;
+		// }
   }
 
   /**
@@ -59,7 +62,7 @@ class CommonFindDetailController extends CommonController{
   public function softwareInfo(){
   	$arr=M('software_account as sa')->join('user_info as ui on ui.user_id=sa.open_id')->field('ui.realname,sa.*')
          ->where(array('sa.user_id'=>I('post.user_id'),'sa.cus_id'=>I('post.cus_id')))->select();
-    echo M('software_account as sa')->getLastSql();die();
+    //echo M('software_account as sa')->getLastSql();die();
 		if (IS_AJAX) {
 			$this->ajaxReturn($arr);
 		}  else {

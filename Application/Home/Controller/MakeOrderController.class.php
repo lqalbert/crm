@@ -130,7 +130,7 @@ class MakeOrderController extends CommonController {
 
     public function setAccount(){
         $_POST['open_id'] = session('uid');
-        $_POST['user_id'] = 0;
+        $_POST['user_id'] = I('user_id');
         $data = M('software_account')->create();
         if (!$data) {
             $this->error(M('software_account')->getError());

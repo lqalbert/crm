@@ -581,7 +581,7 @@ class CustomerController extends CommonController {
         // unset($data['id']);
         $data['cus_id'] = $row['id'];
         $data['user_id'] = session("uid");
-        $data['user_id'] = session("uid");
+       // $data['user_id'] = session("uid");
        
         $id = $this->addBuy($data);
         

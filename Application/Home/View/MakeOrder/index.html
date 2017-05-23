@@ -158,7 +158,8 @@
      pdt_id:"",
      mark:"",
      cus_id:"",
-     buy_id:""
+     buy_id:"",
+     user_id:'',
     },true).setMethod('handleSelectionChange', function(val){
         this.multipleSelection = val;
     }).setMethod('setOrders', function(row){
@@ -233,6 +234,7 @@
         this.openDialog('distribute');
     }).setMethod('setAccount', function(row){
         this.accountForm.cus_id = row.cus_id;
+        this.accountForm.user_id = row.user_id;
         this.accountForm.pdt_id = row.product_id;
         this.accountForm.buy_id = row.id
         this.openDialog('account');
