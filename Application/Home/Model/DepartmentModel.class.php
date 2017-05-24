@@ -165,8 +165,8 @@ BUTTON;
                     array('eq',RoleModel::RISK_ONE),array('eq',RoleModel::CALL_BACK),array('eq',RoleModel::DATASTAFF), 'or')))->select();
                 break;
             case 3:
-                //人事
-                $re = D("Role")->where(array('ename'=>RoleModel::RISK_ONE))->select();
+                //人事部
+                $re = D("Role")->where(array('status'=>1))->select();
                 break;
             
             default:

@@ -101,14 +101,14 @@
 		  	    <el-table-column label="{:L('INDEX')}" type="index" width="65"  ></el-table-column>
 
 		  	    <el-table-column  header-align="center" prop="name"  label="客户姓名" width="150"></el-table-column>
-
-		  	    <el-table-column  header-align="center" prop="type" label="客户类型" sortable width="170">
+            <!-- sortable -->
+		  	    <el-table-column  header-align="center" prop="type" label="客户类型"  width="170">
 		          <template scope="scope">
 		            {{ getType(scope.row.type, 'customerType') }}
 		          </template>
 		  	    </el-table-column>
-
-		        <el-table-column  header-align="center"  prop="realname" label="跟踪员工" sortable width="190">
+            <!-- sortable -->
+		        <el-table-column  header-align="center"  prop="realname" label="跟踪员工"  width="190">
 		        </el-table-column>
 
 	          <el-table-column  header-align="center" prop="qq" label="QQ号"  width="170">
@@ -526,7 +526,7 @@
     },function(response){
       vmThis.$message.error("查询出错啦");
     });
-    //console.log(this.tableDataTwo);
+    // console.log(this.tableDataTwo);
   }).setMethod('trackLog',function(row,event,column){
     this.commonFind("{:U('CommonFindDetail/trackInfo')}",'tableDataOne',row);
     this.commonFind("{:U('CommonFindDetail/findDealInfo')}",'tableDataTwo',{user_id:row.cus_id});
