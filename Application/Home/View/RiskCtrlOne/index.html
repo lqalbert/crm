@@ -68,13 +68,13 @@
 		            <el-button  size="small" @click="searchReset">重置</el-button>
 		          </el-tooltip>
 
-		          <el-tooltip content="已审核" placement="bottom-start" style="margin-left:10px;">
+		          <el-tooltip content="已经审核通过的客户" placement="bottom-start" style="margin-left:10px;">
 		            <!-- <el-badge :value="{$badgeNum.already}" :max="9" >
                 </el-badge> -->
                 <el-button size="small" type="primary" @click="setField('already')">已审核</el-button>
 		          </el-tooltip>
 
-		          <el-tooltip content="待审核" placement="bottom-start" style="margin-left:15px;">
+		          <el-tooltip content="等待审核的客户" placement="bottom-start" style="margin-left:15px;">
 		            <!-- <el-badge :value="{$badgeNum.yet}" :max="9" >
 		            </el-badge> -->
                 <el-button type="info" size="small" @click="setField('yet')">待审核</el-button>

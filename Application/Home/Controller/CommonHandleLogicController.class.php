@@ -53,7 +53,6 @@ class CommonHandleLogicController extends CommonController{
   *
   */
   public function addComplain(){
-    
     $LogM = D('CustomerLog');
     $cusM = D('Customer');
     $msgBox = D('MsgBox');
@@ -71,8 +70,8 @@ class CommonHandleLogicController extends CommonController{
         return L('ADD_ERROR').$LogM->getError();
     }
 
-   // $cusM ->find($LogM->cus_id);
-    $cusM ->field('type')->find($LogM->cus_id);
+    //$cusM ->field('type')->find($LogM->cus_id);
+    $cusM->find($LogM->cus_id);
 
     if ($to_type !== "" &&  $to_type != I('post.type')) {
         $LogM->contentSetChangeType(I('post.type'), $to_type);
