@@ -192,9 +192,14 @@ class CommonController extends Controller {
 				$this->error("还没有分配部门给你，暂时不能添加");
 			}
 		}*/
-		if (session('account')['userInfo']['department_id']==0) {
-			$this->error("还没有分配部门给你，暂时不能添加");
+		$rolename = $this->getRoleEname();
+		if ($rolename!='gold') {
+			if (session('account')['userInfo']['department_id']==0) {
+				$this->error("还没有分配部门给你，暂时不能添加");
+			}
 		}
+
+		
 	}
 
 	/**

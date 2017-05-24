@@ -66,6 +66,10 @@ class MakeOrderController extends CommonController {
             $this->error(M('customers_buy')->getErro());
         }
         
+        //试验性的
+        M()->query('update customers_basic set semaster_id=0, gen_id=0 where (semaster_id<>0 or gen_id<>0) and id='.$data['cus_id']);
+
+
         $data['creater_id'] = session('uid');
         $re = M('customers_order')->data($data)->add();
         if ($re) {
