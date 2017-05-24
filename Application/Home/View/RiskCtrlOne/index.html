@@ -102,19 +102,19 @@
             
 		  	    <el-table-column label="{:L('INDEX')}" type="index" width="65"  ></el-table-column>
 
-		  	    <el-table-column  header-align="center" prop="name" label="客户姓名" width="150"></el-table-column>
+		  	    <el-table-column  header-align="center" prop="name" label="客户姓名"></el-table-column>
             
             <!-- sortable='customer' -->
-		  	    <el-table-column  header-align="center" prop="type" label="客户类型"  width="170">
+		  	    <el-table-column  header-align="center" prop="type" label="客户类型">
 		          <template scope="scope">
 		            {{ getType(scope.row.type, 'customerType') }}
 		          </template>
 		  	    </el-table-column>
             <!-- sortable='customer' -->
-		        <el-table-column  header-align="center"  prop="realname" label="跟踪员工"  width="190">
+		        <el-table-column  header-align="center"  prop="realname" label="跟踪员工">
 		        </el-table-column>
 
-	          <el-table-column  header-align="center" prop="qq" label="QQ号"  width="170">
+	          <el-table-column  header-align="center" prop="qq" label="QQ号">
 	            <template scope="scope">
 	              {{ scope.row.qq }}
 	              <a v-if="scope.row.qq" :href="getTenct(scope.row.qq)">
@@ -123,17 +123,17 @@
 	            </template>
 	          </el-table-column>
 
-		        <el-table-column header-align="center" prop="qq_nickname" label="QQ昵称"  width="170"></el-table-column>
+		        <el-table-column header-align="center" prop="qq_nickname" label="QQ昵称"></el-table-column>
 
-		  	    <el-table-column prop="phone" label="手机" align="center" width="130"></el-table-column>
+		  	    <el-table-column prop="phone" label="手机" align="center"></el-table-column>
 
-		        <el-table-column  header-align="center" prop="weixin" label="微信号" align="left" width="170">
+		        <el-table-column  header-align="center" prop="weixin" label="微信号" align="left">
 	            <template scope="scope">
 	              {{ scope.row.weixin }}
 	            </template>
 		        </el-table-column>
 
-		        <el-table-column  header-align="center" prop="weixin_nickname" label="微信昵称" align="left" width="170">
+		        <el-table-column  header-align="center" prop="weixin_nickname" label="微信昵称" align="left">
 	            <template scope="scope">
 	              {{ scope.row.weixin_nickname }}
 	            </template>
@@ -147,13 +147,13 @@
 
 		        <el-table-column  prop="conflict" label="最后冲突时间" align="center" width="175"></el-table-column> -->
 
-		        <el-table-column  header-align="center"  label="地区" width="135">
+		        <el-table-column  header-align="center"  label="地区">
 		          <template scope="scope">
 		            {{ scope.row.province_name+"-"+scope.row.city_name }}
 		          </template>
 		        </el-table-column>
 
-		        <el-table-column prop="sex"  label="性别" width="80"  header-align="center">
+		        <el-table-column prop="sex"  label="性别" header-align="center">
 		          <template scope="scope">
 		            {{ getType(scope.row.sex, 'sexType') }}
 		          </template>
