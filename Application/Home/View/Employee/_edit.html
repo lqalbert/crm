@@ -18,6 +18,18 @@
             </el-form-item>
           </el-col>
         </el-row>
+        
+        <el-row v-if="departmentItem==1">
+          <el-col>
+            <el-form-item label="所属部门" prop="department_id">
+              <el-select v-model="editForm.department_id">
+                <el-option v-for="department in departments" :label="department.name" :value="department.id"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+
         <el-row>
           <el-col :span="12">
             <el-form-item label="头像">

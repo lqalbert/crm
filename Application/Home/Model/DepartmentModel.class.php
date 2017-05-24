@@ -126,6 +126,7 @@ EOD;
     <el-button size="small"  @click="openDialog('hr')"  type="primary">人事专员</el-button>
 </el-tooltip>
 BUTTON;
+     
       return array(
             'oprate' => $oprateColumn,
             'button' => $addButton
@@ -178,6 +179,8 @@ BUTTON;
 
         return $re;
     }
+
+    
 
 
     

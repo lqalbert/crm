@@ -37,7 +37,7 @@ class RbacUserModel extends RelationModel {
         $id_arr = explode(",", $ids);
         $date   = Date('Y-m-d');
         $sql     = "update ".$this->tableName. " set `status`=-1, `account` = CONCAT(`account`, '_$date') where id=%d";
-        $sql2    = "update user_info set  `realname` = CONCAT(`realname`, '_".$date."_删除') where user_id=%d";
+        $sql2    = "update user_info set  `realname` = CONCAT(`realname`, '_".$date."_离职') where user_id=%d";
         $this->startTrans();
         
         
@@ -69,7 +69,7 @@ class RbacUserModel extends RelationModel {
     public function decoratorView($roleEname){
         $funcName = $roleEname."GetView";
         // var_dump($this);
-        $arr =  new \ReflectionClass($this);
+        
         if (method_exists($this, $roleEname."GetView")) {
             return call_user_func(array($this, $funcName));
         } else {
@@ -122,7 +122,7 @@ EOD;
   <span>
     <el-button @click="handleEdit($index, row)"  size="small">编辑</el-button>
     <el-button @click="handleSetRoles($index, row)" type="info" size="small">职能</el-button>
-    <el-button @click="handleDelete($index, row)"  type="danger" size="small">离职</el-button>
+    <el-button @click="handleQuit($index, row)"  type="danger" size="small">离职</el-button>
   </span>
 </el-table-column>
 EOD;

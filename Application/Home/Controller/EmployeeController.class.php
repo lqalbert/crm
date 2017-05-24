@@ -16,6 +16,9 @@ class EmployeeController extends CommonController {
 		$this->assign("sexType", array("未定义", "男", "女"));
 		$ename = $this->getRoleEname();
     	$this->assign('viewDecorator', $this->M->decoratorView($ename));
+    	$this->assign('departments', D('Department')->getAllDepartments('id,name'));
+    	$this->assign('depart_id', $this->getDepartmentId());
+    	$this->assign('departmentItem', $this->setEmployeeDepartemtnItem());
 		$this->display();
 	}
 
@@ -23,13 +26,14 @@ class EmployeeController extends CommonController {
 
 		// $this->M->relation(true)->field('password',true)->where(array('no_authorized'=>0));
 		$this->M->join('user_info ON rbac_user.id = user_info.user_id')
-		        ->field('account,address,
+				->join('department_basic as db on user_info.department_id=db.id')
+		        ->field('db.name as department_name,account,user_info.address,
 		        	area_city,area_district,
 		        	area_province,created_at,
 		        	department_id,group_id,
-		        	head,id,mphone,no_authorized,phone,
-		        	qq,qq_nickname,realname,role_ename,role_id,sex,status,user_id,weixin,weixin_nikname,id_card,card_img,card_front,card_back,ip,location,lg_time,out_time')->where(array('no_authorized'=>0))
-		        ->where(array('rbac_user.status'=>array('EGT',0)));
+		        	head,rbac_user.id,mphone,no_authorized,phone,
+		        	qq,qq_nickname,realname,role_ename,role_id,sex,rbac_user.status,user_info.user_id,weixin,weixin_nikname,id_card,card_img,card_front,card_back,ip,location,lg_time,out_time')->where(array('no_authorized'=>0))
+		        ->where(array('rbac_user.status'=>I('get.status')));
 
 		/*$user = new User;
 		$user->getRoleObject();
@@ -40,15 +44,24 @@ class EmployeeController extends CommonController {
 			$this->M->where(array('account'=>array('like', I('get.name')."%")));
 		}
 
+		if (isset($_GET['realname'])) {
+			$this->M->where(array('realname'=>array('like', I('get.realname')."%")));
+		}
+
 		$this->M->where(array('rbac_user.id'=>array('neq', session('uid'))));
 
 
 	}
 
-	private function isHrDeparment(){
+	private function getDepartmentRow(){
 		if (!isset($this->departmentRow)) {
 			$this->departmentRow = D('Department')->find($this->getDepartmentId());
 		}
+		return $this->departmentRow;
+	}
+
+	private function isHrDeparment(){
+		$this->getDepartmentRow();
 		
 		if ($this->departmentRow['type'] == DepartmentModel::HR_DEPARTMENT) {
 			return true; //$_POST['department_id'] = 0;
@@ -296,6 +309,18 @@ class EmployeeController extends CommonController {
 		} else {
 			$this->error($this->M->getError().$this->M->getLastSql());
 		}
+	}
+
+	public function setEmployeeDepartemtnItem(){
+		if ($this->getRoleEname()=='gold') {
+			return 1;
+		} else if(session('account')['userInfo']['department_id']!=0){
+			$row = $this->getDepartmentRow();
+			if ($row['type']==DepartmentModel::HR_DEPARTMENT) {
+				return 1;
+			} 
+		}
+		return 0;
 	}
 
 	/*public function _before_delete() {

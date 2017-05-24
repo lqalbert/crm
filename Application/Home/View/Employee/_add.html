@@ -23,6 +23,15 @@
         </el-form-item>
       </el-col>
     </el-row>
+    <el-row v-if="departmentItem==1">
+      <el-col>
+        <el-form-item label="所属部门" prop="department_id">
+          <el-select v-model="addForm.department_id">
+            <el-option v-for="department in departments" :label="department.name" :value="department.id"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+    </el-row>
     </el-tab-pane>
     <el-tab-pane label="其它信息" name="second">
       <el-row>

@@ -207,7 +207,10 @@ class CommonController extends Controller {
 	* 
 	*/
 	protected function getRoleEname(){
-		return (new RoleModel)->getEnameById(session('account')['userInfo']['role_id']);
+		if (!isset($this->_roleEname)) {
+			$this->_roleEname = (new RoleModel)->getEnameById(session('account')['userInfo']['role_id']);
+		}
+		return $this->_roleEname ;
 	}
 
 

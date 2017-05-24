@@ -287,7 +287,7 @@
   }).setMethod('filterTag', function(value, row){
      return row.{$state_text} === value;
    }).setMethod('checkStatus', function(row, index){
-      return row.{$state_text} === 0;
+      return row.{$state_text} == 0;
    });
 </script>
 
