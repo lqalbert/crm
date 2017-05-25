@@ -430,7 +430,9 @@
   page.buyUrl = "{:U('buy')}";
   var checkIdNum=function(rule,value,callback){
     var number=/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
-    if(!number.test(value)){
+    if(value==='' || value===null){
+      callback();
+    }else if(!number.test(value)){
       callback('身份证号格式错误');
     }else{
       callback();
@@ -617,20 +619,20 @@
 
     buyRules:{
       name:[
-        { required: true, message:"请输入客户姓名"}
+        { required: true, message:"请输入客户姓名",trigger:'blur'}
       ],
       id_card:[
         { required: true, message:"请输入身份证号", trigger:'blur'},
         { validator: checkIdNum, trigger:'blur' },
       ],
       address:[
-        {required: true, message:'请输入详细地址'}
+        {required: true, message:'请输入详细地址',trigger:'blur'}
       ],
       product_index:[
-        { required: true, message:"请选择产品", type:"number"}
+        { required: true, message:"请选择产品", type:"number",trigger:'change'}
       ],
       buy_time:[
-        { type: 'date',required: true, message:"请选择够买时间", trigger:'blur'}
+        { type: 'date',required: true, message:"请选择够买时间", trigger:'change'}
       ] 
 
     },
@@ -1142,7 +1144,18 @@
       vmThis.$message.error("操作出错啦");
     });
   }).setMethod('next', function(){
-    if (this.stepActive++ > 1) this.stepActive = 0;
+    var  vmThis   = this;
+    delete vmThis.buyRules.product_index;
+    delete vmThis.buyRules.buy_time;
+    this.$refs.buyForm.validate(function(valid){
+      if (valid) {
+        if (vmThis.stepActive++ > 1) vmThis.stepActive = 0;
+        vmThis.buyRules.product_index = [{ required: true, message:"请选择产品", type:"number",trigger:'change'}];
+        vmThis.buyRules.buy_time = [{ type: 'date',required: true, message:"请选择够买时间", trigger:'change'}];
+      } else {
+        return false;
+      }
+    });
   }).setMethod('beforeBuy', function(){
     this.stepActive = 0;
   }).setMethod('prv', function(){
@@ -1168,6 +1181,16 @@
     this.buyForm.buy_time = v;
   }).setMethod('getServiceTime',function(v){
     return v != "" ? v+'个月' : '请先选择产品!';
+  }).setMethod('steCondition',function(){
+   // console.log(this.$refs.buyForm);
+    // this.$refs.buyForm.validate(function(valid){
+    //   if (valid) {
+    //     alert('submit!');
+    //   } else {
+    //     alert('error submit!!');
+    //     return false;
+    //   }
+    // });
   });
 </script>
 

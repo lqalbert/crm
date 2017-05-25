@@ -36,7 +36,7 @@
                 {{ getServiceTime(buyForm.product_t) }} 
             </el-form-item>
 
-            <el-form-item label="够买时间:"  prop="buy_time">
+            <el-form-item label="够买时间:"  prop="buy_time" required>
                <el-date-picker v-model="buyForm.buy_time" :editable="false" type="date" placeholder="选择日期" @change="setBuyTime">
                </el-date-picker>
             </el-form-item>
@@ -46,8 +46,11 @@
     </el-form>
 
     <el-button  @click="prv" v-show="stepActive==1">上一步</el-button>
-    <el-button  @click="next" v-show="stepActive==0">下一步</el-button>
-    <el-button type="primary" v-show="!buyFormSubmitStatus" @click="buyFormSubmit(page.buyUrl, 'buy')" >确 定</el-button>
+    <!-- <el-button  @click="next" v-show="stepActive==0">下一步</el-button> -->
+    <el-tooltip content="须先填写本页必填项后方可下一步" placement="bottom-start">
+        <el-button  @click="next" v-show="stepActive==0">下一步</el-button>
+    </el-tooltip>
+    <el-button type="primary" v-show="!buyFormSubmitStatus" @click="buyFormSubmit(page.buyUrl, 'buy')" style="margin-left:10px;">确 定</el-button>
     <el-button type="primary" v-show="buyFormSubmitStatus" :loading="true" >提交中</el-button>
 
 </el-dialog>
