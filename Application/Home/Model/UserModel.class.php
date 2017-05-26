@@ -96,6 +96,7 @@ class UserModel extends  Model{
 
         return M('user_info')->select();
     }
+ 
 
 
 

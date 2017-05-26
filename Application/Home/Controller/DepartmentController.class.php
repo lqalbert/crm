@@ -170,6 +170,17 @@ class DepartmentController extends CommonController {
 	}
 
 
+	public function getDepartmentsByStatus(){
+		$status = I('get.status',1);
+		$list = $this->M->where(array("status"=>$status))->select();
+		$this->ajaxReturn($list);
+        // echo json_decode($list);
+	}
+
+	
+
+
+
 
 
 }

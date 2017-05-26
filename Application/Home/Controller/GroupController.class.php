@@ -100,5 +100,13 @@ class GroupController extends CommonController {
 		$this->ajaxReturn($contactList);
 	}
 
+		public function getGroupsByDepartmentId(){
+		$department_id = I('get.department_id');
+		$list = $this->M->where(array("department_id"=>$department_id))->select();
+
+		$this->ajaxReturn($list);
+        // echo json_decode($list);
+	}
+
 
 }

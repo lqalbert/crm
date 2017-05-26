@@ -25,6 +25,19 @@ class RbacUserModel extends RelationModel {
      protected $_auto = array ( 
          array('password','cryptPawssword',3,'callback') , // 对password字段在新增和编辑的时候使md5函数处理
      );
+   protected $statusType = array(
+        "1"=>"在职",
+        "2"=>"离职",
+    );
+   protected $entrySources = array(
+             '1'=>'58同城',
+             '2'=>'赶集',
+             '3'=>'智联',
+             '4'=>'前程',
+             '5'=>'校招',
+             '6'=>'介绍',
+             '7'=>'其他',
+    );
 
 
     public function cryptPawssword($p){
@@ -64,5 +77,38 @@ class RbacUserModel extends RelationModel {
              ->where(array('department_id'=>$depart_id, 'rbac_user.status'=>array('EQ', self::DELETE_SATUS)))
              ->field('id,account,realname')
              ->select();
+    }
+
+
+
+     /**
+    * 返回类型 或 所有的类型
+    * 
+    * @return string|array
+    */
+    public function getStatusType($index=NULL){
+        if (!empty($index)) {
+            return $this->statusType[strtoupper($index)];
+        } else {
+            return $this->statusType;
+        }
+    }
+
+
+        public function getSources(){
+            $entrySources = array(
+             '1'=>'58同城',
+             '2'=>'赶集',
+             '3'=>'智联',
+             '4'=>'前程',
+             '5'=>'校招',
+             '6'=>'介绍',
+             '7'=>'其他',
+            );
+        $SourcesArr = array();
+        foreach($entrySources as $key=>$value){
+            $SourcesArr[] = Array('id'=>$key,'name'=>$value);
+        }
+        return $SourcesArr;
     }
 }

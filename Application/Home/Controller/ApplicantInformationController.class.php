@@ -3,7 +3,7 @@ namespace Home\Controller;
 use Common\Lib\User;
 use Home\Model\RbacUserModel;
 
-class EmployeeController extends CommonController {
+class ApplicantInformationController extends CommonController {
 	protected $table="RbacUser";
 	protected $pageSize = 13;
 
@@ -16,7 +16,6 @@ class EmployeeController extends CommonController {
 		$this->assign("sexType", array("未定义", "男", "女"));
 		$this->assign("marriageType", array("未定义", "未婚", "已婚"));
 		$this->assign("sourcesList", $D->getSources());
-
 		/*$this->assign("sourcesList", $this->getSources());*/
 		$allProvinces = D('AreaInfo')->where("p_id=1")->order("id asc")->select();
 		$provinces_arr = array();
@@ -37,55 +36,18 @@ class EmployeeController extends CommonController {
 		foreach($allDistricts as $kkk=>$vvv){
 			$districts_arr[$vvv["id"]] = $vvv["name"];
 		}
-		//所属小组
-		$allGroups = D("GroupBasic")->order("id asc")->select();
-		foreach($allGroups as $k=>$v){
-			$groups_arr[$v["id"]] = $v["name"];
-		}
-		//所属部门
-		$allDepartments = D("DepartmentBasic")->order("id asc")->select();
-		foreach($allDepartments as $k=>$v){
-			$departments_arr[$v["id"]] = $v["name"];
-		}
-		//员工职能
-		$allRoles = D("RbacRole")->order("id asc")->select();
-		foreach($allRoles as $k=>$v){
-			$roles_arr[$v["id"]] = $v["name"];
-		}
-
-		
 		$this->assign("allProvinces", $provinces_arr);
 		$this->assign("allCities", $cities_arr);
 		$this->assign("allDistricts", $districts_arr);
-		$this->assign("allGroups", $groups_arr);
-		$this->assign("allDepartments", $departments_arr);
-		$this->assign("departmentsList", $allDepartments);
-		$this->assign("allRoles", $roles_arr);
-		$this->assign("rolesList", $allRoles);
 		$this->display();
 	}
 
 	public function setQeuryCondition() {
-		// $this->M->relation(true)->field('password',true)->where(array('no_authorized'=>0));
-		$this->M->join('user_info ON rbac_user.id = user_info.user_id')
-		        ->field('account,address,
-		        	area_city,area_district,
-		        	area_province,created_at,
-		        	department_id,group_id,identifier,
-		        	head,id,phone,mphone,no_authorized,phone,
-		        	qq,qq_nickname,realname,role_ename,role_id,group_id,department_id,sex,status,user_id,weixin,weixin_nikname,id_card,card_img,card_front,card_back,nation,marriage,blood_type,birth_date,university,major,graduation_date,height,weight,entry_sources,entry_manager,entry_date,completion_date,family_member,family_relation,family_job_unit,family_position,family_phone,resume_enterprise_name,resume_entry_date,resume_position,resume_leader,resume_leader_phone,resume_leaving_reasons,household_home_page,household_housemaster,household_personal,education_certificate,degree_diploma,practitioner_certificate,leaving_certificate,ip,location,lg_time,out_time')->where(array('no_authorized'=>0))
-		        ->where(array('rbac_user.status'=>array('EGT',0)));
-
-		/*$user = new User;
-		$user->getRoleObject();
-		$user->setEmployQueryCondition($this->M);*/
+		$this->M->field('name,sex,id_num,mphone,qq,weixin,graduation_date,university,major,position,info_sources,resume_enterprise_name,resume_entry_date,resume_position,resume_leader,resume_leader_phone,resume_leaving_reasons,interviewer_name,interviewer_department,interviewer_mphone,interviewer_qq,interviewer_opinion,interviewer_date')->order("id desc");
 		$this->setRoleCondition();
 
 		if (isset($_GET['name'])) {
 			$this->M->where(array('account'=>array('like', I('get.name')."%")));
-		}
-		if (isset($_GET['realname'])) {
-			$this->M->where(array('realname'=>array('like', I('get.realname')."%")));
 		}
 		//员工在职或离职
 		 $status = I('get.status') ;
