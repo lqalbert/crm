@@ -149,6 +149,7 @@ class CustomerModel extends Model {
     protected $_auto = array(
         array('plan', 'transfer', 1, 'callback'),
         array('last_track', 'getDate', 1, 'callback'),
+        array('service_time','time', 1, 'function')
     );
     //UTC时间转换
     public function transfer($v){

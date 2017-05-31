@@ -63,14 +63,21 @@ class ExcelController extends CommonController {
     public function upload(){
         $folder = 'xls';
         $this->upload = new \Think\Upload();// 实例化上传类
-        $this->upload->maxSize   =     3145728 ;// 设置附件上传大小3M
+        $this->upload->maxSize   =     5145728 ;// 设置附件上传大小3M
         $this->upload->exts      =     array('xls');// 设置附件上传类型
         $this->upload->rootPath  =     './Upload/'.$folder.'/'; // 设置附件上传根目录
         $this->upload->autoSub   =     true;
 
 
         $info =  $this->upload->upload();
-        $this->ajaxReturn(array('path'=>substr($this->upload->rootPath, 1 ).$info['file']['savepath'].$info['file']['savename']));
+
+        if(!$info) {// 上传错误提示错误信息
+            $this->error($this->upload->getError());
+        }else{// 上传成功
+             $this->ajaxReturn(array('path'=>substr($this->upload->rootPath, 1 ).$info['file']['savepath'].$info['file']['savename']));
+        }
+
+       
         // return substr($this->upload->rootPath, 1 ).$info['file']['savepath'].$info['file']['savename'];
     }
 
@@ -499,4 +506,81 @@ class ExcelController extends CommonController {
         }
         $this->success("导入成功");
     }
+
+    public function fixCustomer(){
+        if (IS_GET) {
+            $this->assign('pageSize', $this->pageSize);
+            $this->assign('departments',   M('department_basic')->field('id,name')->select());
+            $this->assign('groups',        arr_group(M('group_basic')->field('id,name,department_id')->select(), 'department_id'));
+            $this->display('fixCustomer');
+        } else {
+            $filename = I('post.file');
+            $user_id  = I('post.user_id');
+            $realname = I('post.realname');
+            if (strpos($realname, "_")) {
+                $realname_t = explode("_", $realname);
+                $realname = $realname_t[0];
+            }
+            $data = getExcelArrayData(".".__ROOT__.$filename);
+            $fault = array();
+            $total = 0;
+            set_time_limit (120);
+
+            foreach ($data as $key => $value) {
+
+                if (empty($value['C'])  ||  0 === mb_stripos($value['B'], "简称") ) {
+                        continue;
+                }
+               /* 'ywy'=>$value['F'],
+                'user'=>$value['H'],*/
+                // || $value['H'] == $realname
+                
+
+                if ($value['F'] == $realname || $value['H'] == $realname ) {
+                    $total++;
+                    // var_dump($value['A']);
+                    $phone = $this->fixPhone($value['C']);
+                    $sql = "select user_id, salesman_id, cb.id from customers_contacts as cc inner join customers_basic as cb on cc.cus_id=cb.id where cc.phone='".$phone."' limit 1";
+                    $rows = M()->query($sql);
+                    if (!$rows) {
+                        $fault[] = $phone." _ not found";
+                        continue;
+                    } else {
+                        $row = $rows[0];
+                        $updateData = array();
+                        if ($value['F'] == $realname  && $row['salesman_id'] != $realname) {
+                            $updateData['salesman_id'] = $user_id;
+                        }
+
+                        if ($value['H'] == $realname  && $row['user_id'] != $realname) {
+                            $updateData['user_id'] = $user_id;
+                        }
+
+                        $re = M('customers_basic')->data($updateData)->where(array('id'=>$row['id']))->save();
+                        if ($re === false) {
+                            $fault[] = $phone;
+                        }
+                        continue;
+                    }
+                } else {
+                    
+                }
+
+
+
+            }
+
+            $this->success(json_encode($fault)."总共:".$total);
+        }
+    }
+
+    public function getUser(){
+        $group_id = I("get.group_id");
+        $user = M('user_info')->where(array('group_id'=>$group_id))->field('user_id,realname')->select();
+        $this->ajaxReturn($user);
+    }
+
+
+
+
 }
