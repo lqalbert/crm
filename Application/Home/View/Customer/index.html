@@ -72,12 +72,13 @@
         <el-form-item prop="contact" style="width:170px">
           <el-input v-model="searchForm.contact" size="small" placeholder="手机|qq|微信号"></el-input>
         </el-form-item>
-
+        <?php if($isDepartment): ?>
         <el-form-item prop="group" style="width:80px">
           <el-select v-model="searchForm.group" size="small" placeholder="请选择">
             <el-option v-for="item in searchGroup" :label="item.name" :value="item.user_id" :disabled="item.disabled"></el-option>
           </el-select>
         </el-form-item>
+        <?php endif; ?>
 
         <el-form-item prop="field" v-show="false">
           <input type="hidden" size="small" v-model="searchForm.field">
@@ -148,9 +149,9 @@
             </el-badge>
           </el-tooltip>
 
-          <el-tooltip content="导入我的客户" placement="bottom-start" style="margin-left:15px;">
-            <el-button type="warning" size="small" @click="openDialog('importc')" :disabled="true">客户导入</el-button>
-          </el-tooltip>
+          <!-- <el-tooltip content="导入我的客户" placement="bottom-start" style="margin-left:15px;">
+            <el-button type="warning" size="small" @click="openDialog('importc')" >客户导入</el-button>
+          </el-tooltip> -->
 
           <el-tooltip content="客户预查" placement="bottom-start"  style="margin-left:10px;">
             <el-button size="small"  @click="openDialog('preCheck')"  type="primary">{:L('CUSTOMER_PRE_CHECK')}</el-button>
@@ -987,6 +988,7 @@
       this.flag=id;
       this[FormName.getFormName('search')].field = v;
       this[FormName.getFormName('search')].group = "{:session('uid')}";
+      this.dataLoad = true;
       this.loadDatalist();
   }).setMethod('beforeImportc', function(){
       var vmThis = this;
@@ -999,7 +1001,7 @@
   }).setMethod('importMyc', function(){
      var vmThis = this;
      this.$http.get('{:U("importMyc")}').then(function(response){
-        vmThis.$message('由我创建的客户导入：'+ response.body.c +"条,"+ "转让给我的客户："+response.body.t+"条");
+        // vmThis.$message('由我创建的客户导入：'+ response.body.c +"条,"+ "转让给我的客户："+response.body.t+"条");
          vmThis.searchReset();
         /*vmThis.importcForm.c = response.body.c;
         vmThis.importcForm.t = response.body.t;*/

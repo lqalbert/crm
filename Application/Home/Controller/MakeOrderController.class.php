@@ -139,16 +139,14 @@ class MakeOrderController extends CommonController {
         if (!$data) {
             $this->error(M('software_account')->getError());
         } else {
-            $re = M('software_account')->add();
-
-
+            
             $buyRow = $this->M->find(I("post.buy_id"));
+            $data['pdt_id'] = $buyRow['product_id'];
+            $re = M('software_account')->data($data)->add();
 
             $saveRe = $this->M->where(array('id'=>$buyRow['id']))
                                     ->data(array('todo_list'=>$this->delToList( $buyRow['todo_list'], 'account') ))
                                     ->save();
-
-
             if ($re) {
                 $this->success('操作成功');
             } else {

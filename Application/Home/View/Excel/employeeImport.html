@@ -33,6 +33,13 @@
               :value="item.id">
             </el-option>
           </el-select>
+          <el-select v-model="importcForm.group_id" placeholder="请选择">
+            <el-option
+              v-for="item in getGroups"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="subExecl" :loading="upload">提交</el-button>
@@ -60,7 +67,7 @@
 </block>
 <block name="scripts">
 <script>
-    page.subUrl = "{:U('employeeImport')}";
+    page.subUrl = "{:U('fixGroup')}";
     window.defaultOption.setDatas({
       upload:false,
       file:"",
@@ -70,11 +77,13 @@
         ]
        
       },
-      departments:{:json_encode($departments)}
+      departments:{:json_encode($departments)},
+      groups:{:json_encode($groups)}
 
     }).setForm('importc',{
         file:"",
-        department_id:""
+        department_id:"",
+        group_id:""
     }).setMethod("subExecl",function(){
         var vmThis = this;
         this.importcForm.file = this.file;
@@ -99,6 +108,10 @@
         });
     }).setMethod('uploadSuccess', function(response, file, fileList){
         this.file = response.path;
+    }).setComputed('getGroups', function(){
+       return this.groups[this.importcForm.department_id];
+
+       // return [];
     });
 </script>
 

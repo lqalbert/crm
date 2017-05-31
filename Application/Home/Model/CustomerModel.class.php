@@ -165,7 +165,7 @@ class CustomerModel extends Model {
 
     
 
-    public function add(){
+    public function add($data = '', $options = array(), $replace = false){
       //开启事务
       // die('asdf');
       $this->startTrans();
@@ -502,7 +502,8 @@ class CustomerModel extends Model {
       return $this->data(array('transfer_status'=>1))->where(array('id'=>$id))->save();
     }
 
-    public function delete($ids){
+    public function delete($options=array()){
+      $ids = $options;
         return $this->where(array('id'=>array('in', $ids )))->save(array('status'=>-1));
     }
 
@@ -517,6 +518,7 @@ class CustomerModel extends Model {
         $this->setEnd($field, $end);
       }
     }
+
 
 
 }

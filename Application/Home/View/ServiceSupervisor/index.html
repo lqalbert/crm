@@ -195,27 +195,27 @@
 	    <el-row>
 	     <el-col :span="24">
 	        <el-tabs  type="border-card">
-	         <!--  <el-tab-pane label="软件账号">
-	            <el-table :data="tableDataThree" empty-text="请点击客户显示其软件账号" border style="width: 100%">
-	              <el-table-column prop="realname" label="创建员工" header-align="center">
-	              </el-table-column>
-
-	              <el-table-column prop="account_id" label="软件账号" align="center">
-	              </el-table-column>
-
-	              <el-table-column prop="pdt_id" label="产品名称" header-align="center">
-				          <template scope="scope">
-				            {{ getPdt(scope.row.pdt_id, 'products') }}
-				          </template>
-	              </el-table-column>
-	              
-	              <el-table-column prop="mark" label="备注" header-align="center">
-	              </el-table-column>
-
-	              <el-table-column prop="time" label="创建时间" width="180" align="center">
-	              </el-table-column>
-	            </el-table>
-	          </el-tab-pane> -->
+	         <el-tab-pane label="软件账号">
+              <el-table :data="tableDataThree" empty-text="请点击客户显示其软件账号" border style="width: 100%">
+                <el-table-column prop="realname" label="创建员工" header-align="center">
+                </el-table-column>
+           
+                <el-table-column prop="account_id" label="软件账号" align="center">
+                </el-table-column>
+           
+                <el-table-column prop="pdt_id" label="产品名称" header-align="center">
+                       <template scope="scope">
+                         {{ getPdt(scope.row.pdt_id, 'products') }}
+                       </template>
+                </el-table-column>
+                
+                <el-table-column prop="mark" label="备注" header-align="center">
+                </el-table-column>
+           
+                <el-table-column prop="time" label="创建时间" width="180" align="center">
+                </el-table-column>
+              </el-table>
+            </el-tab-pane>
 	          <el-tab-pane label="跟踪记录">
 	            <el-table :data="tableDataOne" empty-text="请点击客户显示跟踪信息" border style="width: 100%" @row-dblclick="viewtraceContents">
 	              <el-table-column prop="user" label="操作员工" header-align="center">

@@ -19,6 +19,7 @@ class EmployeeController extends CommonController {
     	$this->assign('departments', D('Department')->getAllDepartments('id,name'));
     	$this->assign('depart_id', $this->getDepartmentId());
     	$this->assign('departmentItem', $this->setEmployeeDepartemtnItem());
+    	$this->assign('allRoles', D('Role')->getField('id,name', true));
 		$this->display();
 	}
 
@@ -26,7 +27,7 @@ class EmployeeController extends CommonController {
 
 		// $this->M->relation(true)->field('password',true)->where(array('no_authorized'=>0));
 		$this->M->join('user_info ON rbac_user.id = user_info.user_id')
-				->join('department_basic as db on user_info.department_id=db.id')
+				->join('department_basic as db on user_info.department_id=db.id', 'left')
 		        ->field('db.name as department_name,account,user_info.address,
 		        	area_city,area_district,
 		        	area_province,created_at,
@@ -89,9 +90,10 @@ class EmployeeController extends CommonController {
 	
 
 	private function setDeparmentQuery(){
-		$departmentRow = $this->departmentRow;
+		$departmentRow = $this->getDepartmentRow();
 		$config = json_decode($departmentRow['config'], true);
 		if (isset($config['EmployeeQueryCondition'])) {
+
 			call_user_func(array($this, 'set'.$config['EmployeeQueryCondition']));
 		}
 	}
@@ -99,6 +101,7 @@ class EmployeeController extends CommonController {
 
 
 	private function setDepartmentEmployee(){
+		
 		$this->M->where(array(
 			'user_info.department_id'=>array('eq', $this->getDepartmentId()),
 			// 'role_id'=>array('NEQ', array()) 
@@ -238,11 +241,11 @@ class EmployeeController extends CommonController {
 
 
 		// $departmentRow = D('Department')->find($this->getDepartmentId());
-		if ($this->isHrDeparment()) {
+		/*if ($this->isHrDeparment()) {
 			$_POST['department_id'] = 0;
 		} else {
 			$_POST['department_id'] = session('account')['userInfo']['department_id'];
-		}
+		}*/
 
 		
 	}

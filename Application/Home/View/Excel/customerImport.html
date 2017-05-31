@@ -25,15 +25,25 @@
           <div class="el-upload__tip" slot="tip">一次只能导入一个，如果传入多个文件以最后一个为准。<br>只能上传xls文件，且不超过3MB</div>
     </el-upload>
       </el-form-item>
-      <el-form-item label="请选择小组" prop="group_id">
-        <el-select v-model="importcForm.group_id" placeholder="请选择">
+      <!-- <el-form-item label="请选择小组" prop="group_id">
+
+        <el-select v-model="importcForm.department_id" placeholder="请选择">
             <el-option
-              v-for="item in gorups"
+              v-for="item in departments"
               :label="item.name"
               :value="item.id">
             </el-option>
           </el-select>
-      </el-form-item>
+
+
+        <el-select v-model="importcForm.group_id" placeholder="请选择">
+            <el-option
+              v-for="item in getGroups"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
+      </el-form-item> -->
       <el-form-item>
         <el-button type="primary" @click="subExecl" :loading="upload">提交</el-button>
 
@@ -57,7 +67,8 @@
 </block>
 <block name="scripts">
 <script>
-    page.subUrl = "{:U('customerImport')}";
+    // page.subUrl = "{:U('customerImport')}";
+    page.subUrl = "{:U('importToTable')}";
     window.defaultOption.setDatas({
       upload:false,
       file:"",
@@ -69,11 +80,14 @@
         group_id:[
             { required: true, message: '请选择对应的小组', trigger: 'change' }
         ]
-      }
+      },
+      departments:{:json_encode($departments)},
+      groups:{:json_encode($groups)}
 
     }).setForm('importc',{
         file:"",
-        group_id:""
+        department_id:"",
+        group_id:0
     }).setMethod("subExecl",function(){
         var vmThis = this;
         this.importcForm.file = this.file;
@@ -100,7 +114,9 @@
         
     }).setMethod('uploadSuccess', function(response, file, fileList){
         this.file = response.path;
-    });
+    }).setComputed('getGroups', function(){
+       return this.groups[this.importcForm.department_id];
+    });;
 </script>
 
 </block>

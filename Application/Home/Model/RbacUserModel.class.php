@@ -32,7 +32,7 @@ class RbacUserModel extends RelationModel {
     }
 
 
-    public function delete($ids){
+    public function delete($ids=array()){
         // return $this->where(array('id'=>array('in', $ids )))->save(array('status'=>-1));
         $id_arr = explode(",", $ids);
         $date   = Date('Y-m-d');
@@ -90,7 +90,12 @@ class RbacUserModel extends RelationModel {
     }
     //风控经理
    private function riskMasterGetView(){
-        $this->departmentMasterGetView();
+        return $this->departmentMasterGetView();
+    }
+
+
+    private function serviceMasterGetView(){
+      return $this->departmentMasterGetView();
     }
 
     //部门经理

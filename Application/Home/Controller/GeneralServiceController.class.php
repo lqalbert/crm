@@ -30,9 +30,11 @@ class GeneralServiceController extends CommonController{
 		$this->setQeuryCondition();
         $count = $this->M->count();
         $this->setQeuryCondition();
-        $list = $this->M->join("customers_contacts as cc on customers_basic.id = cc.cus_id and cc.is_main = 1 ")
-              ->join('left join user_info as ui on customers_basic.user_id=ui.user_id')->field('ui.realname,customers_basic.*,cc.*')
-              ->order("customers_basic.id desc")->limit($this->getOffset().','.$this->pageSize)->select();
+        $list =  $this->M->join('left join user_info as ui on customers_basic.user_id=ui.user_id')
+                         ->field('ui.realname,customers_basic.*,cc.*')
+                         ->order("customers_basic.id desc")
+                         ->limit($this->getOffset().','.$this->pageSize)
+                         ->select();
     
         $result = array('list'=>$list, 'count'=>$count);
 		$this->ajaxReturn($result);
@@ -48,11 +50,12 @@ class GeneralServiceController extends CommonController{
         if (I('get.name')) {
             $this->M->where(array("customers_basic.name"=> array('like', I('get.name')."%")));
         }
-        
+        $this->M->join("customers_contacts as cc on customers_basic.id = cc.cus_id and cc.is_main = 1 ");
         if(I('get.contact')){
         	  $val=I('get.contact');
         	  $this->M->where(array('cc.qq|cc.phone|cc.weixin'=>array('LIKE',$val."%")));
         }
+        
 
 	}
 

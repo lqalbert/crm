@@ -158,7 +158,12 @@ BUTTON;
             case 1:
                 //客服部
                 $re = D("Role")->where(array('ename'=>array(
-                    array('eq',RoleModel::SUP_SERVICE),array('eq',RoleModel::GEN_SERVICE), 'or')))->select();
+                    array('eq',RoleModel::SUP_SERVICE),
+                    array('eq',RoleModel::GEN_SERVICE), 
+                    array('eq',RoleModel::RISK_ONE),
+                    array('eq',RoleModel::CALL_BACK),
+                    array('eq',RoleModel::DATASTAFF),
+                    'or')))->select();
                 break;
             case 2:
                 //风控部

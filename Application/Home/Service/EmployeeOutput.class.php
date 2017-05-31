@@ -32,25 +32,43 @@ class EmployeeOutput {
     }
 
     private function setExcelGroupsEmployee(){
-        if (count($this->groups)) {
-            $this->PHPexcel->removeSheetByIndex(0);
-            foreach ($this->groups as $key =>  $value) {
-                $myWorkSheet = $this->PHPexcel->createSheet();
-                $myWorkSheet->setTitle($value['name']);
+        $this->PHPexcel->removeSheetByIndex(0);
+        $myWorkSheet = $this->PHPexcel->createSheet();
+        $myWorkSheet->setCellValue('A1', '账号');
+        $myWorkSheet->setCellValue('B1', '密码');
+        $row = 1;
 
-                $myWorkSheet->setCellValue('A1', '账号');
-                $myWorkSheet->setCellValue('B1', '密码');
-                $this->setExcelEmployees($myWorkSheet, $value['id']);
+        if (count($this->groups)) {
+            foreach ($this->groups as $key =>  $value) {
+                // $myWorkSheet->setTitle($value['name']);
+                ++$row;
+                $myWorkSheet->setCellValue('A'.$row, $value['name']);
+                $this->setExcelEmployees($myWorkSheet, $value['id'], $row);
             }
+        } 
+
+        $users = D('user_info')->join('rbac_user on user_info.user_id=rbac_user.id')
+                              ->where(array('department_id'=>$this->id, 'group_id'=>0))
+                              ->select();
+            
+        foreach ($users as $key => $value) {
+            ++$row;
+            $myWorkSheet->setCellValue('A'.$row, $value['account']);
+            $myWorkSheet->setCellValue('B'.$row, '111111');
         }
+        
+
+
+        
         
     }
 
-    private function setExcelEmployees($sheet, $id){
+    private function setExcelEmployees($sheet, $id, &$row){
         $users = D('User')->getGroupEmployee($id);
         foreach ($users as $key => $value) {
-            $sheet->setCellValue('A'.($key+2), $value['account']);
-            $sheet->setCellValue('B'.($key+2), '111111');
+            ++$row;
+            $sheet->setCellValue('A'.$row, $value['account']);
+            $sheet->setCellValue('B'.$row, '111111');
         }
     }
 
