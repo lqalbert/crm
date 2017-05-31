@@ -11,6 +11,14 @@ class IndexController extends CommonController {
 	}
 
 	public function main() {
+
+		// $userInfo = session('account')['userInfo'];
+		// $arr=M('user_info as ui')->join("group_basic as gb on gb.id=ui.group_id")
+		//      ->join('department_basic as db on db.id=ui.department_id')
+		//      ->field('ui.*,gb.name as g_name,db.name as d_name')
+		//      ->where(array('ui.user_id'=>$userInfo['user_id']))->find(); 
+		
+	 //  echo M('user_info as ui')->getLastSql();die();
 		$this->assign("pageSize", $this->pageSize);
 		$this->assign('NoticeType', D('sys_notice')->getType());
 		$this->display();

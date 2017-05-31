@@ -54,6 +54,7 @@ class CustomerLogModel extends Model {
       '3'=>'锁30%跟70%',
       '4'=>'锁40%跟60%',
       '5'=>'锁50%跟50%',
+      '6'=>'锁0%跟100%',
     );
     
     //锁定方比例
@@ -63,6 +64,7 @@ class CustomerLogModel extends Model {
       '3'=>'30',
       '4'=>'40',
       '5'=>'50',
+      '6'=>'0',
     );
 
     //跟踪方比例
@@ -72,6 +74,7 @@ class CustomerLogModel extends Model {
       '3'=>'70',
       '4'=>'60',
       '5'=>'50',
+      '6'=>'100',
     );
 
     //提醒事项
