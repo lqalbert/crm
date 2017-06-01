@@ -1,0 +1,173 @@
+<el-dialog title="编辑应聘人信息" v-model="editFormDialog" @open='beforeEdit'>
+<!-- <el-form :model="form"> -->
+<el-form ref="editForm" :rules="editRules" :model="editForm" :label-width="dialogLabelWidth">
+    
+
+    <el-tabs  type="card" >
+      <el-tab-pane label="基本信息" name="first">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="姓名" >
+              <el-input v-model="editForm.name"   auto-complete="off"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="性别">
+              <el-radio class="radio" v-model="editForm.sex" label="1">男</el-radio>
+              <el-radio class="radio" v-model="editForm.sex" label="2">女</el-radio>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="身份证">
+              <el-input v-model="editForm.id_card" auto-complet="off"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="手机号">
+              <el-input v-model="editForm.mphone" auto-complet="off"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="QQ号">
+              <el-input v-model="editForm.qq" auto-complet="off"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="微信号">
+              <el-input v-model="editForm.weixin" auto-complet="off"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="12">
+              <el-form-item prop="birth_date" label="毕业时间">
+                  <el-date-picker  v-model="editForm.graduation_date" placeholder="请选择日期"   >
+                  </el-date-picker>
+                </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="毕业院校">
+                <el-input v-model="editForm.university" auto-complet="off"></el-input>
+              </el-form-item>
+            </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="所学专业">
+              <el-input v-model="editForm.major" auto-complet="off"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="应聘岗位">
+              <el-input v-model="editForm.position" auto-complet="off"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="入职来源">
+              <el-select v-model="editForm.entry_sources">
+                <el-option v-for="sources in sourcesList" :label="sources.name" :value="sources.name"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-tab-pane>
+      <el-tab-pane label="工作简历" name="second">
+      <el-row>
+            <el-col :span="12">
+              <el-form-item prop="birth_date" label="任职时间">
+                  <el-date-picker  v-model="editForm.resume_entry_date" placeholder="请选择日期"   >
+                  </el-date-picker>
+                </el-form-item>
+            </el-col>
+        </el-row>
+      <el-row>
+          <el-col :span="12">
+            <el-form-item label="企业名称">
+              <el-input v-model="editForm.resume_enterprise_name" auto-complete="off"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="任职职务">
+              <el-input v-model="editForm.resume_position" auto-complete="off"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      <el-row>
+          <el-col :span="12">
+            <el-form-item label="直属上司姓名">
+              <el-input v-model="editForm.resume_leader" auto-complet="off"></el-input>
+            </el-form-item>
+          </el-col>
+            <el-col :span="12">
+            <el-form-item label="直属上司联系电话">
+              <el-input v-model="editForm.resume_leader_phone" auto-complete="off"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+          <el-form-item label="离职原因">
+          <el-input
+          v-model="editForm.resume_leaving_reasons"
+          type="textarea"
+          :autosize="{ minRows: 2, maxRows: 4}"
+          placeholder="请输入内容">
+        </el-input>
+        </el-form-item>
+      </el-tab-pane>
+       <el-tab-pane label="面试结果" name="three">
+       <el-row>
+            <el-col :span="12">
+              <el-form-item prop="birth_date" label="面试日期">
+                  <el-date-picker  v-model="editForm.interviewer_date" placeholder="请选择日期"  >
+                  </el-date-picker>
+                </el-form-item>
+            </el-col>
+       </el-row>
+       <el-row>
+          <el-col :span="12">
+            <el-form-item label="面试人姓名">
+              <el-input v-model="editForm.interviewer_name" auto-complete="off"></el-input>
+            </el-form-item>
+          </el-col>
+            <el-col :span="12">
+            <el-form-item label="面试人所属部门">
+              <el-input v-model="editForm.interviewer_department" auto-complete="off"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="面试人电话">
+              <el-input v-model="editForm.interviewer_mphone" auto-complete="off"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="面试人QQ号" prop="resume_leader_phone">
+              <el-input v-model="editForm.interviewer_qq" auto-complet="off"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-form-item label="面试意见">
+          <el-input
+          v-model="editForm.interviewer_opinion"
+          type="textarea"
+          :autosize="{ minRows: 2, maxRows: 4}"
+          placeholder="请输入内容">
+        </el-input>
+        </el-form-item>
+      </el-tab-pane>
+    </el-tabs>
+
+
+  
+    
+  </el-form>
+  <div slot="footer" class="dialog-footer">
+   <include file="Common:_edit" />
+  </div>
+</el-dialog>

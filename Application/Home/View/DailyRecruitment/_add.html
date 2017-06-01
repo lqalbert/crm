@@ -19,7 +19,7 @@
     <el-row>
       <el-col :span="12">
         <el-form-item label="身份证">
-          <el-input v-model="addForm.id_num" auto-complet="off"></el-input>
+          <el-input v-model="addForm.id_card" auto-complet="off"></el-input>
         </el-form-item>
       </el-col>
       <el-col :span="12">
@@ -60,15 +60,17 @@
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="申请职位">
+        <el-form-item label="应聘岗位">
           <el-input v-model="addForm.position" auto-complet="off"></el-input>
         </el-form-item>
       </el-col>
     </el-row>
     <el-row>
       <el-col :span="12">
-        <el-form-item label="信息来源">
-          <el-input v-model="addForm.info_sources" auto-complet="off"></el-input>
+          <el-form-item label="信息来源">
+          <el-select v-model="addForm.info_sources">
+            <el-option v-for="sources in sourcesList" :label="sources.name" :value="sources.id"></el-option>
+          </el-select>
         </el-form-item>
       </el-col>
     </el-row>
@@ -76,7 +78,7 @@
     <el-tab-pane label="工作简历" name="second" class="second">
       <el-row>
         <el-col :span="12">
-        <el-form-item prop="graduation_date" label="任职时间">
+        <el-form-item prop="resume_entry_date" label="任职时间">
             <el-date-picker  v-model="addForm.resume_entry_date" placeholder="请选择日期"  >
             </el-date-picker>
           </el-form-item>
@@ -114,8 +116,16 @@
       placeholder="请输入内容">
     </el-input>
     </el-form-item>
-     </el-tab-pane>
-        <el-tab-pane label="面试结果" name="three" class="three">
+    </el-tab-pane>
+    <el-tab-pane label="面试结果" name="three" class="three">
+        <el-row>
+            <el-col :span="12">
+              <el-form-item prop="interviewer_date" label="面试日期">
+                  <el-date-picker  v-model="addForm.interviewer_date" placeholder="请选择日期"  >
+                  </el-date-picker>
+              </el-form-item>
+            </el-col>
+        </el-row>
          <el-row>
         <el-col :span="12">
           <el-form-item label="面试人姓名">
@@ -136,7 +146,7 @@
         </el-col>
          <el-col :span="12">
           <el-form-item label="面试人QQ号">
-            <el-input v-model="addForm.qq" auto-complet="off"></el-input>
+            <el-input v-model="addForm.interviewer_qq" auto-complet="off"></el-input>
           </el-form-item>
         </el-col>
       </el-row>

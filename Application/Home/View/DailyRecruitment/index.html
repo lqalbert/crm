@@ -14,11 +14,11 @@
 				<el-col :span="24">
 					<el-form :inline="true"  ref="searchForm" :model="searchForm">
 					  <el-form-item prop="name">
-					   <el-input v-model="searchForm.name"  placeholder="请输入员工账号" >
+					   <el-input v-model="searchForm.name"  placeholder="请输入应聘人员姓名" >
 					   </el-input>
 					  </el-form-item>
 					  <el-form-item prop="status" >
-			            <el-select v-model="searchForm.status" clearable  size="small" placeholder="请选择在职或离职" >
+			            <el-select v-model="searchForm.status" clearable  size="small" placeholder="请选择人事部所在部门" >
 			                <el-option v-for="(status, key) in employeeStatus" :label="status" :value="key" ></el-option>
 			            </el-select>
 			          </el-form-item>
@@ -47,11 +47,6 @@
 					    </el-table-column>
 					    <el-table-column  label="序号"  width="70" :formatter="handleIndex" >
 					    </el-table-column>
- 					    <el-table-column prop="head" inline-template label="头像"  width="100" align="center">
-							<div>
-								<img :src="setImgUrl(row.head)" alt="" width="50" height="50">
-							</div>
-					    </el-table-column>
 						 <el-table-column prop="name" label="姓名" width="150" align="center">
 					    </el-table-column>
 					    <el-table-column prop="sex"  label="性别" width="80" align="center">
@@ -59,7 +54,7 @@
 					          {{ getType(scope.row.sex, 'sexType') }}
 					        </template>
 					    </el-table-column>
-					   <el-table-column prop="id_num" label="身份证号" width="192">
+					   <el-table-column prop="id_card" label="身份证号" width="192">
 					   </el-table-column>
 					    <el-table-column prop="mphone" label="手机" width="140" align="center">
 					    </el-table-column>
@@ -120,7 +115,6 @@
 					   <el-table-column fixed="right" label="操作"  align="center" width="220">
 						   <template scope="scope">
 						      <el-button type="info" @click.stop="handleEdit(scope.$index, scope.row)"     size="small">编辑</el-button>
-						      <el-button type="info" @click.stop="handleSetRoles(scope.$index, scope.row)"     size="small">职能</el-button>
 						      <el-button type="danger"  @click.stop="handleDelete(scope.$index, scope.row)"   size="small" >删除</el-button>
 						   </template>
 						</el-table-column>
@@ -184,18 +178,10 @@
 
 	</div>
 </block>
+
 <block name="scripts">
 	<script>
-		var validatePass2 = function(rule, value, callback)  {
-
-	        if (window.defaultVm.editPasswordForm.checkPass === '') {
-	          callback(new Error('请再次输入密码'));
-	        } else if (window.defaultVm.editPasswordForm.checkPass !== window.defaultVm.$data.editPasswordForm.password) {
-	          callback(new Error('两次输入密码不一致!'));
-	        } else {
-	          callback();
-	        }
-	    }
+	
         //手机号码
 		  var checkPhone=function(rule,value,callback){
 		     var phoneReg = /^1[34578]\d{9}$/;
@@ -222,206 +208,120 @@
 	<script>
 		page.getUserRolesUrl="{:U('getUserRoles')}";
 		page.setUserRolesUrl="{:U('setUserRoles')}";
-		page.changePasswordUrl="{:U(changePassword)}";
 		window.defaultOption.setDatas({
 			  detailContent:"",
             detailFormDialog:false,
 			roleList:{:json_encode($roleList)},
-			sourcesList:{:json_encode($sourcesList)},
-			 employeeStatus:{:json_encode($employeeStatus)},
+			rolesList:{:json_encode($rolesList)},
 			pathInfo:{folder:'users'},
-
-			addUpload:"",
-			addUploadImg:false,
-
-			editUpload:"",
-			editUploadImg:false,
-
-			xuploadheader:{"X-Requested-With":"XMLHttpRequest"},
-			groupList:{:json_encode($groupList)},
-			provinces:[],
-			cities:[],
-			districts:[],
-			
 			sexType:{:json_encode($sexType)},
-			marriageType:{:json_encode($marriageType)},
-			allProvinces:{:json_encode($allProvinces)},
-			allCities:{:json_encode($allCities)},
-			allDistricts:{:json_encode($allDistricts)},
 			multipleSelection:[],
 
-			passRules:{
-				checkPass:[
-					{ validator: validatePass2, trigger: 'blur' }
-				]
-
-			},
+		
 			addRules:{
-				account:[
-					{ required: true, message: '请输入账号', trigger: 'blur' }
-				],
-				realname:[
-                    {required: true, message: '请输入员工姓名', trigger: 'blur'},
+				name:[
+                    {required: true, message: '请输入应聘人员姓名', trigger: 'blur'},
 				],
 				mphone:[
                     {validator: checkPhone, trigger: 'blur'},
 				],
-				family_phone:[
+				resume_leader_phone:[
                     {validator: checkPhone, trigger: 'blur'},
 				],
-				resume_leader_phone:[
+				interviewer_mphone:[
                     {validator: checkPhone, trigger: 'blur'},
 				],
 				qq:[
                      {validator: checkQQ, trigger:'blur'},
 				],
+				interviewer_qq:[
+                     {validator: checkQQ, trigger:'blur'},
+				],
 
 			},
 			editRules:{
-				account:[
-					{ required: true, message: '请输入账号', trigger: 'blur' }
-				],
-				realname:[
-					{required: true, message: '请输入员工姓名', trigger: 'blur'},
+				name:[
+					{required: true, message: '请输入应聘人员姓名', trigger: 'blur'},
 				],
 				mphone:[
-					{validator: checkPhone, trigger: 'blur'},
-				],
-				family_phone:[
 					{validator: checkPhone, trigger: 'blur'},
 				],
 				resume_leader_phone:[
 					{validator: checkPhone, trigger: 'blur'},
 				],
+				interviewer_mphone:[
+					{validator: checkPhone, trigger: 'blur'},
+				],
 				qq:[
 					{validator: checkQQ, trigger:'blur'},
 				],
+				interviewer_qq:[
+					{validator: checkQQ, trigger:'blur'},
+				],
 
-			},
-			card_img:"",
-			card_front:"",
-			card_back:"",
-			household_home_page:"",
-			household_housemaster:"",
-			household_personal:"",
-			education_certificate:"",
-			practitioner_certificate:""
+			}
 
 
 		}).setForm('add',{
-			account:"",
-			password:"123456",
+			name:"",
 			role_id:"",
-			head:"",
-			group_id:"",
+			department_id:"",
+			id:"",
 			sex:0,
-			phone:"",
-			mphone:"",
-			area_province:"",
-			area_city:"",
-			area_district:"",
-			realname:"",
-			address:"",
-			qq:"",
-			qq_nickname:"",
-			weixin:"",
-			weixin_nikname:"",
 			id_card:"",
-			card_img:"",
-			card_front:"",
-			card_back:"",
-			nation:"",
-			marriage:"",
-			blood_type:"",
-			birth_date:"",
-			university:"",
+			mphone:"",
+			qq:"",
+			weixin:"",
 			graduation_date:"",
-			height:"",
-			weight:"",
+			university:"",
+			major:"",
+			position:"",
 			entry_sources:"",
-			entry_manager:"",
-			entry_date:"",
-			completion_date:"",
-			household_home_page:"",
-			household_housemaster:"",
-			household_personal:"",
-			education_certificate:"",
-			degree_diploma:"",
-			practitioner_certificate:"",
-			family_relation:"",
-			family_job_unit:"",
-			family_position:"",
-			family_phone:"",
 			resume_enterprise_name:"",
 			resume_entry_date:"",
 			resume_position:"",
 			resume_leader:"",
 			resume_leader_phone:"",
-			resume_leaving_reasons:""
+			resume_leaving_reasons:"",
+			interviewer_date:"",
+			interviewer_name:"",
+			interviewer_department:"",
+			interviewer_mphone:"",
+			interviewer_qq:"",
+			interviewer_opinion:""
 
 		}).setForm('edit',{
-			account:"",
+			name:"",
 			role_id:"",
 			id:"",
-			head:"",
-			group_id:"",
 			sex:0,
-			phone:"",
-			mphone:"",
-			area_province:"",
-			area_city:"",
-			area_district:"",
-			realname:"",
-			address:"",
-			qq:"",
-			qq_nickname:"",
-			weixin:"",
-			weixin_nikname:"",
 			id_card:"",
-			card_img:"",
-			card_front:"",
-			card_back:"",
-			nation:"",
-			marriage:0,
-			blood_type:"",
-			birth_date:"",
-			university:"",
+			mphone:"",
+			qq:"",
+			weixin:"",
 			graduation_date:"",
-			height:"",
-			weight:"",
+			university:"",
+			major:"",
+			position:"",
 			entry_sources:"",
-			entry_manager:"",
-			entry_date:"",
-			completion_date:"",
-			household_home_page:"",
-			household_housemaster:"",
-			household_personal:"",
-			education_certificate:"",
-			degree_diploma:"",
-			practitioner_certificate:"",
-			family_relation:"",
-			family_job_unit:"",
-			family_position:"",
-			family_phone:"",
 			resume_enterprise_name:"",
 			resume_entry_date:"",
 			resume_position:"",
 			resume_leader:"",
 			resume_leader_phone:"",
-			resume_leaving_reasons:""
-		}).setForm('setRoles',{
-			user_id:0,
-			role_ids:0
-		},true).setForm('search',{
+			resume_leaving_reasons:"",
+			interviewer_date:"",
+			interviewer_name:"",
+			interviewer_department:"",
+			interviewer_mphone:"",
+			interviewer_qq:"",
+			interviewer_opinion:""
+		}).setForm('search',{
 			name:"",
+			realname:"",
 			status:"",
 			plan:false
-		}).setForm('editPassword',{
-			id:"",
-			account:"",
-			password:"",
-			checkPass:""
-		}, true).setMethod('getType', function(type, field){
+		}).setMethod('getType', function(type, field){
 			return this[field][type];
 		}).setMethod('getTime',function(v){
 			if(v==null || v==""){
@@ -442,24 +342,6 @@
 			  return year+'-'+month+'-'+day+' '+hour+':'+minute+':'+second;
 			}
 	
-		}).setMethod('handleSetRoles', function(index, row){
-			// var vmThis = this;
-			var f = FormName.getForm('setRoles');
-			this[f].user_id = row.id;
-			this[f].role_ids = row.role_id;
-			
-			this.openDialog('setRoles');
-			
-		}).setMethod('addFormUploadSuccess', function(response, file, fileList){
-			this.addUpload = '__ROOT__'+ response.path;
-			this.addUploadImg = true;
-			this.addForm.head = response.path
-		}).setMethod('addFormUploadError', function(err, response, file){
-			this.$message.error('上传出错：' + response.info);
-		}).setMethod('editFormUploadSuccess', function(response, file, fileList){
-			this.editUpload = '__ROOT__'+ response.path;
-			this.editUploadImg = true;
-			this.editForm.head = response.path
 		}).setVueHook('mounted', function(){
 	    var vmThis = this;
 	    this.$http.get('{:U("Area/getAreasByPid")}', {params:{pid:1} }).then(function(response){
@@ -489,168 +371,41 @@
 	    })
 	  }).setMethod('handleEdit', function(index, row){
 	  		var type ='edit';
-	  		var tar = {};
-	  		Oassign(tar, row);
-	  		Oassign(tar, row.userInfo);
-	  		delete tar.userInfo;
-		  	this.initObject( this[FormName.getFormName(type)], tar );
+		  	this.initObject( this[FormName.getFormName(type)], row );
 			this.editIndex = index;
-			this.editUpload = '__ROOT__'+ tar.head;
-			this.editUploadImg = true;
 			this.openDialog(type);
 	  }).setMethod('beforeEdit',function(){
 	    if (!this.$refs['editselect']) {
 	      this.provinceChange(this.editForm.area_province);
 	      this.cityChange(this.editForm.area_city);
 	    }
-	  }).setMethod('beforeChangePassowrd', function(){
-	    var form = 'editPassword';
-	    var vmThis = this;
-	    if (this.multipleSelection.length ==0 ) {
-	      this.closeDialog(form);
-	      this.$message.error('请先选择一个员工');
-	    } else if(this.multipleSelection.length > 1){
-	    	this.closeDialog(form);
-	        this.$message.error('只能选择一个员工');
-	    } else {
-	       var row = this.multipleSelection[0];
-	       this.editPasswordForm.id = row.id;
-	       this.editPasswordForm.account = row.account;
-	    }
-	  }).setMethod('afterChangePassowrd',function(){
-	  	   this.editPasswordForm.id = "";
-	       this.editPasswordForm.account = "";
-	       this.editPasswordForm.password = "";
-	       this.editPasswordForm.checkPass = "";
 	  }).setMethod('handleSelectionChange', function(val){
 	    this.multipleSelection = val;
-	  }).setMethod('setImgUrl', function(url){
-	  	return '__ROOT__' + url;
-	  }).setMethod('closeSetRole', function(){
-	  	 // this.dataReload();
-	  }).setMethod('cardImg', function(response, file, fileList){
-			// this.card_img = '__ROOT__'+ response.path;
-			this.addForm.card_img = response.path
-	  }).setMethod('cardFront', function(response, file, fileList){
-			// this.card_front = '__ROOT__'+ response.path;
-			this.addForm.card_front = response.path
-	  }).setMethod('cardBack', function(response, file, fileList){
-			// this.card_back = '__ROOT__'+ response.path;
-			this.addForm.card_back = response.path
-	  }).setMethod('householdHomePage', function(response, file, fileList){
-			// this.card_back = '__ROOT__'+ response.path;
-			this.addForm.household_home_page = response.path
-	  }).setMethod('householdHousemaster', function(response, file, fileList){
-			// this.card_back = '__ROOT__'+ response.path;
-			this.addForm.household_housemaster = response.path
-	  }).setMethod('householdPersonal', function(response, file, fileList){
-			// this.card_back = '__ROOT__'+ response.path;
-			this.addForm.household_personal = response.path
-	  }).setMethod('educationCertificate', function(response, file, fileList){
-			// this.card_back = '__ROOT__'+ response.path;
-			this.addForm.education_certificate = response.path
-	  }).setMethod('degreeDiploma', function(response, file, fileList){
-			// this.card_back = '__ROOT__'+ response.path;
-			this.addForm.degree_diploma = response.path
-	  }).setMethod('practitionerCertificate', function(response, file, fileList){
-			// this.card_back = '__ROOT__'+ response.path;
-			this.addForm.practitioner_certificate = response.path
-	  }).setMethod('editCardImg', function(response, file, fileList){
-			// this.card_img = '__ROOT__'+ response.path;
-			this.editForm.card_img = response.path
-	  }).setMethod('editCardFront', function(response, file, fileList){
-			// this.card_front = '__ROOT__'+ response.path;
-			this.editForm.card_front = response.path
-	  }).setMethod('editCardBack', function(response, file, fileList){
-			// this.card_back = '__ROOT__'+ response.path;
-			this.editForm.card_back = response.path
-	  }).setMethod('editHouseholdHomePage', function(response, file, fileList){
-			// this.card_back = '__ROOT__'+ response.path;
-			this.editForm.household_home_page = response.path
-	  }).setMethod('editHouseholdHousemaster', function(response, file, fileList){
-			// this.card_back = '__ROOT__'+ response.path;
-			this.editForm.household_housemaster = response.path
-	  }).setMethod('editHouseholdPersonal', function(response, file, fileList){
-			// this.card_back = '__ROOT__'+ response.path;
-			this.editForm.household_personal = response.path
-	  }).setMethod('editEducationCertificate', function(response, file, fileList){
-			// this.card_back = '__ROOT__'+ response.path;
-			this.editForm.education_certificate = response.path
-	  }).setMethod('editDegreeDiploma', function(response, file, fileList){
-			// this.card_back = '__ROOT__'+ response.path;
-			this.editForm.degree_diploma = response.path
-	  }).setMethod('editPractitionerCertificate', function(response, file, fileList){
-			// this.card_back = '__ROOT__'+ response.path;
-			this.editForm.practitioner_certificate = response.path
-	  }).setMethod('beforeAvatarUpload', function(file){
-	  	var  isLt8M = file.size / 1024 / 1024 < 8;
-
-	  	if (!isLt8M) {
-          this.$message.error('上传头像图片大小不能超过 8MB!');
-        }
-
-        return isLt8M;
 	  }).setMethod('showDetail', function(row){
-    this.account = row.account;
-    this.realname = row.realname;
-    this.head = row.head;
+    this.name = row.name;
     this.sex = row.sex;
-    this.marriage = row.marriage;
-    this.birth_date = row.birth_date;
-    this.graduation_date = row.graduation_date;
-    this.entry_date = row.entry_date;
-    this.completion_date = row.completion_date;
-    this.area_province = row.area_province;
-    this.area_city = row.area_city;
-    this.area_district = row.area_district;
-    this.entry_sources = row.entry_sources;
-    this.nation = row.nation;
-    this.university = row.university;
-    this.height = row.height;
-    this.weight = row.weight;
-    this.blood_type = row.blood_type;
-    this.phone = row.phone;
+    this.id_card = row.id_card;
     this.mphone = row.mphone;
     this.qq = row.qq;
-    this.qq_nickname = row.qq_nickname;
     this.weixin = row.weixin;
-    this.weixin_nickname = row.weixin_nickname;
-    this.id_card = row.id_card;
-    this.entry_manager = row.entry_manager;
-    this.address = row.address;
-    this.card_img = row.card_img;
-    this.card_front = row.card_front;
-    this.card_back = row.card_back;
-    this.household_home_page = row.household_home_page;
-    this.household_housemaster = row.household_housemaster;
-    this.household_personal = row.household_personal;
-    this.education_certificate = row.education_certificate;
-    this.degree_diploma = row.degree_diploma;
-    this.practitioner_certificate = row.practitioner_certificate;
-    this.family_member = row.family_member;
-    this.family_relation = row.family_relation;
-    this.family_job_unit = row.family_job_unit;
-    this.family_position = row.family_position;
-    this.family_phone = row.family_phone;
+    this.graduation_date = row.graduation_date;
+    this.university = row.university;
+    this.major = row.major;
+    this.position = row.position;
+    this.info_sources = row.info_sources;
     this.resume_entry_date = row.resume_entry_date;
     this.resume_enterprise_name = row.resume_enterprise_name;
     this.resume_position = row.resume_position;
     this.resume_leader = row.resume_leader;
     this.resume_leader_phone = row.resume_leader_phone;
     this.resume_leaving_reasons = row.resume_leaving_reasons;
+    this.interviewer_date = row.interviewer_date;
+    this.interviewer_name = row.interviewer_name;
+    this.interviewer_department = row.interviewer_department;
+    this.interviewer_mphone = row.interviewer_mphone;
+    this.interviewer_qq = row.interviewer_qq;
+    this.interviewer_opinion = row.interviewer_opinion;
     this.openDialog('detail');
   });
-	</script>
-	<script>
-
-
-		// window.vmMethods.set("handleClick", function(index, row){
-		// 	this.dialogEditID = true;
-		// })
-
-		// window.vmMethods.set("handleCurrentChange", function(page){
-			
-		// })
-		
 	</script>
 </block>

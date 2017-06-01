@@ -3,8 +3,8 @@ namespace Home\Controller;
 use Common\Lib\User;
 use Home\Model\RbacUserModel;
 
-class ApplicantInformationController extends CommonController {
-	protected $table="RbacUser";
+class DailyRecruitmentController extends CommonController {
+	protected $table="RecruitInfo";
 	protected $pageSize = 13;
 
 
@@ -16,38 +16,15 @@ class ApplicantInformationController extends CommonController {
 		$this->assign("sexType", array("未定义", "男", "女"));
 		$this->assign("marriageType", array("未定义", "未婚", "已婚"));
 		$this->assign("sourcesList", $D->getSources());
-		/*$this->assign("sourcesList", $this->getSources());*/
-		$allProvinces = D('AreaInfo')->where("p_id=1")->order("id asc")->select();
-		$provinces_arr = array();
-		foreach($allProvinces as $k=>$v){
-			$provinces_arr[$v["id"]] = $v["name"];
-		}
-		foreach($allProvinces as $k=>$v){
-			$provinces_id[] = $v["id"];
-		}
-		$where["p_id"] =array('in',$provinces_id);
-		$allCities = D('AreaInfo')->where($where)->order("id asc")->select();
-		foreach($allCities as $kk=>$vv){
-			$cities_arr[$vv["id"]] = $vv["name"];
-			$cities_id[] = $vv["id"];
-		}
-		$where2["p_id"] = array('in',$cities_id);
-		$allDistricts = D('AreaInfo')->where($where2)->order("id asc")->select();
-		foreach($allDistricts as $kkk=>$vvv){
-			$districts_arr[$vvv["id"]] = $vvv["name"];
-		}
-		$this->assign("allProvinces", $provinces_arr);
-		$this->assign("allCities", $cities_arr);
-		$this->assign("allDistricts", $districts_arr);
 		$this->display();
 	}
 
 	public function setQeuryCondition() {
-		$this->M->field('name,sex,id_num,mphone,qq,weixin,graduation_date,university,major,position,info_sources,resume_enterprise_name,resume_entry_date,resume_position,resume_leader,resume_leader_phone,resume_leaving_reasons,interviewer_name,interviewer_department,interviewer_mphone,interviewer_qq,interviewer_opinion,interviewer_date')->order("id desc");
+		$this->M->field('id,name,sex,id_card,mphone,qq,weixin,graduation_date,university,major,position,info_sources,resume_enterprise_name,resume_entry_date,resume_position,resume_leader,resume_leader_phone,resume_leaving_reasons,interviewer_name,interviewer_department,interviewer_mphone,interviewer_qq,interviewer_opinion,interviewer_date')->order("id desc");
 		$this->setRoleCondition();
 
 		if (isset($_GET['name'])) {
-			$this->M->where(array('account'=>array('like', I('get.name')."%")));
+			$this->M->where(array('name'=>array('like', I('get.name')."%")));
 		}
 		//员工在职或离职
 		 $status = I('get.status') ;
@@ -177,37 +154,33 @@ class ApplicantInformationController extends CommonController {
 	/**
 	* 预处理
 	*/
-	public function _before_add(){
+/*	public function _before_add(){
 		$this->rightProcted();
 		$user = new User;
 		$user->getRoleObject();
 		$user->setEmployeeAddData();
 
 
-	}
+	}*/
 
 	/**
 	* 添加
 	*/
 	public function add(){
+	/*	echo 'gg';
+		print_r($_POST);
+		echo 'kk';
+		exit();*/
+
         
 		$re = $this->M->create($_POST, 1);
 		if ($re) {
 			$this->M->startTrans(); 
-			$re['userInfo'] = M('userInfo')->create($_POST, 1);
-			if (empty($re['userInfo']['head'])) {
-				unset($re['userInfo']['head']);
-			}
-			$id = $this->M->relation('userInfo')->add($re);
+			$re['recruitInfo'] = M('recruitInfo')->create($_POST, 1);
+			$id = $this->M->add($re);
 			if ($id) {
-				$role_list = array('role_id'=>$re['userInfo']['role_id'], 'user_id'=>$id);
-				if (M('rbac_role_user')->add($role_list)) {
 					$this->M->commit();
 					$this->success(L('ADD_SUCCESS'));
-				} else {
-					$this->M->rollback();
-					$this->error(M('rbac_role_user')->getError());
-				}
 			} else {
 				$this->M->rollback();
 				$this->error($this->M->getError());
@@ -218,22 +191,23 @@ class ApplicantInformationController extends CommonController {
 
 	}
 
+
+
 	/**
 	* 编辑
 	*/
 	public function edit(){
-		//新方法
 		/*echo 'ss';
-		print_r($_POST);
+		print_r(session('account')['userInfo']);
 		echo 'gg';*/
-		$_POST["birth_date"] = UTC_to_locale_time($_POST["birth_date"]);
+		//新方法
+		
 		$_POST["graduation_date"] = UTC_to_locale_time($_POST["graduation_date"]);
-		$_POST["entry_date"] = UTC_to_locale_time($_POST["entry_date"]);
-		$_POST["completion_date"] = UTC_to_locale_time($_POST["completion_date"]);
 		$_POST["resume_entry_date"] = UTC_to_locale_time($_POST["resume_entry_date"]);
-        $re = M('userInfo')->create($_POST, 2);
+		$_POST["interviewer_date"] = UTC_to_locale_time($_POST["interviewer_date"]);
+        $re = M('recruitInfo')->create($_POST, 2);
 		if ($re) {
-			if (M('userInfo')->where(array('user_id'=>I('post.id') ))->save() !== false) {
+			if (M('recruitInfo')->where(array('id'=>I('post.id') ))->save() !== false) {
 				$this->success(L('ADD_SUCCESS'));
 			} else {
 				$this->error($this->M->getError().$this->M->getLastSql());
@@ -245,20 +219,7 @@ class ApplicantInformationController extends CommonController {
 	}
 
 
-	public function changePassword(){
-		$re = $this->M->create($_POST, 2);
-		if ($re) {
-			if ($this->M->save() !== false) {
-				$this->success(L('ADD_SUCCESS'));
-			} else {
-				$this->error($this->M->getError().$this->M->getLastSql());
-			}
-		} else {
-			$this->error($this->M->getError().$this->M->getLastSql());
-		}
-	}
 
-	/*public function _before_delete() {
-		$this->setQeuryCondition();
-	}*/
+
+
 }

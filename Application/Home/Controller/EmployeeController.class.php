@@ -261,9 +261,11 @@ class EmployeeController extends CommonController {
 	*/
 	public function edit(){
 		//新方法
-		/*echo 'ss';
+	/*	echo 'ss';
 		print_r($_POST);
-		echo 'gg';*/
+		echo 'gg';
+		print_r(I('post.id'));
+		echo 'kk';*/
 		$_POST["birth_date"] = UTC_to_locale_time($_POST["birth_date"]);
 		$_POST["graduation_date"] = UTC_to_locale_time($_POST["graduation_date"]);
 		$_POST["entry_date"] = UTC_to_locale_time($_POST["entry_date"]);
