@@ -9,7 +9,7 @@ use Home\Logic\CustomerLogic;
 use Home\Model\CustomerLogModel;
 use Home\Model\ProductModel;
 class CallBackController extends CommonController{
-	protected $table = "customers_service";
+	protected $table = "customers_buy";
 	protected $pageSize = 11;
 
   private function getOffset(){
@@ -23,27 +23,15 @@ class CallBackController extends CommonController{
     $this->assign('steps',        D('CustomerLog')->getSteps());
     $this->assign('logType',      D('CustomerLog')->getType());
 		$this->assign('sexType',      D('Customer')->getSexType());
-		// $this->assign('GoodsType',    D('CustomerLog')->getGoodsType());
-		// $this->assign('ServiceCycle', D('CustomerLog')->getServiceCycle());
 		$this->assign('badgeNum',     $this->badgeNum());
     $this->assign('SupServiceMan',  $this->getSupServiceMan());
 		$this->display();
 	}
 
   public function badgeNum(){
-    $cusList=M('software_account')->getField('cus_id',true);
-    $operatorList=M('software_account')->getField('open_id',true);
-  	$operator_id=session('account')['userInfo']['user_id'];
-    $allCount=$this->M->where(array('call_back'=>'1','operator_id'=>$operator_id))->count();
-    if($cusList==null || $operatorList==null){
-      $badgeNum['already']=0;
-      $badgeNum['yet']=0;
-    }else{
-      $badgeNum['already']=$this->M->where(array('call_back'=>'1','operator_id'=>array('IN',$operatorList),'cus_id'=>array('IN',$cusList)))->count();
-      $yetNum=$allCount-$badgeNum['already'];
-      $badgeNum['yet']=$yetNum>0 ? $yetNum : 0 ;
-    }
-		return $badgeNum;
+    $badgeNum['already']=$this->M->where(array('callback_id'=>session('uid'),'callback_state'=>array('neq',0)))->distinct(true)->field('cus_id')->count();
+    $badgeNum['yet']=$this->M->where(array('callback_id'=>session('uid'),'callback_state'=>'0'))->distinct(true)->field('cus_id')->count();
+    return $badgeNum;
   }
 
   public function getSupServiceMan(){
@@ -57,20 +45,39 @@ class CallBackController extends CommonController{
     return $man; 
   }
 
+  private function getMycust(){
+    $where = array('callback_id'=>session('uid'));
+    switch (I('get.field')) {
+      case 'already':
+        $where['callback_state'] = array('neq', 0);
+        break;
+      case 'yet':
+        $where['callback_state'] = 0;
+        break;
+      default:
+       
+        break;
+    }
+    return $this->M->where($where)->getField('cus_id', true);
+  }
+
 
   public function getList(){
-  	$this->setQeuryCondition();
-	  $count=(int)$this->M->count();
+  	$cusArr= array_keys(array_flip($this->getMycust()));
+    // $this->setQeuryCondition();
+    $count= count($cusArr);
 	  $this->setQeuryCondition();
-	  $cusArr=$this->M->getField('cus_id', true);
+	  // $cusArr= $this->getMycust();
 	  $cusList=implode(",", $cusArr);
+
 	  if(empty($cusList)){
 	    $list =null;
       $count='0';
 	  }else{
 	    $list = M('customers_basic as cb')->join("customers_contacts as cc on cb.id = cc.cus_id and cc.is_main = 1 ")
-          ->join('left join user_info as ui on cb.user_id=ui.user_id')->field('ui.realname,cb.*,cc.*')
+          ->join('left join user_info as ui on cb.salesman_id=ui.user_id')->field('ui.realname,cb.*,cc.*')
           ->where(array('cb.id'=>array('IN',$cusList)))->order("cb.id desc")->limit($this->getOffset().','.$this->pageSize)->select();
+        // var_dump(M('customers_basic as cb')->getlastsql());
 	    $count = $list==null ? '0' :$count;
     }
     //echo M('customers_basic as cb')->getLastSql();
@@ -84,8 +91,10 @@ class CallBackController extends CommonController{
 	* @return null
 	*/
 	public function setQeuryCondition() {
-		$operator_id=session('account')['userInfo']['user_id'];
-    $this->M->where(array('call_back'=>'1','operator_id'=>$operator_id));
+		/*$operator_id=session('account')['userInfo']['user_id'];
+    $this->M->where(array('call_back'=>'1','operator_id'=>$operator_id));*/
+
+    M('customers_basic as cb')->where(array('cb.id'=>array('in', $this->getMycust())));
 
     if (I('get.name')) {
         M('customers_basic as cb')->where(array("cb.name"=> array('like', I('get.name')."%")));
@@ -189,6 +198,19 @@ class CallBackController extends CommonController{
 
 
 
+
+   public function check(){
+    $cus_ids  = I("post.cus_ids");
+    $state = I("post.state");
+
+    $re =  $this->M->where(array('cus_id'=>array('in', $cus_ids), 'callback_id'=>session('uid'), 'callback_state'=>0))
+            ->data(array('callback_state'=>$state))->save();
+    if ($re) {
+      $this->success('成功');
+    } else {
+      $this->error($this->M->getError());
+    }
+  }
 
 
 

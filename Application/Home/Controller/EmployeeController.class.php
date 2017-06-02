@@ -1,7 +1,7 @@
 <?php
 namespace Home\Controller;
 use Common\Lib\User;
-use Home\Model\RbacUserModel;
+use Home\Model\DepartmentModel;
 
 class EmployeeController extends CommonController {
 	protected $table="RbacUser";
@@ -9,72 +9,32 @@ class EmployeeController extends CommonController {
 
 
 	public function index (){
-		$D = D('RbacUser');
-		$this->assign('employeeStatus', $D->getStatusType());
+
+
 		$this->assign("roleList", $this->getRoles());
 		$this->assign("groupList", D('Group')->where(array('status'=>1))->select());
 		$this->assign("sexType", array("未定义", "男", "女"));
-		$this->assign("marriageType", array("未定义", "未婚", "已婚"));
-		$this->assign("sourcesList", $D->getSources());
-
-		/*$this->assign("sourcesList", $this->getSources());*/
-		$allProvinces = D('AreaInfo')->where("p_id=1")->order("id asc")->select();
-		$provinces_arr = array();
-		foreach($allProvinces as $k=>$v){
-			$provinces_arr[$v["id"]] = $v["name"];
-		}
-		foreach($allProvinces as $k=>$v){
-			$provinces_id[] = $v["id"];
-		}
-		$where["p_id"] =array('in',$provinces_id);
-		$allCities = D('AreaInfo')->where($where)->order("id asc")->select();
-		foreach($allCities as $kk=>$vv){
-			$cities_arr[$vv["id"]] = $vv["name"];
-			$cities_id[] = $vv["id"];
-		}
-		$where2["p_id"] = array('in',$cities_id);
-		$allDistricts = D('AreaInfo')->where($where2)->order("id asc")->select();
-		foreach($allDistricts as $kkk=>$vvv){
-			$districts_arr[$vvv["id"]] = $vvv["name"];
-		}
-		//所属小组
-		$allGroups = D("GroupBasic")->order("id asc")->select();
-		foreach($allGroups as $k=>$v){
-			$groups_arr[$v["id"]] = $v["name"];
-		}
-		//所属部门
-		$allDepartments = D("DepartmentBasic")->order("id asc")->select();
-		foreach($allDepartments as $k=>$v){
-			$departments_arr[$v["id"]] = $v["name"];
-		}
-		//员工职能
-		$allRoles = D("RbacRole")->order("id asc")->select();
-		foreach($allRoles as $k=>$v){
-			$roles_arr[$v["id"]] = $v["name"];
-		}
-
-		
-		$this->assign("allProvinces", $provinces_arr);
-		$this->assign("allCities", $cities_arr);
-		$this->assign("allDistricts", $districts_arr);
-		$this->assign("allGroups", $groups_arr);
-		$this->assign("allDepartments", $departments_arr);
-		$this->assign("departmentsList", $allDepartments);
-		$this->assign("allRoles", $roles_arr);
-		$this->assign("rolesList", $allRoles);
+		$ename = $this->getRoleEname();
+    	$this->assign('viewDecorator', $this->M->decoratorView($ename));
+    	$this->assign('departments', D('Department')->getAllDepartments('id,name'));
+    	$this->assign('depart_id', $this->getDepartmentId());
+    	$this->assign('departmentItem', $this->setEmployeeDepartemtnItem());
+    	$this->assign('allRoles', D('Role')->getField('id,name', true));
 		$this->display();
 	}
 
 	public function setQeuryCondition() {
+
 		// $this->M->relation(true)->field('password',true)->where(array('no_authorized'=>0));
 		$this->M->join('user_info ON rbac_user.id = user_info.user_id')
-		        ->field('account,address,
+				->join('department_basic as db on user_info.department_id=db.id', 'left')
+		        ->field('db.name as department_name,account,user_info.address,
 		        	area_city,area_district,
 		        	area_province,created_at,
-		        	department_id,group_id,identifier,
-		        	head,id,phone,mphone,no_authorized,phone,
-		        	qq,qq_nickname,realname,role_ename,role_id,group_id,department_id,sex,status,user_id,weixin,weixin_nikname,id_card,card_img,card_front,card_back,nation,marriage,blood_type,birth_date,university,major,graduation_date,height,weight,entry_sources,entry_manager,entry_date,completion_date,family_member,family_relation,family_job_unit,family_position,family_phone,resume_enterprise_name,resume_entry_date,resume_position,resume_leader,resume_leader_phone,resume_leaving_reasons,household_home_page,household_housemaster,household_personal,education_certificate,degree_diploma,practitioner_certificate,leaving_certificate,ip,location,lg_time,out_time')->where(array('no_authorized'=>0))
-		        ->where(array('rbac_user.status'=>array('EGT',0)));
+		        	department_id,group_id,
+		        	head,rbac_user.id,mphone,no_authorized,phone,
+		        	qq,qq_nickname,realname,role_ename,role_id,sex,rbac_user.status,user_info.user_id,weixin,weixin_nikname,id_card,card_img,card_front,card_back,ip,location,lg_time,out_time')->where(array('no_authorized'=>0))
+		        ->where(array('rbac_user.status'=>I('get.status')));
 
 		/*$user = new User;
 		$user->getRoleObject();
@@ -84,35 +44,56 @@ class EmployeeController extends CommonController {
 		if (isset($_GET['name'])) {
 			$this->M->where(array('account'=>array('like', I('get.name')."%")));
 		}
+
 		if (isset($_GET['realname'])) {
 			$this->M->where(array('realname'=>array('like', I('get.realname')."%")));
 		}
-		//员工在职或离职
-		 $status = I('get.status') ;
-        if(isset($status)){
-        	switch($status){
-        		case 1:
-        		$this->M->where(array('rbac_user.status'=>array('EGT',0)));
-        		break;
-        		case 2:
-        		$this->M->where(array('rbac_user.status'=>array('LT',0)));
-        		break;
-        	}
-        }
+
+		$this->M->where(array('rbac_user.id'=>array('neq', session('uid'))));
+
+
+	}
+
+	private function getDepartmentRow(){
+		if (!isset($this->departmentRow)) {
+			$this->departmentRow = D('Department')->find($this->getDepartmentId());
+		}
+		return $this->departmentRow;
+	}
+
+	private function isHrDeparment(){
+		$this->getDepartmentRow();
+		
+		if ($this->departmentRow['type'] == DepartmentModel::HR_DEPARTMENT) {
+			return true; //$_POST['department_id'] = 0;
+		} else {
+			return false; //$_POST['department_id'] = session('account')['userInfo']['department_id'];
+		}
 	}
 
 	private function getDepartmentId(){
-		return session('account')['userInfo']['department_id'];
+		// var_dump(session('account')['userInfo']['department_id']);
+		if ($this->getRoleEname()=='gold') {
+			return 0;
+		} else {
+			$depart_id = session('account')['userInfo']['department_id'];
+			
+			if ($depart_id == 0) {
+				return 9999999;
+			} else {
+				return $depart_id;
+			}
+		}
+		
 	}
 
-	private function goldCondition(){
-		$this->setAllEmployee();
-	}
+	
 
 	private function setDeparmentQuery(){
-		$departmentRow = D('Department')->find($this->getDepartmentId());
-		$config = json_decode($departmentRow['config']);
+		$departmentRow = $this->getDepartmentRow();
+		$config = json_decode($departmentRow['config'], true);
 		if (isset($config['EmployeeQueryCondition'])) {
+
 			call_user_func(array($this, 'set'.$config['EmployeeQueryCondition']));
 		}
 	}
@@ -120,35 +101,61 @@ class EmployeeController extends CommonController {
 
 
 	private function setDepartmentEmployee(){
+		
 		$this->M->where(array(
 			'user_info.department_id'=>array('eq', $this->getDepartmentId()),
 			// 'role_id'=>array('NEQ', array()) 
 		));
+
 	}
 	private function setAllEmployee(){
 		
 	}
+	// 
+	private function goldCondition(){
+		$this->setAllEmployee();
+	}
 
 	//人事
 	private function humanResourceCondition(){
-		$this->setDeparmentQuery();
+
+		if ($this->isHrDeparment()) {
+			$this->setAllEmployee();
+		} else {
+			$this->setDeparmentQuery();
+		}
+		
+	}
+
+	//人事经理
+	private function hrMasterCondition(){
+		$this->setAllEmployee();
+	}
+
+	//风控经理
+	private function riskMasterCondition(){
+		$this->setDepartmentEmployee();
+	}
+	//客服经理
+	private function serviceMasterCondition(){
+		$this->setDepartmentEmployee();
 	}
 
 
 
 	//部门经理
 	private function departmentMasterCondition(){
-		$this->setDeparmentQuery();
+		$this->setDepartmentEmployee();
 	}
 
 
-	public function setRoleCondition($M){
+	public function setRoleCondition(){
 		$this->roleEname = $this->getRoleEname();
         $funcName = $this->roleEname."Condition";
         if (method_exists($this, $funcName)) {
              call_user_func(array($this, $funcName));
         } else {
-        	$this->error("没有权限");
+        	$this->error("没有权限EmployeeController");
         }
 	}
 
@@ -157,8 +164,15 @@ class EmployeeController extends CommonController {
 
 
 	public function getRoles(){
-		$row = M('rbac_role')->field('level')->find(session('account')['userInfo']['role_id']);
-		return D('rbac_role')->where(array('level'=>array('gt', $row['level'])))->select();
+		/*$row = M('rbac_role')->field('level')->find(session('account')['userInfo']['role_id']);
+		return D('rbac_role')->where(array('level'=>array('gt', $row['level'])))->select();*/
+		$departRow = D("Department")->find(session('account')['userInfo']['department_id']);
+		if ($departRow) {
+			return D("Department")->getEmployeeRoles($departRow['type']);
+		} else {
+			return D('rbac_role')->select();
+		}
+		
 	}
 	
 	/**
@@ -217,11 +231,22 @@ class EmployeeController extends CommonController {
 	*/
 	public function _before_add(){
 		$this->rightProcted();
-		$user = new User;
+		/*$user = new User;
 		$user->getRoleObject();
-		$user->setEmployeeAddData();
+		$user->setEmployeeAddData();*/
+
+		//如果是人事部 则添加的员工部门为 0
+		//如果不是人事部 则添加的员工部门为 当前员工的部门
 
 
+		// $departmentRow = D('Department')->find($this->getDepartmentId());
+		/*if ($this->isHrDeparment()) {
+			$_POST['department_id'] = 0;
+		} else {
+			$_POST['department_id'] = session('account')['userInfo']['department_id'];
+		}*/
+
+		
 	}
 
 	/**
@@ -296,6 +321,18 @@ class EmployeeController extends CommonController {
 		} else {
 			$this->error($this->M->getError().$this->M->getLastSql());
 		}
+	}
+
+	public function setEmployeeDepartemtnItem(){
+		if ($this->getRoleEname()=='gold') {
+			return 1;
+		} else if(session('account')['userInfo']['department_id']!=0){
+			$row = $this->getDepartmentRow();
+			if ($row['type']==DepartmentModel::HR_DEPARTMENT) {
+				return 1;
+			} 
+		}
+		return 0;
 	}
 
 	/*public function _before_delete() {

@@ -15,7 +15,11 @@ class DepartmentController extends CommonController {
 		$this->assign("typeList", $type);
 		$this->assign("totalCount", $count);
 		$this->assign("zoneList", M('department_zone')->getField('id,name'));
-		$this->assign("divisions", D('DepartmentDivision')->field('id,name')->select());
+		$this->assign("divisions", D('DepartmentDivision')->where(array('status'=>array('egt', 0)))->field('id,name')->select());
+
+		 $ename = $this->getRoleEname();
+
+    	$this->assign('viewDecorator', $this->M->decoratorView($ename));
 		
 		$this->display();
 	}
@@ -47,7 +51,7 @@ class DepartmentController extends CommonController {
 		// '销售部', 0
   //       '客服部', 1
   //       '风控部'  2
-		//   ...     3
+		//  人事部     3
 		$configMap = array(
 			array('EmployeeQueryCondition'=>"DepartmentEmployee"),
 			array('EmployeeQueryCondition'=>"DepartmentEmployee"),
@@ -61,6 +65,13 @@ class DepartmentController extends CommonController {
 
 	public function _before_edit(){
 		$this->setConfig();
+		$this->old = $this->M->find(I('post.id'));
+
+		$newUserId = I('post.user_id');
+		if ($this->old['user_id'] != $newUserId) {
+			M('user_info')->where(array('user_id'=>$newUserId))
+					      ->data(array('department_id'=>$this->old['id']))->save();
+		}
 	}
     
 

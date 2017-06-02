@@ -47,6 +47,11 @@
     .on{
       opacity:0.5;
     }
+    .el-tabs__item{
+      font-family: Microsoft YaHei;
+      color:#0d0f10;
+      font-size: 14px;
+    }
   </style>
 </block>
 <block name="body">
@@ -67,12 +72,13 @@
         <el-form-item prop="contact" style="width:170px">
           <el-input v-model="searchForm.contact" size="small" placeholder="手机|qq|微信号"></el-input>
         </el-form-item>
-
+        <?php if($isDepartment): ?>
         <el-form-item prop="group" style="width:80px">
           <el-select v-model="searchForm.group" size="small" placeholder="请选择">
             <el-option v-for="item in searchGroup" :label="item.name" :value="item.user_id" :disabled="item.disabled"></el-option>
           </el-select>
         </el-form-item>
+        <?php endif; ?>
 
         <el-form-item prop="field" v-show="false">
           <input type="hidden" size="small" v-model="searchForm.field">
@@ -143,9 +149,9 @@
             </el-badge>
           </el-tooltip>
 
-          <el-tooltip content="导入我的客户" placement="bottom-start" style="margin-left:15px;">
-            <el-button type="warning" size="small" @click="openDialog('importc')" :disabled="true">客户导入</el-button>
-          </el-tooltip>
+          <!-- <el-tooltip content="导入我的客户" placement="bottom-start" style="margin-left:15px;">
+            <el-button type="warning" size="small" @click="openDialog('importc')" >客户导入</el-button>
+          </el-tooltip> -->
 
           <el-tooltip content="客户预查" placement="bottom-start"  style="margin-left:10px;">
             <el-button size="small"  @click="openDialog('preCheck')"  type="primary">{:L('CUSTOMER_PRE_CHECK')}</el-button>
@@ -155,6 +161,10 @@
             <el-badge :value="{$pulled}" :max="9" style="margin-left:15px;">
               <el-button size="small" :disabled="true" @click="openDialog('exactsCon')" type="primary">{:L('EXACTS_CON')}</el-button>
             </el-badge>
+          </el-tooltip>
+
+          <el-tooltip content="未通过的审核" placement="bottom-start"  style="margin-left:10px;">
+            <el-button size="small"  @click="setField('check')"  type="primary">未通过</el-button>
           </el-tooltip>
 
           <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:10px;">
@@ -185,8 +195,8 @@
   	    <el-table-column width="50" align="center" type="selection"></el-table-column>
 
   	    <el-table-column label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  ></el-table-column>
-  	    <el-table-column  prop="name"  label="客户姓名" width="110"></el-table-column>
-  	    <el-table-column   prop="type" label="客户类型" sortable='customer' width="140">
+  	    <el-table-column  prop="name"  label="客户姓名" width="140"></el-table-column>
+  	    <el-table-column   prop="type" label="客户类型" sortable='customer' width="150">
           <template scope="scope">
             {{ getType(scope.row.type, 'customerType') }}
           </template>
@@ -219,7 +229,16 @@
 
           <el-table-column  prop="last_track" sortable='customer' label="最后跟踪时间" align="center" width="175"></el-table-column>
 
-        <el-table-column  prop="commission" label="跟踪方比例"  header-align="center" width="110"></el-table-column>
+        <el-table-column  prop="commission" label="跟踪方比例" width="110">
+          <template scope="scope">
+            {{ scope.row.commission+"%" }}
+          </template>
+        </el-table-column>
+        <el-table-column  prop="add_commission" label="锁定方比例" width="110">
+          <template scope="scope">
+            {{ scope.row.add_commission+"%" }}
+          </template>
+        </el-table-column>
         <el-table-column  prop="plan" label="计划跟踪时间" align="center" width="175"></el-table-column>
         <el-table-column  prop="conflict" label="最后冲突时间" align="center" width="175"></el-table-column>
         <el-table-column  header-align="center"  label="地区" width="135">
@@ -232,14 +251,45 @@
             {{ getType(scope.row.sex, 'sexType') }}
           </template>
         </el-table-column>
+
+        <el-table-column label="操作" width="90" fixed="right">
+          <template scope="scope">
+            <el-button size="small" @click="buy(scope.row)" type="primary">购买</el-button>
+          </template>
+        </el-table-column>
+
       </el-table>
     </el-col>
   </el-row>
 
   <!-- toolbar -->
   <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
+    <el-col :span="12"> 
+      <div class="grid-content bg-purple">
+        <span class="wrapper">
+          <el-tooltip content="选择客户录入跟踪信息" placement="right">
+            <el-button size="small" @click="openDialog('addTrack')" type="primary">录入跟踪</el-button>
+          </el-tooltip>
 
-    <el-col :span="12" :offset="12">
+          <el-tooltip content="选择客户录入投诉意见" placement="right">
+            <el-button size="small" @click="openDialog('complain')" type="primary" style="margin-left:10px;">客户投诉</el-button>
+          </el-tooltip>
+
+          <el-tooltip content="选择客户录入对其跟踪计划" placement="right">
+            <el-button size="small" @click="openDialog('addPlan')" type="primary" style="margin-left:10px;">计划</el-button>
+          </el-tooltip>
+
+          <el-tooltip content="选择客户录入其提醒事项及内容" placement="right">
+            <el-button size="small" @click="openDialog('addRemind')" type="info" style="margin-left:10px;">提醒</el-button>
+          </el-tooltip>
+
+          <el-tooltip content="筛选客户重点跟踪" placement="right">
+            <el-button size="small" @click="openDialog('addChoice')" type="primary" style="margin-left:10px;">自选</el-button>
+          </el-tooltip>
+        </span>
+      </div>
+    </el-col>
+    <el-col :span="12">
       <div class="grid-content bg-purple-light pull-right">
 
         <!-- page -->
@@ -253,29 +303,7 @@
   </div>
 
   <div id="app2" class="b" style="margin:5px -10px 5px;">
-      <div class="superaddition">
-        <el-tooltip content="选择客户录入跟踪信息" placement="right">
-          <el-button size="small" @click="openDialog('addTrack')" type="primary" style="margin-left:10px;">录入跟踪</el-button>
-        </el-tooltip>
-
-        <el-tooltip content="选择客户录入对其跟踪计划" placement="right">
-          <el-button size="small" @click="openDialog('addPlan')" type="primary" style="margin-left:10px;">计划</el-button>
-        </el-tooltip>
-
-        <el-tooltip content="选择客户对其转让给他人(暂未实现)" placement="right">
-          <el-button size="small" @click="openDialog('addTransfer')" :disabled="true" type="warning" style="margin-left:10px;">转让</el-button>
-        </el-tooltip>
-
-        <el-tooltip content="选择客户录入其提醒事项及内容" placement="right">
-          <el-button size="small" @click="openDialog('addRemind')" type="info" style="margin-left:10px;">提醒</el-button>
-        </el-tooltip>
-
-        <el-tooltip content="筛选客户重点跟踪" placement="right">
-          <el-button size="small" @click="openDialog('addChoice')" type="primary" style="margin-left:10px;">自选</el-button>
-        </el-tooltip>
-      </div>
-
-    <el-row style="position: relative;top:-40px;">
+    <el-row >
      <el-col :span="24">
         <el-tabs  type="border-card">
           <el-tab-pane label="跟踪记录">
@@ -283,17 +311,17 @@
               <el-table-column prop="user" label="操作员工" header-align="center">
               </el-table-column>
 
-              <el-table-column prop="type" label="客户类型" header-align="center">
+              <el-table-column prop="type" label="客户类型(当前)" header-align="center">
               </el-table-column>
 
               <el-table-column prop="name" label="客户姓名" header-align="center">
               </el-table-column>
               
-                <el-table-column label="内容" header-align="center">
-                  <template scope="scope">
-                    {{scope.row.content | handleString}}
-                  </template>
-                </el-table-column>
+              <el-table-column label="内容" header-align="center">
+                <template scope="scope">
+                  {{scope.row.content | handleString}}
+                </template>
+              </el-table-column>
 
               <el-table-column prop="created_at" label="跟踪时间" width="180" align="center">
               </el-table-column>
@@ -306,7 +334,31 @@
 
           <!-- <el-tab-pane label="软件账号">软件账号</el-tab-pane>
           <el-tab-pane label="通话记录">通话记录</el-tab-pane> -->
-          <el-tab-pane label="客户资料">客户资料</el-tab-pane>
+          <el-tab-pane label="投诉记录">
+            <el-table :data="tableDataOne"  empty-text="请点击客户显示跟踪信息" border style="width: 100%"  @row-dblclick="viewComplainContents">
+              <el-table-column prop="user" label="操作员工" header-align="center">
+              </el-table-column>
+
+              <el-table-column prop="type" label="客户类型(当前)" align="center">
+              </el-table-column>
+
+              <el-table-column prop="name" label="客户姓名" align="center">
+              </el-table-column>
+              
+              <el-table-column label="投诉内容" header-align="center">
+                <template scope="scope">
+                  {{scope.row.content | handleString}}
+                </template>
+              </el-table-column>
+
+              <el-table-column prop="created_at" label="投诉时间" width="180" align="center">
+              </el-table-column>
+
+              <el-table-column prop="track_text" label="投诉类型" align="center">
+              </el-table-column>
+
+            </el-table>
+          </el-tab-pane>
         </el-tabs>
      </el-col>
     </el-row>
@@ -321,6 +373,10 @@
   <!-- / 录入客户 -->
   <!-- 跟踪内容 -->
   <include file="_traceContent" />
+  <!-- /跟踪内容 -->
+  <!-- 投诉内容 -->
+  <include file="_complainContent" />
+  <!-- /投诉内容 -->
   <!-- 录入高级查询条件 -->
   <include file="_advancedQuery" />
   <!-- 客户预查 -->
@@ -353,6 +409,13 @@
   <!-- V类客户资料 -->
   <include file="_realInfo" />
   <!-- /V类客户资料 -->
+  <!-- 录入投诉 -->
+  <include file="_complain" />
+  <!-- 录入投诉 -->
+
+  <!-- 购买 -->
+  <include file="_buy" />
+  <!-- /购买 -->
 </div>
 
 </div>
@@ -364,15 +427,45 @@
   page.addRemindFormUrl = "{:U('setRemid')}";
   page.addChoiceFormUrl = "{:U('setImportant')}";
   page.addRealInfoUrl = "{:U('realInfo')}";
-
+  page.addComplainFormUrl = "{:U('CommonHandleLogic/addComplain')}";
+  page.buyUrl = "{:U('buy')}";
   var checkIdNum=function(rule,value,callback){
     var number=/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
-    if(!number.test(value)){
+    if(value==='' || value===null){
+      callback();
+    }else if(!number.test(value)){
       callback('身份证号格式错误');
     }else{
       callback();
     }
   }
+
+  var  editCheckPhone = function(rule,value,callback){
+    if (window.defaultVm.editOld.phone2 != value) {
+      phoneValidata(rule,value,callback);
+    } else {
+      callback();
+    }
+  }
+
+  var  editCheckQq = function(rule,value,callback){
+    if (window.defaultVm.editOld.qq2 != value) {
+      QQValidata(rule,value,callback);
+    } else {
+      callback();
+    }
+  }
+
+  var  editCheckWeixin = function(rule,value,callback){
+    if (window.defaultVm.editOld.weixin2 != value) {
+      WxValidata(rule,value,callback);
+    } else {
+      callback();
+    }
+  }
+
+
+  
 
   var CustomerRule = {
       name:[
@@ -412,6 +505,48 @@
         { required:true, message:'请选择客户来源', trigger:'change'},
       ]
     };
+
+  var CustomerEditRule = {
+      name:[
+        { required: true, message: '请输入客户姓名', trigger: 'blur' },
+      ],
+      phone:[
+        { required: true, message: '请输入客户手机', trigger: 'blur' },
+        { validator: phoneValidata , trigger: 'blur' },
+      ],
+      phone2:[
+        { validator: editCheckPhone, trigger: 'blur' }
+      ],
+      qq:[
+        { pattern:/^\d+$/, message: 'QQ号必须为数字'},
+        { validator: QQValidata, trigger:'blur' },
+      ],
+      qq2:[
+        { pattern:/^\d+$/, message: 'QQ号必须为数字'},
+        { validator: editCheckQq, trigger:'blur' },
+      ],
+      weixin:[
+          { min: 6, max: 20, trigger:'blur', message:"长度为6-20个字符" },
+          { validator: WxValidata, trigger:'blur' },
+      ],
+      weixin2:[
+          {min: 6, max: 20, trigger:'blur', message:"长度为6-20个字符" },
+          { validator: editCheckWeixin, trigger:'blur' },
+      ],
+
+      type:[
+        { required:true, message:'请选择客户类型',trigger:'change'},
+      ],
+      money:[
+        { required:true, message:'请选择客户资料量',trigger:'change'},
+      ],
+      source:[
+        { required:true, message:'请选择客户来源', trigger:'change'},
+      ]
+    };
+
+
+
   window.defaultOption.setDatas({
     flag:false,
     realInfo:false,
@@ -420,6 +555,13 @@
     dialogVisible:false,
     sb:[],
     tableData: [{'name':'',
+                 'created_at':'',
+                 'type':'',
+                 'track_type':'',
+                 'content':'',
+                 'user':''     
+    }],
+    tableDataOne: [{'name':'',
                  'created_at':'',
                  'type':'',
                  'track_type':'',
@@ -455,7 +597,8 @@
     memberList:[],
     curCheckedItem:{},
     addRules:CustomerRule,
-    editRules:CustomerRule,
+    editRules:CustomerEditRule,
+    editOld:{},
     qq_disabled:false,
     weixin_disabled:false,
     phone2_disabled:false,
@@ -474,6 +617,27 @@
       cycle:[{ required: true, message: '请选择服务周期', trigger: 'blur' },],
       address:[{ required: true, message: '请输入通讯地址', trigger: 'blur' },],
     },
+
+    buyRules:{
+      name:[
+        { required: true, message:"请输入客户姓名",trigger:'blur'}
+      ],
+      id_card:[
+        { required: true, message:"请输入身份证号", trigger:'blur'},
+        { validator: checkIdNum, trigger:'blur' },
+      ],
+      address:[
+        {required: true, message:'请输入详细地址',trigger:'blur'}
+      ],
+      product_index:[
+        {type:"number", required: true, message:"请选择产品",trigger:'change'}
+      ],
+      buy_time:[
+        { required: true, message:"请选择够买时间", trigger:'change'}
+      ] 
+
+    },
+    stepActive:0
 
   }).setForm('search', {
     name:'',
@@ -519,6 +683,8 @@
     track_start:"",
     track_end:"",
   },true).setForm('traceContent',{
+    content:'',
+  },true).setForm('complainContent',{
     content:'',
   },true).setForm('exactsCon',{
     reply:'',
@@ -623,6 +789,22 @@
     address:'',
     cus_id:'',
     fm:'',
+  },true).setForm('complain',{
+    cus_id:'',
+    type:'',
+    name:'',
+    content:'',
+  }, true).setForm('buy',{
+    id:null,
+    id_card:"",
+    address:"",
+    product_id:null,
+    product_index:null,
+    product_name:"",
+    product_money:"",
+    product_t:"",
+    name:"",
+    buy_time:"",
   },true).setMethod('getType', function(type, field){
       return this[field][type];
   }).setMethod('searchCustomer', function(){
@@ -695,6 +877,7 @@
     ];
     for (var i=0, len= disableArr.length; i<len; i++) {
       // console.log(disableArr[i], !!this.editForm[disableArr[i]]);
+      this.editOld[disableArr[i]] = this.editForm[disableArr[i]];
       this[disableArr[i] +"_disabled"] = !!this.editForm[disableArr[i]] ?  true : false ;
     }
 
@@ -722,12 +905,16 @@
       var  row = this.multipleSelection.pop();
       this[FormName.getForm(x)].name = row.name;
       this[FormName.getForm(x)].cus_id = row.id;
+      this.complainForm.type = row.type;
+      this.complainForm.to_id = row.salesman_id;
       this.realInfoForm.cus_id = row.id;
       this.row=row;
       return row;
     }
   }).setMethod('beforeAddTrack', function(){
     this.commonSelect('addTrack');
+  }).setMethod('beforeAddComplain', function(){
+    this.commonSelect('complain');
   }).setMethod('beforeAddPlan',function(){
     this.commonSelect('addPlan');
     this.dialogLabelWidth = "140px";
@@ -769,7 +956,7 @@
       vmThis.$set(vmThis,'deps',deps);
       
     });*/
-    console.log(this.products);
+   // console.log(this.products);
     this.dialogLabelWidth = "100px";
   }).setMethod('trackLog',function(row,event,column){
       // this.$refs.select.toggleRowSelection(row);
@@ -778,6 +965,13 @@
       },function(response){
         console.log("操作失败");
       });
+
+      this.$http.post("{:U('CommonFindDetail/complainInfo')}",row).then(function(response){
+        this.tableDataOne = response.body;
+      },function(response){
+        console.log("操作失败");
+      });
+
   }).setMethod('userInfo',function(row,event){
       var index = this.dataList.indexOf(row);
       this.realInfoForm.cus_id = row.id;
@@ -793,7 +987,8 @@
   }).setMethod('setField', function(v,id){
       this.flag=id;
       this[FormName.getFormName('search')].field = v;
-      // this[FormName.getFormName('search')].group = 'user_id';
+      this[FormName.getFormName('search')].group = "{:session('uid')}";
+      this.dataLoad = true;
       this.loadDatalist();
   }).setMethod('beforeImportc', function(){
       var vmThis = this;
@@ -806,7 +1001,7 @@
   }).setMethod('importMyc', function(){
      var vmThis = this;
      this.$http.get('{:U("importMyc")}').then(function(response){
-        vmThis.$message('由我创建的客户导入：'+ response.body.c +"条,"+ "转让给我的客户："+response.body.t+"条");
+        // vmThis.$message('由我创建的客户导入：'+ response.body.c +"条,"+ "转让给我的客户："+response.body.t+"条");
          vmThis.searchReset();
         /*vmThis.importcForm.c = response.body.c;
         vmThis.importcForm.t = response.body.t;*/
@@ -816,8 +1011,12 @@
   }).setMethod('refresh',function(){
     window.location.reload();
   }).setMethod('advancedQueryReset',function(){
-    // this.$refs.advancedQueryForm.resetFields();
-    this.closeDialog('advancedQuery');
+
+    console.log(this.$refs.advancedQueryForm);
+
+     this.$refs.advancedQueryForm.resetFields();
+    //this.closeDialog('advancedQuery');
+    //this.advancedQueryForm = Oassign({}, this._search)
   }).setMethod('advanceSearch',function(){
 
        for (var x  in  this.advancedQueryForm) {
@@ -833,8 +1032,8 @@
   }).setComputed('isTypeV', function(){
     return this.editForm.type == 'V';
   }).setMethod('sortChange', function(sortObject){
-    console.log(sortObject);
-    console.log(this.searchForm);
+    //console.log(sortObject);
+    //console.log(this.searchForm);
     var sortMap = {
       ascending: 'asc',
       descending: 'desc'
@@ -923,12 +1122,70 @@
     // var index = this.tableData.indexOf(row);
     this.traceContentFormDialog = true;
     this.traceContentForm.content = row.content;
+  }).setMethod('viewComplainContents',function(row,event){
+    this.complainContentFormDialog = true;
+    this.complainContentForm.content = row.content;
   }).setMethod('pdtChange',function(v){
     var vmThis = this;
     this.$http.get('{:U("Products/getProduct")}', {params:{id:v} }).then(function(response){
       vmThis.realInfoForm.expense=response.body.price;
       vmThis.realInfoForm.cycle=response.body.service_cycle;
     });
+  }).setMethod('complainSubmit',function(url){
+    var  vmThis   = this;
+    this.complainFormSubmitStatus = true;
+    this.$http.post(url,this.complainForm).then(function(response){
+      vmThis.$message({message: '操作成功',type: 'success'});
+      setTimeout(function(){
+        vmThis.complainFormDialog = false;
+        vmThis.complainFormSubmitStatus = false;
+        vmThis.$refs.complainForm.resetFields(); 
+        vmThis.refresh();
+      }, 2000);  
+    },function(response){
+      vmThis.$message.error("操作出错啦");
+    });
+  }).setMethod('next', function(){
+    var  vmThis   = this;
+    delete vmThis.buyRules.product_index;
+    delete vmThis.buyRules.buy_time;
+    this.$refs.buyForm.validate(function(valid){
+      if (valid) {
+        if (vmThis.stepActive++ > 1) vmThis.stepActive = 0;
+        vmThis.buyRules.product_index = [{ type:"number",required: true, message:"请选择产品",trigger:'change',}];
+        vmThis.buyRules.buy_time = [{ required: true, message:"请选择够买时间", trigger:'change'}];
+      } else {
+        return false;
+      }
+    });
+  }).setMethod('beforeBuy', function(){
+    this.stepActive = 0;
+  }).setMethod('prv', function(){
+    if (this.stepActive-- < 0) this.stepActive = 0;
+  }).setMethod('buySelectChange', function(val){
+    if (val!= undefined ) {
+      var row = this.products[val];
+      this.buyForm.product_id = row.id;
+      this.buyForm.product_name = row.name;
+      this.buyForm.product_money = row.price;
+      this.buyForm.product_t = row.service_cycle;
+    }
+    
+
+  }).setMethod('buy', function(row){
+    
+    this.buyForm.id = row.id;
+    this.buyForm.id_card = row.id_card;
+    this.buyForm.address = row.address;
+    this.buyForm.name = row.name;
+    this.openDialog('buy')
+  }).setMethod('setBuyTime',function(v){
+    this.buyForm.buy_time = v;
+  }).setMethod('getServiceTime',function(v){
+    return v != "" ? v+'个月' : '请先选择产品!';
+  }).setMethod('buyFormSubmit',function(){
+    var myDate=new Date()
+    console.log(myDate.getDate());
   });
 </script>
 

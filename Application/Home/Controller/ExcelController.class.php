@@ -9,7 +9,13 @@ class ExcelController extends CommonController {
     protected $table = "customer";
     protected $pageSize = 20;
 
-
+    private function fixPhone($phone){
+        if (strpos($phone, chr(32)) !== false ) {
+            return str_replace(chr(32), '', $phone);
+        } else {
+            return $phone;
+        }
+    }
 
     private function conformQQ($qq){
         if (!empty($qq)) {
@@ -57,95 +63,128 @@ class ExcelController extends CommonController {
     public function upload(){
         $folder = 'xls';
         $this->upload = new \Think\Upload();// 实例化上传类
-        $this->upload->maxSize   =     3145728 ;// 设置附件上传大小3M
+        $this->upload->maxSize   =     5145728 ;// 设置附件上传大小3M
         $this->upload->exts      =     array('xls');// 设置附件上传类型
         $this->upload->rootPath  =     './Upload/'.$folder.'/'; // 设置附件上传根目录
         $this->upload->autoSub   =     true;
 
 
         $info =  $this->upload->upload();
-        $this->ajaxReturn(array('path'=>substr($this->upload->rootPath, 1 ).$info['file']['savepath'].$info['file']['savename']));
+
+        if(!$info) {// 上传错误提示错误信息
+            $this->error($this->upload->getError());
+        }else{// 上传成功
+             $this->ajaxReturn(array('path'=>substr($this->upload->rootPath, 1 ).$info['file']['savepath'].$info['file']['savename']));
+        }
+
+       
         // return substr($this->upload->rootPath, 1 ).$info['file']['savepath'].$info['file']['savename'];
     }
 
 
     public function customerImport(){
-        die('暂不可用');
+        // die('暂不可用');
         if (IS_GET) {
             $this->assign('pageSize', $this->pageSize);
-            $this->assign('groups',   M('group_basic')->field('id,name')->select());
+            $this->assign('departments',   M('department_basic')->field('id,name')->select());
+            $this->assign('groups',        arr_group(M('group_basic')->field('id,name,department_id')->select(), 'department_id'));
             $this->display('customerImport');
         } else {
+            set_time_limit (120);
             $filename = I('post.file');
             $group_id = I('post.group_id',0);
             
             if (file_exists(".".__ROOT__.$filename)) {
                 $data = getExcelArrayData(".".__ROOT__.$filename);
-                // var_dump(count($data));
-                $insert_data = array();
-                $fault_data = array();
+                
+                $m = M();
+                $m->startTrans();
+                
+                
                 foreach ($data as $value) {
+                    /*
+                    * A 简称
+                    * B QQ
+                    * C 手机号
+                    * D 身份证号
+                    * E 客户分类
+                    * F 业务员
+                    * G 管理人
+                    * H 创建人
+                    * I 编号
+                    */
 
-                    if (empty($value['E'])  || $value['C']=="QQ") {
-                        continue;
+                    /**
+                    * customers_contacts
+                    * cus_id
+                    * phone 
+                    * qq
+                    * weixin
+                    * is_main
+                    */
+
+                    /**
+                    * customers_basic
+                    * name
+                    * id_card D
+                    * type E
+                    * help_salesman  F
+                    * help_transfer G ==> salesman_id
+                    * help_user     H ==> user_id
+                    * old_encode    I
+                    *
+                    */
+                    //手机号不为空
+
+                    if (!empty($value['C']) &&  !empty($value['A']) &&  mb_strpos($value['A'], '简称')=== false) {
+                        
+                        $basicData = array(
+                            'name'=> $value['A'],
+                            'type'=> strtoupper(mb_substr($valuee['E'], 0,1)) ,
+                            'area_province'=>null,
+                            'area_city'=>null,
+                            'help_group_id'=>$group_id,
+                            'help_salesman'=> $value['F'],
+                            'help_transfer'=> $value['G'],
+                            'help_user'    => $value['H'],
+                            'old_encode'   => $value['I'],
+                            'created_at'   => null,
+                        );
+
+                        
+
+                        $contactData = array(
+                            'cus_id' =>  0,
+                            'phone'  =>  $this->fixPhone($value['C']),
+                            'qq'     =>  $value['B'],
+                            'is_main' => 1
+                        );
+
+                        $re = D('CustomerContact')->create($contactData);
+                        
+                        if($re){
+                            M('customers_basic')->create($basicData);
+
+                            $cus_id = M('customers_basic')->add();
+                            if (!$cus_id) {
+                                $m->rollback();
+                                $this->error("Customer".  M('customers_basic')->getError());
+                            } else {
+                                $re['cus_id'] = $cus_id;
+                                $id = D('CustomerContact')->data($re)->add();
+                                if (!$id) {
+                                    $m->rollback();
+                                    $this->error(D('CustomerContact')->getError());
+                                } 
+                            }
+                        }else {
+                            /*$m->rollback();
+                            $this->error("phone:".$contactData['phone']." QQ:" .$contactData['qq']. D('CustomerContact')->getError());*/
+                        }
                     }
-
-                    $row = array();
-                    $row['name'] = $value['A'];
-                    if (empty($value['B'])) {
-                        $row['type'] = 'C';
-                    } else {
-                        $row['type'] = strtoupper(mb_substr($value['B'], 0,1));
-                    }
-                    // 重复测栓
-
-                    $row['qq'] = empty($value['C']) ? null: $value['C'];
-                    $row['phone'] = $value['D'];
-
-                    $row['help_salesman'] = $value['E'];
-                    $row['help_transfer'] = $value['F'];
-                    $row['help_user']     = $value['G'];
-                    $row['help_group_id'] = $group_id;
-                    $row['created_at']    = null;//str_replace("/","-", $value['H']);
-
-                    $row['weixin']        = empty($value['M']) ? null: $value['M'];
-                    $row['weixin_nickname']    = empty($value['N']) ? '': $value['N'];
-
-                    // 避免 触发器报错
-                    $row['area_province'] = null; 
-                    $row['area_city'] = null; 
-                    
-                    // self重复测
-                    if ($this->conformPhone($row['phone']) && $this->conformQQ($row['qq']) && $this->conformCheck($insert_data, $row['qq'])) {
-                        $insert_data[] = $row;
-                    } else {
-                        $fault_data[] = $row;
-                    }
-                }
-                //去重复
-                $conf = array();
-                // $insert_data = array_values(arr_to_map($insert_data, 'qq'));
-                $insert_data = array_values(arr_to_map($insert_data, 'phone'));
-               
-                $re  = M('customers_basic')->addAll($insert_data);
-                $det = count($data) - count($insert_data);
-                if ($re) {
-                    // echo '导入成功';
-                    if ($det==0) {
-                        $this->success("导入成功");
-                    } else {
-                        $this->success("导入成功,有".$det."条数据未导入");
-                    }
-                    
-                    /*if (!empty($fault_data)) {
-                        echo '有'.count($fault_data)."条数据导入失败";
-                        print_r($fault_data);
-                    }*/
-                } else {
-                    /*var_dump($insert_data);
-                    echo '导入失败'.M('customers_basic')->getLastsql();*/
-                    $this->error("导入失败");
-                }
+                } 
+                $m->commit();
+                $this->success("导入成功");
             } else {
                 // echo '文件不存在';
                 $this->error("文件不存在:".".".__ROOT__.$filename);
@@ -153,6 +192,46 @@ class ExcelController extends CommonController {
             
         } 
     }
+
+
+    public function importToTable(){
+        set_time_limit (120);
+            $filename = I('post.file');
+            $group_id = I('post.group_id',0);
+            
+            if (file_exists(".".__ROOT__.$filename)) {
+                $data = getExcelArrayData(".".__ROOT__.$filename);
+               
+                $insert_data = array();
+                foreach($data as $value){
+                    
+                    $tmp_data = array(
+                        'name'=>$value['A'],
+                        'qq'  =>$value['B'],
+                        'phone'=>$value['C'],
+                        'ctype'=>$value['E'],
+                        'id_card'=>$value['D'],
+                        'ywy'=>$value['F'],
+                        'sales'=>$value['G'],
+                        'user'=>$value['H'],
+                        'oldcode'=>$value['I'],
+                        'group_id'=>$group_id
+                    );
+                    $insert_data[] = $tmp_data;
+                }
+
+                $re = M('import_table')->addAll($insert_data);
+                if ($re) {
+                    $this->success('成功');
+                } else {
+                    $this->error(M('import_table')->getError());
+                }
+                
+            }
+    }
+
+
+
 
     /**
     * 设置查询参数
@@ -284,6 +363,7 @@ class ExcelController extends CommonController {
          if (IS_GET) {
             $this->assign('pageSize', $this->pageSize);
             $this->assign('departments',   M('department_basic')->field('id,name')->select());
+            $this->assign('groups',        arr_group(M('group_basic')->field('id,name,department_id')->select(), 'department_id'));
             $this->display('employeeImport');
         } else {
             $filename = I('post.file');
@@ -291,12 +371,14 @@ class ExcelController extends CommonController {
             
             if (file_exists(".".__ROOT__.$filename)) {
                 $data = getExcelArrayData(".".__ROOT__.$filename);
-                $groups = M('group_basic')->where(array('department_id'=>$department_id))->getField('name,id');
-                $gorups_name = array_keys($groups);
+                /*$groups = M('group_basic')->where(array('department_id'=>$department_id))->getField('name,id');
+                $gorups_name = array_keys($groups);*/
                 
                 $fault_data = array();
 
                 $role_id = D('Role')->getIdByEname(RoleModel::STAFF);
+                $m = M();
+                $m->startTrans();
                 
                 foreach ($data as $value) {
 
@@ -312,18 +394,23 @@ class ExcelController extends CommonController {
                     $user = array();
                     $user['account'] = $value['B'];
                     $user['password'] = md5('111111');
-                    $re = M('rbac_user')->create($user);
-
+                    $re = D('RbacUser')->create($user);
+                    if (!$re) {
+                        $m->rollback();
+                        $this->error(D('RbacUser')->getError().$value['B']);
+                    }
                     
 
 
-                    $user_id = M('rbac_user')->add();
+                    $user_id = D('RbacUser')->add();
                     // $user_id  =-1;
                     if (!$user_id) {
                         // $this->error("操作出错")
+                        $m->rollback();
+                        $this->error(D('RbacUser')->getError());
                         
-                        $fault_data[] = $value['B'];
-                        continue;
+                        /*$fault_data[] = $value['B'];
+                        continue;*/
                     }
                     //user_info
                     $info = array();
@@ -335,23 +422,34 @@ class ExcelController extends CommonController {
                     // $info['join_time'] = $value['G'];
 
                     $info['department_id'] = $department_id ;
+                    $info['group_id']      = I('post.group_id') ;
 
-                    $group = mb_substr(trim($value['E']), -3);
+                    /*$group = mb_substr(trim($value['E']), -3);
                    
 
                     if (in_array($group, $gorups_name)) {
                         $info['group_id'] = $groups[$group];
                     } else {
                         $info['gorup_id'] = 0;
-                    }
+                    }*/
                     
                     
                     //
 
                     $info['role_id'] = $role_id ;
 
-                    M('user_info')->create($info);
+                    $infoDate = M('user_info')->create($info);
+                    if (!$infoDate) {
+                        $m->rollback();
+                        $this->error(M('user_info')->getError());
+                    }
                     $re = M('user_info')->add();
+                    if (!$re) {
+                        $m->rollback();
+                        $this->error(M('user_info')->getError());
+                    } else {
+                        $m->commit();
+                    }
 
 
                     // rbac_role_user
@@ -373,7 +471,7 @@ class ExcelController extends CommonController {
                 }
                 
                 if (!empty($fault_data)) {
-                    $this->success("导入成功，有".count($fault_data)."条导入失败");
+                    $this->success("导入成功，有".count($fault_data)."条导入失败". json_encode($fault_data));
                 }else{
                     $this->success("导入成功");
                 }
@@ -386,4 +484,103 @@ class ExcelController extends CommonController {
             
         } 
     }
+
+
+
+    public function fixGroup(){
+        $filename = I('post.file');
+        $department_id = I('post.department_id',0);
+        $group_id      = I('post.group_id',0);
+            
+        if (file_exists(".".__ROOT__.$filename)) {
+            $data = getExcelArrayData(".".__ROOT__.$filename);
+            $where = array('department_id'=> $department_id , 'group_id'=>0);
+            foreach ($data as $value) {
+                $where['realname'] = $value['C'];
+                $userRow = M('user_info')->where($where)->field('user_id')->find();
+                if ($userRow) {
+                    M('user_info')->data(array('group_id'=>$group_id))->where(array('user_id'=>$userRow['user_id']))->save();
+                }
+            }
+
+        }
+        $this->success("导入成功");
+    }
+
+    public function fixCustomer(){
+        if (IS_GET) {
+            $this->assign('pageSize', $this->pageSize);
+            $this->assign('departments',   M('department_basic')->field('id,name')->select());
+            $this->assign('groups',        arr_group(M('group_basic')->field('id,name,department_id')->select(), 'department_id'));
+            $this->display('fixCustomer');
+        } else {
+            $filename = I('post.file');
+            $user_id  = I('post.user_id');
+            $realname = I('post.realname');
+            if (strpos($realname, "_")) {
+                $realname_t = explode("_", $realname);
+                $realname = $realname_t[0];
+            }
+            $data = getExcelArrayData(".".__ROOT__.$filename);
+            $fault = array();
+            $total = 0;
+            set_time_limit (120);
+
+            foreach ($data as $key => $value) {
+
+                if (empty($value['C'])  ||  0 === mb_stripos($value['B'], "简称") ) {
+                        continue;
+                }
+               /* 'ywy'=>$value['F'],
+                'user'=>$value['H'],*/
+                // || $value['H'] == $realname
+                
+
+                if ($value['F'] == $realname || $value['H'] == $realname ) {
+                    $total++;
+                    // var_dump($value['A']);
+                    $phone = $this->fixPhone($value['C']);
+                    $sql = "select user_id, salesman_id, cb.id from customers_contacts as cc inner join customers_basic as cb on cc.cus_id=cb.id where cc.phone='".$phone."' limit 1";
+                    $rows = M()->query($sql);
+                    if (!$rows) {
+                        $fault[] = $phone." _ not found";
+                        continue;
+                    } else {
+                        $row = $rows[0];
+                        $updateData = array();
+                        if ($value['F'] == $realname  && $row['salesman_id'] != $realname) {
+                            $updateData['salesman_id'] = $user_id;
+                        }
+
+                        if ($value['H'] == $realname  && $row['user_id'] != $realname) {
+                            $updateData['user_id'] = $user_id;
+                        }
+
+                        $re = M('customers_basic')->data($updateData)->where(array('id'=>$row['id']))->save();
+                        if ($re === false) {
+                            $fault[] = $phone;
+                        }
+                        continue;
+                    }
+                } else {
+                    
+                }
+
+
+
+            }
+
+            $this->success(json_encode($fault)."总共:".$total);
+        }
+    }
+
+    public function getUser(){
+        $group_id = I("get.group_id");
+        $user = M('user_info')->where(array('group_id'=>$group_id))->field('user_id,realname')->select();
+        $this->ajaxReturn($user);
+    }
+
+
+
+
 }

@@ -26,13 +26,12 @@ define('BIND_MODULE','Easy');
 
 define('CRM_SUPER_ADMIN', 1);
 
+var_dump(time());
+die();
+
+// die(md5('111111'));
 
 // 自定义常量
-
-
-
-
-
 // 引入ThinkPHP入口文件
 require './ThinkPHP/ThinkPHP.php';
 

@@ -62,7 +62,7 @@
             <el-row>
                 <el-col :span="24">
                     <el-table
-                  :data="dataList1" 
+                  :data="dataList" 
                   border
                   v-loading="dataLoad" 
                   element-loading-text="{:L('DATA_LOGIN')}"
@@ -126,20 +126,7 @@
         page.getUserUrl = "{:U('getUser')}";
         window.defaultOption.setDatas({
           customerType:{:json_encode($customerType)},
-          isShow:false,
-
-          dataList1:[
-            {name:'11111',sex:'女'},
-            {name:'22222',sex:'女'},
-            {name:'13331',sex:'女'},
-            {name:'11441',sex:'女'},
-            {name:'15551',sex:'女'},
-            {name:'16661',sex:'女'},
-            {name:'17771',sex:'女'},
-
-          ]
-
-
+          isShow:false
         }).setForm('search',{
             name:"",
             qq:"",

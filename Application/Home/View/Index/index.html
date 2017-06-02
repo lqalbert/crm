@@ -28,20 +28,20 @@
 				margin: 0 auto;
 			}
 			.layui-nav-tree .layui-nav-bar{
-			    width: 5px;
-                height: 0;
+			  width: 5px;
+        height: 0;
 				background-color: #FF5722;
 			}
-		    .layui-nav-tree .layui-this>a, .layui-nav-tree .layui-this>a:hover{
-			    background-color: #29a0e2;
-                color: #fff;
-		    }
-		    .layui-nav-tree .layui-this>a{
-		    	background-color: #2080b5;
-            }
-            .layui-nav-child{
-            	text-indent: 1em;
-            }
+	    .layui-nav-tree .layui-this>a, .layui-nav-tree .layui-this>a:hover{
+		    background-color: #29a0e2;
+        color: #fff;
+	    }
+	    .layui-nav-tree .layui-this>a{
+	    	background-color: #2080b5;
+      }
+      .layui-nav-child{
+    	  text-indent: 1em;
+      }
 		</style>
 		<!--[if lte IE 9]> 
 	    <script>
@@ -71,7 +71,7 @@
 							<p>北京时间 <span class="date"></span></p>
 						</li>
 						<li class="layui-nav-item" style="color:#d85126;">
-							欢迎您！&nbsp;本次登录地点为：{:session('location.location')}
+							欢迎您！&nbsp;<!-- 本次登录地点为：{:session('location.location')} -->
 						</li>
 						<li class="layui-nav-item">
 							<a href="javascript:;" id="lock" style="color:#d85126;"><i class="layui-icon">&#xf0098;</i>&nbsp;锁屏</a>

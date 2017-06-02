@@ -61,6 +61,13 @@
 		          <input type="hidden" size="small" v-model="searchForm.field">
 		        </el-form-item>
 
+            <el-form-item >
+              <el-select size="small" v-model="searchForm.gen">
+                <el-option value="0" label="未分配"></el-option>
+                <el-option value="1" label="已分配"></el-option>
+              </el-select>
+            </el-form-item>
+
 		        <el-form-item>
 		          <el-button @click="loadDatalist" type="info" size="small" icon="search">查询</el-button> 
 		          
@@ -94,14 +101,14 @@
 		  	    <el-table-column label="{:L('INDEX')}" type="index" width="65"  ></el-table-column>
 
 		  	    <el-table-column  header-align="center" prop="name"  label="客户姓名" width="150"></el-table-column>
-
-		  	    <el-table-column  header-align="center" prop="type" label="客户类型" sortable width="170">
+            <!-- sortable -->
+		  	    <el-table-column  header-align="center" prop="type" label="客户类型"  width="170">
 		          <template scope="scope">
 		            {{ getType(scope.row.type, 'customerType') }}
 		          </template>
 		  	    </el-table-column>
-
-		        <el-table-column  header-align="center"  prop="realname" label="跟踪员工" sortable width="190">
+            <!-- sortable -->
+		        <el-table-column  header-align="center"  prop="realname" label="跟踪员工"  width="190">
 		        </el-table-column>
 
 	          <el-table-column  header-align="center" prop="qq" label="QQ号"  width="170">
@@ -168,6 +175,9 @@
                 <el-button size="small" @click="openDialog('addTrack')" type="primary">录入跟踪</el-button>
               </el-tooltip>
 
+              <el-tooltip content="选择客户录入投诉意见" placement="right">
+                <el-button size="small" @click="openDialog('complain')" type="primary" style="margin-left:10px;">客户投诉</el-button>
+              </el-tooltip>
 			      </span>
 		      </div>
 		    </el-col>
@@ -185,33 +195,33 @@
 	    <el-row>
 	     <el-col :span="24">
 	        <el-tabs  type="border-card">
-	          <el-tab-pane label="软件账号">
-	            <el-table :data="tableDataThree" empty-text="请点击客户显示其软件账号" border style="width: 100%">
-	              <el-table-column prop="realname" label="创建员工" header-align="center">
-	              </el-table-column>
-
-	              <el-table-column prop="account_id" label="软件账号" align="center">
-	              </el-table-column>
-
-	              <el-table-column prop="pdt_id" label="产品名称" header-align="center">
-				          <template scope="scope">
-				            {{ getPdt(scope.row.pdt_id, 'products') }}
-				          </template>
-	              </el-table-column>
-	              
-	              <el-table-column prop="mark" label="备注" header-align="center">
-	              </el-table-column>
-
-	              <el-table-column prop="time" label="创建时间" width="180" align="center">
-	              </el-table-column>
-	            </el-table>
-	          </el-tab-pane>
+	         <el-tab-pane label="软件账号">
+              <el-table :data="tableDataThree" empty-text="请点击客户显示其软件账号" border style="width: 100%">
+                <el-table-column prop="realname" label="创建员工" header-align="center">
+                </el-table-column>
+           
+                <el-table-column prop="account_id" label="软件账号" align="center">
+                </el-table-column>
+           
+                <el-table-column prop="pdt_id" label="产品名称" header-align="center">
+                       <template scope="scope">
+                         {{ getPdt(scope.row.pdt_id, 'products') }}
+                       </template>
+                </el-table-column>
+                
+                <el-table-column prop="mark" label="备注" header-align="center">
+                </el-table-column>
+           
+                <el-table-column prop="time" label="创建时间" width="180" align="center">
+                </el-table-column>
+              </el-table>
+            </el-tab-pane>
 	          <el-tab-pane label="跟踪记录">
 	            <el-table :data="tableDataOne" empty-text="请点击客户显示跟踪信息" border style="width: 100%" @row-dblclick="viewtraceContents">
 	              <el-table-column prop="user" label="操作员工" header-align="center">
 	              </el-table-column>
 
-	              <el-table-column prop="type" label="客户类型" header-align="center">
+	              <el-table-column prop="type" label="客户类型(当前)" header-align="center">
 	              </el-table-column>
 
 	              <el-table-column prop="name" label="客户姓名" header-align="center">
@@ -234,30 +244,56 @@
 
 	            </el-table>
 	          </el-tab-pane>
-	          <el-tab-pane label="客户资料">
-	            <el-table :data="tableDataTwo" empty-text="请点击客户显示其客户资料" border style="width: 100%">
-	              <el-table-column label="操作员工" prop="realname" header-align="center">
+	          <el-tab-pane label="购买纪录">
+	            <el-table :data="tableDataTwo" empty-text="请点击客户显示其购买纪录" border style="width: 100%">
+	              <!-- <el-table-column label="操作员工" prop="realname" header-align="center">
+	              </el-table-column> -->
+
+	              <el-table-column label="产品金额" prop="product_money" header-align="center">
 	              </el-table-column>
 
-	              <el-table-column label="产品金额" prop="expense" header-align="center">
+	              <el-table-column label="产品名称" prop="product_name" header-align="center">
 	              </el-table-column>
 
-	              <el-table-column label="产品类型" prop="pdt_id" header-align="center">
-                  <template scope="scope">
-                    {{ getPdt(scope.row.pdt_id, 'products') }}
-                  </template>
-	              </el-table-column>
+                <el-table-column label="产品周期" prop="product_t" header-align="center">
+                </el-table-column>
 	              
-	              <el-table-column label="身份证" prop="identity" align="center">
-	              </el-table-column>
+                <el-table-column label="购买时间" prop="buy_time" header-align="center">
+                </el-table-column>
+	              <!-- <el-table-column label="身份证" prop="identity" align="center">
+                </el-table-column>
+                
+                <el-table-column label="通讯地址" prop="address" header-align="center">
+                </el-table-column> -->
 
-	              <el-table-column label="通讯地址" prop="address" header-align="center">
-	              </el-table-column>
-
-	              <el-table-column label="创建时间" prop="time" align="center">
-	              </el-table-column>
+	              <!-- <el-table-column label="创建时间" prop="time" align="center">
+	              </el-table-column> -->
 	            </el-table>
 	          </el-tab-pane>
+<el-tab-pane label="投诉记录">
+              <el-table :data="tableDataFour"  empty-text="请点击客户显示跟踪信息" border style="width: 100%"  @row-dblclick="viewComplainContents">
+                <el-table-column prop="user" label="操作员工" header-align="center">
+                </el-table-column>
+
+                <el-table-column prop="type" label="客户类型(当前)" align="center">
+                </el-table-column>
+
+                <el-table-column prop="name" label="客户姓名" align="center" >
+                </el-table-column>
+                
+                <el-table-column label="投诉内容" header-align="center">
+                  <template scope="scope">
+                    {{scope.row.content | handleString}}
+                  </template>
+                </el-table-column>
+
+                <el-table-column prop="created_at" label="投诉时间" width="180" align="center">
+                </el-table-column>
+
+                <el-table-column prop="track_text" label="投诉类型" align="center">
+                </el-table-column>
+              </el-table>
+            </el-tab-pane>
 	        </el-tabs>
 	     </el-col>
 	    </el-row>
@@ -285,6 +321,12 @@
     <!-- 录入跟踪  -->
     <include file="_track" />
     <!-- / 录入跟踪 -->
+    <!-- 投诉内容 -->
+    <include file="Customer::_complainContent" />
+    <!-- /投诉内容 -->
+    <!-- 录入投诉 -->
+    <include file="Customer::_complain" />
+    <!-- 录入投诉 -->
 	</div>
 
 </div>
@@ -292,6 +334,7 @@
 <block name="scripts">
 <script>
   page.dipacthFormUrl = "{:U('dispacth')}";
+  page.addComplainFormUrl = "{:U('CommonHandleLogic/addComplain')}";
   window.defaultOption.setDatas({
   	customerType:{:json_encode($customerType)},
   	sexType:{:json_encode($sexType)},
@@ -327,12 +370,19 @@
       	'mark':'',
       	'create_t':'',
     }],
+    tableDataFour: [{
+      'name':'',
+      'created_at':'',
+      'type':'',
+      'track_type':'',
+      'content':'',
+      'user':''     
+    }],
   }).setForm('search',{
     name:'',
     contact:'',
     field: '',
-    group:'user_id',
-    ctrl:'search',
+    gen:'',
   }).setForm('advancedQuery',{
     start:'',
     end:'',
@@ -358,7 +408,14 @@
   	user_id:'',
   },true).setForm('traceContent',{
     content:'',
-  },true).setMethod('getType', function(type, field){
+  },true).setForm('complainContent',{
+    content:'',
+  },true).setForm('complain',{
+    cus_id:'',
+    type:'',
+    name:'',
+    content:'',
+  }, true).setMethod('getType', function(type, field){
       return this[field][type];
   }).setMethod('getPdt',function(pdt, field){
     var pdtName;
@@ -404,13 +461,21 @@
     }
   }).setMethod('batchAssign',function(url){
     var  vmThis   = this;
-    for (var x in this.multipleSelection) {
+    var  cus_ids = [];
+    /*for (var x in this.multipleSelection) {
           this.cusIdList.push(this.multipleSelection[x].cus_id);
     }
     this.cusIdList.pop();
-    this.cusIdList.unshift({user_id:this.batchAssignForm.user_id});
+    this.cusIdList.unshift({user_id:this.batchAssignForm.user_id});*/
+    for (var i = this.multipleSelection.length - 1; i >= 0; i--) {
+      cus_ids.push(this.multipleSelection[i].cus_id);
+    }
+
+    var body = {user_id:this.batchAssignForm.user_id, cus_ids:cus_ids };
+
+
     this.assignFormSubmitStatus = true;
-    this.$http.post(url,this.cusIdList).then(function(response){
+    this.$http.post(url, body).then(function(response){
       vmThis.$message({message: '操作成功',type: 'success'});
       setTimeout(function(){
         vmThis.batchAssignFormDialog = false;
@@ -424,6 +489,9 @@
   }).setMethod('viewtraceContents',function(row,event){
     this.traceContentFormDialog = true;
     this.traceContentForm.content = row.content;
+  }).setMethod('viewComplainContents',function(row,event){
+    this.complainContentFormDialog = true;
+    this.complainContentForm.content = row.content;
   }).setMethod('sortChange', function(sortObject){
     console.log(sortObject);
     console.log(this.searchForm);
@@ -458,11 +526,18 @@
     },function(response){
       vmThis.$message.error("查询出错啦");
     });
-    console.log(this.tableDataTwo);
+    // console.log(this.tableDataTwo);
   }).setMethod('trackLog',function(row,event,column){
     this.commonFind("{:U('CommonFindDetail/trackInfo')}",'tableDataOne',row);
-    this.commonFind("{:U('CommonFindDetail/findDealInfo')}",'tableDataTwo',row);
-    this.commonFind("{:U('CommonFindDetail/softwareInfo')}",'tableDataThree',row);
+    this.commonFind("{:U('CommonFindDetail/findDealInfo')}",'tableDataTwo',{user_id:row.cus_id});
+    //this.commonFind("{:U('CommonFindDetail/softwareInfo')}",'tableDataThree',row);
+
+    row.condition = 'service';
+    this.$http.post("{:U('CommonFindDetail/complainInfo')}",row).then(function(response){
+      this.tableDataFour = response.body;
+    },function(response){
+      this.$message.error("查询出错啦");
+    });
   }).setMethod('beforeAddTrack',function(){
     var vmThis = this;
     if (this.multipleSelection.length ==0 ||  this.multipleSelection.length>1) {
@@ -477,6 +552,38 @@
       this.row=row;
       return row;
     }
+  }).setMethod('commonSelect',function(x){
+    var form = x;
+    var vmThis = this;
+    if (this.multipleSelection.length ==0 ||  this.multipleSelection.length>1) {
+      this.closeDialog(form);
+      this.$message.error('请先选择一位客户');
+      return false;
+    } else {
+      var  row = this.multipleSelection.pop();
+      this[FormName.getForm(x)].name = row.name;
+      this[FormName.getForm(x)].cus_id = row.cus_id;
+      this.complainForm.type = row.type;
+      this.complainForm.to_id = row.salesman_id;
+      this.row=row;
+      return row;
+    }
+  }).setMethod('beforeAddComplain', function(){
+    this.commonSelect('complain');
+  }).setMethod('complainSubmit',function(url){
+    var  vmThis   = this;
+    this.complainFormSubmitStatus = true;
+    this.$http.post(url,this.complainForm).then(function(response){
+      vmThis.$message({message: '操作成功',type: 'success'});
+      setTimeout(function(){
+        vmThis.complainFormDialog = false;
+        vmThis.complainFormSubmitStatus = false;
+        vmThis.$refs.complainForm.resetFields(); 
+        vmThis.refresh();
+      }, 2000);  
+    },function(response){
+      vmThis.$message.error("操作出错啦");
+    });
   });
 </script>
 </block>

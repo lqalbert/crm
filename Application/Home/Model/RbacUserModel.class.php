@@ -45,12 +45,12 @@ class RbacUserModel extends RelationModel {
     }
 
 
-    public function delete($ids){
+    public function delete($ids=array()){
         // return $this->where(array('id'=>array('in', $ids )))->save(array('status'=>-1));
         $id_arr = explode(",", $ids);
         $date   = Date('Y-m-d');
         $sql     = "update ".$this->tableName. " set `status`=-1, `account` = CONCAT(`account`, '_$date') where id=%d";
-        $sql2    = "update user_info set  `realname` = CONCAT(`realname`, '_".$date."_删除') where user_id=%d";
+        $sql2    = "update user_info set  `realname` = CONCAT(`realname`, '_".$date."_离职') where user_id=%d";
         $this->startTrans();
         
         
@@ -80,35 +80,81 @@ class RbacUserModel extends RelationModel {
     }
 
 
-
-     /**
-    * 返回类型 或 所有的类型
-    * 
-    * @return string|array
-    */
-    public function getStatusType($index=NULL){
-        if (!empty($index)) {
-            return $this->statusType[strtoupper($index)];
+    public function decoratorView($roleEname){
+        $funcName = $roleEname."GetView";
+        // var_dump($this);
+        
+        if (method_exists($this, $roleEname."GetView")) {
+            return call_user_func(array($this, $funcName));
         } else {
-            return $this->statusType;
-        }
+            return $this->getView();
+        }  
+    }
+
+    private function getView(){
+      return array(
+            'oprate' => '',
+            'button' => ''
+        );
+    }
+
+    //人事专员
+    private function humanResourceGetView(){
+        return $this->goldGetView();
+    }
+    //风控经理
+   private function riskMasterGetView(){
+        return $this->departmentMasterGetView();
     }
 
 
-        public function getSources(){
-            $entrySources = array(
-             '1'=>'58同城',
-             '2'=>'赶集',
-             '3'=>'智联',
-             '4'=>'前程',
-             '5'=>'校招',
-             '6'=>'介绍',
-             '7'=>'其他',
-            );
-        $SourcesArr = array();
-        foreach($entrySources as $key=>$value){
-            $SourcesArr[] = Array('id'=>$key,'name'=>$value);
-        }
-        return $SourcesArr;
+    private function serviceMasterGetView(){
+      return $this->departmentMasterGetView();
     }
+
+    //部门经理
+     private function departmentMasterGetView(){
+       $oprateColumn = <<<'EOD'
+<el-table-column inline-template :context="_self"  fixed="right"  label="操作" width="220" align="center">
+  <span>
+    <el-button @click="handleEdit($index, row)"  size="small">编辑</el-button>
+    <el-button @click="handleSetRoles($index, row)" type="info" size="small">职能</el-button>
+  </span>
+</el-table-column>
+EOD;
+      $addButton ='<el-button type="primary" size="small" @click="openDialog(\'editPassword\')">修改账号密码</el-button>';
+ 
+        return array(
+            'oprate' => $oprateColumn,
+            'button' => $addButton
+        );
+    }
+
+    private function hrMasterGetView(){
+        return $this->humanResourceGetView();
+    }
+
+
+    private function goldGetView(){
+      $oprateColumn = <<<'EOD'
+<el-table-column inline-template :context="_self"  fixed="right"  label="操作" width="220" align="center">
+  <span>
+    <el-button @click="handleEdit($index, row)"  size="small">编辑</el-button>
+    <el-button @click="handleSetRoles($index, row)" type="info" size="small">职能</el-button>
+    <el-button @click="handleQuit($index, row)"  type="danger" size="small">离职</el-button>
+  </span>
+</el-table-column>
+EOD;
+      $addButton = <<< 'BUTTON'
+<el-button type="primary" size="small" @click="openDialog('add')">添加员工</el-button>
+<el-button type="primary" size="small" @click="openDialog('editPassword')">修改账号密码</el-button>
+BUTTON;
+      return array(
+            'oprate' => $oprateColumn,
+            'button' => $addButton
+        );
+    }
+
+
+
 }

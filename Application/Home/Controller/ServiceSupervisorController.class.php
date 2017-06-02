@@ -9,7 +9,7 @@ use Home\Logic\CustomerLogic;
 use Home\Model\CustomerLogModel;
 use Home\Model\ProductModel;
 class ServiceSupervisorController extends CommonController{
-	protected $table = "customers_service";
+	protected $table = "customers_basic";
 	protected $pageSize = 11;
 
   private function getOffset(){
@@ -29,32 +29,20 @@ class ServiceSupervisorController extends CommonController{
 
 
   public function getGenServiceMan(){
-    $callback=M('rbac_role')->where(array('ename'=>RoleModel::GEN_SERVICE,'status'=>'1'))->find(); 
-    $user_id=M('rbac_role_user')->where(array('role_id'=>$callback['id']))->getField('user_id',true);
-    if($callback && $user_id){
-      $man=M('user_info')->where(array('user_id'=>array('IN',$user_id)))->field('user_id,realname')->select();
-    }else{
-      $man=null;
-    }
-    return $man; 
+    return D('User')->getGenService('user_id,realname');
   }
 
   public function getList(){
-  	$this->setQeuryCondition();
-	  $count=(int)$this->M->count();
-	  $this->setQeuryCondition();
-	  $cusArr=$this->M->getField('cus_id', true);
-	  $cusList=implode(",", $cusArr);
-	  if(empty($cusList)){
-	    $list =null;
-      $count='0';
-	  }else{
-	    $list = M('customers_basic as cb')->join("customers_contacts as cc on cb.id = cc.cus_id and cc.is_main = 1 ")
-          ->join('left join user_info as ui on cb.user_id=ui.user_id')->field('ui.realname,cb.*,cc.*')
-          ->where(array('cb.id'=>array('IN',$cusList)))->order("cb.id desc")->limit($this->getOffset().','.$this->pageSize)->select();
-	    $count = $list==null ? '0' :$count;
-    }
-    //echo M('customers_basic as cb')->getLastSql();
+
+    $this->setQeuryCondition();
+    $count = $this->M->count();
+    $this->setQeuryCondition();
+  	$list = $this->M->join('left join user_info as ui on customers_basic.user_id=ui.user_id')
+                   ->field('ui.realname,customers_basic.*,cc.*')
+                   ->order("customers_basic.id desc")
+                   ->limit($this->getOffset().','.$this->pageSize)
+                   ->select();
+    
 	  $result = array('list'=>$list, 'count'=>$count);
     $this->ajaxReturn($result);
   }
@@ -65,8 +53,16 @@ class ServiceSupervisorController extends CommonController{
 	* @return null
 	*/
 	public function setQeuryCondition() {
-		$operator_id=session('account')['userInfo']['user_id'];
-    $this->M->where(array('service_sup'=>'1','operator_id'=>$operator_id));
+	/*	$operator_id=session('account')['userInfo']['user_id'];
+    $this->M->where(array('service_sup'=>'1','operator_id'=>$operator_id));*/
+
+    $gen = I('get.gen',0);
+    if ($gen!=0) {
+      $this->M->where(array("customers_basic.gen_id"=>array('neq', 0)));
+    } else{
+      $this->M->where(array("customers_basic.gen_id"=>0));
+    }
+
 
     if (I('get.name')) {
         M('customers_basic as cb')->where(array("cb.name"=> array('like', I('get.name')."%")));
@@ -77,6 +73,10 @@ class ServiceSupervisorController extends CommonController{
     	  M('customers_basic as cb')->where(array('cc.qq|cc.phone|cc.weixin'=>array('LIKE',$val."%")));
     }
 
+    $this->M->where(array('semaster_id'=>session('uid')));
+
+    $this->M->join("customers_contacts as cc on customers_basic.id = cc.cus_id and cc.is_main = 1 ");
+
 	}
 
 
@@ -85,18 +85,11 @@ class ServiceSupervisorController extends CommonController{
   *
   */
   public function dispacth(){
-    //var_dump(I('post.'));
-    $user_id=reset(I('post.'));
-    array_shift($_POST);
-    $userList=implode(',', I('post.'));
-    $data=array(
-       'service_sup'=>'0',
-       'gen_service'=>'1',
-       'operator_id'=>$user_id['user_id'],
-    );
-    $this->M->create($data);
-    $re=$this->M->where(array('cus_id'=>array('IN',$userList)))->save();
-    if($re){
+    $user_id = I('post.user_id');
+    $cus_ids = I("post.cus_ids");
+    
+    $re  = $this->M->where(array('id'=>array('in', $cus_ids)))->data(array('gen_id'=>$user_id))->save();
+    if($re!==false){
       $this->success("分配成功");
     }else{
       $this->error($this->M->getError());

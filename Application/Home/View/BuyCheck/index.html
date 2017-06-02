@@ -1,0 +1,295 @@
+<extend name="Common:base" />
+<block name="head">
+  <style>
+    .el-table__body tr.current-row>td{
+      background: rgba(157, 195, 232, 0.7);
+    }
+
+    .el-tabs__header{
+      border-top:2px solid #ea4b4b;
+      border-bottom: 1px solid #c51f1f;
+    }
+    .el-dialog .el-tabs__header{
+      border-top:none;
+    }
+    .el-tabs--border-card .el-tabs__item{
+      border-left: none;
+    }
+    .el-tabs--border-card .el-tabs__item.is-active {
+      background-color: #fff;
+      border-right-color: #d3dce6;
+      background: #544b8f;
+      color: #fff;
+    }
+    .el-tabs--border-card .el-tabs__header {
+      background-color: #fff;
+      margin: 0;
+    }
+    .container > .wrapp > .a > .el-row {
+      margin-bottom: 6px;
+    }
+    .el-tabs--border-card .el-tabs__content{
+      padding:0 9px 5px 9px;
+    }
+    .el-card, .el-menu--horizontal .el-submenu>.el-menu, .el-tabs--border-card{
+      box-shadow: none;
+    }
+    .el-tabs--border-card{
+      border: none;
+    }
+    .el-table__body tr.current-row>td{
+      background: rgba(157, 195, 232, 0.7);
+    }
+    .el-tabs__item{
+        font-family: Microsoft YaHei;
+        color:#0d0f10;
+        font-size: 14px;
+    }
+  </style>
+</block>
+<block name="body">
+    <div id="app" class="container">
+        <div class="wrapp" v-show="show" style="display: none">
+            <!-- seach form 
+            <el-row>
+                <el-col :span="12">
+                    <el-form :inline="true"  ref="searchForm" :model="searchForm">
+                      <el-form-item style="display: none;" prop="id">
+                        <el-input  v-model="searchForm.id">
+                       </el-input>
+                      </el-form-item>
+                      
+                      <el-form-item prop="name" >
+                        <el-input   placeholder="请输入单位名"  v-model="searchForm.name">
+                        </el-input>
+                      </el-form-item>
+                      <el-form-item>
+                        <el-button type="primary" icon="search" @click="loadDatalist" >查询</el-button> 
+                        <el-tooltip content="清空搜索框并刷新表格数据" placement="right">
+                         <el-button  @click="searchReset">重置</el-button>
+                        </el-tooltip>
+                        
+                      </el-form-item>
+                    </el-form>
+                </el-col>
+                <el-col :span="12">
+                </el-col>   
+            </el-row>
+             / search form -->
+
+            <!-- datatables  -->
+            <el-row>
+                <el-col :span="24">
+                    <el-table 
+                    :data="dataList" 
+                    border    
+                    highlight-current-row
+                    v-loading="dataLoad"
+                    element-loading-text="{:L('DATA_LOGIN')}"
+                    @selection-change="handleSelectionChange"
+                    @row-click="trackLog"
+                    >
+
+                        <el-table-column type="selection"  align="center" width="50" :selectable="checkStatus">
+                        </el-table-column>
+                        <el-table-column label="序号"  align="center" width="65" :formatter="handleIndex"  >
+                        </el-table-column>
+                        <el-table-column   label="客户"  prop="cb_name" width="180">
+                        </el-table-column>
+                        <el-table-column label="操作员工"  >
+                            <template scope="scope">
+                                {{ scope.row.department_name }} {{ scope.row.realname}}
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="商品"  prop="product_name">
+                        </el-table-column>
+                        <el-table-column label="价格"  prop="product_money" width="140">
+                        </el-table-column>
+
+                        <el-table-column 
+                        label="审核状态" 
+                        align="center" 
+                        prop="{$state_text}" 
+                        width="140"
+                        :filters="[{text:'待审核', value:'0'},{text:'未通过', value:'-1'},{text:'通过', value:'1'}]"
+                        :filter-method="filterTag">
+                            <template scope="scope">
+                                <el-tag v-if="scope.row.{$state_text}==-1">未通过</el-tag>
+                                <el-tag v-else-if="scope.row.{$state_text}==1">通过</el-tag>
+                                <el-tag v-else="scope.row.{$state_text}==0">待审核</el-tag>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="操作" align="center" width="200">
+                            <template scope="scope">
+                                <el-button size="small" @click="checkCustomer(scope.row.cus_id)">查看客户</el-button>
+                                <el-button type="danger" size="small" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                            </template>
+                        </el-table-column>
+                        
+                        
+                    </el-table>
+                </el-col>
+            </el-row>
+            <!-- / datatables  -->
+            
+
+            <!-- toolbar -->
+            <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
+              <el-col :span="12">
+              <div class="grid-content bg-purple">
+                <span class="wrapper">
+                    <el-tooltip content="选择客户审核" placement="right" style="margin-left:10px;">
+                    <el-button size="small" @click="openDialog('check')" type="primary">审核</el-button>
+                  </el-tooltip>
+                </span>
+              </div>
+              </el-col>
+              <el-col :span="12">
+                  <div class="grid-content bg-purple-light pull-right">
+                    <!-- page -->
+                    <include file="Common:_pagination" />
+                    <!-- / page -->
+                  </div>
+              </el-col>
+            </el-row>
+            <!-- / toolbar -->
+            <div style="margin:5px -10px 5px;">
+                <include file="_downList" />
+            </div>
+        </div>
+
+        <div v-show="show" style="display: none">
+         
+         <include file="_customerInfo" />
+         <!-- 审核 -->
+         <include file="_check" />
+
+         <!-- 跟踪内容 -->
+        <include file="Customer::_traceContent" />
+
+        <!-- 投诉内容 -->
+    <include file="Customer::_complainContent" />
+
+
+        </div>
+
+
+    </div>
+</block>
+<block name="scripts">
+<script>
+
+    
+   page.getCustomerInfoUrl = "{:U('CommonFindDetail/getCustomerInfo')}"
+   page.setCheckUrl = "{:U('check')}";
+
+    window.defaultOption.setDatas({
+
+        multipleSelection: [],
+
+        tableDataOne:[{
+           'user':'',
+           'expense':'',
+           'pdt_id':'',
+           'identity':'',
+           'address':'',
+           'time':''
+        }],
+
+        tableData:[{
+             'name':'',
+             'created_at':'',
+             'type':'',
+             'track_type':'',
+             'content':'',
+             'user':'',
+           'step':''
+        }],
+        tableDataTwo: [{'name':'',
+                     'created_at':'',
+                     'type':'',
+                     'track_type':'',
+                     'content':'',
+                     'user':''     
+        }],
+    }).setForm('add', {
+       
+    }).setForm('edit', {
+       
+        //status:0,
+    }).setForm('search', {
+        name:"",
+        id:"0",
+        sortFiled:"id",
+        sortWay:"asc" // desc
+    }).setForm('hr',{
+        id:null,
+        user_ids:[]
+    },true).setForm('info',{
+        name:"",
+        id_card:"",
+        address:"",
+        contacts:[]
+    },true).setForm('check',{
+    ids:[],
+    state:"1",
+    mark:""
+    }, true).setForm('traceContent',{
+    content:'',
+    },true).setForm('complainContent',{
+    content:'',
+    },true).setMethod('checkCustomer',function(id){
+        this.$http.get(page.getCustomerInfoUrl, {params:{id:id}}).then(function(response){
+            this.initObject(this.infoForm, response.body);
+            this.openDialog('info');
+        }, function(response){
+            this.$message.error("出错了");
+        });
+    }).setMethod('beforeCheck', function(){
+    if (this.multipleSelection.length == 0) {
+      this.$message.error("请至少选择一个客户");
+      this.checkFormDialog = false;
+      return;
+    }
+    for (var i = this.multipleSelection.length - 1; i >= 0; i--) {
+      
+      this.checkForm.ids.push(this.multipleSelection[i].id);
+    }
+
+
+  }).setMethod('handleSelectionChange',function(val){
+    this.multipleSelection = val;
+  }).setMethod('viewtraceContents',function(row,event){
+    this.traceContentFormDialog = true;
+    this.traceContentForm.content = row.content;;
+  }).setMethod('viewComplainContents',function(row,event){
+    this.complainContentFormDialog = true;
+    this.complainContentForm.content = row.content;
+  }).setMethod('trackLog',function(row,event,column){
+    this.$http.post("{:U('CommonFindDetail/trackInfo')}",row).then(function(response){
+      this.tableData = response.body;
+    },function(response){
+      this.$message.error("查询出错啦");
+    });
+
+    this.$http.post("{:U('CommonFindDetail/findDealInfo')}",{user_id:row.cus_id}).then(function(response){
+      this.tableDataOne = response.body;
+    },function(response){
+      this.$message.error("查询出错啦");
+    });
+
+    row.condition = 'service';
+    this.$http.post("{:U('CommonFindDetail/complainInfo')}",row).then(function(response){
+      this.tableDataTwo = response.body;
+    },function(response){
+      this.$message.error("查询出错啦");
+    });
+  }).setMethod('filterTag', function(value, row){
+     return row.{$state_text} === value;
+   }).setMethod('checkStatus', function(row, index){
+      return row.{$state_text} == 0;
+   });
+</script>
+
+    
+</block>

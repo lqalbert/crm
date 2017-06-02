@@ -98,8 +98,64 @@ class UserModel extends  Model{
     }
  
 
+    public function getSupService($field="id,realname"){
+        $roleId = D('Role')->getIdByEname(RoleModel::SUP_SERVICE);
+        if ($roleId) {
 
+                $where['role_id']  = $roleId;
+                $where['rbac_user.status']  = array('GT', RbacUserModel::DELETE_SATUS);
+                return $this->m->join('user_info on rbac_user.id = user_info.user_id')
+                        ->where($where)
+                        ->field($field)
+                        ->select();
+        } else {
+            return array();
+        }
+    }
 
+    public function getGenService($field="id,realname"){
+        $roleId = D('Role')->getIdByEname(RoleModel::GEN_SERVICE);
+        if ($roleId) {
 
+                $where['role_id']  = $roleId;
+                $where['rbac_user.status']  = array('GT', RbacUserModel::DELETE_SATUS);
+                return $this->m->join('user_info on rbac_user.id = user_info.user_id')
+                        ->where($where)
+                        ->field($field)
+                        ->select();
+        } else {
+            return array();
+        }
+    }
+
+    public function getRisk($field="id,realname"){
+        $roleId = D('Role')->getIdByEname(RoleModel::RISK_ONE);
+        if ($roleId) {
+
+                $where['role_id']  = $roleId;
+                $where['rbac_user.status']  = array('GT', RbacUserModel::DELETE_SATUS);
+                return $this->cache('callback', 300)->m->join('user_info on rbac_user.id = user_info.user_id')
+                        ->where($where)
+                        ->field($field)
+                        ->select();
+        } else {
+            return array();
+        }
+    }
+
+    public function getCallback($field="id,realname"){
+        $roleId = D('Role')->getIdByEname(RoleModel::CALL_BACK);
+        if ($roleId) {
+
+                $where['role_id']  = $roleId;
+                $where['rbac_user.status']  = array('GT', RbacUserModel::DELETE_SATUS);
+                return $this->cache('callback', 300)->m->join('user_info on rbac_user.id = user_info.user_id')
+                        ->where($where)
+                        ->field($field)
+                        ->select();
+        } else {
+            return array();
+        }
+    }
 
 }

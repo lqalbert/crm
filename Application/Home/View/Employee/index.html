@@ -21,15 +21,16 @@
 					   <el-input v-model="searchForm.realname"  placeholder="请输入员工姓名" >
 					   </el-input>
 					  </el-form-item>
-					  <el-form-item prop="status" >
-			            <el-select v-model="searchForm.status" clearable  size="small" placeholder="请选择在职或离职" >
-			                <el-option v-for="(status, key) in employeeStatus" :label="status" :value="key" ></el-option>
-			            </el-select>
-			          </el-form-item>
+					  <el-form-item prop="status">
+					  	<el-select v-model="searchForm.status">
+					  		<el-option value="1" label="正常"></el-option>
+					  		<el-option value="-1" label="离职"></el-option>
+					  	</el-select>
+					  </el-form-item>
 					  <el-form-item> 
 					    <el-button type="primary" icon="search" @click="loadDatalist">查询</el-button> 
-					    <el-button @click="searchReset" >重置</el-button>
-			        <!-- 	<el-button  @click="advancedSearch=true">高级查询</el-button>  -->
+					    <el-button @click="searchReset" style="margin-left:10px;">重置</el-button>
+
 					  </el-form-item>
 					</el-form>
 				</el-col>
@@ -56,11 +57,17 @@
 								<img :src="setImgUrl(row.head)" alt="" width="50" height="50">
 							</div>
 					    </el-table-column>
-					   <!-- <el-table-column prop="id"  label="员工ID" width="100">
-					    </el-table-column> -->
+
 					    <el-table-column prop="account" label="登录账号" width="100" >
 					    </el-table-column>
-						 <el-table-column prop="realname" label="员工姓名" width="150" align="center">
+						 <el-table-column prop="realname" label="员工姓名" width="150" >
+					    </el-table-column>
+					    <el-table-column prop="department_name" label="部门" width="100">
+					    </el-table-column>
+					    <el-table-column  label="职位" width="100">
+					    	<template scope="scope">
+					          {{ getType(scope.row.role_id, 'allRoles') }}
+					        </template>
 					    </el-table-column>
 					    <el-table-column prop="sex"  label="性别" width="80" align="center">
 						    <template scope="scope">
@@ -86,14 +93,7 @@
 					   </el-table-column>
 					   <el-table-column prop="id_card" label="身份证号" width="192">
 					   </el-table-column>
-					    <!--<el-table-column prop="faccount" label="演示账号" width="150">
-					    </el-table-column>
-					    <el-table-column prop="department" label="所属组织" width="100">
-					    </el-table-column>
-					    <el-table-column prop="employeetype" label="员工类型" width="100">
-					    </el-table-column>
-					    <el-table-column prop="ishow" label="是否公示" width="100">
-					    </el-table-column> -->
+
 					    <el-table-column prop="phone" label="固话" width="140" align="center">
 					    </el-table-column>
 					     
@@ -193,22 +193,7 @@
 					    </el-table-column>
 					    <el-table-column prop="created_at" label="创建时间" width="190" align="center">
 					    </el-table-column>
-
-					    <!-- <el-table-column inline-template :context="_self"  fixed="right"  label="操作" width="220" align="center">
-					      <span>
-					        <el-button @click="handleEdit($index, row)"  size="small">编辑</el-button>
-					        <el-button @click="handleSetRoles($index, row)" type="info" size="small">职能</el-button>
-					        <el-button @click="handleDelete($index, row)"  type="danger" size="small">删除</el-button>
-					      </span>
-					    </el-table-column> -->
-					   <el-table-column fixed="right" label="操作"  align="center" width="220">
-						   <template scope="scope">
-						      <el-button type="info" @click.stop="handleEdit(scope.$index, scope.row)"     size="small">编辑</el-button>
-						      <el-button type="info" @click.stop="handleSetRoles(scope.$index, scope.row)"     size="small">职能</el-button>
-						      <el-button type="danger"  @click.stop="handleDelete(scope.$index, scope.row)"   size="small" >删除</el-button>
-						   </template>
-						</el-table-column>
-
+					    {$viewDecorator['oprate']}
 				    </el-table>
 				</el-col>
 			</el-row>
@@ -219,16 +204,8 @@
 				  <el-col :span="12">
 				  <div class="grid-content bg-purple">
 				  	<el-button-group>
-					    <el-button type="primary" size="small" @click="openDialog('add')">添加员工</el-button>
-					    <!-- <el-button type="primary" size="small">修改一般信息</el-button> -->
-					    <!-- <el-button type="primary" size="small">修改核心信息</el-button> -->
+				  		{$viewDecorator['button']}
 
-						<!-- <el-button type="primary" size="small" >修改身份信息</el-button> -->
-						<el-button type="primary" size="small" @click="openDialog('editPassword')">修改账号密码</el-button>
-						<!-- <el-button type="primary" size="small" >确认身份</el-button>
-						<el-button type="primary" size="small">微调权限</el-button> -->
-						<!-- <el-button type="primary" size="small">终止员工</el-button> -->
-						<!-- <el-button type="primary" size="small">开演示号</el-button> -->
 
 				    </el-button-group>
 				    
@@ -322,10 +299,7 @@
 			  detailContent:"",
             detailFormDialog:false,
 			roleList:{:json_encode($roleList)},
-			departmentsList:{:json_encode($departmentsList)},
-			rolesList:{:json_encode($rolesList)},
-			sourcesList:{:json_encode($sourcesList)},
-			 employeeStatus:{:json_encode($employeeStatus)},
+			allRoles:{:json_encode($allRoles)},
 			pathInfo:{folder:'users'},
 
 			addUpload:"",
@@ -404,12 +378,9 @@
 			card_img:"",
 			card_front:"",
 			card_back:"",
-			household_home_page:"",
-			household_housemaster:"",
-			household_personal:"",
-			education_certificate:"",
-			practitioner_certificate:"",
-			leaving_certificate:""
+			departmentItem:{$departmentItem},
+
+			departments:{:json_encode($departments)}
 
 
 		}).setForm('add',{
@@ -418,7 +389,7 @@
 			role_id:"",
 			head:"",
 			group_id:"",
-			department_id:"",
+			department_id:"{$depart_id}",
 			sex:0,
 			phone:"",
 			mphone:"",
@@ -475,6 +446,7 @@
 			id:"",
 			head:"",
 			group_id:"",
+			department_id:"",
 			sex:0,
 			phone:"",
 			mphone:"",
@@ -530,7 +502,7 @@
 		},true).setForm('search',{
 			name:"",
 			realname:"",
-			status:"",
+			status:"1",
 			plan:false
 		}).setForm('editPassword',{
 			id:"",
@@ -543,7 +515,7 @@
 			if(v==null || v==""){
 				return v;
 			}else{
-		    var date = new Date(v*1000);
+		      var date = new Date(v*1000);
 			  var year = date.getFullYear();
 			  var month = date.getMonth()+1;
 			  var day = date.getDate();
@@ -730,73 +702,54 @@
         }
 
         return isLt8M;
-	  }).setMethod('showDetail', function(row){
-    this.account = row.account;
-    this.realname = row.realname;
-    this.department_id = row.department_id;
-    this.group_id = row.group_id;
-    this.head = row.head;
-    this.sex = row.sex;
-    this.marriage = row.marriage;
-    this.birth_date = row.birth_date;
-    this.graduation_date = row.graduation_date;
-    this.entry_date = row.entry_date;
-    this.completion_date = row.completion_date;
-    this.area_province = row.area_province;
-    this.area_city = row.area_city;
-    this.area_district = row.area_district;
-    this.entry_sources = row.entry_sources;
-    this.nation = row.nation;
-    this.university = row.university;
-    this.major = row.major;
-    this.height = row.height;
-    this.weight = row.weight;
-    this.blood_type = row.blood_type;
-    this.phone = row.phone;
-    this.mphone = row.mphone;
-    this.qq = row.qq;
-    this.qq_nickname = row.qq_nickname;
-    this.weixin = row.weixin;
-    this.weixin_nickname = row.weixin_nickname;
-    this.identifier = row.identifier;
-    this.role_id = row.role_id;
-    this.id_card = row.id_card;
-    this.entry_manager = row.entry_manager;
-    this.address = row.address;
-    this.card_img = row.card_img;
-    this.card_front = row.card_front;
-    this.card_back = row.card_back;
-    this.household_home_page = row.household_home_page;
-    this.household_housemaster = row.household_housemaster;
-    this.household_personal = row.household_personal;
-    this.education_certificate = row.education_certificate;
-    this.degree_diploma = row.degree_diploma;
-    this.practitioner_certificate = row.practitioner_certificate;
-     this.leaving_certificate = row.leaving_certificate;
-    this.family_member = row.family_member;
-    this.family_relation = row.family_relation;
-    this.family_job_unit = row.family_job_unit;
-    this.family_position = row.family_position;
-    this.family_phone = row.family_phone;
-    this.resume_entry_date = row.resume_entry_date;
-    this.resume_enterprise_name = row.resume_enterprise_name;
-    this.resume_position = row.resume_position;
-    this.resume_leader = row.resume_leader;
-    this.resume_leader_phone = row.resume_leader_phone;
-    this.resume_leaving_reasons = row.resume_leaving_reasons;
-    this.openDialog('detail');
-  });
+	  }).setMethod("handleQuit", function(index, row, url){
+		if (!arguments[2]) {
+			url= this.page.deleteUrl;
+		}
+		var vmThis = this;
+		this.$confirm('确定离职?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(function(){
+        	vmThis.$http.post(url, {ids:[row.id]}).then(function(response){
+        		var message = '离职成功!';
+        		if (response.body.info) {
+        			message = response.body.info;
+        		}
+        		vmThis.$message({
+		            type: 'success',
+		            message: message
+		          });
+
+        		// vmThis.dataList.splice(index, 1);
+
+        		vmThis.loadDatalist();
+        		//this.dataLoad = true;
+		       // this.loadDatalist();
+
+		      	}, function(response){
+		      		var message = '离职失败';
+		      		if (response.body.info) {
+		      			message = response.body.info;
+		      		}
+		      		vmThis.$message({
+			            type: 'error',
+			            message: '离职失败'
+			          });
+		      })
+        }).catch(function() {
+          vmThis.$message({
+            type: 'info',
+            message: '已取消离职'
+          });          
+    });
+	});
 	</script>
 	<script>
 
 
-		// window.vmMethods.set("handleClick", function(index, row){
-		// 	this.dialogEditID = true;
-		// })
-
-		// window.vmMethods.set("handleCurrentChange", function(page){
-			
-		// })
+		
 		
 	</script>
 </block>

@@ -32,7 +32,7 @@ class LoginController extends Controller {
 				// $location=new \Ip\Taobaoip\taobaoIp();//利用淘宝地址库
 				// $arr=$location->getLocation();
 				$data=array(
-                   'ip'=>$arr['ip'],
+                   //'ip'=>$arr['ip'],
                    // 'location'=>$arr['country'].$arr['region'].$arr['city'].$arr['county'],
                    'lg_time'=>time(),
                    'ss_id'  =>$sessionId

@@ -13,6 +13,7 @@ function phoneValidata(rule, value, callback) {
       return callback('手机号格式错误');
     }
 
+
     Vue.http.get(page.checContactUrl, {params:{value:value, type:'phone'}}).then(function(response){
       callback();
     }, function(response){

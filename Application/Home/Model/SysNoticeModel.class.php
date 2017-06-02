@@ -52,7 +52,7 @@ class SysNoticeModel extends Model{
     	}
     }
 
-    public function delete($ids){
+    public function delete($ids=array()){
         // return $this->where(array('id'=>array('in', $ids )))->save(array('status'=>-1));
         $id_arr = explode(",", $ids);
         return $this->data(array('status'=>self::DELETE_STATUS))->where(array('id'=> array('in', $id_arr)))->save();

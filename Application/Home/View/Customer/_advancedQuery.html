@@ -2,12 +2,12 @@
 <el-form ref="advancedQueryForm"  :model="advancedQueryForm" size="small" label-width="140px">
   <el-row>
     <el-col :span="12">
-      <el-form-item prop="start" label="客户姓名">
+      <el-form-item prop="name" label="客户姓名">
         <el-input v-model="advancedQueryForm.name" size="small" placeholder="客户姓名" style="max-width:170px;"></el-input>
       </el-form-item>
     </el-col>
     <el-col :span="12">
-      <el-form-item prop="start" label="手机号">
+      <el-form-item prop="phone" label="手机号">
         <el-input v-model="advancedQueryForm.phone" size="small" placeholder="手机号" style="max-width:170px;"></el-input>
       </el-form-item>
     </el-col>
@@ -29,13 +29,13 @@
     <el-row>
       <el-col :span="12">
         <el-form-item prop="start" label="锁定起始时间">
-            <el-date-picker v-model="advancedQueryForm.start" size="small" placeholder="请选择起日期">
+            <el-date-picker v-model="advancedQueryForm.start" size="small" :editable="false" placeholder="请选择起日期">
             </el-date-picker>
         </el-form-item>
       </el-col>
       <el-col :span="12" >
         <el-form-item prop="end" label="锁定截止时间">
-            <el-date-picker v-model="advancedQueryForm.end" size="small" placeholder="请选择止日期">
+            <el-date-picker v-model="advancedQueryForm.end" size="small" :editable="false" placeholder="请选择止日期">
             </el-date-picker>
         </el-form-item>
       </el-col>
@@ -44,13 +44,13 @@
     <el-row>
       <el-col :span="12">
         <el-form-item prop="track_start" label="最后跟踪起始时间">
-            <el-date-picker v-model="advancedQueryForm.track_start" size="small" placeholder="请选择起日期" >
+            <el-date-picker v-model="advancedQueryForm.track_start" size="small" :editable="false" placeholder="请选择起日期" >
             </el-date-picker>
         </el-form-item>
       </el-col>
       <el-col :span="12" >
         <el-form-item prop="track_end" label="最后跟踪截止时间">
-            <el-date-picker v-model="advancedQueryForm.track_end" size="small" placeholder="请选择止日期" >
+            <el-date-picker v-model="advancedQueryForm.track_end" size="small" :editable="false" placeholder="请选择止日期" >
             </el-date-picker>
         </el-form-item>
       </el-col>
@@ -65,7 +65,8 @@
             </el-select>
         </el-form-item>
       </el-col>
-      <el-col :span="12">
+      <?php if($isDepartment): ?>
+        <el-col :span="12">
         <el-form-item prop="group" label="组织对象">
           <el-select v-model="advancedQueryForm.group" size="small" placeholder="请选择">
             <el-option v-for="item in searchGroup" :label="item.name" :value="item.user_id" :disabled="item.disabled"></el-option>
@@ -73,10 +74,12 @@
             
         </el-form-item>
       </el-col>
+        <?php endif; ?>
+      
     </el-row>
 </el-form>
     <div slot="footer" class="dialog-footer">
-        <el-button @click="advancedQueryReset">关闭</el-button>
+        <el-button @click="advancedQueryReset">重置</el-button>
         <el-button type="primary" v-show="!advancedQueryFormSubmitStatus" @click="advanceSearch" >查询</el-button>
         <el-button type="primary" v-show="advancedQueryFormSubmitStatus" :loading="true" >查询中</el-button>
     </div>

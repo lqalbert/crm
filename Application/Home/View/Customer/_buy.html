@@ -1,0 +1,56 @@
+<el-dialog title="购买" v-model="buyFormDialog" @open="beforeBuy">
+    <el-steps :space="100" :active="stepActive" finish-status="success" :center="true">
+        <el-step title="详细资料" description=""></el-step>
+        <el-step title="商品"></el-step>
+    </el-steps>
+    
+    <el-form  :rules="buyRules" ref="buyForm" :model="buyForm" v-model="buyForm" :label-position="'top'">
+        <div class="tabs" v-show="stepActive==0">
+            <el-form-item label="姓名:" prop="name">
+                <el-input placeholder="姓名" v-model="buyForm.name"></el-input>
+            </el-form-item>
+
+            <el-form-item label="身份证:" prop="id_card">
+                <el-input placeholder="身份证" v-model="buyForm.id_card"></el-input>
+            </el-form-item>
+
+            <el-form-item label="详细地址:" prop="address">
+                <el-input type="textarea" placeholder="详细地址" v-model="buyForm.address"></el-input>
+            </el-form-item>
+        </div>  
+
+        <div class="tabs" v-show="stepActive==1">
+            <el-form-item label="商品:" prop="product_index">
+                <el-select placheholder="请选择" v-model="buyForm.product_index" @change="buySelectChange">
+                    <el-option v-for="(product,index) in products" :label="product.name" :value="index"></el-option>
+                </el-select>
+            </el-form-item>
+
+            <el-form-item label="价格:" prop="product_money">
+                <el-col :span="10">
+                    <el-input placeholder="价格" v-model="buyForm.product_money"></el-input>
+                </el-col>
+            </el-form-item>
+
+            <el-form-item label="服务周期:">
+                {{ getServiceTime(buyForm.product_t) }} 
+            </el-form-item>
+
+            <el-form-item label="够买时间:"  prop="buy_time" required>
+               <el-date-picker v-model="buyForm.buy_time" :editable="false" type="date" placeholder="选择日期" @change="setBuyTime">
+               </el-date-picker>
+            </el-form-item>
+
+        </div>    
+        
+    </el-form>
+
+    <el-button  @click="prv" v-show="stepActive==1">上一步</el-button>
+    <!-- <el-button  @click="next" v-show="stepActive==0">下一步</el-button> -->
+    <el-tooltip content="须先填写本页必填项后方可下一步" placement="bottom-start">
+        <el-button  @click="next" v-show="stepActive==0">下一步</el-button>
+    </el-tooltip>
+    <el-button type="primary" v-show="!buyFormSubmitStatus" @click="buyFormSubmit(page.buyUrl, 'buy')" style="margin-left:10px;">确 定</el-button>
+    <el-button type="primary" v-show="buyFormSubmitStatus" :loading="true" >提交中</el-button>
+
+</el-dialog>

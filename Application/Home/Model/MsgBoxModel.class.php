@@ -7,9 +7,7 @@ class MsgBoxModel extends Model {
 	protected $tableName = 'msgbox_basic';
    
     protected $_auto = array(
-        array('start', 'transfer', 1, 'callback'),
-        array('end', 'transfer', 1, 'callback'),
-        array('user_id', 'getUserId', 1, 'callback'),
+        array('from_id', 'getUserId', 1, 'callback'),
     );
     
 

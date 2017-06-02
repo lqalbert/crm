@@ -1,0 +1,60 @@
+<el-dialog title="开单"  v-model="orderFormDialog">
+<el-form :model="orderForm" :rules="orderRule"  ref="orderForm" :label-position="'top'" >
+    <el-form-item label="商品名称" prop="name">
+        <el-input  auto-complete="off" v-model="orderForm.name" :disabled="true"></el-input>
+    </el-form-item>
+
+    <el-form-item label="销售金额" prop="sale_money">
+        <el-input  auto-complete="off" v-model="orderForm.sale_money" ></el-input>
+    </el-form-item>
+
+    <el-form-item label="应收金额" prop="receivable">
+        <el-input  auto-complete="off" v-model="orderForm.receivable" ></el-input>
+    </el-form-item>
+
+    <el-form-item label="实收金额" prop="paid_in">
+        <el-input  auto-complete="off" v-model="orderForm.paid_in" ></el-input>
+    </el-form-item>
+
+    <el-form-item label="客户姓名" >
+        <el-input  auto-complete="off" v-model="orderForm.customer_name" ></el-input>
+    </el-form-item>
+
+    <el-form-item label="客户手机" >
+        <el-select v-model="orderForm.phone" >
+            <el-option 
+            v-for="phone in bphone" 
+            :label="phone.phone" 
+            :value="phone.phone" ></el-option>
+        </el-select>
+    </el-form-item>
+
+    <el-form-item label="锁定人员" >
+        <el-input  auto-complete="off" v-model="orderForm.user_name" :disabled="true"></el-input>
+    </el-form-item>
+
+    <el-form-item label="跟踪人员" >
+        <el-input  auto-complete="off" v-model="orderForm.sale_name" :disabled="true"></el-input>
+    </el-form-item>
+
+
+</el-form>
+<div slot="footer" class="dialog-footer">
+    <el-button @click="closeDialog('order')">取 消</el-button>
+    <el-button type="primary" v-show="!orderFormSubmitStatus" @click="orderFormSubmit(page.addOrderUrl, 'order')" >确 定</el-button>
+    <el-button type="primary" v-show="orderFormSubmitStatus" :loading="true" >保存中</el-button>
+</div>
+</el-dialog>
+
+<!-- 
+    `buy_id` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '购买的纪录id',
+    `product_id` INT(10) UNSIGNED NOT NULL COMMENT '商品id',
+    `sale_money` DECIMAL(9,2) NOT NULL DEFAULT '0.00' COMMENT '销售金额',
+    `receivable` DECIMAL(9,2) NOT NULL DEFAULT '0.00' COMMENT '应收金额',
+    `paid_in` DECIMAL(9,2) NOT NULL DEFAULT '0.00' COMMENT '实收金额',
+    `cus_id` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '客户id',
+    `user_id` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '锁定人员',
+    `salesman_id` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '跟踪人员',
+    `customer_name` VARCHAR(20) NOT NULL DEFAULT '' COMMENT '客户姓名',
+    `phone` CHAR(11) NOT NULL DEFAULT '' COMMENT '客户手机',
+    `creater_id` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '开单的人id', -->

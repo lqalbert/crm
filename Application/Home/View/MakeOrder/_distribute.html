@@ -1,0 +1,14 @@
+<el-dialog title="分配"  v-model="distributeFormDialog">
+<el-form :model="distributeForm"   ref="distributeForm" :label-position="'top'" >
+    <el-form-item label="客服主管">
+        <el-select v-model="distributeForm.semaster_id">
+            <el-option v-for="ser in seMaster" :value="ser.id" :label="ser.realname"></el-option>
+        </el-select>
+    </el-form-item>
+</el-form>
+<div slot="footer" class="dialog-footer">
+    <el-button @click="closeDialog('distribute')">取 消</el-button>
+    <el-button type="primary" v-show="!distributeFormSubmitStatus" @click="distributeFormSubmit(page.setDistributeUrl, 'distribute')" >确 定</el-button>
+    <el-button type="primary" v-show="distributeFormSubmitStatus" :loading="true" >修改中</el-button>
+</div>
+</el-dialog>

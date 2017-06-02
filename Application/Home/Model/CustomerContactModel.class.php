@@ -8,7 +8,7 @@ class CustomerContactModel extends Model {
 
 
      protected $_validate = array(
-        array('phone','/^1[34578]\d{9}$/','手机号格式错误',   self::VALUE_VALIDATE ,'regex'),
+        // array('phone','/^1[34578]\d{9}$/','手机号格式错误',   self::VALUE_VALIDATE ,'regex'),
         array('phone',''                 ,'手机号已经存在',self::MUST_VALIDATE ,'unique'), // 是否唯一
 
         array('qq',   'number','QQ号格式错误',   self::VALUE_VALIDATE),

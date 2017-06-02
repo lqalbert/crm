@@ -23,35 +23,12 @@
         </el-form-item>
       </el-col>
     </el-row>
-<!--     <el-row>
-  <el-col :span="12">
-      <el-form-item label="所属部门"  @change="departmentChange" placeholder="请选择">
-      <el-select v-model="addForm.department_id">
-        <el-option v-for="department in departmentsList" :label="department.name" :value="department.id"></el-option>
-      </el-select>
-    </el-form-item>
-  </el-col>
-</el-row> -->
-    <el-row>
-      <el-col :span="12">
-        <el-form-item label="所属部门">
-          <el-select v-model="addForm.department_id" @change="departmentChange" placeholder="请选择">
-             <el-option v-for="department in departments" :label="department.name"  :value="department.id"></el-option>
+    <el-row v-if="departmentItem==1">
+      <el-col>
+        <el-form-item label="所属部门" prop="department_id">
+          <el-select v-model="addForm.department_id">
+            <el-option v-for="department in departments" :label="department.name" :value="department.id"></el-option>
           </el-select>
-        </el-form-item>
-      </el-col>
-      <el-col :span="12">
-        <el-form-item label="所属团队小组">
-          <el-select v-model="addForm.group_id"    placeholder="请选择">
-            <el-option v-for="group in groups" :label="group.name"  :value="group.id"></el-option>
-          </el-select>
-        </el-form-item>
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="12">
-        <el-form-item label="员工编号">
-          <el-input v-model="addForm.identifier" auto-complet="off"></el-input>
         </el-form-item>
       </el-col>
     </el-row>
@@ -97,12 +74,20 @@
           <el-radio class="radio" v-model="addForm.sex" label="2">女</el-radio>
         </el-form-item>
       </el-col>
-        <el-col :span="12">
-        <el-form-item label="婚否">
-          <el-radio class="radio" v-model="addForm.marriage" label="1">是</el-radio>
-          <el-radio class="radio" v-model="addForm.marriage" label="2">否</el-radio>
+    </el-row>
+
+    <el-row>
+      <el-col :span="12">
+
+        <el-form-item label="手机" prop="mphone">
+          <el-input v-model="addForm.mphone"  auto-complete="off"></el-input>
         </el-form-item>
       </el-col>
+      <el-col :span="12">
+         <el-form-item label="固话座机" prop="phone">
+           <el-input v-model="addForm.phone" auto-complet="off"></el-input>
+         </el-form-item>
+       </el-col>
     </el-row>
     <el-row>
       <el-col :span="12">

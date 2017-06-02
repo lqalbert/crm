@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>客户关系管理系统 - 登录</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <link href="__PUBLIC__/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/plugins/layui/css/layui.css" media="all">
+    <link href="__PUBLIC__/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/animate.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/style.css" rel="stylesheet">
+    <link href="__PUBLIC__/css/login.css" rel="stylesheet">
+
+    
+    <script>
+        if (window.top !== window.self) {
+            window.top.location = window.location;
+        }
+    </script>
+    <style>
+      *{
+        font-family:Microsoft YaHei;
+      }
+      .red{
+        color:red;
+      }
+      i{
+        color:#ffc000;
+      }
+      .btn-success {
+          background-color: #2596ff;
+          border-color: #2596ff;
+          color: #FFFFFF;
+      }
+     input::-webkit-input-placeholder {
+         /* placeholder颜色  */
+         color: #aab2bd;
+         /* placeholder字体大小  */
+         font-size: 16px;
+         /* placeholder位置  */
+     }
+     #title{
+       
+      margin:100px auto;
+      z-index:100;
+      font-size:44px;
+      color:rgba(255,255,255,0.8);
+     }
+    </style>
+</head>
+<body class="signin">
+    <div id="title" >
+      <img src="__PUBLIC__/images/gaologo.png" style="float:left;margin-left:150px;margin-top:-10px;" >
+      <div style="margin-left:580px;">客户关系管理（CRM）系统(<a style="color:#ffaf25;">港澳版</a>)</div>
+    </div>
+    <div class="signinpanel">
+        <div class="row">
+            <div class="col-sm-7">
+                <div class="signin-info">
+                    <div class="logopanel m-b">
+                        <h1 style="color:#ff1111"> NOTICE </h1>
+                        <hr style="width:112px;height:2px;"/>
+                    </div>
+                    <p class="red" style="font-size:16px;font-weight:bold;color:#b91111;letter-spacing:1px;">
+                        *不支持IE9及以下的浏览器！
+                    </p>
+                    <a style="line-height:45px;font-size:18px;color:#fff;letter-spacing:1px;">为了不影响您的使用,请使用如下浏览器:</a>
+                    <ul class="m-b" style="font-size:16px;line-height:35px;margin:0;letter-spacing:1px;">
+                        <li ><i class="fa fa-caret-right fa-lg m-r-xs"></i> <a href="http://rj.baidu.com/soft/detail/14744.html?ald" target="_blank" style="color:#fff;">1、点此下载<a style="color:#ffc000">谷歌浏览器</a>(<a style="color:#b91111">强烈推荐</a>)</a></li>
+                        <li><i class="fa fa-caret-right fa-lg m-r-xs"></i> <a href="http://www.firefox.com.cn/" target="_blank" style="color:#fff;">2、点此下载<a style="color:#ffc000">火狐浏览器</a></a></li>
+                        <li><i class="fa fa-caret-right fa-lg m-r-xs"></i> <a href="http://rj.baidu.com/soft/detail/11508.html?ald" target="_blank" style="color:#fff;">3、点此下载<a style="color:#ffc000">欧朋浏览器</a></a></li>
+                        <li><i class="fa fa-caret-right fa-lg m-r-xs"></i> <a href="http://www.liebao.cn/download.html" target="_blank" style="color:#fff;">4、点此下载<a style="color:#ffc000">猎豹浏览器</a></a></li>
+                        <li><i class="fa fa-caret-right fa-lg m-r-xs"></i> <a href="https://support.microsoft.com/zh-cn/help/17621/internet-explorer-downloads" target="_blank" style="color:#fff;">5、点此下载<a style="color:#ffc000">最新IE浏览器</a></a></li>
+                    </ul>
+                    
+                </div>
+            </div>
+            <div class="col-sm-5">
+                <form class="layui-form" method="post" action="" style="height:350px;">
+                    <a class="no-margins" style="display:block;font-size:22px;color:#fff;text-align:center;">请登录</a>
+<!--                     <p class="m-t-md" style="font-size:16px;">登录到客户管理系统中心</p> -->
+                    <img src="__PUBLIC__/images/user.png" alt="" style="width:42px;height:41px;float:left;margin-top:29px;">
+                    <input type="text" style="width:193px;" class="form-control uname" name="account" value="" autocomplete="off" placeholder="请输入用户名" />
+
+                    <img src="__PUBLIC__/images/locked.png" alt="" style="width:42px;height:40px;float:left;margin-top:30px;">
+                    <input type="password" style="width:193px;" class="form-control pword m-b" name="password" value="" autocomplete="off" placeholder="请输入密码" />
+                    <!--<a href="">忘记密码了？</a>-->
+                    <strong style="display: block;margin-top:20px;color:rgba(255,255,255,0.8);">忘记密码？请联系管理员&raquo;</strong>
+                    <button class="btn btn-success btn-block" lay-submit="" lay-filter="go" style="font-size:20px;">登录</button>
+                </form>
+            </div>
+        </div>
+        <div class="signup-footer">
+            <div class="pull-left" style="color:#272727;">
+                &copy; 2016 All Rights Reserved. 源创智讯
+            </div>
+        </div>
+    </div>
+
+<script type="text/javascript" src="__PUBLIC__/plugins/layui/layui.js"></script>
+<script type="text/javascript">
+    layui.use(['form','upload','layer'],function(){
+         var form = layui.form();
+         var layer=layui.layer;
+         var $=layui.jquery;
+          //监听提交
+         form.on('submit(go)', function(data){
+            $.ajax({
+               url:"{:U('Login/loginHandle')}",
+               type:'post',
+               data:data.field,
+               dataType:'json',
+               success:function(res){
+                 if(res.code===-1){
+                      layer.msg(res.msg,{time:3000});
+                 }else{
+                      layer.load(0, {time: 3000});
+                      setTimeout(function url(){
+                        window.location.href = "{:U('Index/index')}";
+                      },1000);   
+                 }
+               }
+            });
+            return false; 
+         });
+    });
+
+</script>
+</body>
+
+</html>

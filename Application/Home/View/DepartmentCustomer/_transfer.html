@@ -1,14 +1,17 @@
-<el-dialog title="客户转让" v-model="addTransferFormDialog" @open="beforeAddTransfer">
+<el-dialog title="客户转让" v-model="addTransferFormDialog" 
+   @open="beforeAddTransfer" @close="handleClose" :close-on-click-modal="true">
   <el-form :rules="transferRules" ref="addTransferForm" :label-width="dialogLabelWidth" :model="addTransferForm">
   <el-row>
-    <!--< el-col :span="8">
-      <el-form-item label="客户姓名"  prop="name">
-        <el-input v-model="addTransferForm.name" :disabled="true"></el-input>
+    <el-col :span="20">
+      <el-form-item label="客户姓名:"  prop="name">
+<!--         <el-input v-model="addTransferForm.name" :disabled="true"></el-input> -->
+        {{ addTransferForm.name }}
       </el-form-item>
-    </el-col> -->
-
-    <el-col :span="8">
-      <el-form-item label="接收单位" prop="rec_dep">
+    </el-col> 
+  </el-row>
+  <el-row>
+    <el-col :span="10">
+      <el-form-item label="接收单位:" prop="rec_dep">
         <el-select v-model="addTransferForm.rec_dep"  @change="departChange" placeholder="请选择接收单位">
           <el-option
             v-for="dep in Departments"
@@ -19,8 +22,8 @@
       </el-form-item>
     </el-col>
 
-    <el-col :span="8">
-      <el-form-item label="接收小组" prop="rec_group" >
+    <el-col :span="10">
+      <el-form-item label="接收小组:" prop="rec_group" >
         <el-select v-model="addTransferForm.rec_group" placeholder="请选择接收小组" @change="depChange">
           <el-option
             v-for="group in reGroup"
@@ -34,7 +37,7 @@
 
   <el-row>
     <el-col :span="10">
-      <el-form-item label="接收员工" prop="rec_user">
+      <el-form-item label="接收员工:" prop="rec_user">
         <el-select v-model="addTransferForm.rec_user" filterable placeholder="请选择接收员工">
           <el-option
             v-for="reUser in reUsers"
@@ -44,12 +47,9 @@
         </el-select>
       </el-form-item>
     </el-col>
-  </el-row>
-
-  <el-row v-show="false">
     <el-col :span="10">
-      <el-form-item label="比例" prop="step">
-        <el-select v-model="addTransferForm.proportion" :disabled="true" placeholder="请选择服务比例">
+      <el-form-item label="跟踪比例分配:" prop="step">
+        <el-select v-model="addTransferForm.proportion" placeholder="请选择服务比例">
           <el-option
             v-for="(proportion, key) in Proportion"
             :label="proportion"
@@ -59,17 +59,21 @@
       </el-form-item>
     </el-col>
   </el-row>
-    <el-form-item label="备注"  prop="content">
-      <el-input
-		  type="textarea"
-		  :autosize="{ minRows: 2, maxRows: 4}"
-		  placeholder="请输入内容"
-		  v-model="addTransferForm.content"></el-input>
-    </el-form-item>
+  <el-row>
+    <el-col :span='20'>
+      <el-form-item label="转让备注:"  prop="content">
+        <el-input
+        type="textarea"
+        :autosize="{ minRows: 3, maxRows: 3}"
+        placeholder="请输入内容"
+        v-model="addTransferForm.content"></el-input>
+      </el-form-item>
+    </el-col>
+  </el-row>
   </el-form>
   <div slot="footer" class="dialog-footer">
-   <el-button @click="closeDialog('addTransfer')">取 消</el-button>
-   <el-button type="primary" v-show="!addTransferFormSubmitStatus" @click="addTransferFormSubmit(page.addTransferFormUrl, 'addTransfer')" >确 定</el-button>
-   <el-button type="primary" v-show="addTransferFormSubmitStatus" :loading="true" >添加中</el-button>
+    <el-button @click="closeDialog('addTransfer')">取 消</el-button>
+    <el-button type="primary" v-show="!addTransferFormSubmitStatus" @click="addTransferFormSubmit(page.addTransferFormUrl, 'addTransfer')" >确 定</el-button>
+    <el-button type="primary" v-show="addTransferFormSubmitStatus" :loading="true" >添加中</el-button>
   </div>
 </el-dialog>
