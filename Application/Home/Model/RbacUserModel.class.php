@@ -16,28 +16,15 @@ class RbacUserModel extends RelationModel {
 
     protected $_link = array(
         'userInfo'=> array(
-        	'mapping_type'      => self::HAS_ONE,
-        	'class_name'        => 'userInfo',
-        	'foreign_key'       => 'user_id'
+          'mapping_type'      => self::HAS_ONE,
+          'class_name'        => 'userInfo',
+          'foreign_key'       => 'user_id'
         )
      );
 
      protected $_auto = array ( 
          array('password','cryptPawssword',3,'callback') , // 对password字段在新增和编辑的时候使md5函数处理
      );
-   protected $statusType = array(
-        "1"=>"在职",
-        "2"=>"离职",
-    );
-   protected $entrySources = array(
-             '1'=>'58同城',
-             '2'=>'赶集',
-             '3'=>'智联',
-             '4'=>'前程',
-             '5'=>'校招',
-             '6'=>'介绍',
-             '7'=>'其他',
-    );
 
 
     public function cryptPawssword($p){
@@ -78,7 +65,6 @@ class RbacUserModel extends RelationModel {
              ->field('id,account,realname')
              ->select();
     }
-
 
     public function decoratorView($roleEname){
         $funcName = $roleEname."GetView";
@@ -154,7 +140,6 @@ BUTTON;
             'button' => $addButton
         );
     }
-
 
 
 }
