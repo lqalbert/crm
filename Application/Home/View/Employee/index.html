@@ -46,8 +46,7 @@
 				      element-loading-text="{:L('DATA_LOGIN')}"
 				      highlight-current-row
 				      @selection-change="handleSelectionChange"
-				      @row-click="showDetail"
-					 border stripe>
+					 border>
 					    <el-table-column type="selection"  width="50" >
 					    </el-table-column>
 					    <el-table-column  label="序号"  width="70" :formatter="handleIndex" >
@@ -74,23 +73,6 @@
 					          {{ getType(scope.row.sex, 'sexType') }}
 					        </template>
 					    </el-table-column>
-					     <el-table-column prop="department_id"  label="所属部门" width="160" align="center">
-					    	<template scope="scope">
-					          {{ getType(scope.row.department_id, 'allDepartments') }}
-					        </template>
-					    </el-table-column>
-					    <el-table-column prop="group_id"  label="所属团队小组" width="160" align="center">
-					    	<template scope="scope">
-					          {{ getType(scope.row.group_id, 'allGroups') }}
-					        </template>
-					    </el-table-column>
-					    <el-table-column prop="identifier" label="员工编号" width="192">
-					   </el-table-column>
-					    <el-table-column prop="role_id" label="员工职能" width="192">
-					   	   <template scope="scope">
-					          {{ getType(scope.row.role_id, 'allRoles') }}
-					        </template>
-					   </el-table-column>
 					   <el-table-column prop="id_card" label="身份证号" width="192">
 					   </el-table-column>
 
@@ -109,73 +91,7 @@
 					    </el-table-column>
 					    <el-table-column prop="weixin_nikname"  label="微信昵称" width="190" align="center">
 					    </el-table-column>
-					    <el-table-column prop="area_province" label="省份" width="190" align="center">
-					        <template scope="scope">
-					          {{ getType(scope.row.area_province, 'allProvinces') }}
-					        </template>
-					    </el-table-column>
-					    <el-table-column prop="area_city" label="城市" width="190" align="center">
-					     <template scope="scope">
-					         {{ getType(scope.row.area_city, 'allCities') }}
-					       </template>
-					    </el-table-column>
-					    <el-table-column prop="area_district" label="区县" width="190" align="center">
-					       <template scope="scope">
-					         {{ getType(scope.row.area_district, 'allDistricts') }}
-					       </template>
-					    </el-table-column>
 					    <el-table-column prop="address" label="地址" width="190" align="center">
-					    </el-table-column>
-					     <el-table-column prop="nation" label="民族" width="190" align="center">
-					    </el-table-column>
-					      <el-table-column prop="marriage"  label="婚否" width="80" align="center">
-						    <template scope="scope">
-					          {{ getType(scope.row.marriage, 'marriageType') }}
-					        </template>
-					    </el-table-column>
-					      <el-table-column prop="blood_type" label="血型" width="190" align="center">
-					    </el-table-column>
-					    <el-table-column prop="birth_date" label="出生年月" width="190" align="center">
-					    </el-table-column>
-					    <el-table-column prop="university" label="毕业院校" width="190" align="center">
-					    </el-table-column>
-					      <el-table-column prop="major" label="所学专业" width="190" align="center">
-					    </el-table-column>
-					    <el-table-column prop="graduation_date" label="毕业时间" width="190" align="center">
-					    </el-table-column>
-					     <el-table-column prop="height" label="身高" width="190" align="center">
-					    </el-table-column>
-					     <el-table-column prop="weight" label="体重" width="190" align="center">
-					    </el-table-column>
-					     <el-table-column prop="entry_sources" label="入职来源" width="190" align="center">
-					    </el-table-column>
-					    <el-table-column prop="entry_manager" label="入职经办人" width="190" align="center">
-					    </el-table-column>
-					    <el-table-column prop="entry_date" label="入职日期" width="190" align="center">
-					    </el-table-column>
-					    <el-table-column prop="completion_date" label="转正日期" width="190" align="center">
-					    </el-table-column>
-					     <el-table-column prop="family_member" label="亲属名字（亲属）" width="190" align="center">
-					    </el-table-column>
-					    <el-table-column prop="family_relation" label="与自己关系（亲属）" width="190" align="center">
-					    </el-table-column>
-					     <el-table-column prop="family_job_unit" label="任职单位（亲属）" width="190" align="center">
-					    </el-table-column>
-					      <el-table-column prop="family_position" label="职务（亲属）" width="190" align="center">
-					    </el-table-column>
-					    <el-table-column prop="family_phone" label="联系电话（亲属）" width="190" align="center">
-					    </el-table-column>
-					    <el-table-column prop="resume_enterprise_name" label="企业名称（简历）" width="190" align="center">
-					    </el-table-column>
-					    <el-table-column prop="resume_entry_date" label="任职时间（简历）" width="190" align="center">
-					    </el-table-column>
-					    <el-table-column prop="resume_position" label="任职职务（简历）" width="190" align="center">
-					    </el-table-column>
-					    <el-table-column prop="resume_leader" label="直属上司姓名（简历）" width="190" align="center">
-					    </el-table-column>
-					    <el-table-column prop="resume_leader_phone" label="直属上司联系电话（简历）" width="190" align="center">
-					    </el-table-column>
-					    <el-table-column prop="resume_leaving_reasons" label="离职原因" width="190" align="center">
 					    </el-table-column>
 					    <el-table-column prop="ip" label="登录IP" width="170" header-align="center">
 					    </el-table-column>
@@ -194,6 +110,7 @@
 					    <el-table-column prop="created_at" label="创建时间" width="190" align="center">
 					    </el-table-column>
 					    {$viewDecorator['oprate']}
+
 				    </el-table>
 				</el-col>
 			</el-row>
@@ -250,8 +167,6 @@
 			<!-- 编辑 密码-->
 			<include file="_editPassword" />
 			<!-- / 编辑 -->
-			<!-- 显示详细信息 -->
-			<include file="_detail" />
 		</div>
 
 	</div>
@@ -296,8 +211,6 @@
 		page.setUserRolesUrl="{:U('setUserRoles')}";
 		page.changePasswordUrl="{:U(changePassword)}";
 		window.defaultOption.setDatas({
-			  detailContent:"",
-            detailFormDialog:false,
 			roleList:{:json_encode($roleList)},
 			allRoles:{:json_encode($allRoles)},
 			pathInfo:{folder:'users'},
@@ -310,21 +223,10 @@
 
 			xuploadheader:{"X-Requested-With":"XMLHttpRequest"},
 			groupList:{:json_encode($groupList)},
-			
 			provinces:[],
 			cities:[],
 			districts:[],
-			departments:[],
-			groups:[],
-			roles:[],
 			sexType:{:json_encode($sexType)},
-			marriageType:{:json_encode($marriageType)},
-			allProvinces:{:json_encode($allProvinces)},
-			allCities:{:json_encode($allCities)},
-			allDistricts:{:json_encode($allDistricts)},
-			allGroups:{:json_encode($allGroups)},
-			allDepartments:{:json_encode($allDepartments)},
-			allRoles:{:json_encode($allRoles)},
 			multipleSelection:[],
 
 			passRules:{
@@ -343,12 +245,6 @@
 				mphone:[
                     {validator: checkPhone, trigger: 'blur'},
 				],
-				family_phone:[
-                    {validator: checkPhone, trigger: 'blur'},
-				],
-				resume_leader_phone:[
-                    {validator: checkPhone, trigger: 'blur'},
-				],
 				qq:[
                      {validator: checkQQ, trigger:'blur'},
 				],
@@ -364,12 +260,6 @@
 				mphone:[
 					{validator: checkPhone, trigger: 'blur'},
 				],
-				family_phone:[
-					{validator: checkPhone, trigger: 'blur'},
-				],
-				resume_leader_phone:[
-					{validator: checkPhone, trigger: 'blur'},
-				],
 				qq:[
 					{validator: checkQQ, trigger:'blur'},
 				],
@@ -381,6 +271,7 @@
 			departmentItem:{$departmentItem},
 
 			departments:{:json_encode($departments)}
+
 
 
 		}).setForm('add',{
@@ -396,50 +287,16 @@
 			area_province:"",
 			area_city:"",
 			area_district:"",
-			department_id:"",
 			realname:"",
 			address:"",
 			qq:"",
 			qq_nickname:"",
 			weixin:"",
 			weixin_nikname:"",
-			identifier:"",
 			id_card:"",
 			card_img:"",
 			card_front:"",
-			card_back:"",
-			nation:"",
-			marriage:"",
-			blood_type:"",
-			birth_date:"",
-			university:"",
-			major:"",
-			graduation_date:"",
-			height:"",
-			weight:"",
-			entry_sources:"",
-			entry_manager:"",
-			entry_date:"",
-			completion_date:"",
-			household_home_page:"",
-			household_housemaster:"",
-			household_personal:"",
-			education_certificate:"",
-			degree_diploma:"",
-			practitioner_certificate:"",
-			leaving_certificate:"",
-			family_member:"",
-			family_relation:"",
-			family_job_unit:"",
-			family_position:"",
-			family_phone:"",
-			resume_enterprise_name:"",
-			resume_entry_date:"",
-			resume_position:"",
-			resume_leader:"",
-			resume_leader_phone:"",
-			resume_leaving_reasons:""
-
+			card_back:""
 		}).setForm('edit',{
 			account:"",
 			role_id:"",
@@ -453,49 +310,16 @@
 			area_province:"",
 			area_city:"",
 			area_district:"",
-			department_id:"",
 			realname:"",
 			address:"",
 			qq:"",
 			qq_nickname:"",
 			weixin:"",
 			weixin_nikname:"",
-			identifier:"",
 			id_card:"",
 			card_img:"",
 			card_front:"",
-			card_back:"",
-			nation:"",
-			marriage:0,
-			blood_type:"",
-			birth_date:"",
-			university:"",
-			major:"",
-			graduation_date:"",
-			height:"",
-			weight:"",
-			entry_sources:"",
-			entry_manager:"",
-			entry_date:"",
-			completion_date:"",
-			household_home_page:"",
-			household_housemaster:"",
-			household_personal:"",
-			education_certificate:"",
-			degree_diploma:"",
-			practitioner_certificate:"",
-			leaving_certificate:"",
-			family_member:"",
-			family_relation:"",
-			family_job_unit:"",
-			family_position:"",
-			family_phone:"",
-			resume_enterprise_name:"",
-			resume_entry_date:"",
-			resume_position:"",
-			resume_leader:"",
-			resume_leader_phone:"",
-			resume_leaving_reasons:""
+			card_back:""
 		}).setForm('setRoles',{
 			user_id:0,
 			role_ids:0
@@ -575,24 +399,6 @@
 	       })
 	       vmThis.$set(vmThis, 'districts', cities);
 	    })
-	  }).setVueHook('mounted', function(){
-	    var vmThis = this;
-	    this.$http.get('{:U("Department/getDepartmentsByStatus")}', {params:{status:1} }).then(function(response){
-	      var departments = [];
-	      response.body.forEach(function(currentValue,index){
-	        departments.push({id: currentValue.id, name: currentValue.name});
-	      })
-	      vmThis.$set(vmThis, 'departments', departments);
-	    });
-	  }).setMethod('departmentChange', function(v){
-	    var vmThis = this;
-	    this.$http.get('{:U("Group/getGroupsByDepartmentId")}', {params:{department_id:v} }).then(function(response){
-	      var groups = [];
-	       response.body.forEach(function(currentValue,index){
-	        groups.push({id: currentValue.id, name: currentValue.name});
-	       })
-	       vmThis.$set(vmThis, 'groups', groups);
-	    })
 	  }).setMethod('handleEdit', function(index, row){
 	  		var type ='edit';
 	  		var tar = {};
@@ -643,27 +449,6 @@
 	  }).setMethod('cardBack', function(response, file, fileList){
 			// this.card_back = '__ROOT__'+ response.path;
 			this.addForm.card_back = response.path
-	  }).setMethod('householdHomePage', function(response, file, fileList){
-			// this.card_back = '__ROOT__'+ response.path;
-			this.addForm.household_home_page = response.path
-	  }).setMethod('householdHousemaster', function(response, file, fileList){
-			// this.card_back = '__ROOT__'+ response.path;
-			this.addForm.household_housemaster = response.path
-	  }).setMethod('householdPersonal', function(response, file, fileList){
-			// this.card_back = '__ROOT__'+ response.path;
-			this.addForm.household_personal = response.path
-	  }).setMethod('educationCertificate', function(response, file, fileList){
-			// this.card_back = '__ROOT__'+ response.path;
-			this.addForm.education_certificate = response.path
-	  }).setMethod('degreeDiploma', function(response, file, fileList){
-			// this.card_back = '__ROOT__'+ response.path;
-			this.addForm.degree_diploma = response.path
-	  }).setMethod('practitionerCertificate', function(response, file, fileList){
-			// this.card_back = '__ROOT__'+ response.path;
-			this.addForm.practitioner_certificate = response.path
-	  }).setMethod('leavingCertificate', function(response, file, fileList){
-			// this.card_back = '__ROOT__'+ response.path;
-			this.addForm.leaving_certificate = response.path
 	  }).setMethod('editCardImg', function(response, file, fileList){
 			// this.card_img = '__ROOT__'+ response.path;
 			this.editForm.card_img = response.path
@@ -673,27 +458,6 @@
 	  }).setMethod('editCardBack', function(response, file, fileList){
 			// this.card_back = '__ROOT__'+ response.path;
 			this.editForm.card_back = response.path
-	  }).setMethod('editHouseholdHomePage', function(response, file, fileList){
-			// this.card_back = '__ROOT__'+ response.path;
-			this.editForm.household_home_page = response.path
-	  }).setMethod('editHouseholdHousemaster', function(response, file, fileList){
-			// this.card_back = '__ROOT__'+ response.path;
-			this.editForm.household_housemaster = response.path
-	  }).setMethod('editHouseholdPersonal', function(response, file, fileList){
-			// this.card_back = '__ROOT__'+ response.path;
-			this.editForm.household_personal = response.path
-	  }).setMethod('editEducationCertificate', function(response, file, fileList){
-			// this.card_back = '__ROOT__'+ response.path;
-			this.editForm.education_certificate = response.path
-	  }).setMethod('editDegreeDiploma', function(response, file, fileList){
-			// this.card_back = '__ROOT__'+ response.path;
-			this.editForm.degree_diploma = response.path
-	  }).setMethod('editPractitionerCertificate', function(response, file, fileList){
-			// this.card_back = '__ROOT__'+ response.path;
-			this.editForm.practitioner_certificate = response.path
-	  }).setMethod('editLeavingCertificate', function(response, file, fileList){
-			// this.card_back = '__ROOT__'+ response.path;
-			this.editForm.leaving_certificate = response.path
 	  }).setMethod('beforeAvatarUpload', function(file){
 	  	var  isLt8M = file.size / 1024 / 1024 < 8;
 

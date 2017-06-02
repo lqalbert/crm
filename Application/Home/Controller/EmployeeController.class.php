@@ -174,7 +174,8 @@ class EmployeeController extends CommonController {
 		}
 		
 	}
-	
+
+
 	/**
 	* 获取用户 角色 id
 	*
@@ -286,16 +287,6 @@ class EmployeeController extends CommonController {
 	*/
 	public function edit(){
 		//新方法
-	/*	echo 'ss';
-		print_r($_POST);
-		echo 'gg';
-		print_r(I('post.id'));
-		echo 'kk';*/
-		$_POST["birth_date"] = UTC_to_locale_time($_POST["birth_date"]);
-		$_POST["graduation_date"] = UTC_to_locale_time($_POST["graduation_date"]);
-		$_POST["entry_date"] = UTC_to_locale_time($_POST["entry_date"]);
-		$_POST["completion_date"] = UTC_to_locale_time($_POST["completion_date"]);
-		$_POST["resume_entry_date"] = UTC_to_locale_time($_POST["resume_entry_date"]);
         $re = M('userInfo')->create($_POST, 2);
 		if ($re) {
 			if (M('userInfo')->where(array('user_id'=>I('post.id') ))->save() !== false) {

@@ -18,6 +18,7 @@
             </el-form-item>
           </el-col>
         </el-row>
+        
         <el-row v-if="departmentItem==1">
           <el-col>
             <el-form-item label="所属部门" prop="department_id">
@@ -27,6 +28,8 @@
             </el-form-item>
           </el-col>
         </el-row>
+
+
         <el-row>
           <el-col :span="12">
             <el-form-item label="头像">
@@ -35,7 +38,7 @@
                action="{:U('Upload/index2')}" 
                accept="image/jpeg,image/png,image/jpg,image/gif,image/bmp"
                :on-success="editFormUploadSuccess" 
-               :on-error="editFormUploadError" 
+               :on-error="addFormUploadError" 
                :data="pathInfo"
                :headers="xuploadheader"
                :multiple="false"
@@ -52,121 +55,18 @@
               <el-radio class="radio" v-model="editForm.sex" label="2">女</el-radio>
             </el-form-item>
           </el-col>
-           <el-col :span="12">
-            <el-form-item label="婚否">
-              <el-radio class="radio" v-model="editForm.marriage" label="1">未婚</el-radio>
-              <el-radio class="radio" v-model="editForm.marriage" label="2">已婚</el-radio>
-            </el-form-item>
-          </el-col>
         </el-row>
         <el-row>
-        
-            <el-col :span="12">
-              <el-form-item prop="birth_date" label="出生年月">
-                  <el-date-picker  v-model="editForm.birth_date" placeholder="请选择日期"   >
-                  </el-date-picker>
-                </el-form-item>
-            </el-col>
-             <el-col :span="12">
-              <el-form-item prop="graduation_date" label="毕业时间">
-                  <el-date-picker  v-model="editForm.graduation_date" placeholder="请选择日期"  >
-                  </el-date-picker>
-                </el-form-item>
-            </el-col>
-        </el-row>
-            <el-row>
-            <el-col :span="12">
-              <el-form-item prop="entry_date" label="入职日期">
-                  <el-date-picker  v-model="editForm.entry_date" placeholder="请选择日期"  >
-                  </el-date-picker>
-                </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item prop="completion_date" label="转正日期">
-                  <el-date-picker  v-model="editForm.completion_date" placeholder="请选择日期"  >
-                  </el-date-picker>
-                </el-form-item>
-            </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="省份">
-              <el-select ref="editselect" v-model="editForm.area_province" @change="provinceChange" placeholder="请选择" >
-                 <el-option v-for="province in provinces" :label="province.name"  :value="province.id"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="城市">
-              <el-select v-model="editForm.area_city" @change="cityChange"   placeholder="请选择">
-                <el-option v-for="city in cities" :label="city.name"  :value="city.id"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="区县">
-              <el-select v-model="editForm.area_district" placeholder="请选择">
-                <el-option v-for="dis in districts" :label="dis.name"  :value="dis.id"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="入职来源">
-              <el-select v-model="editForm.entry_sources">
-                <el-option v-for="sources in sourcesList" :label="sources.name" :value="sources.name"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="民族">
-              <el-input v-model="editForm.nation" auto-complete="off"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="毕业院校">
-              <el-input v-model="editForm.university" auto-complete="off"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-           <el-col :span="12">
-              <el-form-item label="血型">
-                <el-input v-model="editForm.blood_type" auto-complete="off"></el-input>
-              </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="所学专业">
-              <el-input v-model="editForm.major" auto-complete="off"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="身高" prop="height">
-              <el-input v-model="editForm.height" auto-complete="off"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="体重">
-              <el-input v-model="editForm.weight" auto-complet="off"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-           <el-col :span="12">
-              <el-form-item label="固话">
-                <el-input v-model="editForm.phone" auto-complete="off"></el-input>
-              </el-form-item>
-          </el-col>
           <el-col :span="12">
             <el-form-item label="手机" prop="mphone">
               <el-input v-model="editForm.mphone"  auto-complete="off"></el-input>
             </el-form-item>
           </el-col>
+         <!--  <el-col :span="12">
+            <el-form-item label="手机" prop="mphone">
+              <el-input v-model="editForm.mphone" auto-complet="off"></el-input>
+            </el-form-item>
+          </el-col> -->
         </el-row>
 
         <el-row>
@@ -194,14 +94,34 @@
           </el-col>
         </el-row>
         <el-row>
-             <el-col :span="12">
+          <el-col :span="12">
             <el-form-item label="身份证号">
               <el-input v-model="editForm.id_card" auto-complet="off"></el-input>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="12">
-            <el-form-item label="入职经办人" prop="entry_manager">
-              <el-input v-model="editForm.entry_manager" auto-complete="off"></el-input>
+            <el-form-item label="省份">
+              <el-select ref="editselect" v-model="editForm.area_province" @change="provinceChange" placeholder="请选择">
+                 <el-option v-for="province in provinces" :label="province.name"  :value="province.id"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="城市">
+              <el-select v-model="editForm.area_city" @change="cityChange"   placeholder="请选择">
+                <el-option v-for="city in cities" :label="city.name"  :value="city.id"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="区县">
+              <el-select v-model="editForm.area_district" placeholder="请选择">
+                <el-option v-for="dis in districts" :label="dis.name"  :value="dis.id"></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -274,215 +194,6 @@
               </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
-          <el-col :span="24">
-             <el-form-item label="户口本首页">
-                  <el-upload
-                   class="household_home_page"
-                   action="{:U('Upload/index2')}" 
-                   accept="image/jpeg,image/png,image/jpg,image/gif,image/bmp"
-                   :on-success="editHouseholdHomePage" 
-                   :data="pathInfo"
-                   :headers="xuploadheader"
-                   :multiple="false"
-                   :show-upload-list="false"
-                   :before-upload="beforeAvatarUpload">
-                   <img v-if='editForm.household_home_page' :src="'__ROOT__' + editForm.household_home_page" alt="" style="max-width: 400px; max-height:234px;">
-                   <i  v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </el-upload>
-              </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-             <el-form-item label="户主页">
-                  <el-upload
-                   class="household_housemaster"
-                   action="{:U('Upload/index2')}" 
-                   accept="image/jpeg,image/png,image/jpg,image/gif,image/bmp"
-                   :on-success="editHouseholdHousemaster" 
-                   :data="pathInfo"
-                   :headers="xuploadheader"
-                   :multiple="false"
-                   :show-upload-list="false"
-                   :before-upload="beforeAvatarUpload">
-                   <img v-if='editForm.household_housemaster' :src="'__ROOT__' + editForm.household_housemaster" alt="" style="max-width: 400px; max-height:234px;">
-                   <i  v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </el-upload>
-              </el-form-item>
-          </el-col>
-        </el-row>
-               <el-row>
-          <el-col :span="24">
-             <el-form-item label="本人页">
-                  <el-upload
-                   class="household_personal"
-                   action="{:U('Upload/index2')}" 
-                   accept="image/jpeg,image/png,image/jpg,image/gif,image/bmp"
-                   :on-success="editHouseholdPersonal" 
-                   :data="pathInfo"
-                   :headers="xuploadheader"
-                   :multiple="false"
-                   :show-upload-list="false"
-                   :before-upload="beforeAvatarUpload">
-                   <img v-if='editForm.household_personal' :src="'__ROOT__' + editForm.household_personal" alt="" style="max-width: 400px; max-height:234px;">
-                   <i  v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </el-upload>
-              </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-             <el-form-item label="学历证">
-                  <el-upload
-                   class="education_certificate"
-                   action="{:U('Upload/index2')}" 
-                   accept="image/jpeg,image/png,image/jpg,image/gif,image/bmp"
-                   :on-success="editEducationCertificate" 
-                   :data="pathInfo"
-                   :headers="xuploadheader"
-                   :multiple="false"
-                   :show-upload-list="false"
-                   :before-upload="beforeAvatarUpload">
-                   <img v-if='editForm.education_certificate' :src="'__ROOT__' + editForm.education_certificate" alt="" style="max-width: 400px; max-height:234px;">
-                   <i  v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </el-upload>
-              </el-form-item>
-          </el-col>
-        </el-row>
-         <el-row>
-          <el-col :span="24">
-             <el-form-item label="学位证">
-                  <el-upload
-                   class="degree_diploma"
-                   action="{:U('Upload/index2')}" 
-                   accept="image/jpeg,image/png,image/jpg,image/gif,image/bmp"
-                   :on-success="editDegreeDiploma" 
-                   :data="pathInfo"
-                   :headers="xuploadheader"
-                   :multiple="false"
-                   :show-upload-list="false"
-                   :before-upload="beforeAvatarUpload">
-                   <img v-if='editForm.degree_diploma' :src="'__ROOT__' + editForm.degree_diploma" alt="" style="max-width: 400px; max-height:234px;">
-                   <i  v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </el-upload>
-              </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-             <el-form-item label="相关从业资格证">
-                  <el-upload
-                   class="practitioner_certificate"
-                   action="{:U('Upload/index2')}" 
-                   accept="image/jpeg,image/png,image/jpg,image/gif,image/bmp"
-                   :on-success="editPractitionerCertificate" 
-                   :data="pathInfo"
-                   :headers="xuploadheader"
-                   :multiple="false"
-                   :show-upload-list="false"
-                   :before-upload="beforeAvatarUpload">
-                   <img v-if='editForm.practitioner_certificate' :src="'__ROOT__' + editForm.practitioner_certificate" alt="" style="max-width: 400px; max-height:234px;">
-                   <i  v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </el-upload>
-              </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row>
-          <el-col :span="24">
-             <el-form-item label="离职证明">
-                  <el-upload
-                   class="leaving_certificate"
-                   action="{:U('Upload/index2')}" 
-                   accept="image/jpeg,image/png,image/jpg,image/gif,image/bmp"
-                   :on-success="editLeavingCertificate" 
-                   :data="pathInfo"
-                   :headers="xuploadheader"
-                   :multiple="false"
-                   :show-upload-list="false"
-                   :before-upload="beforeAvatarUpload">
-                   <img v-if='editForm.leaving_certificate' :src="'__ROOT__' + editForm.leaving_certificate" alt="" style="max-width: 400px; max-height:234px;">
-                   <i  v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </el-upload>
-              </el-form-item>
-          </el-col>
-        </el-row>
-      </el-tab-pane>
-      <el-tab-pane label="家庭主要成员" name="third">
-      <el-row>
-          <el-col :span="12">
-            <el-form-item label="亲属姓名">
-              <el-input v-model="editForm.family_member" auto-complete="off"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="与自己的关系">
-              <el-input v-model="editForm.family_relation" auto-complete="off"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-      <el-row>
-          <el-col :span="12">
-            <el-form-item label="任职单位">
-              <el-input v-model="editForm.family_job_unit" auto-complet="off"></el-input>
-            </el-form-item>
-          </el-col>
-            <el-col :span="12">
-            <el-form-item label="职务">
-              <el-input v-model="editForm.family_position" auto-complete="off"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="联系电话" prop="family_phone">
-              <el-input v-model="editForm.family_phone" auto-complet="off"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-tab-pane>
-       <el-tab-pane label="工作简历" name="four">
-       <el-row>
-            <el-col :span="12">
-              <el-form-item prop="birth_date" label="任职时间">
-                  <el-date-picker  v-model="editForm.resume_entry_date" placeholder="请选择日期"  >
-                  </el-date-picker>
-                </el-form-item>
-            </el-col>
-       </el-row>
-       <el-row>
-          <el-col :span="12">
-            <el-form-item label="企业名称">
-              <el-input v-model="editForm.resume_enterprise_name" auto-complete="off"></el-input>
-            </el-form-item>
-          </el-col>
-            <el-col :span="12">
-            <el-form-item label="任职职务">
-              <el-input v-model="editForm.resume_position" auto-complete="off"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="直属上司姓名">
-              <el-input v-model="editForm.resume_leader" auto-complete="off"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="直属上司联系电话" prop="resume_leader_phone">
-              <el-input v-model="editForm.resume_leader_phone" auto-complet="off"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-form-item label="离职原因">
-          <el-input
-          v-model="editForm.resume_leaving_reasons"
-          type="textarea"
-          :autosize="{ minRows: 2, maxRows: 4}"
-          placeholder="请输入内容">
-        </el-input>
-        </el-form-item>
       </el-tab-pane>
     </el-tabs>
 
