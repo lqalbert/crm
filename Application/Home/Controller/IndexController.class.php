@@ -51,12 +51,14 @@ class IndexController extends CommonController {
 
 	//培训学院 跳转地址
 	public function up(){
-		redirect('http://up.riign.cn/');
+		echo("<script language='javascript'>window.top.location.href='http://up.riign.cn/'</script>");
+		//redirect('http://up.riign.cn/');
 	}
 
 	//素材库地址
 	public function material(){
-		redirect('http://www.riign.com/');
+		echo("<script language='javascript'>window.top.location.href='http://www.riign.com/'</script>");
+		//redirect('http://www.riign.com/');
 	}
 
 

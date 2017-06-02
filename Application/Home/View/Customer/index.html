@@ -630,10 +630,10 @@
         {required: true, message:'请输入详细地址',trigger:'blur'}
       ],
       product_index:[
-        { required: true, message:"请选择产品", type:"number",trigger:'change'}
+        {type:"number", required: true, message:"请选择产品",trigger:'change'}
       ],
       buy_time:[
-        { type: 'date',required: true, message:"请选择够买时间", trigger:'change'}
+        { required: true, message:"请选择够买时间", trigger:'change'}
       ] 
 
     },
@@ -1152,8 +1152,8 @@
     this.$refs.buyForm.validate(function(valid){
       if (valid) {
         if (vmThis.stepActive++ > 1) vmThis.stepActive = 0;
-        vmThis.buyRules.product_index = [{ required: true, message:"请选择产品", type:"number",trigger:'change'}];
-        vmThis.buyRules.buy_time = [{ type: 'date',required: true, message:"请选择够买时间", trigger:'change'}];
+        vmThis.buyRules.product_index = [{ type:"number",required: true, message:"请选择产品",trigger:'change',}];
+        vmThis.buyRules.buy_time = [{ required: true, message:"请选择够买时间", trigger:'change'}];
       } else {
         return false;
       }
@@ -1183,16 +1183,9 @@
     this.buyForm.buy_time = v;
   }).setMethod('getServiceTime',function(v){
     return v != "" ? v+'个月' : '请先选择产品!';
-  }).setMethod('steCondition',function(){
-   // console.log(this.$refs.buyForm);
-    // this.$refs.buyForm.validate(function(valid){
-    //   if (valid) {
-    //     alert('submit!');
-    //   } else {
-    //     alert('error submit!!');
-    //     return false;
-    //   }
-    // });
+  }).setMethod('buyFormSubmit',function(){
+    var myDate=new Date()
+    console.log(myDate.getDate());
   });
 </script>
 
