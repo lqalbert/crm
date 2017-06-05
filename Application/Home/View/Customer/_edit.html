@@ -50,7 +50,7 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="QQ号1">
+            <el-form-item label="QQ号1" prop="qq">
               <el-input v-model="editForm.qq" auto-complete="off" placeholder="请填写QQ号" :disabled="qq_disabled" ></el-input>
             </el-form-item>
           </el-col>
@@ -63,7 +63,7 @@
 
         <el-row>
           <el-col :span="12">
-            <el-form-item label="微信号1" >
+            <el-form-item label="微信号1" prop="weixin">
               <el-input v-model.lazy="editForm.weixin"  auto-complete="off" placeholder="请填写微信号" :disabled="weixin_disabled"></el-input>
             </el-form-item>
           </el-col>
@@ -97,7 +97,7 @@
         
         <el-row>
           <el-col :span="12">
-            <el-form-item label="微信号2" >
+            <el-form-item label="微信号2" prop="weixin2">
               <el-input v-model="editForm.weixin2"  auto-complete="off" placeholder="请填写微信号" :disabled="weixin2_disabled"></el-input>
             </el-form-item>
           </el-col>

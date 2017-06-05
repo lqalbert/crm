@@ -295,15 +295,31 @@ class CustomerController extends CommonController {
         if ($this->M->create($_POST, Model::MODEL_UPDATE) && ($this->M->save() !== false) )  {
             $D_cc  = D('CustomerContact');
             $D_cc->where(array('is_main'=>1, 'cus_id'=>$_POST['id']))->find();
-            $re = $D_cc->edit($D_cc->getMainPost());
+            $mainData = $D_cc->getMainPost();
+            $mainData['id'] = $D_cc->id;
+            $reData = $D_cc->create($mainData);
+            if (!$reData) {
+                $this->M->rollback();
+                $this->error($D_cc->getError());
+            }
+            $re = $D_cc->edit($reData);
             if ($re === false) {
                 $this->M->rollback();
                 $this->error($D_cc->getError());
             }
 
             $data2 = $D_cc->getSecondPost();
+            $row2  = $D_cc->where(array('is_main'=>0, 'cus_id'=>$_POST['id']))->find();
+            if ($row2) {
 
-            if ($D_cc->where(array('is_main'=>0, 'cus_id'=>$_POST['id']))->find()) {
+                $mainData = $D_cc->getMainPost();
+                $data2['id'] = $row2['id'];
+                $reData = $D_cc->create($data2);
+                if (!$reData) {
+                    $this->M->rollback();
+                    $this->error($D_cc->getError());
+                }
+
                 $re = $D_cc->edit($data2, true);
                 if ($re !== false) {
                     $this->M->commit();

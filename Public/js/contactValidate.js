@@ -45,7 +45,7 @@ function QQValidata(rule, value, callback){
 }
 
 function WxValidata(rule, value, callback){
-    var reg = /^[a-zA-Z]{1}[-_a-zA-Z0-9]{5,19}$/;
+    /*var reg = /^[a-zA-Z]{1}[-_a-zA-Z0-9]{5,19}$/;*/
     if (null == value) {
       return callback();
     }
@@ -53,9 +53,9 @@ function WxValidata(rule, value, callback){
       return callback();
     }
 
-    if(!reg.test(value)){
+    /*if(!reg.test(value)){
       return callback('仅支持数字、下划线或减号，以字母开头');
-    }
+    }*/
 
     Vue.http.get(page.checContactUrl, {params:{value:value, type:'weixin'}}).then(function(response){
       callback();

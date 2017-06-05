@@ -524,7 +524,7 @@ class ExcelController extends CommonController {
             $data = getExcelArrayData(".".__ROOT__.$filename);
             $fault = array();
             $total = 0;
-            set_time_limit (120);
+            set_time_limit (180);
 
             foreach ($data as $key => $value) {
 
@@ -548,11 +548,11 @@ class ExcelController extends CommonController {
                     } else {
                         $row = $rows[0];
                         $updateData = array();
-                        if ($value['F'] == $realname  && $row['salesman_id'] != $realname) {
+                        if ($value['F'] == $realname  && $row['salesman_id'] != $user_id) {
                             $updateData['salesman_id'] = $user_id;
                         }
 
-                        if ($value['H'] == $realname  && $row['user_id'] != $realname) {
+                        if ($value['H'] == $realname  && $row['user_id'] != $user_id) {
                             $updateData['user_id'] = $user_id;
                         }
 

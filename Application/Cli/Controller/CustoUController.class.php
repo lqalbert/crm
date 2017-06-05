@@ -24,9 +24,9 @@ class CustoUController extends Controller {
 
     public function index(){
         $offset=I('get.or','asc'); // desc
-        $iTM =  M('import_table',null,'mysql://beta_testcrm:beta2008beta@139.224.40.238/beta_testcrm#utf8');
+        $iTM =  M('import_table');
          
-        $cus =  $iTM->limit("0,20000")->order("id $offset")->select();
+        $cus =  $iTM->where(array('is_fault'=>1))->limit("0,20000")->order("id $offset")->select();
         
         $m = M();
         foreach ($cus as $key => $value) {
@@ -56,6 +56,7 @@ class CustoUController extends Controller {
                     'area_city'=>null,
                     'user_id'=>$user_id,
                     'salesman_id'=>$sales_id,
+                    'service_time'=>time(),
                     /*'help_group_id'=>$group_id,
                     'help_salesman'=> $value['F'],
                     'help_transfer'=> $value['G'],
@@ -78,7 +79,7 @@ class CustoUController extends Controller {
                 if($re){
                     $basicData =  M('customers_basic')->create($basicData);
                     if (!$basicData) {
-                         echo $value['name'],  "失败";
+                         echo $value['phone'],  "失败";
                          echo "\n";
                     }
                     $m->startTrans();
@@ -87,21 +88,22 @@ class CustoUController extends Controller {
                     if (!$cus_id) {
                         $m->rollback();
                         // $this->error("Customer".  M('customers_basic')->getError());
-                        echo $value['name'], "失败.customers_basic";
+                        echo $value['phone'], "失败.customers_basic";
                         echo "\n";
                     } else {
                         $re['cus_id'] = $cus_id;
                         $id = $cc->data($re)->add();
                         if (!$id) {
                             $m->rollback();
-                            echo $value['name'], "失败.cc";
+                            echo $value['phone'], "失败.cc";
                             echo "\n";
                             // $this->error(D('CustomerContact')->getError());
                         }  else {
                             $m->commit();
-                            echo $value['name'], "导入成功";
+
+                            echo $value['phone'], "导入成功";
                             echo "\n";
-                            $iTM->where(array('id'=>$value['id']))->delete();
+                            $iTM->where(array('id'=>$value['id']))->data(array('is_fault'=>0))->save(); //->delete();
                         }
                     }
                 } else {
