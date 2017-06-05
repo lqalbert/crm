@@ -1,0 +1,380 @@
+<extend name="Common:base" />
+<block name="head">
+  <style>
+    .el-table__body tr.current-row>td{
+      background: rgba(157, 195, 232, 0.7);
+    }
+
+    .el-tabs__header{
+      border-top:2px solid #ea4b4b;
+      border-bottom: 1px solid #c51f1f;
+    }
+    .el-dialog .el-tabs__header{
+      border-top:none;
+    }
+    .el-tabs--border-card .el-tabs__item{
+      border-left: none;
+    }
+    .el-tabs--border-card .el-tabs__item.is-active {
+      background-color: #fff;
+      border-right-color: #d3dce6;
+      background: #544b8f;
+      color: #fff;
+    }
+    .el-tabs--border-card .el-tabs__header {
+      background-color: #fff;
+      margin: 0;
+    }
+    .container > .wrapp > .el-row {
+      margin-bottom: 6px;
+    }
+    .el-tabs--border-card .el-tabs__content{
+      padding:0 9px 5px 9px;
+    }
+    .el-card, .el-menu--horizontal .el-submenu>.el-menu, .el-tabs--border-card{
+      box-shadow: none;
+    }
+    .el-tabs--border-card{
+      border: none;
+    }
+    .el-table__body tr.current-row>td{
+      background: rgba(157, 195, 232, 0.7);
+    }
+    .el-tabs__item{
+        font-family: Microsoft YaHei;
+        color:#0d0f10;
+        font-size: 14px;
+    }
+    .el-form-item__content{
+      font-size: 16px;
+    }
+  </style>
+</block>
+<block name="body">
+    <div id="app" class="container">
+        <div class="wrapp" v-show="show" style="display: none">
+            <el-row>
+                <el-col :span="24">
+                    <el-form :inline="true"  ref="searchForm" :model="searchForm">
+                      <el-form-item style="display: none;" prop="id">
+                        <el-input  v-model="searchForm.id"></el-input>
+                      </el-form-item>
+                      
+                      <el-form-item prop="name" >
+                        <el-input placeholder="请输入查询姓名" size="small" v-model="searchForm.name"></el-input>
+                      </el-form-item>
+
+                      <el-form-item prop="queryType" >
+                        <el-tooltip content="根据输入的姓名选择该姓名所属人员的类型" placement="right">
+                          <el-dropdown trigger="click" menu-align="start" @command="setSearchType">
+                            <el-button type="primary" size="small">
+                              {{searchType}}<i class="el-icon-caret-bottom el-icon--right"></i>
+                            </el-button>
+                            <el-dropdown-menu slot="dropdown">
+                              <el-dropdown-item command="cus_name">客户姓名</el-dropdown-item>
+                              <el-dropdown-item command="user_name">跟踪员工</el-dropdown-item>
+                              <el-dropdown-item command="risk_name">风控专员</el-dropdown-item>
+                              <el-dropdown-item command="callback_name">回访专员</el-dropdown-item>
+                            </el-dropdown-menu>
+                          </el-dropdown>
+                        </el-tooltip>
+                      </el-form-item>
+
+                      <el-form-item prop="checkState" >
+                        <el-tooltip content="选择审核状态类型后点击查询" placement="right">
+                          <el-dropdown trigger="click" menu-align="start" @command="setCheckState">
+                            <el-button type="primary" size="small">
+                              {{checkStatus}}<i class="el-icon-caret-bottom el-icon--right"></i>
+                            </el-button>
+                            <el-dropdown-menu slot="dropdown">
+                              <el-dropdown-item command="risk_passing">风控待审核</el-dropdown-item>
+                              <el-dropdown-item command="risk_passed">风控通过</el-dropdown-item>
+                              <el-dropdown-item command="risk_fail">风控未通过</el-dropdown-item>
+                              <el-dropdown-item command="callback_passing">回访待审核</el-dropdown-item>
+                              <el-dropdown-item command="callback_passed">回访通过</el-dropdown-item>
+                              <el-dropdown-item command="callback_fail">回访未通过</el-dropdown-item>
+                              <el-dropdown-item command="passed_fail">风控通过,回访未通过</el-dropdown-item>
+                              <el-dropdown-item command="passed_passed">风控通过,回访通过</el-dropdown-item>
+                              <el-dropdown-item command="fail_passed">风控未通过,回访通过</el-dropdown-item>
+                              <el-dropdown-item command="fail_fail">风控未通过,回访未通过</el-dropdown-item>
+                            </el-dropdown-menu>
+                          </el-dropdown>
+                        </el-tooltip>
+                      </el-form-item>
+
+                      <el-form-item>
+                        <el-tooltip content="选择左边条件后点击查询" placement="right">
+                          <el-button type="primary" icon="search" size="small" @click="loadDatalist" >查询</el-button> 
+                        </el-tooltip>
+
+                        <el-tooltip content="清空搜索框并刷新表格数据" placement="right" style="margin-left:10px;">
+                          <el-button  @click="searchReset" size="small" >重置</el-button>
+                        </el-tooltip>
+
+                        <el-tooltip content="点击刷新当前页面" placement="right" style="margin-left:10px;">
+                          <el-button @click="refresh" size="small" type="danger" >刷新</el-button>
+                        </el-tooltip>
+
+                      </el-form-item>
+                    </el-form>
+                </el-col>   
+            </el-row>
+            <!-- datatables  -->
+            <el-row>
+                <el-col :span="24">
+                    <el-table 
+                    :data="dataList" 
+                    border    
+                    highlight-current-row
+                    v-loading="dataLoad"
+                    element-loading-text="{:L('DATA_LOGIN')}"
+                    @selection-change="handleSelectionChange"
+                    @row-click="trackLog">
+
+<!--                         <el-table-column type="selection"  align="center" width="50">
+                        </el-table-column> -->
+
+                        <el-table-column label="序号"  align="center" width="65" :formatter="handleIndex"  >
+                        </el-table-column>
+
+                        <el-table-column   label="客户姓名" prop="cb_name" header-align="center">
+                        </el-table-column>
+
+                        <el-table-column label="跟踪员工"  >
+                            <template scope="scope">
+                                {{ scope.row.department_name }}-{{ scope.row.realname}}
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column label="商品名称"  prop="product_name" header-align="center" width="170">
+                        </el-table-column>
+
+                        <el-table-column label="商品价格"  prop="product_money" header-align="center">
+                        </el-table-column>
+
+                        <el-table-column label="风控审核" align="center" prop="risk_state">
+                          <template scope="scope">
+                              <el-tag type="primary" v-if="scope.row.risk_state==-1">未通过</el-tag>
+                              <el-tag type="primary" v-else-if="scope.row.risk_state==1">通过</el-tag>
+                              <el-tag type="primary" v-else="scope.row.risk_state==0">待审核</el-tag>
+                          </template>
+                        </el-table-column>
+
+                        <el-table-column label="风控专员" prop="risk_name" header-align="center">
+                        </el-table-column>
+
+                        <el-table-column label="回访审核" align="center" prop="callback_state">
+                          <template scope="scope">
+                              <el-tag v-if="scope.row.callback_state==-1">未通过</el-tag>
+                              <el-tag v-else-if="scope.row.callback_state==1">通过</el-tag>
+                              <el-tag v-else="scope.row.callback_state==0">待审核</el-tag>
+                          </template>
+                        </el-table-column>
+
+                        <el-table-column label="回访专员" prop="callback_name" header-align="center">
+                        </el-table-column>
+
+                        <el-table-column label="购买时间" prop="buy_time" align="center">
+                        </el-table-column>
+
+                        <el-table-column label="操作" align="center">
+                            <template scope="scope">
+                                <el-button size="small" type="info" @click="checkCustomer(scope.row.cus_id)">查看客户</el-button>
+<!--                                 <el-button type="danger" size="small" @click="handleDelete(scope.$index, scope.row)">删除</el-button> -->
+                            </template>
+                        </el-table-column>
+                        
+                        
+                    </el-table>
+                </el-col>
+            </el-row>
+            <!-- / datatables  -->
+            
+
+            <!-- toolbar -->
+            <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
+              <el-col :span="12" :offset="12">
+                  <div class="grid-content bg-purple-light pull-right">
+                    <!-- page -->
+                    <include file="Common:_pagination" />
+                    <!-- / page -->
+                  </div>
+              </el-col>
+            </el-row>
+            <!-- / toolbar -->
+            <div style="margin:5px -10px 5px;">
+                <include file="_downList" />
+            </div>
+        </div>
+
+        <div v-show="show" style="display: none">
+          <!-- 购买信息 -->
+          <include file="_customerInfo" />
+          <!-- 跟踪内容 -->
+          <include file="Customer::_traceContent" />
+
+          <!-- 投诉内容 -->
+          <include file="Customer::_complainContent" />
+
+
+        </div>
+
+
+    </div>
+</block>
+<block name="scripts">
+<script>
+
+    
+  page.getCustomerInfoUrl = "{:U('CommonFindDetail/getCustomerInfo')}"
+
+  window.defaultOption.setDatas({
+
+    multipleSelection: [],
+
+    searchType:'人员类型',
+    checkStatus:'审核状态',
+
+    tableDataOne:[{
+      'user':'',
+      'expense':'',
+      'pdt_id':'',
+      'identity':'',
+      'address':'',
+      'time':''
+    }],
+
+    tableData:[{
+      'name':'',
+      'created_at':'',
+      'type':'',
+      'track_type':'',
+      'content':'',
+      'user':'',
+      'step':''
+    }],
+    tableDataTwo: [{
+      'name':'',
+      'created_at':'',
+      'type':'',
+      'track_type':'',
+      'content':'',
+      'user':''     
+    }],
+  }).setForm('search', {
+    name:"",
+    id:"0",
+    sortFiled:"id",
+    sortWay:"asc",// desc
+    queryType:"",
+    checkState:"",
+  }).setForm('info',{
+    name:"",
+    id_card:"",
+    address:"",
+    contacts:[]
+  },true).setForm('traceContent',{
+    content:'',
+  },true).setForm('complainContent',{
+    content:'',
+  },true).setMethod('viewtraceContents',function(row,event){
+    this.traceContentFormDialog = true;
+    this.traceContentForm.content = row.content;;
+  }).setMethod('handleSelectionChange',function(val){
+    this.multipleSelection = val;
+  }).setMethod('viewComplainContents',function(row,event){
+    this.complainContentFormDialog = true;
+    this.complainContentForm.content = row.content;
+  }).setMethod('trackLog',function(row,event,column){
+    this.$http.post("{:U('CommonFindDetail/trackInfo')}",row).then(function(response){
+      this.tableData = response.body;
+    },function(response){
+      this.$message.error("查询出错啦");
+    });
+
+    this.$http.post("{:U('CommonFindDetail/findDealInfo')}",{user_id:row.cus_id}).then(function(response){
+      this.tableDataOne = response.body;
+    },function(response){
+      this.$message.error("查询出错啦");
+    });
+
+    row.condition = 'service';
+    row.name = row.cb_name;
+    delete row.cb_name;
+    this.$http.post("{:U('CommonFindDetail/complainInfo')}",row).then(function(response){
+      this.tableDataTwo = response.body;
+    },function(response){
+      this.$message.error("查询出错啦");
+    });
+  }).setMethod('checkCustomer',function(id){
+    this.$http.get(page.getCustomerInfoUrl, {params:{id:id}}).then(function(response){
+      this.initObject(this.infoForm, response.body);
+      this.openDialog('info');
+    }, function(response){
+      this.$message.error("出错了");
+    });
+  }).setMethod('setSearchType',function(command){
+    switch (command){
+    case 'cus_name':
+      this.searchType = "客户姓名";
+      this.searchForm.queryType = command;
+      break;
+    case 'user_name':
+      this.searchType = "跟踪员工";
+      this.searchForm.queryType = command;
+      break;
+    case 'risk_name':
+      this.searchType = "风控专员";
+      this.searchForm.queryType = command;
+      break;
+    case 'callback_name':
+      this.searchType = "回访专员";
+      this.searchForm.queryType = command;
+      break;
+    }
+  }).setMethod('setCheckState',function(command){
+    switch (command){
+    case 'risk_passing':
+      this.checkStatus = "风控待审核";
+      this.searchForm.checkState = command;
+      break;
+    case 'risk_passed':
+      this.checkStatus = "风控通过";
+      this.searchForm.checkState = command;
+      break;
+    case 'risk_fail':
+      this.checkStatus = "风控未通过";
+      this.searchForm.checkState = command;
+      break;
+    case 'callback_passing':
+      this.checkStatus = "回访待审核";
+      this.searchForm.checkState = command;
+      break;
+    case 'callback_passed':
+      this.checkStatus = "回访通过";
+      this.searchForm.checkState = command;
+      break;
+    case 'callback_fail':
+      this.checkStatus = "回访未通过";
+      this.searchForm.checkState = command;
+      break;
+    case 'passed_fail':
+      this.checkStatus = "风控通过,回访未通过";
+      this.searchForm.checkState = command;
+      break;
+    case 'passed_passed':
+      this.checkStatus = "风控通过,回访通过";
+      this.searchForm.checkState = command;
+      break;
+    case 'fail_passed':
+      this.checkStatus = "风控未通过,回访通过";
+      this.searchForm.checkState = command;
+      break;
+    case 'fail_fail':
+      this.checkStatus = "风控未通过,回访未通过";
+      this.searchForm.checkState = command;
+      break;
+    }
+  });
+</script>   
+</block>
