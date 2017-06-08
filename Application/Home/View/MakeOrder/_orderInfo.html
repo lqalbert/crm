@@ -1,0 +1,46 @@
+<el-dialog title="客户订单详情" v-model="OrderInfoDialog" >
+  <el-row style="font-size:16px;padding-left:30px;">
+    <el-col :span="12">
+     产品名称：{{orderInfoDetail.product_name}}
+    </el-col>
+    <el-col :span="12">
+     销售金额：{{orderInfoDetail.sale_money}}
+    </el-col>
+  </el-row>
+  <el-row style="font-size:16px;padding-left:30px;">
+    <el-col :span="12">
+     应收金额：{{orderInfoDetail.receivable}}
+    </el-col>
+    <el-col :span="12">
+     实收金额：{{orderInfoDetail.paid_in}}
+    </el-col>
+  </el-row>
+  <el-row style="font-size:16px;padding-left:30px;">
+    <el-col :span="12">
+     客户姓名：{{orderInfoDetail.customer_name}}
+    </el-col>
+    <el-col :span="12">
+     客户手机：{{orderInfoDetail.phone}}
+    </el-col>
+  </el-row>
+  <el-row style="font-size:16px;padding-left:30px;">
+    <el-col :span="12">
+     锁定人员：{{orderInfoDetail.user_name}}
+    </el-col>
+    <el-col :span="12">
+     跟踪人员：{{orderInfoDetail.sale_name}}
+    </el-col>
+  </el-row>
+  <el-row style="font-size:16px;padding-left:30px;">
+    <el-col :span="12">
+     开单人员：{{orderInfoDetail.creater}}
+    </el-col>
+    <el-col :span="12">
+     开单时间：{{orderInfoDetail.created_at}}
+    </el-col>
+  </el-row>
+  <div slot="footer" class="dialog-footer">
+    <el-button type="info" @click="OrderInfoDialog = false">知道了</el-button>
+    
+  </div>
+</el-dialog>

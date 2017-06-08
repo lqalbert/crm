@@ -24,8 +24,9 @@ class MakeOrderController extends CommonController {
 
         $this->dCondition['customers_buy.status'] = I('get.status');
         $this->M->join('user_info as ui on customers_buy.user_id=ui.user_id')
+                ->join('customers_basic as cb on cb.id = customers_buy.cus_id','LEFT')
                 ->join('department_basic as db on ui.department_id = db.id', 'left')
-                ->field('customers_buy.* , ui.realname, db.name as department_name')
+                ->field('customers_buy.* , ui.realname, db.name as department_name,cb.name as cus_name')
                 ->where($this->dCondition);
     }
 
@@ -165,5 +166,30 @@ class MakeOrderController extends CommonController {
 
         return json_encode(array_values($tmp));
     }
+
+    public function getOrderInfo($buy_id){
+        $arr = M('customers_order as co')
+              ->join("user_info as ui on ui.user_id = co.creater_id")->where(array('buy_id'=>$buy_id))
+              ->field('co.sale_money,co.receivable,co.paid_in,co.customer_name,co.phone,
+                co.user_name,co.sale_name,co.creater_id,co.created_at,ui.realname as creater')
+              ->find();
+        //var_dump($arr);die();
+        $this->ajaxReturn($arr);
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

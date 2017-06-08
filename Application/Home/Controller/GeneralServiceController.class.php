@@ -16,9 +16,28 @@ class GeneralServiceController extends CommonController{
     return (I('get.p',1)-1) * $this->pageSize;
   }
 
+  private function getRoleState(){
+      $map = array(
+              'genService',
+              'serviceMaster'
+          );
+      //return $map[$this->getRoleEname()];
+      return $map;
+  }
+
+  private function getRoleVal(){
+    foreach ($this->getRoleState() as $k => $v) {
+      if($this->getRoleEname() == $v){
+        $roleType = $k;
+      }
+    }
+    return $roleType;
+  }
+
 	public function index(){
     $Products= D('Product')->where( array('status'=>array('NEQ', ProductModel::DELETE_STATUS)))->select();
-    $this->assign('Products', $Products);
+    $this->assign('roleTypeVal',  $this->getRoleVal());
+    $this->assign('Products',     $Products);
 		$this->assign('customerType', D('Customer')->getType());
 		$this->assign('steps',        D('CustomerLog')->getSteps());
 		$this->assign('logType',      D('CustomerLog')->getType());
@@ -31,7 +50,8 @@ class GeneralServiceController extends CommonController{
         $count = $this->M->count();
         $this->setQeuryCondition();
         $list =  $this->M->join('left join user_info as ui on customers_basic.user_id=ui.user_id')
-                         ->field('ui.realname,customers_basic.*,cc.*')
+                         ->join('left join user_info as usi on customers_basic.gen_id = usi.user_id')
+                         ->field('ui.realname,usi.realname as gen_name,customers_basic.*,cc.*')
                          ->order("customers_basic.id desc")
                          ->limit($this->getOffset().','.$this->pageSize)
                          ->select();
@@ -46,7 +66,15 @@ class GeneralServiceController extends CommonController{
 	* @return null
 	*/
 	public function setQeuryCondition() {
-        $this->M->where(array('gen_id'=>session('uid')));
+        
+        $roleEname = $this->getRoleEname();
+        $map = $this->getRoleState();
+        if($roleEname == $map[1]){
+          $this->M->where(array('customers_basic.gen_id'=>array('GT',0)));
+        }else{
+          $this->M->where(array('customers_basic.gen_id'=>session('uid')));
+        }
+
         if (I('get.name')) {
             $this->M->where(array("customers_basic.name"=> array('like', I('get.name')."%")));
         }

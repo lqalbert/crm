@@ -92,6 +92,9 @@
             
 		  	    <el-table-column label="{:L('INDEX')}" type="index" width="65"  ></el-table-column>
 
+            <el-table-column v-if="roleTypeVal == 1" prop="gen_name" label="普通客服" align="center" width="150">
+            </el-table-column>
+
 		  	    <el-table-column  header-align="center" prop="name"  label="客户姓名" width="150"></el-table-column>
 
 		  	    <el-table-column  header-align="center" prop="type" label="客户类型"  width="170">
@@ -128,13 +131,14 @@
 	            </template>
 		        </el-table-column>
 
-		        <!-- <el-table-column  prop="last_track" sortable='customer' label="最后跟踪时间" align="center" width="175"></el-table-column>
+		        <el-table-column  prop="last_track" sortable='customer' label="最后跟踪时间" align="center" width="175">
+            </el-table-column>
 
 		        <el-table-column  prop="commission" label="跟踪方比例"  header-align="center" width="110"></el-table-column>
 
 		        <el-table-column  prop="plan" label="计划跟踪时间" align="center" width="175"></el-table-column>
 
-		        <el-table-column  prop="conflict" label="最后冲突时间" align="center" width="175"></el-table-column> -->
+		        <el-table-column  prop="conflict" label="最后冲突时间" align="center" width="175"></el-table-column>
 
 		        <el-table-column  header-align="center"  label="地区" width="135">
 		          <template scope="scope">
@@ -307,6 +311,7 @@
 <script>
   page.addComplainFormUrl = "{:U('CommonHandleLogic/addComplain')}";
   window.defaultOption.setDatas({
+    roleTypeVal:{$roleTypeVal},
   	customerType:{:json_encode($customerType)},
   	sexType:{:json_encode($sexType)},
     products:{:json_encode($Products)},
@@ -394,6 +399,7 @@
   }).setMethod('beforeList', function(data){
      return data;
   }).setMethod('refresh',function(){
+    //alert(this.roleTypeVal);
   	window.location.reload();
   }).setMethod('advanceSearch',function(){
 
@@ -448,9 +454,8 @@
     });
   }).setMethod('trackLog',function(row,event,column){
     this.commonFind("{:U('CommonFindDetail/trackInfo')}",'tableDataOne',row);
-
     this.commonFind("{:U('CommonFindDetail/findDealInfo')}",'tableDataTwo',{user_id:row.cus_id});
-    //this.commonFind("{:U('CommonFindDetail/softwareInfo')}",'tableDataThree',row);
+    this.commonFind("{:U('CommonFindDetail/softwareInfo')}",'tableDataThree',row);
 
     row.condition = 'service';
     this.$http.post("{:U('CommonFindDetail/complainInfo')}",row).then(function(response){

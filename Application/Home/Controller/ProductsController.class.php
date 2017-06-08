@@ -19,12 +19,15 @@ class ProductsController extends CommonController{
     $this->setQeuryCondition();
     $list = $this->M->page(I('get.p',0). ','. $this->pageSize)->order('id desc')->select();
     foreach ($list as $k => $v) {
-      $dep_user=M('department_basic as db')->join('user_info as ui on ui.department_id=db.id')
-               ->where(array('ui.user_id'=>$v['operator_id']))->getField("concat(db.name,'-',ui.realname) as user");
+      $dep_user=M('user_info as ui')->join('department_basic as db on ui.department_id=db.id','LEFT')
+               ->where(array('ui.user_id'=>$v['operator_id']))->getField("IFNULL(concat(db.name,'-',ui.realname),ui.realname ) as user");
       foreach ($dep_user as $key => $val) {
           $list[$k]['operator']=$val['user'];
       }
+
     }
+    
+
     $result = array('list'=>$list, 'count'=>$count);
 		$this->ajaxReturn($result);
 

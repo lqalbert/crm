@@ -663,6 +663,8 @@ class CustomerController extends CommonController {
     }
 
     public function buy(){
+        //UTC时间转化成本地时间日期
+        $_POST['buy_time'] = UTCToLocaleDate($_POST['buy_time']);
         //设成V
         //更新客户资料 如果不一样 id_card address
         //添加购买纪录

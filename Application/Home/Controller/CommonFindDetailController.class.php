@@ -18,8 +18,8 @@ class CommonFindDetailController extends CommonController{
     $arr=M('customers_log')->where(" cus_id = ".I('post.cus_id')." AND (`track_type` <> 11 or `track_type` is null) ")->order('id desc')->select();
     foreach ($arr as $key => $value){
     	$arr[$key]['type']=$type;
-      $dep_user=M('department_basic as db')->join('user_info as ui on ui.department_id=db.id')
-               ->where(array('ui.user_id'=>$value['user_id']))->getField("concat(db.name,'-',ui.realname) as user");
+      $dep_user=M('user_info as ui')->join('left join department_basic as db on ui.department_id=db.id')
+               ->where(array('ui.user_id'=>$value['user_id']))->getField("IFNULL(concat(db.name,'-',ui.realname),ui.realname) as user");
       foreach ($dep_user as $k => $v) {
           $arr[$key]['user']=$v['user'];
       }
