@@ -167,7 +167,9 @@ function getExcelArrayData($filename){
             // 部分有格式的列 getValue会返回原始值 例 如 日期 2016/01/01 原始值 类似于42685.466099537
         }
     }
-   
+    $objReader = null;
+    $obj = null;
+    $worksheet = null;
     return $data;
 }
 

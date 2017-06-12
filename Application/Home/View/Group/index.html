@@ -39,7 +39,8 @@
 					    </el-table-column>
 					    <el-table-column type="index" :formatter="handleIndex" width="65" align="center" label="序号" >
 					    </el-table-column>
-					    
+					    <el-table-column label="部门" align="left" prop="db_name">
+              </el-table-column>
 					    <el-table-column label="团队小组名称" align="left" prop="name">
 					    </el-table-column>
 
@@ -53,7 +54,7 @@
 
 						<el-table-column label="联系人(负责人)" prop="realname">
 					    </el-table-column>
-						<el-table-column label="联系电话" align="center" prop="tel">
+						<el-table-column label="联系电话" align="center" prop="phone">
 					    </el-table-column>
 						<el-table-column label="是否启用" :context="_self" align="center" prop="status">
 					     <template scope="scope">
@@ -128,7 +129,7 @@
                           </el-table-column>
                           <el-table-column prop="type" label="员工类型" width="180" align="center">
                           </el-table-column>
-                          <el-table-column prop="mphone" label="手机" align="center">
+                          <el-table-column prop="phone" label="手机" align="center">
                           </el-table-column>
                           <el-table-column prop="qq"   label="QQ号" align="center">
                            <template scope="scope">

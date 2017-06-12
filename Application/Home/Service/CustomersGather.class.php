@@ -161,8 +161,10 @@ class CustomersGather {
         } else {
             $toDaylist = array();   
         }
+        // statistics_usercustomers.id 改成 statistics_usercustomers.user_id as id
+        // $this->mergeList 这里面会跟据id 合并
         $list2 = M('statistics_usercustomers')->join("user_info as ui on statistics_usercustomers.user_id=ui.user_id")
-                                                ->field($this->getSqlFields().", statistics_usercustomers.id, realname as name")
+                                                ->field($this->getSqlFields().", statistics_usercustomers.user_id as id, realname as name")
                                                 ->where(array('statistics_usercustomers.group_id'=>$group_id ))
                                                 ->where(array('date'=> array(array('EGT',$this->start),array('ELT',$this->end))))
                                                 ->group('statistics_usercustomers.user_id')

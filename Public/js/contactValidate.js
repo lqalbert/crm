@@ -33,6 +33,10 @@ function QQValidata(rule, value, callback){
       return callback();
     }
 
+    if (value.length<5 || value.length>12) {
+      return callback('QQ号长度非法');
+    }
+
     if(!QQReg.test(value)){
       return callback('QQ号必为数字');
     }
@@ -45,7 +49,7 @@ function QQValidata(rule, value, callback){
 }
 
 function WxValidata(rule, value, callback){
-    /*var reg = /^[a-zA-Z]{1}[-_a-zA-Z0-9]{5,19}$/;*/
+    var reg = /^[-_a-zA-Z0-9]{6,20}$/;
     if (null == value) {
       return callback();
     }
@@ -53,9 +57,9 @@ function WxValidata(rule, value, callback){
       return callback();
     }
 
-    /*if(!reg.test(value)){
-      return callback('仅支持数字、下划线或减号，以字母开头');
-    }*/
+    if(!reg.test(value)){
+      return callback('仅支持数字、下划线、字母或减号，');
+    }
 
     Vue.http.get(page.checContactUrl, {params:{value:value, type:'weixin'}}).then(function(response){
       callback();

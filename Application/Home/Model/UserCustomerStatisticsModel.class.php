@@ -26,6 +26,7 @@ class UserCustomerStatisticsModel extends CustomerCountModel {
     */
     public function setTypeCount(){
         $sql = "select count(cb.id) as c , `type` , ui.user_id from customers_basic as cb inner join user_info as ui on cb.salesman_id= ui.user_id where ui.group_id =".$this->group_id." and   cb.status=1 group by cb.type, ui.user_id";
+        
         $re = M()->query($sql);
 
         foreach ($re as  $value) {

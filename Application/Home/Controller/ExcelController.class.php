@@ -140,7 +140,7 @@ class ExcelController extends CommonController {
                         
                         $basicData = array(
                             'name'=> $value['A'],
-                            'type'=> strtoupper(mb_substr($valuee['E'], 0,1)) ,
+                            'type'=> strtoupper(mb_substr($value['E'], 0,1)) ,
                             'area_province'=>null,
                             'area_city'=>null,
                             'help_group_id'=>$group_id,

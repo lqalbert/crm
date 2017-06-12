@@ -153,8 +153,8 @@ class CustomerController extends CommonController {
         if(I('get.ctrl') == 'advance'){   
            $this->advanceSearch();
         }else{  
-            $timeCondition = D('Customer','Logic')->ThreeMonthsAge();
-            $this->M->where(array("customers_basic.created_at"=>array('EGT',$timeCondition)));
+            // $timeCondition = D('Customer','Logic')->ThreeMonthsAge();
+            // $this->M->where(array("customers_basic.created_at"=>array('EGT',$timeCondition)));
 
             $this->setGroupCondition(I('get.group',session('uid')));
 
@@ -194,7 +194,7 @@ class CustomerController extends CommonController {
         $this->setQeuryCondition();
         D('Customer','Logic')->getJoinCondition($this->M);
         if (I('get.sort_field', null)) {
-            $this->M->order(I('get.sort_field')." ". I('get.sort_order'));
+            $this->M->order(I('get.sort_field')." ". I('get.sort_order').", id desc");
         } else {
             $this->M->order('customers_basic.id desc');
         }
@@ -596,7 +596,7 @@ class CustomerController extends CommonController {
 
                 $basicData = array(
                     'name'=> $value['name'],
-                    'type'=> strtoupper(mb_substr($valuee['ctype'], 0,1)) ,
+                    'type'=> strtoupper(mb_substr($value['ctype'], 0,1)) ,
                     'area_province'=>null,
                     'area_city'=>null,
                     'user_id'=>$user_id,
@@ -669,7 +669,7 @@ class CustomerController extends CommonController {
             if ( !session('?'.$type."_".$value."_".HOOK_ADDCONTACT)) {
                 $pa = array('list'=>array($row['cus_id']), 'uid'=>session('uid'), 'type'=>$type, 'value'=> $value);
                 tag(HOOK_ADDCONTACT , $pa);
-                session($type."_".$value."__".HOOK_ADDCONTACT, true);
+                session($type."_".$value."_".HOOK_ADDCONTACT, true);
             }
 
             $this->error("存在");
