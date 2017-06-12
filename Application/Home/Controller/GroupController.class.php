@@ -39,14 +39,15 @@ class GroupController extends CommonController {
 		if (!empty(I('get.name'))) {
 			$map['group_basic.name']=array('like', I('get.name')."%");
 		}
-		$map['status'] = array('GT', GroupModel::DELETE_STATUS);
+		$map['group_basic.status'] = array('GT', GroupModel::DELETE_STATUS);
 
 		$user = new User();
 		$user->getRoleObject();
 		$user->setGroupQueryCondition($this->M);	
 		$this->M->where($map)
 				->join('left join user_info as ui on group_basic.user_id = ui.user_id')
-				->field('group_basic.* , ui.realname as realname, ui.mphone as phone');
+				->join('left join department_basic as db on group_basic.department_id = db.id')
+				->field('group_basic.* , ui.realname as realname, ui.mphone as phone, db.name as db_name');
 	}
 
 	public function _before_add(){

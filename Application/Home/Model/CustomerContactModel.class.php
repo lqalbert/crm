@@ -51,6 +51,8 @@ class CustomerContactModel extends Model {
 
         $this->qq_nickname != $data['qq_nickname'] && $this->qq_nickname=$data['qq_nickname'];
 
+        
+
         return $this->save();
 
     }

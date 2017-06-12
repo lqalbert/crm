@@ -153,8 +153,8 @@ class CustomerController extends CommonController {
         if(I('get.ctrl') == 'advance'){   
            $this->advanceSearch();
         }else{  
-            $timeCondition = D('Customer','Logic')->ThreeMonthsAge();
-            $this->M->where(array("customers_basic.created_at"=>array('EGT',$timeCondition)));
+            // $timeCondition = D('Customer','Logic')->ThreeMonthsAge();
+            // $this->M->where(array("customers_basic.created_at"=>array('EGT',$timeCondition)));
 
             $this->setGroupCondition(I('get.group',session('uid')));
 
@@ -194,7 +194,7 @@ class CustomerController extends CommonController {
         $this->setQeuryCondition();
         D('Customer','Logic')->getJoinCondition($this->M);
         if (I('get.sort_field', null)) {
-            $this->M->order(I('get.sort_field')." ". I('get.sort_order'));
+            $this->M->order(I('get.sort_field')." ". I('get.sort_order').", id desc");
         } else {
             $this->M->order('customers_basic.id desc');
         }
@@ -295,15 +295,31 @@ class CustomerController extends CommonController {
         if ($this->M->create($_POST, Model::MODEL_UPDATE) && ($this->M->save() !== false) )  {
             $D_cc  = D('CustomerContact');
             $D_cc->where(array('is_main'=>1, 'cus_id'=>$_POST['id']))->find();
-            $re = $D_cc->edit($D_cc->getMainPost());
+            $mainData = $D_cc->getMainPost();
+            $mainData['id'] = $D_cc->id;
+            $reData = $D_cc->create($mainData);
+            if (!$reData) {
+                $this->M->rollback();
+                $this->error($D_cc->getError());
+            }
+            $re = $D_cc->edit($reData);
             if ($re === false) {
                 $this->M->rollback();
                 $this->error($D_cc->getError());
             }
 
             $data2 = $D_cc->getSecondPost();
+            $row2  = $D_cc->where(array('is_main'=>0, 'cus_id'=>$_POST['id']))->find();
+            if ($row2) {
 
-            if ($D_cc->where(array('is_main'=>0, 'cus_id'=>$_POST['id']))->find()) {
+                $mainData = $D_cc->getMainPost();
+                $data2['id'] = $row2['id'];
+                $reData = $D_cc->create($data2);
+                if (!$reData) {
+                    $this->M->rollback();
+                    $this->error($D_cc->getError());
+                }
+
                 $re = $D_cc->edit($data2, true);
                 if ($re !== false) {
                     $this->M->commit();
@@ -580,7 +596,7 @@ class CustomerController extends CommonController {
 
                 $basicData = array(
                     'name'=> $value['name'],
-                    'type'=> strtoupper(mb_substr($valuee['ctype'], 0,1)) ,
+                    'type'=> strtoupper(mb_substr($value['ctype'], 0,1)) ,
                     'area_province'=>null,
                     'area_city'=>null,
                     'user_id'=>$user_id,
@@ -653,7 +669,7 @@ class CustomerController extends CommonController {
             if ( !session('?'.$type."_".$value."_".HOOK_ADDCONTACT)) {
                 $pa = array('list'=>array($row['cus_id']), 'uid'=>session('uid'), 'type'=>$type, 'value'=> $value);
                 tag(HOOK_ADDCONTACT , $pa);
-                session($type."_".$value."__".HOOK_ADDCONTACT, true);
+                session($type."_".$value."_".HOOK_ADDCONTACT, true);
             }
 
             $this->error("存在");

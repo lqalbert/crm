@@ -37,7 +37,7 @@ class RbacUserModel extends RelationModel {
         $id_arr = explode(",", $ids);
         $date   = Date('Y-m-d');
         $sql     = "update ".$this->tableName. " set `status`=-1, `account` = CONCAT(`account`, '_$date') where id=%d";
-        $sql2    = "update user_info set  `realname` = CONCAT(`realname`, '_".$date."_离职') where user_id=%d";
+        $sql2    = "update user_info set  `realname` = CONCAT(`realname`, '_".$date."_离职') ,group_id=0 where user_id=%d";
         $this->startTrans();
         
         
@@ -105,6 +105,7 @@ class RbacUserModel extends RelationModel {
   <span>
     <el-button @click="handleEdit($index, row)"  size="small">编辑</el-button>
     <el-button @click="handleSetRoles($index, row)" type="info" size="small">职能</el-button>
+
   </span>
 </el-table-column>
 EOD;

@@ -73,10 +73,16 @@ class CustomersCount {
     }
 
     private function getTodayUsers($group_id){
-        $d = new UserCustomerStatisticsModel($group_id);
-        $n = new CustomersCountToday($d);
-        // $n->setOrder($this->order);
-        return $n->index($this->date);
+       
+        if ($group_id!=0) {
+            $d = new UserCustomerStatisticsModel($group_id);
+            $n = new CustomersCountToday($d);
+            
+            return $n->index($this->date);
+        } else {
+            return array();
+        }
+        
     }
 
 
@@ -195,6 +201,7 @@ class CustomersCount {
     public function getUsers($group_id){
 
         if ($this->range == 'day') {
+
             if ($this->date != $this->today) {
                 $list = M('statistics_usercustomers')->join("user_info as ui on statistics_usercustomers.user_id=ui.user_id")
                                                 ->field($this->getSqlFields().", statistics_usercustomers.id, realname as name")
@@ -203,6 +210,7 @@ class CustomersCount {
                                                 // ->order($this->order)
                                                 ->select();
             }  else {
+
                 $list = $this->getTodayUsers($group_id);
             }
         } else {
@@ -224,11 +232,12 @@ class CustomersCount {
                                                 ->where(array('date'=>array('in', $this->date), 'statistics_usercustomers.group_id'=>$group_id))
                                                 ->group('statistics_usercustomers.user_id')
                                                 // ->order($this->order)
-                                                ->select();
-                                                                
+                                                ->select();  
             $list2 = $this->getTodayUsers($group_id); 
             $list = $this->mergeList($list, $list2);
         }
+        
+        
         return $this->reSort($list);
     }
 }

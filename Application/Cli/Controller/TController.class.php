@@ -1,9 +1,8 @@
 <?php
 namespace Cli\Controller;
 
-
 import('Common.Vender.PhpExcel.PHPExcel',APP_PATH,'.php');
-
+//不要了
 class TController extends \Think\Controller{
 
     private $list=array(

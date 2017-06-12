@@ -41,7 +41,7 @@ class ProductsController extends CommonController{
 			$this->M->where(array("name"=> array('like', "%".I('get.name')."%")));
 		}
 
-    $this->M->where( array('status'=>array('NEQ', ProductModel::DELETE_STATUS) ) );
+    // $this->M->where( array('status'=>array('NEQ', ProductModel::DELETE_STATUS) ) );
 
   }
 

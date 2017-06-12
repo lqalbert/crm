@@ -192,7 +192,7 @@ class DepartmentCustomerController extends CommonController {
              && empty(I('get.track_end')) 
              && strpos(I('get.field'),'transf') === false
              ) {
-            $this->M->setStart('created_at', D('Customer','Logic')->ThreeMonthsAge());
+            // $this->M->setStart('created_at', D('Customer','Logic')->ThreeMonthsAge());
         }
 
         $this->M->join(' customers_contacts as cc on customers_basic.id =  cc.cus_id  and cc.is_main = 1')
@@ -213,7 +213,7 @@ class DepartmentCustomerController extends CommonController {
         $this->setQeuryCondition();
         D('Customer','Logic')->getJoinCondition($this->M);
         if (I('get.sort_field', null)) {
-            $this->M->order(I('get.sort_field')." ". I('get.sort_order'));
+            $this->M->order(I('get.sort_field')." ". I('get.sort_order').", customers_basic.id desc");
         } else {
             $this->M->order('customers_basic.id desc');
         }

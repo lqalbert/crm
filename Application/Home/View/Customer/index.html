@@ -452,6 +452,14 @@
   }
 
   var  editCheckQq = function(rule,value,callback){
+    if (window.defaultVm.editOld.qq != value) {
+      QQValidata(rule,value,callback);
+    } else {
+      callback();
+    }
+  }
+
+  var  editCheckQq2 = function(rule,value,callback){
     if (window.defaultVm.editOld.qq2 != value) {
       QQValidata(rule,value,callback);
     } else {
@@ -460,6 +468,15 @@
   }
 
   var  editCheckWeixin = function(rule,value,callback){
+
+    if (window.defaultVm.editOld.weixin != value) {
+      WxValidata(rule,value,callback);
+    } else {
+      callback();
+    }
+  }
+
+  var  editCheckWeixin2 = function(rule,value,callback){
     if (window.defaultVm.editOld.weixin2 != value) {
       WxValidata(rule,value,callback);
     } else {
@@ -522,19 +539,19 @@
       ],
       qq:[
         { pattern:/^\d+$/, message: 'QQ号必须为数字'},
-        { validator: QQValidata, trigger:'blur' },
+        { validator: editCheckQq, trigger:'blur' },
       ],
       qq2:[
         { pattern:/^\d+$/, message: 'QQ号必须为数字'},
-        { validator: editCheckQq, trigger:'blur' },
+        { validator: editCheckQq2, trigger:'blur' },
       ],
       weixin:[
           { min: 6, max: 20, trigger:'blur', message:"长度为6-20个字符" },
-          { validator: WxValidata, trigger:'blur' },
+          { validator: editCheckWeixin, trigger:'blur' },
       ],
       weixin2:[
           {min: 6, max: 20, trigger:'blur', message:"长度为6-20个字符" },
-          { validator: editCheckWeixin, trigger:'blur' },
+          { validator: editCheckWeixin2, trigger:'blur' },
       ],
 
       type:[
@@ -1190,6 +1207,16 @@
     this.buyForm.buy_time = v;
   }).setMethod('getServiceTime',function(v){
     return v != "" ? v+'个月' : '请先选择产品!';
+  }).setMethod('steCondition',function(){
+   // console.log(this.$refs.buyForm);
+    // this.$refs.buyForm.validate(function(valid){
+    //   if (valid) {
+    //     alert('submit!');
+    //   } else {
+    //     alert('error submit!!');
+    //     return false;
+    //   }
+    // });
   });
 </script>
 
