@@ -48,7 +48,7 @@ class NavController extends CommonController {
 		foreach ($users as $key => $value) {
 			$re[] = array(
 						"href"=> U('Customer/index', array('id'=>$value['id'])),
-						"icon"=>"",
+						"icon"=>"&#xe65a;",
 						'spread'=>false,
 						"title" => $value['realname'],
 					);

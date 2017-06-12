@@ -44,7 +44,7 @@ class SysNoticeModel extends Model{
     * 
     * @return string|array
     */
-    public function getType($index=NULL){
+    public function getType($index){
     	if (!empty($index)) {
     		return $this->NoticeType[$index];
     	} else {

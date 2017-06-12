@@ -42,6 +42,23 @@
       .layui-nav-child{
     	  text-indent: 1em;
       }
+			.layui-tree li a cite {
+			    padding: 0 6px;
+			    font-size: 16px;
+			}
+			.layui-tree li i {
+			    padding-left: 6px;
+			    color: rgba(255,255,255,.5);
+			}
+			.layui-side-scroll {
+			    width: 220px;
+			    height: auto;
+			    overflow-x: hidden;
+			}
+			::-webkit-scrollbar {
+			    width: 0;
+			    height: 10px;
+			}
 		</style>
 		<!--[if lte IE 9]> 
 	    <script>
@@ -105,6 +122,7 @@
 
 			<div class="layui-side layui-bg-black" id="admin-side">
 				<div class="layui-side-scroll" id="admin-navbar-side" lay-filter="side"></div>
+				<ul  id="allUser"></ul>
 			</div>
 
 			<div class="layui-body" style="top: 57px;" id="admin-body">
@@ -147,6 +165,52 @@
 		<script src="__PUBLIC__/js/index.js"></script>
 		<script src="__PUBLIC__/js/jquery.1.11.min.js"></script>
 		<script src="__PUBLIC__/plugins/amaran/jquery.amaran.js"></script>
+		<script>
+		layui.use(['tree', 'layer','tab'], function(){
+		  var layer = layui.layer
+		  ,$ = layui.jquery; 
+		  tab = layui.tab();
+
+		  layui.tree({
+		    elem: '#allUser', //指定元素
+		    click:function(item){
+		       if(item.field === undefined){
+		       	 console.log(item);
+		       }else{
+		       	 tab.tabAdd(item.field);
+		       }
+		    },
+		    nodes: {:json_encode($tree)},
+		  });
+		 
+		  //生成一个模拟树
+		  var createTree = function(node, start){
+		    node = node || function(){
+		      var arr = [];
+		      for(var i = 1; i < 10; i++){
+		        arr.push({
+		          name: i.toString().replace(/(\d)/, '$1$1$1$1$1$1$1$1$1')
+		        });
+		      }
+		      return arr;
+		    }();
+		    start = start || 1;  
+		    layui.each(node, function(index, item){  
+		      if(start < 10 && index < 9){
+		        var child = [
+		          {
+		            name: (1 + index + start).toString().replace(/(\d)/, '$1$1$1$1$1$1$1$1$1')
+		          }
+		        ];
+		        node[index].children = child;
+		        createTree(child, index + start + 1);
+		      }
+		    });
+		    return node;
+		  };
+
+		});
+		</script>
 		<script>
      //console.log(navigator.userAgent);
 

@@ -65,6 +65,13 @@ class TestController extends CommonController {
 		
 	}
 
+  
+  public function testTree(){
+  	return 'sb';
+  }
+
+
+   
 
 
 }

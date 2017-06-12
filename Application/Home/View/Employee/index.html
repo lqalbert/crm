@@ -4,6 +4,17 @@
     .el-table__body tr.current-row>td{
       background: rgba(157, 195, 232, 0.7);
     }
+		#edit .el-dialog__body {
+		    padding: 20px 20px;
+		    color: #475669;
+		    font-size: 14px;
+		}
+		#edit .el-dialog__footer {
+		    padding: 0px 20px 15px;
+		    margin-bottom:30px;
+		    text-align: right;
+		    box-sizing: border-box;
+		}
   </style>
 </block>
 <block name="body">
@@ -307,9 +318,9 @@
 			sex:0,
 			phone:"",
 			mphone:"",
-			area_province:"",
-			area_city:"",
-			area_district:"",
+			area_province:null,
+			area_city:null,
+			area_district:null,
 			realname:"",
 			address:"",
 			qq:"",

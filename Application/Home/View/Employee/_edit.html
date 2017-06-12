@@ -1,4 +1,4 @@
-<el-dialog title="编辑员工" v-model="editFormDialog" @open='beforeEdit'>
+<el-dialog title="编辑员工" id="edit" v-model="editFormDialog" @open='beforeEdit'>
 <!-- <el-form :model="form"> -->
 <el-form ref="editForm" :rules="editRules" :model="editForm" :label-width="dialogLabelWidth">
     
@@ -20,11 +20,17 @@
         </el-row>
         
         <el-row v-if="departmentItem==1">
-          <el-col>
+          <el-col :span="12">
             <el-form-item label="所属部门" prop="department_id">
               <el-select v-model="editForm.department_id">
                 <el-option v-for="department in departments" :label="department.name" :value="department.id"></el-option>
               </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="性别">
+              <el-radio class="radio" v-model="editForm.sex" label="1">男</el-radio>
+              <el-radio class="radio" v-model="editForm.sex" label="2">女</el-radio>
             </el-form-item>
           </el-col>
         </el-row>
@@ -48,25 +54,18 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="性别">
-              <el-radio class="radio" v-model="editForm.sex" label="1">男</el-radio>
-              <el-radio class="radio" v-model="editForm.sex" label="2">女</el-radio>
-            </el-form-item>
-          </el-col>
-        </el-row>
+
         <el-row>
           <el-col :span="12">
             <el-form-item label="手机" prop="mphone">
               <el-input v-model="editForm.mphone"  auto-complete="off"></el-input>
             </el-form-item>
           </el-col>
-         <!--  <el-col :span="12">
-            <el-form-item label="手机" prop="mphone">
-              <el-input v-model="editForm.mphone" auto-complet="off"></el-input>
+          <el-col :span="12">
+            <el-form-item label="固话" prop="phone">
+              <el-input v-model="editForm.phone" auto-complet="off"></el-input>
             </el-form-item>
-          </el-col> -->
+          </el-col>
         </el-row>
 
         <el-row>
@@ -99,6 +98,13 @@
               <el-input v-model="editForm.id_card" auto-complet="off"></el-input>
             </el-form-item>
           </el-col>
+          <el-col :span="12">
+            <el-form-item label="区县">
+              <el-select v-model="editForm.area_district" placeholder="请选择">
+                <el-option v-for="dis in districts" :label="dis.name"  :value="dis.id"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
@@ -116,22 +122,18 @@
             </el-form-item>
           </el-col>
         </el-row>
+
         <el-row>
-          <el-col :span="12">
-            <el-form-item label="区县">
-              <el-select v-model="editForm.area_district" placeholder="请选择">
-                <el-option v-for="dis in districts" :label="dis.name"  :value="dis.id"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
+
         </el-row>
+
         <el-form-item label="住址">
           <el-input
-          v-model="editForm.address"
-          type="textarea"
-          :autosize="{ minRows: 2, maxRows: 4}"
-          placeholder="请输入内容">
-        </el-input>
+            v-model="editForm.address"
+            type="textarea"
+            :autosize="{ minRows: 2, maxRows: 4}"
+            placeholder="请输入内容">
+          </el-input>
         </el-form-item>
       </el-tab-pane>
       <el-tab-pane label="身份证照" name="second">

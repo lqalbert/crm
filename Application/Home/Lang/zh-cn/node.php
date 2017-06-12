@@ -5,5 +5,5 @@ return array(
 	'FIELD_REMARK' => '节点说明',
 	'FIELD_STATUS' => '当前状态',
 
-	'ADD_NEW'   => '添加新节点!'
+	'ADD_NEW'   => '添加新节点！'
 );

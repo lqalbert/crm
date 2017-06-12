@@ -1,12 +1,19 @@
 <?php
 namespace Home\Controller;
-
+use Home\Model\RoleModel;
 class IndexController extends CommonController {
 
 	protected $pageSize = 4;
 
 
 	public function index() {
+		$tree = null;
+    $ename = $this->getRoleEname();
+    if($ename == RoleModel::GOLD){
+    	$treeOb = new TreeController;
+      $tree = $treeOb->setDepartment();
+    }
+    $this->assign('tree',$tree);
 		$this->display ();
 	}
 
@@ -67,7 +74,6 @@ class IndexController extends CommonController {
   	$user_id=session('uid');
   	M('rbac_user')->where(array('id'=>$user_id))->save(array('out_time'=>time()));
   }
-
 
 
 
