@@ -55,10 +55,6 @@ class TreeController extends CommonController{
           'title' => $v['realname'],
           'href' => U('DepartmentCustomer/index', array('id'=>$v['id'])),
 				),
-				//'icon' => "&#xe65a;",
-				//'title' => $v['realname'],
-				//'href' => U('DepartmentCustomer/index', array('id'=>$v['id'])),
-
   		);
   	}
 
@@ -99,49 +95,85 @@ class TreeController extends CommonController{
          ->select();
   }
 
-/*--------------------------------------------------------------------------------------------------*/
-  //先获取所有员工 缓存时间为3分钟
-  protected function getAllUser($field="id,realname,group_id,department_id"){
-  	$m = new RbacUserModel;
-  	return = $m->join('user_info on rbac_user.id = user_info.user_id')->cache(true,180)
-  	         ->where(array('rbac_user.status'=>array('NEQ', RbacUserModel::DELETE_SATUS)))
-  	         ->field($field)->select();
-  	
-  }
-  
-	protected function getAlldep($fields="id,name"){
+/*----------------------------------下面为优化后的部分---------------------------------------------------*/ 
+  //所有部门
+	public function getAlldep($fields="id,name"){
   	return  D('Department')->cache(true,180)->where(array('type'=>DepartmentModel::SALES_DEPARTMENT, 'status'=> array('NEQ', -1)))
   	      ->field($fields)->select();
 	}
-
-  protected function getAllGroup($field="id,name"){
-	  D('Group')->cache(true,180)->where(array('status'=>1));
-	  D('Group')->cache(true,180)->field($field);
-	  D('Group')->cache(true,180)->where(array('status'=>array('NEQ', GroupModel::DELETE_STATUS)));
-	  return D('Group')->cache(true,180)->select();
+  
+  //所有小组
+  public function getAllGroup($field="id,name,department_id"){
+	  return D('Group')->cache(true,180)->where(array('status'=>array('NEQ', GroupModel::DELETE_STATUS)))
+                     ->field($field)->select();
   }
+
+  //先获取所有员工 缓存时间为3分钟
+  public function getAllUser($field="id,realname,group_id,department_id"){
+    $m = new RbacUserModel;
+    return  $m->join('user_info on rbac_user.id = user_info.user_id')->cache(true,180)
+             ->where(array('rbac_user.status'=>array('NEQ', RbacUserModel::DELETE_SATUS)))
+             ->field($field)->select();
+    
+  }
+
 
   public function setMenuDep(){
-
   	$re = array();
-      foreach ($this->getAlldep as $k => $v) {
-      	if($v['id'] == $v['department_id']){
-					$re[] = array(
-		         'name' => $v['name'],
-		         'id' => $v['id'],
-		         'spread' => false,
-		         'children' => $this->setMenuGroup($v['group_id']),
-					);
-      	}
-      }
+    $departments  = $this->getAlldep();
+    //先一次性读取出来保存到其他地方
+    $this->groups = arr_group($this->getAllGroup(), "department_id");
+    $this->users  = arr_group($this->getAllUser(),  "group_id");
+    foreach ($departments as $v) {
+      $re[] = array(
+           'name' => $v['name'],
+           'id' => $v['id'],
+           'spread' => false,
+           'children' => $this->setMenuGroup($v['id']),
+        );
+    }
+    return $re;
+
   }
 
-  public function setMenuGroup($group_id){
+  public function setMenuGroup($department_id){
   	$re = array();
-  	foreach ($this-> as $k => $v) {
-  		# code...
+  	foreach ($this->groups[$department_id] as $k => $v) {
+  		$re[]=array(
+          'name' => $v['name'],
+          'id' => $v['id'],
+          'spread' => false,
+          'children' => $this->setMenuUser($v['id']),
+        );
+    
   	}
+    
+    return $re;
+ 
   }
+
+  public function setMenuUser($group_id){
+    $re = array();
+    foreach ($this->users[$group_id] as $k => $v) {
+      $re[] = array(
+          'name' => $v['realname'],
+          'id' => $v['id'],
+          'field' => array(
+            'icon' => "&#xe65a;",
+            'title' => $v['realname'],
+            //'href' => U('DepartmentCustomer/index', array('id'=>$v['id'])),
+            'href' => U('AllUserCustomerTree/index', array('id'=>$v['id'])),
+          ),
+      );
+
+    }
+    
+    return $re;
+
+  }
+
+
+
 
 
 

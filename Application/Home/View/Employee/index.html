@@ -82,7 +82,7 @@
 					    <el-table-column prop="sex"  label="性别" width="80" align="center">
 						    <template scope="scope">
 					          {{ getType(scope.row.sex, 'sexType') }}
-					        </template>
+					      </template>
 					    </el-table-column>
 					   <el-table-column prop="id_card" label="身份证号" width="192">
 					   </el-table-column>
@@ -103,6 +103,9 @@
 					    <el-table-column prop="weixin_nikname"  label="微信昵称" width="190" align="center">
 					    </el-table-column>
 					    <el-table-column prop="address" label="地址" width="190" align="center">
+								<template scope="scope">
+									{{scope.row.address | handleAddress}}
+								</template>
 					    </el-table-column>
 					    <el-table-column prop="ip" label="登录IP" width="170" header-align="center">
 					    </el-table-column>
@@ -216,6 +219,16 @@
 		      callback();
 		    }
 		  }
+	</script>
+	<script>
+	Vue.filter('handleAddress',function(v){
+		if (v!=null && v.length > 10) {
+			var length = (arguments[1] || 10);
+			return v.substring(0,length)+'......';  
+		} else {
+			return v;
+		}
+	})
 	</script>
 	<script>
 		page.getUserRolesUrl="{:U('getUserRoles')}";
