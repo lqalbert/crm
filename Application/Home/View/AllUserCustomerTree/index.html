@@ -127,7 +127,13 @@
             {{ getType(scope.row.type, 'customerType') }}
           </template>
         </el-table-column>
-        <el-table-column  prop="realname" header-align="center" sortable="custom" label="跟踪员工"  width="170"></el-table-column>
+
+        <el-table-column  prop="realname" header-align="center" sortable="custom" label="跟踪员工"  width="170">
+        </el-table-column>
+
+        <el-table-column  prop="lock_name" header-align="center" sortable="custom" label="锁定员工"  width="170">
+        </el-table-column>
+
         <el-table-column prop="qq" label="QQ号" header-align="center" width="160">
           <template scope="scope">
             {{ scope.row.qq }}

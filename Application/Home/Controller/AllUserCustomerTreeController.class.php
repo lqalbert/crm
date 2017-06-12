@@ -27,51 +27,13 @@ class AllUserCustomerTreeController extends CommonController{
 
 
 
-  private function getGoups(){
-      // 又重复了 赶进度 暂时先这样。后面再优化
-      $depart_id = $this->depart_id;
-      if ($depart_id) {
-          return D("Group")->getAllGoups($depart_id, 'id,name');
-      } else {
-          return array();
-      }
-      
-  }
-
   public function index(){
-      $searchGroup = $this->getGoups();
-      array_unshift($searchGroup, array('id'=>0, 'name'=>'本部门'));
-      
        $D = D('Customer');
        $id = I('get.id', '');
-
        $this->assign('user_id', $id);
        $this->assign('customerType', $D->getType());
        $this->assign('sexType',      $D->getSexType());
-       $this->assign('Quality',      $D->getQuality());
-       $this->assign('Year',         $D->getYear());
-       $this->assign('Income',       $D->getIncome());
-       $this->assign('Sty',          $D->getStyle());
-       $this->assign('Money',        $D->getMoney());
-       $this->assign('Energy',       $D->getEnergy());
-       $this->assign('Problem',      $D->getProblem());
-       $this->assign('Mode',         $D->getMode());
-       $this->assign('Attitude',     $D->getAttitude());
-       $this->assign('Profession',   $D->getProfession());
-       $this->assign('Intention',    $D->getIntention());
-       $this->assign('Source',       $D->getSource());
-       $this->assign('logType',      D('CustomerLog')->getType());
-       $this->assign('steps',        D('CustomerLog')->getSteps());
-       $this->assign('Proportion',   D('CustomerLog')->getProportion());
-       $this->assign('Remind',       D('CustomerLog')->getRemind());
        $this->assign('Departments',  D('Department')->getAllDepartments('id,name'));
-       $this->assign('GoodsType',    D('CustomerLog')->getGoodsType());
-       $this->assign('ServiceCycle', D('CustomerLog')->getServiceCycle());
-
-       $Products= D('Product')->where( array('status'=>array('NEQ', ProductModel::DELETE_STATUS)))->select();
-       $this->assign('Products', $Products);
-       
-       $this->assign('searchGroup', $searchGroup);
        $this->display();
   }
 
@@ -221,105 +183,6 @@ class AllUserCustomerTreeController extends CommonController{
 
 
   /**
-  * 获取小组队员
-  */
-  public function getGroupMemberList(){
-      $id = I('get.id',0);
-      // 重复了 ，赶进度啊
-      if ($id == 0) {
-          $members = M('user_info')->where(array('department_id'=>$this->depart_id, 'user_id'=>array('NEQ', session('uid'))))
-                                   ->field('user_id, realname')
-                                   ->select();
-      } else {
-          $members = M('user_info')->where(array('group_id'=>$id))->field('user_id, realname')->select();
-      }
-
-      $this->ajaxReturn($members);
-  }
-
-  private function getEmploye($id){
-      $sql = "select user_id,group_id from user_info where user_id in (select salesman_id from customers_basic where id=$id)";
-      return M()->query($sql);
-  }
-
-  public function trasnfCustomers(){
-      //var_dump($_POST);die();
-      //比例也应该插入记录表 
-      //但是比例的要求还没提出来 就先不加
-      $d = D('CustomerTransflog');
-      $cus_ids = I('post.cus_id');
-      $rec_dep = I('post.rec_dep');
-      $proportion = I('post.proportion/d');
-      $rec_group = I('post.rec_group');
-      $rec_user = I('post.rec_user');//跟踪方
-      $content = I('post.content');
-      $trackCommisson = D('CustomerLog')->getTrackProportion($proportion);//跟踪方比例
-      $addCommisson = D('CustomerLog')->getAddProportion($proportion);//锁定方比例
-
-      $preDate = array(
-          'from_department_id' => $this->depart_id,
-          'to_department_id'   => $rec_dep,
-          'to_id'              => $rec_user,
-          'to_group_id'        => $rec_group,
-          'content'            => $content,
-          'proportion'         => $proportion,
-      );
-      $d->startTrans();
-      /*$d->rollback();
-      $d->commit();*/
-      foreach ($cus_ids as  $value) {
-          if ( $this->M->setTransf($value) === false) {
-              $d->rollback();
-              $this->error('转让失败');
-          }
-
-          $data = $preDate;
-          $data['cus_id'] = $value;
-          $userInfo = $this->getEmploye( intval($value) );
-          if ($userInfo) {
-              $data['from_id'] = $userInfo[0]['user_id'];//锁定方
-              $data['from_group_id'] = $userInfo[0]['group_id'];
-          } else {
-              $data['from_id']       = 0;
-              $data['from_group_id'] = 0;
-          }
-
-          $re = $d->data($data)->add();
-          if (!$re) {
-              $d->rollback();
-              $this->error('转让失败');
-          }
-          
-          $cusData = array(
-              'salesman_id'=>$rec_user,
-              'commission'=>$trackCommisson,
-              'add_commission'=>$addCommisson
-          );
-          $res = D('Customer')->where(array('id'=>$value))->data($cusData)->save();
-          if ($res===false) {
-              $d->rollback();
-              $this->error('转让失败');
-          }
-          
-
-
-      }
-
-      $d->commit();
-      $this->success('转让成功');
-
-  }
-
-
-  /**
-  * 添加跟踪纪录
-  *
-  */
-public function addTrackLogs(){
-      D('Customer','Logic')->addTrackLogs();
-  }
-
-  /**
   *   获取跟踪信息
   *
   */
@@ -332,79 +195,6 @@ public function trackInfo(){
 	}
 }
 
-   /**
-  * 编辑
-  *
-  * 知道 丑丑丑丑丑丑丑丑丑丑丑丑  
-  * if 超过三层了 fuck customerContact 的逻辑需要重构封装 
-  */
-  public function edit() {
-      $this->M->startTrans();
-      if ($this->M->create($_POST, Model::MODEL_UPDATE) && ($this->M->save() !== false) )  {
-          $D_cc  = D('CustomerContact');
-          $D_cc->where(array('is_main'=>1, 'cus_id'=>$_POST['id']))->find();
-          $re = $D_cc->edit($D_cc->getMainPost());
-          if ($re === false) {
-              $this->M->rollback();
-              $this->error($D_cc->getError());
-          }
-
-          $data2 = $D_cc->getSecondPost();
-
-          if ($D_cc->where(array('is_main'=>0, 'cus_id'=>$_POST['id']))->find()) {
-              $re = $D_cc->edit($data2, true);
-              if ($re !== false) {
-                  $this->M->commit();
-                  $this->success('编辑成功1');
-              } else {
-                   $this->M->rollback();
-                  $this->error($D_cc->getError());
-              }
-          } else {
-              // 
-              if ( empty($data2['phone']) 
-                  && empty($data2['qq']) 
-                  && empty($data2['weixin'])
-                  && empty($data2['qq_nickname'])
-                  && empty($data2['weixin_nickname'])
-                  ) {
-                  $this->M->commit();
-                  $this->success('编辑成功2');
-              }
-              $data2['cus_id'] = $_POST['id'];
-              if ( $D_cc->create($data2) && $D_cc->add()  ) {
-                  $this->M->commit();
-                  $this->success('编辑成功3_');
-              } else {
-                  $this->M->rollback();
-                  $this->error($D_cc->getError());
-              }
-          }
-          $this->M->commit();
-          $this->success('编辑成功4');
-          //$this->success(L('EDIT_SUCCESS'));
-      } else {
-          $this->M->rollback();
-          $this->error($this->M->getError());
-      }
-  }
-
-  /**
-  * 跟据depart_id 获取小组
-  * 直接用 1 这个数字不好啊 ，暂进这样了
-  */
-  public function getDepartGroups(){
-      $id = I('get.id');
-      $re = D('Group')->field('id,name')->where(array('department_id'=>$id, 'status'=>1))->select();
-      $this->ajaxReturn($re);
-  }
-
-  public function getRecUser(){
-      $id = I('get.id');
-      // $re = D('User')->field('user_id,realname as name')->where(array('group_id'=>$id, 'status'=>array))->select();
-      $re = D('User')->getGroupEmployee($id);
-      $this->ajaxReturn($re);
-  }
 
   /**
   *  添加客户真实资料
