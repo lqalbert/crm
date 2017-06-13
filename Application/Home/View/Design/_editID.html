@@ -1,0 +1,120 @@
+<el-dialog title="修改身份信息" v-model="dialogEditID">
+    <!-- <el-form :model="form"> -->
+    <el-form >
+        <el-row>
+            <el-col :span="12">
+                <el-form-item label="员工姓名" :label-width="formLabelWidth">
+                    <el-input  auto-complete="off"></el-input>
+                </el-form-item>
+            </el-col>
+            <el-col :span="12">
+                <el-form-item label="性别" :label-width="formLabelWidth">
+                    <el-radio class="radio"  label="1">男</el-radio>
+                    <el-radio class="radio"  label="2">女</el-radio>
+                </el-form-item>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="12">
+                <el-form-item label="身份证姓名" :label-width="formLabelWidth">
+                    <el-input  auto-complete="off"></el-input>
+                    </el-upload>
+                </el-form-item>
+            </el-col>
+            <el-col :span="12">
+                <el-form-item label="身份证号" :label-width="formLabelWidth">
+                    <el-input  auto-complete="off"></el-input>
+                </el-form-item>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="12">
+                <el-form-item label="上传身份证" :label-width="formLabelWidth">
+                    <el-upload
+                            action="//jsonplaceholder.typicode.com/posts/"
+                            show-upload-list="false">
+                        <el-button size="small" type="primary">点击上传</el-button>
+                </el-form-item>
+            </el-col>
+            <el-col :span="12">
+                <el-form-item label="公历农历" :label-width="formLabelWidth">
+                    <el-select    placeholder="请选择">
+                        <el-option label="测试数据" value="测试数据"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-col>
+        </el-row>
+
+        <el-row>
+            <el-col :span="12">
+                <el-form-item label="生日" :label-width="formLabelWidth">
+                    <el-date-picker
+                            type="date"
+                            placeholder="选择日期">
+                    </el-date-picker>
+                </el-form-item>
+            </el-col>
+            <el-col :span="12">
+                <el-form-item label="紧急联系人" :label-width="formLabelWidth">
+                    <el-input auto-complet="off"></el-input>
+                </el-form-item>
+            </el-col>
+        </el-row>
+
+        <el-row>
+            <el-col :span="12">
+                <el-form-item label="紧急联系人电话" :label-width="formLabelWidth">
+                    <el-input auto-complete="off"></el-input>
+                </el-form-item>
+            </el-col>
+            <el-col :span="12">
+                <el-form-item label="紧急联系人省份" :label-width="formLabelWidth">
+                    <el-select  placeholder="请选择">
+                        <el-option label="测试数据" value="测试数据"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="12">
+                <el-form-item label="紧急联系人城市" :label-width="formLabelWidth">
+                    <el-select  placeholder="请选择">
+                        <el-option label="测试数据" value="测试数据"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-col>
+            <el-col :span="12">
+                <el-form-item label="紧急联系人区县" :label-width="formLabelWidth">
+                    <el-select  placeholder="请选择">
+                        <el-option label="测试数据" value="测试数据"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="12">
+                <el-form-item label="紧急联系人街道" :label-width="formLabelWidth">
+                    <el-select placeholder="请选择">
+                        <el-option label="测试数据" value="测试数据"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-col>
+            <el-col :span="12">
+
+            </el-col>
+        </el-row>
+
+        <el-form-item label="紧急联系人地址" :label-width="formLabelWidth">
+            <el-input
+                    type="textarea"
+                    :autosize="{ minRows: 2, maxRows: 4}"
+                    placeholder="请输入内容">
+            </el-input>
+        </el-form-item>
+
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogEditID = false">取 消</el-button>
+        <el-button type="primary" @click="dialogEditID = false">确 定</el-button>
+    </div>
+</el-dialog>

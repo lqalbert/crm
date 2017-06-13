@@ -1,0 +1,15 @@
+<el-dialog title="设置职能" size="tiny" v-model="setRolesFormDialog" @close="closeSetRole">
+    <!-- <el-form :model="form"> -->
+    <el-form ref="setRolesForm" :model="setRolesForm" :label-width="dialogLabelWidth">
+        <el-form-item label="职能">
+            <el-select v-model="setRolesForm.role_ids">
+                <el-option v-for="role in roleList" :label="role.name" :value="role.id"></el-option>
+            </el-select>
+        </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+        <el-button @click="closeDialog('setRoles')">取 消</el-button>
+        <el-button type="primary" v-show="!setRolesFormSubmitStatus" @click="setRolesFormSubmit(page.setUserRolesUrl, 'setRoles')" >确 定</el-button>
+        <el-button type="primary" v-show="setRolesFormSubmitStatus" :loading="true" >添加中</el-button>
+    </div>
+</el-dialog>

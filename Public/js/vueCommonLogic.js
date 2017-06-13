@@ -214,7 +214,7 @@ function setAdvancedSearch(opt){
 	var fieldName = FormName.getDialog("advancedSearch");;
 	opt.setData(fieldName, false);
 
-	
+
 }
 
 /**
