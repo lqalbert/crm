@@ -122,7 +122,7 @@
 					    <el-table-column prop="sex"  label="性别" width="80" align="center">
 						    <template scope="scope">
 					          {{ getType(scope.row.sex, 'sexType') }}
-					      </template>
+					        </template>
 					    </el-table-column>
 					   <el-table-column prop="id_card" label="身份证号" width="192">
 					   </el-table-column>
@@ -275,7 +275,6 @@
 		page.setUserRolesUrl="{:U('setUserRoles')}";
 		page.changePasswordUrl="{:U(changePassword)}";
 		window.defaultOption.setDatas({
-
 			roleList:{:json_encode($roleList)},
 			allRoles:{:json_encode($allRoles)},
 			pathInfo:{folder:'users'},
@@ -476,7 +475,6 @@
 	        cities.push({id: currentValue.id, name: currentValue.name});
 	       })
 	       vmThis.$set(vmThis, 'cities', cities);
-	      // vmThis.$set(vmThis['addForm'], 'area_city', "");
 	    })
 	  }).setMethod('cityChange', function(v){
 	    var vmThis = this;
