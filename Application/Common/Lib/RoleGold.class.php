@@ -48,7 +48,7 @@ class RoleGold {
     public function getAllBenC($obj){
         //所有的队员
         $captainId = D('Role')->getIdByEname(RoleModel::CAPTAIN);
-        $sql = "select user_info.user_id,realname, group_basic.name as group_name  from user_info left join group_basic on user_info.group_id = group_basic.id  where user_info.role_id <> $captainId";
+        $sql = "select user_info.user_id,realname, group_basic.name as group_name  from user_info left join group_basic on user_info.group_id = group_basic.id inner join rbac_user on user_info.user_id = rbac_user.id  where user_info.role_id <> $captainId" . " and rbac_user.status > -1";
         $members = M()->query($sql);
         return $members;
     }
