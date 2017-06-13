@@ -146,7 +146,7 @@
       ],
       price:[
          { required: true, message: '请产品价格', trigger: 'blur'},
-         { pattern:/\d+/,  message: '请产品价格为数字'}
+         { pattern:/^[1-9]+(\.\d{1,2})?$/,  message: '价格格式为888或888.00'}
       ],
       mark:[
         {required: true, message: '请描述产品', trigger: 'blur'},
@@ -158,7 +158,7 @@
       ],
       price:[
          { required: true, message: '请产品价格', trigger: 'blur'},
-         { pattern:/\d+/,  message: '请产品价格为数字'}
+         { pattern:/^[1-9]+(\.\d{1,2})?$/,  message: '价格格式为888或888.00'}
       ],
       mark:[
         {required: true, message: '请描述产品', trigger: 'blur'},

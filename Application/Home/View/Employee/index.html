@@ -264,14 +264,23 @@
 					{ required: true, message: '请输入账号', trigger: 'blur' }
 				],
 				realname:[
-                    {required: true, message: '请输入员工姓名', trigger: 'blur'},
+          {required: true, message: '请输入员工姓名', trigger: 'blur'},
 				],
 				mphone:[
-                    {validator: checkPhone, trigger: 'blur'},
+          {validator: checkPhone, trigger: 'blur'},
+				],
+				phone:[
+        	{pattern:/^(0\d{2,3}-)\d{7,8}(-(\u8f6c)?\d{1,5})?$/,message: '座机号格式错误',trigger: 'blur'}
 				],
 				qq:[
-                     {validator: checkQQ, trigger:'blur'},
+          {validator: checkQQ, trigger:'blur'},
 				],
+				weixin:[
+          {pattern:/^[a-zA-Z]([a-zA-Z\d_-]){5,19}$/,message: '微信号格式错误',trigger: 'blur'}
+				],
+				id_card:[
+        	{pattern:/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,message:'身份证号格式错误',trigger:'blur'}
+ 				]
 
 			},
 			editRules:{
