@@ -17,11 +17,14 @@ class GroupController extends CommonController {
 		/*$contactList = $user->getRoleGroupContacts();*/
 		//上级组织
 		$org = $user->getRoleGroupOrgs();
+
+		$departments=D('Department')->getAllDepartments('id,name');
+
 		
 		$this->assign("namelist",    $org);
 		$this->assign("contactList", array());
 		// $this->assign("memberList",  $members);
-        $this->assign('departments', D('Department')->getAllDepartments('id,name'));
+        $this->assign('departments', $departments);
 		$this->display();
 	}
 
