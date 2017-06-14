@@ -13,8 +13,15 @@
 			<el-row>
 				<el-col :span="24">
 					<el-form :inline="true" ref="searchForm" :model="searchForm">
-					  <el-form-item prop="name"><el-input  placeholder="请输入团队小组名" v-model="searchForm.name"></el-input>
-					  </el-form-item>
+
+						<el-form-item prop="department_id">
+							<el-select v-model="searchForm.department_id" width="50" placeholder="请选择部门">
+								<el-option v-for="item in departments" :key="item.id" :label="item.name" :value="item.id"></el-option>
+							</el-select>
+						</el-form-item>
+						<el-form-item prop="name">
+							<el-input  placeholder="请输入团队小组名" v-model="searchForm.name"></el-input>
+						</el-form-item>
 					  <el-form-item>
 					    <el-button type="primary" @click="loadDatalist" icon="search">查询</el-button> 
 					    <el-button  @click="searchReset">重置</el-button>
@@ -233,6 +240,8 @@
      tableData:[],
      multipleSelection:[],
      secondSelection:[],
+	  departments:{:json_encode($departments)},
+  groups:""
   }).setForm('add',{
   	id:'',
   	name:"",
@@ -253,6 +262,7 @@
 	name:"",
 	input:"",
 	sortFiled:"id",
+	  department_id:"",
 	sortWay:"asc" // desc
   }).setForm('addMember',{
     id:0,
@@ -260,6 +270,13 @@
     user_ids:[]
   }, true ).setMethod('imgUrl',function(url){
   	 return "__ROOT__/Upload/group/"+url
+  }).setMethod('departmentChange',function () {
+	  var vmThis=this
+	  vmThis.$http.get('{:U("getGroups")}',{params:{department_id:vmThis.searchForm.department_id}}).then(function (response) {
+		  vmThis.groups=response.body
+		  vmThis.searchForm.name=''
+      })
+
   }).setMethod('bigImg',function(url){
   	this.bigimg=true;
   	this.imageUrl=this.imgUrl(url);

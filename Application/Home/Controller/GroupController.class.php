@@ -21,6 +21,7 @@ class GroupController extends CommonController {
 		$this->assign("namelist",    $org);
 		$this->assign("contactList", array());
 		// $this->assign("memberList",  $members);
+        $this->assign('departments', D('Department')->getAllDepartments('id,name'));
 		$this->display();
 	}
 
@@ -39,15 +40,18 @@ class GroupController extends CommonController {
 		if (!empty(I('get.name'))) {
 			$map['group_basic.name']=array('like', I('get.name')."%");
 		}
+		if(isset($_GET['department_id'])){
+            $map['group_basic.department_id']=$_GET['department_id'];
+        }
 		$map['group_basic.status'] = array('GT', GroupModel::DELETE_STATUS);
-
 		$user = new User();
 		$user->getRoleObject();
 		$user->setGroupQueryCondition($this->M);	
 		$this->M->where($map)
 				->join('left join user_info as ui on group_basic.user_id = ui.user_id')
 				->join('left join department_basic as db on group_basic.department_id = db.id')
-				->field('group_basic.* , ui.realname as realname, ui.mphone as phone, db.name as db_name');
+				->field('group_basic.* ,ui.realname as realname, ui.mphone as phone, db.name as db_name');
+
 	}
 
 	public function _before_add(){
@@ -100,6 +104,14 @@ class GroupController extends CommonController {
 
 		$this->ajaxReturn($contactList);
 	}
-
+	/***
+	*获取所选部门所属的团队小组
+     */
+	public function getGroups(){
+	    if(isset($_GET['department_id'])){
+	        $arr=D('Group')->getAllGoups(I('get.department_id'),'id,name');
+	        $this->ajaxReturn($arr);
+        }
+    }
 
 }
