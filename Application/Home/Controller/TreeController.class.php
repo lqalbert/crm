@@ -20,6 +20,7 @@ class TreeController extends CommonController{
 	         'spread' => false,
 	         'children' => $this->setGroup($v['id']),
 	         'title' => $v['id'].$v['name'],
+
 				);
 			}
 		}
@@ -130,6 +131,11 @@ class TreeController extends CommonController{
            'id' => $v['id'],
            'spread' => false,
            'children' => $this->setMenuGroup($v['id']),
+           'field' => array(
+              'icon' => "&#xe65a;",
+              'title' => $v['name'],
+              'href' => U('AllUserCustomerTree/index', array('department_id'=>$v['id'])),
+           ),
         );
     }
     return $re;
@@ -144,6 +150,11 @@ class TreeController extends CommonController{
           'id' => $v['id'],
           'spread' => false,
           'children' => $this->setMenuUser($v['id']),
+           'field' => array(
+              'icon' => "&#xe65a;",
+              'title' => $v['name'],
+              'href' => U('AllUserCustomerTree/index', array('group_id'=>$v['id'])),
+           ),
         );
     
   	}

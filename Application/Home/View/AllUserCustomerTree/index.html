@@ -145,6 +145,7 @@
         <el-table-column prop="qq_nickname" header-align="center" label="QQ昵称"  width="170"></el-table-column>
 
         <el-table-column prop="phone" label="手机" align="center" width="140"></el-table-column>
+        <el-table-column prop="weixin" label="微信号" header-align="center" width="160"></el-table-column>
 
         <el-table-column  prop="last_track" sortable="custom" label="最后跟踪时间" align="center" width="180">
         </el-table-column> 
@@ -332,7 +333,9 @@ Vue.filter("handleString", function(v) {
     qq:"",
     track_start:"",
     track_end:"",
-    user_id:"{$user_id}"
+    user_id:"{$user_id}",
+    department_id:"{$department_id}",
+    group_id:"{$group_id}",
   }).setForm('traceContent',{
     content:'',
   },true).setForm('complainContent',{

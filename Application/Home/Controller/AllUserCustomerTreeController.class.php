@@ -28,13 +28,17 @@ class AllUserCustomerTreeController extends CommonController{
 
 
   public function index(){
-       $D = D('Customer');
-       $id = I('get.id', '');
-       $this->assign('user_id', $id);
-       $this->assign('customerType', $D->getType());
-       $this->assign('sexType',      $D->getSexType());
-       $this->assign('Departments',  D('Department')->getAllDepartments('id,name'));
-       $this->display();
+    $D = D('Customer');
+    $id = I('get.id', '');
+    $department_id = I('get.department_id', '');
+    $group_id = I('get.group_id', '');
+    $this->assign('user_id', $id);
+    $this->assign('department_id', $department_id);
+    $this->assign('group_id', $group_id);
+    $this->assign('customerType', $D->getType());
+    $this->assign('sexType',      $D->getSexType());
+    $this->assign('Departments',  D('Department')->getAllDepartments('id,name'));
+    $this->display();
   }
 
 
@@ -59,51 +63,6 @@ class AllUserCustomerTreeController extends CommonController{
   }
 
 
-  private function setCreatedField(){
-      $start = I('get.start');
-      $end   = I('get.end');
-
-      $this->M->setTimeDiv('created_at', $start, $end); 
-  }
-
-
-  private function setTrackField(){
-      $start = I('get.track_start');
-      $end   = I('get.track_end');
-      $this->M->setTimeDiv('last_track', $start, $end); 
-
-  }
-
-  private function setGroupField(){
-      $group_id = I('get.group',0);
-      switch ($group_id) {
-          case 0:
-              if (empty($this->depart_id)) {
-                  $userIds = array();
-              } else {
-                  $userIds = M("user_info")->where(array('department_id'=>$this->depart_id, 'user_id'=>array('NEQ', session('uid'))))->getField('user_id', true);
-              }
-              break;
-          default:
-              $userIds = M("user_info")->where(array('group_id'=>$group_id))->getField('user_id', true);
-              break;
-      }
-
-      if ($userIds) {
-          $this->M->where(array('salesman_id'=>array('IN', $userIds)));
-      } else {
-          //没有队员 没有组长  
-          $this->M->where(array('salesman_id'=>'-1'));
-      }
-      
-  }
-
-  //单个按钮那个
-  private function setField(){
-      D('Customer','Logic')->getSingleButton('DepCus',$this->M);
-  }
-
-
   /**
   * 设置查询参数
   * 
@@ -113,33 +72,17 @@ class AllUserCustomerTreeController extends CommonController{
       $this->M->setShowCondition();
       //手机 QQ WEIXIN name
       $this->checkLikeField();
-
-      //start 锁定起始时间
-      //end 锁定截止时间
-      $this->setCreatedField();
-
-      //track_start 最后跟踪起始时间
-      //track_end 最后跟踪截止时间
-      $this->setTrackField();
-
-      //类型 
-      if (I('get.type')) {
-          $this->M->where(array('type'=>I('get.type') ));
-      }
-      // $this->M->join('customers_contacts as cc on customers_basic.id = cc.cus_id');
-
-      
+   
       //个人
       if (I('get.user_id')) {
-          $this->M->setSalesman(I('get.user_id'));
-      } else {
-          //部门还是小组
-          if (strpos(I('get.field'),'transf') === false) {
-              $this->setGroupField();
-          }   
+          $this->M->setSalesman(I('get.user_id')); //$this->where(array('salesman_id'=>$value));
+      } else if(I('get.department_id')){
+          $this->M->join('left join user_info as ufo on ufo.user_id=customers_basic.salesman_id')
+          ->where(array('ufo.department_id'=>I('get.department_id')));
+      }else if(I('get.group_id')){
+          $this->M->join('left join user_info as ufo on ufo.user_id=customers_basic.salesman_id')
+          ->where(array('ufo.group_id'=>I('get.group_id')));
       }
-
-      $this->setField();
 
 
       // 如果一个时间都没传
@@ -176,7 +119,7 @@ class AllUserCustomerTreeController extends CommonController{
           $this->M->order('customers_basic.id desc');
       }
       $list = $this->M->page(I('get.p',0). ','. $this->pageSize)->select();
-      
+      //echo M()->getLastSql();die();
       $result = array('list'=>$list, 'count'=>$count);
       return $result;
   }
