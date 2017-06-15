@@ -100,7 +100,7 @@
             
 		  	    <el-table-column label="{:L('INDEX')}" type="index" width="65"  ></el-table-column>
 
-            <el-table-column v-if="roleTypeVal == 1" prop="semaster_name" label="客服主管" align="center" width="150">
+            <el-table-column v-if="roleTypeVal == 1 || roleTypeVal == 2 " prop="semaster_name" label="客服主管" align="center" width="150">
             </el-table-column>
 
 		  	    <el-table-column  header-align="center" prop="name"  label="客户姓名" width="150"></el-table-column>

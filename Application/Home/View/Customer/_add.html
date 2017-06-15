@@ -124,7 +124,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="省份" prop="area_province">
-              <el-select v-model="addForm.area_province" filterable @change="provinceChange" placeholder="请选择省份" >
+              <el-select v-model="addForm.area_province" :filterable="true" @change="provinceChange" placeholder="请选择省份" >
                 <el-option v-for="province in provinces" :label="province.name"  :value="province.id"></el-option>
               </el-select>
             </el-form-item>

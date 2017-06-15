@@ -62,13 +62,13 @@ class TreeController extends CommonController{
   }
 
   //获取所有部门
-  protected function getSalesDepartments($fields="id,name"){
+  public function getSalesDepartments($fields="id,name"){
   	return D('Department')->cache(true)->where(array('type'=>DepartmentModel::SALES_DEPARTMENT, 'status'=> array('NEQ', -1)))
   	      ->field($fields)->select();
   }
 
   //获取所有小组
-  protected function getAllGoups($id=0, $field=null){
+  public function getAllGoups($id=0, $field=null){
 	  D('Group')->cache(true)->where(array('status'=>1));
 
 	  if (is_numeric($id) && $id!=0) {
@@ -87,7 +87,7 @@ class TreeController extends CommonController{
   }
 
   //获取员工
-  protected function getGroupEmployee($group_id, $field="id,account,realname"){
+  public function getGroupEmployee($group_id, $field="id,account,realname"){
     $m = new RbacUserModel;
     return $m->join('user_info on rbac_user.id = user_info.user_id')
          ->cache(true)->where(array('group_id'=>$group_id, 'rbac_user.status'=>array('NEQ', RbacUserModel::DELETE_SATUS)))

@@ -966,7 +966,9 @@
         //console.log(currentValue);
         provinces.push({id: currentValue.id, name: currentValue.name});
       })
+      console.log(vmThis.provinces);
       vmThis.$set(vmThis, 'provinces', provinces);
+      console.log(vmThis.provinces);
     });
 
     //接收单位、员工

@@ -4,6 +4,53 @@
     .el-table__body tr.current-row>td{
       background: rgba(157, 195, 232, 0.7);
     }
+    .el-tabs__header{
+      border-top:2px solid #ea4b4b;
+      border-bottom: 1px solid #c51f1f;
+    }
+    .el-dialog .el-tabs__header{
+      border-top:none;
+    }
+    .el-tabs--border-card .el-tabs__item{
+      border-left: none;
+    }
+    .el-tabs--border-card .el-tabs__item.is-active {
+      background-color: #fff;
+      border-right-color: #d3dce6;
+      background: #544b8f;
+      color: #fff;
+    }
+    .el-tabs--border-card .el-tabs__header {
+      background-color: #fff;
+      margin: 0;
+    }
+    .container > .wrapp > .el-row {
+      margin-bottom: 6px;
+    }
+    .el-tabs--border-card .el-tabs__content{
+      padding:0 9px 5px 9px;
+    }
+    .el-card, .el-menu--horizontal .el-submenu>.el-menu, .el-tabs--border-card{
+      box-shadow: none;
+    }
+    .el-tabs--border-card{
+      border: none;
+    }
+    .el-table__body tr.current-row>td{
+      background: rgba(157, 195, 232, 0.7);
+    }
+    .el-tabs__item{
+        font-family: Microsoft YaHei;
+        color:#0d0f10;
+        font-size: 14px;
+    }
+    .el-form-item__content{
+      font-size: 16px;
+    }
+    .el-dropdown-menu {
+      overflow-y: auto;
+      max-height: 400px;
+    }
   </style>
 </block>
 <block name="body">
@@ -36,22 +83,80 @@
                 </el-date-picker>
             </el-form-item>
             <el-form-item>
+              <el-button size="small" @click="setField('week')">本周</el-button>
+              <el-button size="small" @click="setField('month')">本月</el-button>
+            </el-form-item>
+<!--             <el-form-item>
               <el-select size="small" v-model="searchForm.type" placeholder="请选择">
-                <el-option v-for="item in searchGroup" :label="item.key" :value="item.value">
+                <el-option v-for="(item,index) in searchGroup" :label="item.key" :value="item.value">
                 </el-option>
               </el-select>
-            </el-form-item>
+            </el-form-item> -->
+            <el-tooltip content="选择一项统计类型和起止时间后点击查询可得结果" placement="bottom-start">
+              <el-form-item prop="type">
+                <el-dropdown trigger="click" menu-align="start" @command="allTypeChange">
+                  <el-button type="primary" size="small">
+                    {{allTypeName}}<i class="el-icon-caret-bottom el-icon--right"></i>
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item v-for="item in searchGroup" :command="item.value">{{item.key}}</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </el-form-item>
+            </el-tooltip>
             
+            <el-tooltip content="选择某个部门后点击查询或者继续选择下属小组再查询" placement="bottom-start">
+              <el-form-item prop="department_id">
+                <el-dropdown trigger="click" menu-align="start" @command="depChange">
+                  <el-button type="primary" size="small">
+                    {{depName}}<i class="el-icon-caret-bottom el-icon--right"></i>
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item v-for="dep in deps" :command="dep.id">{{dep.name}}</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </el-form-item>
+            </el-tooltip>
             
+            <el-tooltip content="必须先选择部门方可选择团组后点击查询或者继续选择下属队员再查询" placement="bottom-start">
+              <el-form-item prop="group_id">
+                <el-dropdown trigger="click" menu-align="start" @command="groupChange">
+                  <el-button type="primary" size="small">
+                    {{groupName}}<i class="el-icon-caret-bottom el-icon--right"></i>
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item v-for="group in groups" :command="group.id">{{group.name}}</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </el-form-item>
+            </el-tooltip>
+            
+            <el-tooltip content="必须先选择团组方可选择其下属的员工再点击查询" placement="bottom-start">
+              <el-form-item prop="user_id">
+                <el-dropdown trigger="click" menu-align="start" @command="userChange">
+                  <el-button type="primary" size="small">
+                    {{userName}}<i class="el-icon-caret-bottom el-icon--right"></i>
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item v-for="user in users" :command="user.id">{{user.name}}</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </el-form-item>
+            </el-tooltip>
+
+
             <el-form-item>
-              <el-button type="info" size="small" icon="search" @click="search2">查询</el-button>
+              <el-tooltip content="填写或者选择好筛选条件后点击此按钮" placement="bottom-start">
+                <el-button type="info" size="small" icon="search" @click="search2">查询</el-button>
+              </el-tooltip> 
               <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start">
                 <el-button size="small" @click="resetBack" style="margin-left:10px;">重置</el-button>
               </el-tooltip>
             </el-form-item>
             <el-form-item>
-              <el-button size="small" @click="setField('week')">本周</el-button>
-              <el-button size="small" @click="setField('month')">本月</el-button>
+              <el-tooltip content="点击刷新当前页面" placement="right">
+                <el-button @click="refresh" size="small" type="danger">刷新</el-button>
+              </el-tooltip>
             </el-form-item>
           </el-form>
         </el-col>
@@ -106,7 +211,7 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-table 
+        <el-table v-show="ctrl"
           :data="detailTable" 
           v-loading="detailLoad" 
           border highlight-current-row 
@@ -140,10 +245,11 @@
 <block name="scripts">
 
 <script src="__PUBLIC__/js/calculate.js"></script>
-  <script>
-    window.defaultOption.hooks.delAll('mounted');
+<script>
+  window.defaultOption.hooks.delAll('mounted');
 
-    window.defaultOption.setDatas({
+  window.defaultOption.setDatas({
+      ctrl:false,
       searchGroup:{:json_encode($searchGroup)},
       sortMap:{
         descending:'desc',
@@ -151,32 +257,64 @@
       },
       detailTable:[],
       detailParams:{},
-      detailLoad:false
-    }).setForm('search',{
-      start:'{$start}',
-      end:'{$end}',
-      type:"department"
-    }).setMethod('startDateChange', function(v){
+      detailLoad:false,
+      deps:[],
+      groups:[],
+      users:[],
+      allTypeName:"选择统计类型",
+      depName:"请选择部门",
+      groupName:"请选择小组",
+      userName:"请选择队员",
+  }).setForm('search',{
+      start:"{$start}",
+      end:"{$end}",
+      type:"",
+      department_id:"",
+      group_id:"",
+      user_id:"",
+  }).setMethod('startDateChange', function(v){
       this.searchForm.start = v;
-    }).setMethod('endDateChange', function(v){
+  }).setMethod('endDateChange', function(v){
       this.searchForm.end = v;
-    }).setMethod('setField', function(v){
+  }).setMethod('setField', function(v){
       if (v=='week') {
         this.searchForm.start = showWeekFirstDay();
         this.searchForm.end   = showWeekLastDay();
+
       } else if(v=='month'){
         this.searchForm.start = showMonthFirstDay();
         this.searchForm.end   = showMonthLastDay();
       }
-      
+
+      if(this.searchForm.type != 'user' && this.searchForm.type != ""){
+        this.ctrl = true;
+      }else if(this.searchForm.department_id !="" && this.searchForm.group_id !="" && this.searchForm.user_id ==""){
+        this.ctrl = true;
+      }
+
       this.loadDatalist();
       this.detailReset();
-    }).setVueHook('mounted', function(){
+  }).setVueHook('mounted', function(){
     this.show = true;
     if (!this.readySearch()) {
       this.loadDatalist();
       // this.detailReset();
     }
+
+    var vmThis = this;
+    //部门
+    this.$http.get("{:U('getDeps')}", {params:{status:1} }).then(function(response){
+      var deps = [];
+      response.body.forEach(function(currentValue,index){
+        //console.log(currentValue);
+        deps.push({id: currentValue.id, name: currentValue.name});
+      })
+      vmThis.$set(vmThis, 'deps', deps);
+    });
+
+
+
+
   }).setMethod('search2', function(){
     if (this.readySearch()) {
       this.$message({
@@ -185,12 +323,18 @@
         showClose: true
       })
     } else {
+      if(this.searchForm.type != 'user' && this.searchForm.type != ""){
+        this.ctrl = true;
+      }else if(this.searchForm.department_id !="" && this.searchForm.group_id !="" && this.searchForm.user_id ==""){
+        this.ctrl = true;
+      }
+      this.dataLoad = true;
       this.currentPage = 1;
       this.loadDatalist();
       this.detailReset();
     }
   }).setMethod('readySearch', function(){
-    return this.searchForm.start.length ==0 || this.searchForm.end.length==0;
+      return this.searchForm.start.length ==0 || this.searchForm.end.length==0;
   }).setMethod('resetBack', function(){
       window.location.href="{:U('index')}";
   }).setMethod('sortChange', function(info){
@@ -217,6 +361,13 @@
         this.detailParams['end']   = this.searchForm.end;
         this.detailParams['id']    = row.id;
         this.detailParams['objType']    = map[this.searchForm.type];
+        if(this.searchForm.department_id != "" && this.searchForm.group_id == "" && this.searchForm.type == ""){
+          this.detailParams['objType']    = map['department'];
+        }else if(this.searchForm.group_id != "" && this.searchForm.type == ""){
+          this.detailParams['objType']    = map['group'];
+        }
+
+
 
         this.loadDetailTable();
       }
@@ -245,7 +396,58 @@
         this.detailLoad = false;
         this.$message.error("出错了，请联系开发");
       })
+  }).setMethod('depChange',function(v){
+    this.setDropdownName('deps',v,'depName');
+    this.searchForm.department_id = v;
+
+    var vmThis = this;
+    //小组
+    this.$http.get("{:U('getGroups')}", {params:{department_id:v} }).then(function(response){
+      var groups = [];
+      response.body.forEach(function(currentValue,index){
+        groups.push({id: currentValue.id, name: currentValue.name});
+      })
+      vmThis.$set(vmThis, 'groups', groups);
+    });
+
+  }).setMethod('groupChange',function(v){
+    this.setDropdownName('groups',v,'groupName');
+    this.searchForm.group_id = v;
+
+    var vmThis = this;
+    //员工
+    this.$http.get("{:U('getUsers')}", {params:{group_id:v} }).then(function(response){
+      var users = [];
+      response.body.forEach(function(currentValue,index){
+        users.push({id: currentValue.id, name: currentValue.realname});
+      })
+      vmThis.$set(vmThis, 'users', users);
+    });
+  }).setMethod('userChange',function(v){
+    this.setDropdownName('users',v,'userName');
+    this.searchForm.user_id = v;
+  }).setMethod('allTypeChange',function(v){
+    this.searchForm.type = v;
+    for(var i =0; i< this.searchGroup.length; i++){
+      if(this.searchGroup[i]['value'] == v){
+        this.allTypeName = this.searchGroup[i]['key'];
+      }
+    };
+  }).setMethod('setDropdownName',function(arr,v,name){
+    for(var i = 0; i < this[arr].length; i++){
+      if(this[arr][i]['id'] == v){
+        this[name] = this[arr][i]['name'];
+      }
+    }
   });
+
+
+
+
+
+
+
+
 
 
   function titleCase(str) {
@@ -258,5 +460,5 @@
   }
 
 
-  </script>
+</script>
 </block>

@@ -19,7 +19,8 @@ class ServiceSupervisorController extends CommonController{
   private function getRoleState(){
       $map = array(
               'supService',
-              'serviceMaster'
+              'serviceMaster',
+              'gold'
           );
       //return $map[$this->getRoleEname()];
       return $map;
@@ -95,7 +96,7 @@ class ServiceSupervisorController extends CommonController{
 
     $roleEname = $this->getRoleEname();
     $map = $this->getRoleState();
-    if($roleEname == $map[1]){
+    if(in_array($roleEname,$map)){
       $this->M->where(array('customers_basic.semaster_id'=>array('GT',0)));
     }else{
       $this->M->where(array('customers_basic.semaster_id'=>session('uid')));
