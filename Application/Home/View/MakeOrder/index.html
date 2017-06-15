@@ -14,7 +14,7 @@
                 <el-col :span="12">
                     <el-form :inline="true"  ref="searchForm" :model="searchForm">
                       <el-form-item  >
-                        <el-select v-model="searchForm.status" @change="loadDatalist">
+                        <el-select v-model="searchForm.status" size="small" @change="loadDatalist">
                             <el-option label="未开单" value="0"></el-option>
                             <el-option label="已开单" value="1"></el-option>
                         </el-select>
@@ -25,6 +25,9 @@
                         <el-tooltip content="清空搜索框并刷新表格数据" placement="right">
                          <el-button  @click="searchReset">重置</el-button>
                         </el-tooltip> -->
+                        <el-tooltip content="点击刷新当前页面" placement="right">
+                          <el-button @click="refresh" size="small" type="danger" >刷新</el-button>
+                        </el-tooltip>
                       </el-form-item>
                     </el-form>
                 </el-col>
@@ -48,22 +51,26 @@
                         </el-table-column> -->
                         <el-table-column label="序号"  align="center" width="65" :formatter="handleIndex"  >
                         </el-table-column>
-                        
-                        <el-table-column   label="操作员工"  width="180">
+                         
+                        <el-table-column label="客户姓名" header-align="center" prop="cus_name" width="180">
+                        </el-table-column>
+
+                        <el-table-column   label="操作员工" header-align="center" width="180">
                         <template scope="scope">
                             {{scope.row.department_name}} {{scope.row.realname}}
                         </template>
                         </el-table-column>
-                        <el-table-column label="商品" align="center" prop="product_name" >
+                        <el-table-column label="商品" header-align="center" prop="product_name" >
                         </el-table-column>
-                        <el-table-column label="操作" align="center" >
+                        <el-table-column label="操作" header-align="center" >
                             <template scope="scope">
-                                <el-button size="small" @click="checkCustomer(scope.row.cus_id)">查看客户</el-button>
+                                <el-button size="small" type="info" @click="checkCustomer(scope.row.cus_id)">查看客户</el-button>
                                 <span v-for="button in scope.row.buttons">
-                                    <el-button v-show="button=='order'" size="small" type="primary" @click="setOrders(scope.row)">开单</el-button>
+                                    <el-button v-show="button=='order'" style="margin-left:8px;" size="small" type="primary" @click="setOrders(scope.row)">开单</el-button>
                                     <el-button v-show="button=='distribute'" size="small" type="primary" @click="setDistrute(scope.row)">分配</el-button>
                                     <el-button v-show="button=='account'" size="small" type="primary" @click="setAccount(scope.row)">账号</el-button>
                                 </span>
+                                <el-button size="small" type="info" v-show="scope.row.status == 1" @click="orderInfo(scope.row)">订单详情</el-button>
                             </template>
                         </el-table-column>
 
@@ -101,6 +108,7 @@
         <include file="_order" />
         <include file="_distribute" />
         <include file="_account" />
+        <include file="_orderInfo" />
         <include file="BuyCheck::_customerInfo" />
 
         </div>
@@ -115,6 +123,7 @@
     page.getBuyDetailUrl = "{:U('getBuyDetail')}";
     page.setDistributeUrl = "{:U('setDistribute')}";
     page.setAccountUrl = "{:U('setAccount')}";
+    page.getOrderInfoUrl = "{:U('getOrderInfo')}";
     page.getCustomerInfoUrl = "{:U('CommonFindDetail/getCustomerInfo')}"
 
     window.defaultOption.setDatas({
@@ -130,13 +139,27 @@
                 { required: true, message:"请输入正确的金额", pattern:/^(([1-9]\d{0,9})|0)(\.\d{1,2})?$/ }
             ],
         },
-        seMaster:{:json_encode($seMaster)}
+        seMaster:{:json_encode($seMaster)},
+
+        OrderInfoDialog:false,
+        orderInfoDetail:{
+            product_name:"",
+            sale_money:"",
+            receivable:"",
+            paid_in:"",
+            customer_name:"",
+            phone:"",
+            user_name:"",
+            sale_name:"",
+            creater:"",
+            created_at:"",
+        }
     }).setForm('add', {
        
     }).setForm('edit', {
         
     }).setForm('search', {
-        status:"0"
+        status:"1" //0
     }).setForm('order',{
         buy_id:null,
         product_id:null,
@@ -253,6 +276,17 @@
         }, function(response){
             this.$message.error("出错了");
         });
+    }).setMethod('orderInfo',function(row){
+       this.orderInfoDetail.product_name = row.product_name;
+       var buy_id = row.id;  
+       this.$http.get(page.getOrderInfoUrl, {params:{buy_id:buy_id}}).then(function(response){
+          this.initObject(this.orderInfoDetail, response.body);
+          this.orderInfoDetail.product_name = row.product_name;
+          console.log(this.orderInfoDetail);
+          this.OrderInfoDialog = true;
+       }, function(response){
+          this.$message.error("出错了");
+       });
     });
 </script>
 </block>

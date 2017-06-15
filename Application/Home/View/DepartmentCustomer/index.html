@@ -227,7 +227,7 @@
 
         <el-table-column prop="phone" label="手机" align="center" width="140"></el-table-column>
 
-        <el-table-column  prop="last_track" sortable="custom" label="最后跟踪时间" align="center" width="175">
+        <el-table-column  prop="last_track" sortable="custom" label="最后跟踪时间" align="center" width="180">
         </el-table-column> 
         <el-table-column  prop="commission" label="跟踪方比例" width="110">
           <template scope="scope">
@@ -239,8 +239,8 @@
             {{ scope.row.add_commission+"%" }}
           </template>
         </el-table-column>
-        <el-table-column  prop="plan" label="计划跟踪时间" align="center" width="175"></el-table-column>
-        <el-table-column  prop="conflict" label="最后冲突时间" align="center" width="175"></el-table-column>
+        <el-table-column  prop="plan" label="计划跟踪时间" align="center" width="180"></el-table-column>
+        <el-table-column  prop="conflict" label="最后冲突时间" align="center" width="180"></el-table-column>
         <el-table-column  label="地区" header-align="center" width="135">
           <template scope="scope">
             {{ scope.row.province_name+"-"+scope.row.city_name }}

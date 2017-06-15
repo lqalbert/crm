@@ -1,12 +1,24 @@
 <?php
 namespace Home\Controller;
-
+use Home\Model\RoleModel;
 class IndexController extends CommonController {
 
 	protected $pageSize = 4;
+	protected $tree = null;
+	protected $navbar = null;
 
 
 	public function index() {
+    $ename = $this->getRoleEname();
+    if($ename == RoleModel::GOLD){
+    	$treeOb = new TreeController;
+      $this->tree = $treeOb->setMenuDep();
+      $this->navbar = $this->decoratorView();
+    }
+
+    //var_dump($tree);die();
+    $this->assign('tree',$this->tree);
+    $this->assign('navbar',$this->navbar);
 		$this->display ();
 	}
 
@@ -68,8 +80,27 @@ class IndexController extends CommonController {
   	M('rbac_user')->where(array('id'=>$user_id))->save(array('out_time'=>time()));
   }
 
+  
+  public function decoratorView(){
+  	$navbar = <<<'NAV'
+<div class="layui-side-scroll" id="admin-navbar-side" lay-filter="side">
+	<ul class="layui-nav layui-nav-tree beg-navbar">
+		<li class="layui-nav-item">
+			<a href="javascript:;">
+				<i class="layui-icon" data-icon="&#xe640;">&#xe640;</i>
+				<cite>员工客户</cite>
+				<span class="layui-nav-more"></span>
+			</a>
+			<dl class="layui-nav-child">
+				<ul id="allUser"></ul>
+			</dl>
+		</li>
+	</ul>
+</div>
+NAV;
+  	return $navbar;
 
-
+  }
 
 
 

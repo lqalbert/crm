@@ -64,6 +64,7 @@ abstract class CustomerCountModel extends \Think\Model{
     */
     public function setDate($date){
         $timestamp = strtotime($date);
+        
         $this->date['start'] = date("Y-m-d H:i:s", strtotime('-1 second', $timestamp));
         $this->date['end']   = date("Y-m-d H:i:s", strtotime('+1 day', $timestamp));
     }
@@ -216,10 +217,12 @@ abstract class CustomerCountModel extends \Think\Model{
     */
     public function getAllNum($id){
         $tmp = 0;
+       
         foreach ($this->customerTypes as $value) {
             $tmp += (int)$this->getATypeCount($value.$id);
-
+            
         }
+        
         return $tmp;
     }
 

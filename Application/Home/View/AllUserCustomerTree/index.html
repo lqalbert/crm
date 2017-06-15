@@ -1,0 +1,419 @@
+<extend name="Common:base" />
+<block name="head">
+  <style>
+    .superaddition{
+      height:44px;
+      width:400px;
+      position: relative;
+      top : 12px;
+      z-index: 50;
+      left:90px;
+    }
+    .el-tabs__header{
+      border-top:2px solid #ea4b4b;
+      border-bottom: 1px solid #c51f1f;
+    }
+    .el-dialog .el-tabs__header{
+      border-top:none;
+    }
+    .el-tabs--border-card .el-tabs__item{
+      border-left: none;
+    }
+    .el-tabs--border-card .el-tabs__item.is-active {
+      background-color: #fff;
+      border-right-color: #d3dce6;
+      background: #544b8f;
+      color: #fff;
+    }
+    .el-tabs--border-card .el-tabs__header {
+      background-color: #fff;
+      margin: 0;
+    }
+    .container > .wrapp > .a > .el-row {
+      margin-bottom: 6px;
+    }
+    .el-tabs--border-card .el-tabs__content{
+      padding:0 9px 5px 9px;
+    }
+    .el-card, .el-menu--horizontal .el-submenu>.el-menu, .el-tabs--border-card{
+      box-shadow: none;
+    }
+    .el-tabs--border-card{
+      border: none;
+    }
+    .el-table__body tr.current-row>td{
+      background: rgba(157, 195, 232, 0.7);
+    }
+    .el-dialog__body {
+      padding: 20px 20px;
+      color: #475669;
+      font-size: 14px;
+    }
+    .on{
+      opacity:0.5;
+    }
+    .el-tabs__item{
+      font-family: Microsoft YaHei;
+      color:#0d0f10;
+      font-size: 14px;
+    }
+  </style>
+</block>
+<block name="body">
+  
+
+<div id="app" class="container">
+
+<div class="wrapp" id="appx" v-show="show" style="display: none;">
+  <div class="a" id="app3">
+  <el-row>
+    <el-col :span="24">
+        <el-form :inline="true"  label-position="left" ref="searchForm" :model="searchForm">
+
+          <el-form-item prop="field" v-show="false">
+            <input type="hidden" v-model="searchForm.field">
+          </el-form-item>
+
+          <el-form-item prop="name" >
+            <el-input v-model="searchForm.name" size="small" placeholder="客户姓名"></el-input>
+          </el-form-item>
+
+          <el-form-item prop="phone" >
+            <el-input v-model="searchForm.phone" size="small" placeholder="客户手机号"></el-input>
+          </el-form-item>
+
+          <el-form-item prop="qq" >
+            <el-input v-model="searchForm.qq" size="small" placeholder="客户qq号"></el-input>
+          </el-form-item>
+
+          <el-form-item prop="weixin" >
+            <el-input v-model="searchForm.weixin" size="small" placeholder="客户微信号"></el-input>
+          </el-form-item>
+
+          <el-form-item>
+            <el-button type="info"  size="small" icon="search" @click="searchFunction">查询</el-button> 
+            <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start">
+              <el-button size="small" @click="searchReset" style="margin-left:10px;">重置</el-button>
+            </el-tooltip>
+
+            <el-tooltip content="点击刷新当前页面" placement="right">
+              <el-button size="small" @click="refresh" type="danger" style="margin-left:10px;">刷新</el-button>
+            </el-tooltip>
+          </el-form-item>
+
+        </el-form>
+    </el-col>
+  </el-row>
+  <el-row>
+    <el-col :span="24">
+        <el-table 
+      :data="dataList" 
+      border  
+      v-loading="dataLoad" 
+      element-loading-text="{:L('DATA_LOGIN')}"
+      highlight-current-row
+      @selection-change="handleSelectionChange"
+      @row-click="trackLog"  ref="select" 
+      @sort-change="sortChange">
+
+        <el-table-column type="selection"  width="50" ></el-table-column>
+
+        <el-table-column   label="{:L('INDEX')}"   :formatter="handleIndex" width="65"  ></el-table-column>
+
+        <el-table-column prop="name" header-align="center" label="客户姓名" width="140" ></el-table-column>
+
+        <el-table-column prop="type" header-align="center" sortable="custom" label="客户类型" width="170" >
+          <template scope="scope">
+            {{ getType(scope.row.type, 'customerType') }}
+          </template>
+        </el-table-column>
+
+        <el-table-column  prop="realname" header-align="center" sortable="custom" label="跟踪员工"  width="170">
+        </el-table-column>
+
+        <el-table-column  prop="lock_name" header-align="center" sortable="custom" label="锁定员工"  width="170">
+        </el-table-column>
+
+        <el-table-column prop="qq" label="QQ号" header-align="center" width="160">
+          <template scope="scope">
+            {{ scope.row.qq }}
+            <a v-if="scope.row.qq" :href="getTenct(scope.row.qq)">
+              <img width="20"  src="__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg" alt="">
+            </a>
+          </template>
+        </el-table-column>
+        <el-table-column prop="qq_nickname" header-align="center" label="QQ昵称"  width="170"></el-table-column>
+
+        <el-table-column prop="phone" label="手机" align="center" width="140"></el-table-column>
+
+        <el-table-column  prop="last_track" sortable="custom" label="最后跟踪时间" align="center" width="180">
+        </el-table-column> 
+        <el-table-column  prop="commission" label="跟踪方比例" width="110">
+          <template scope="scope">
+            {{ scope.row.commission+"%" }}
+          </template>
+        </el-table-column>
+        <el-table-column  prop="add_commission" label="锁定方比例" width="110">
+          <template scope="scope">
+            {{ scope.row.add_commission+"%" }}
+          </template>
+        </el-table-column>
+        <el-table-column  prop="plan" label="计划跟踪时间" align="center" width="180"></el-table-column>
+        <el-table-column  prop="conflict" label="最后冲突时间" align="center" width="180"></el-table-column>
+        <el-table-column  label="地区" header-align="center" width="135">
+          <template scope="scope">
+            {{ scope.row.province_name+"-"+scope.row.city_name }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="sex" header-align="center" label="性别" width="80" >
+          <template scope="scope">
+            {{ getType(scope.row.sex, 'sexType') }}
+          </template>
+        </el-table-column>
+
+      </el-table>
+    </el-col>
+  </el-row>
+
+  <!-- toolbar -->
+  <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
+    <el-col :span="12">
+      <div class="grid-content bg-purple">
+        <span class="wrapper">
+
+        </span>
+      </div>
+    </el-col>
+    <el-col :span="12" :offset="12">
+      <div class="grid-content bg-purple-light pull-right">
+
+        <!-- page -->
+        <include file="Common:_pagination" />
+        <!-- / page -->
+        
+      </div>
+    </el-col>
+
+  </el-row>
+  </div>
+
+  <div id="app2" class="b" style="margin:5px -10px 5px;">
+    <!--<div class="superaddition">
+
+    </div>-->
+    <!--style="position: relative;top:-40px;"-->
+    <el-row >
+     <el-col :span="24">
+        <el-tabs type="border-card">
+          <el-tab-pane label="跟踪记录">
+            <el-table :data="tableData"  empty-text="请点击客户显示跟踪信息" border style="width: 100%" 
+            @row-dblclick="viewtraceContents">
+              <el-table-column prop="user"  label="操作员工" header-align="center">
+              </el-table-column>
+              <el-table-column prop="type"  label="客户类型(当前)" header-align="center">
+             
+              </el-table-column>
+              <el-table-column prop="name"  label="客户姓名" header-align="center">
+              </el-table-column>
+              <el-table-column label="跟踪内容"  header-align="center">
+                <template scope="scope">
+                  {{scope.row.content | handleString}}
+                </template>
+              </el-table-column>
+              <el-table-column prop="created_at" label="跟踪时间" align="center">
+              </el-table-column>
+              <el-table-column prop="track_text" header-align="center" label="跟踪类型" >
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
+          <el-tab-pane label="投诉记录">
+            <el-table :data="tableDataOne"  empty-text="请点击客户显示跟踪信息" border style="width: 100%"  @row-dblclick="viewComplainContents">
+              <el-table-column prop="user" label="操作员工" header-align="center">
+              </el-table-column>
+
+              <el-table-column prop="type" label="客户类型(当前)" align="center">
+              </el-table-column>
+
+              <el-table-column prop="name" label="客户姓名" align="center" >
+              </el-table-column>
+              
+              <el-table-column label="投诉内容" header-align="center">
+                <template scope="scope">
+                  {{scope.row.content | handleString}}
+                </template>
+              </el-table-column>
+
+              <el-table-column prop="created_at" label="投诉时间" width="180" align="center">
+              </el-table-column>
+
+              <el-table-column prop="track_text" label="投诉类型" align="center">
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
+        </el-tabs>
+     </el-col>
+    </el-row>
+  </div>
+</div>
+
+<div class="dialogWrapper" v-show="show" style="display: none">
+
+  <!-- 跟踪内容 -->
+  <include file="Customer::_traceContent" />
+  <!-- /跟踪内容 -->
+  <!-- 投诉内容 -->
+  <include file="Customer::_complainContent" />
+  <!-- /投诉内容 -->
+</div>
+
+</div>
+
+</block>
+<block name="scripts">
+<script src="__PUBLIC__/js/contactValidate.js"></script>
+<script>
+
+Vue.filter("handleString", function(v) {
+  if(v!=''){
+    var cnt=v.substring(0,3)+'......';   
+  }
+    return cnt;
+});
+
+</script>
+<script>
+  page.getTrackLogUrl = "{:U('trackInfo')}";
+  window.defaultOption.setDatas({
+    flag:false,
+    ddprops:'name',
+    dialogVisible:false,
+    sb:[],
+    tableData: [{'name':'',
+                 'created_at':'',
+                 'type':'',
+                 'track_type':'',
+                 'content':'',
+                 'user':''
+    }],
+    tableDataOne: [{'name':'',
+                 'created_at':'',
+                 'type':'',
+                 'track_type':'',
+                 'content':'',
+                 'user':''     
+    }],
+    customerType:{:json_encode($customerType)},
+    sexType:{:json_encode($sexType)},
+    products:{:json_encode($Products)},
+    provinces:[],
+    cities:[],
+    deps:[],//
+    reUsers:[],//
+    multipleSelection: [],
+    alertDesc:"",
+    memeberList:[],
+    qq_disabled:false,
+    weixin_disabled:false,
+    phone2_disabled:false,
+    qq2_disabled:false,
+    weixin2_disabled:false,
+
+    cusNameList:[],
+
+  }).setForm('search', {
+    field: '',
+    start:'',
+    end:'',
+    type:'',
+    group:"",
+    ctrl:'advance',
+    name:"",
+    phone:"",
+    qq:"",
+    track_start:"",
+    track_end:"",
+    user_id:"{$user_id}"
+  }).setForm('traceContent',{
+    content:'',
+  },true).setForm('complainContent',{
+    content:'',
+  },true).setMethod('getType', function(type, field){
+    return this[field][type];
+  }).setMethod('beforeList', function(data){
+    data.forEach(function(currentValue){
+      //将string类型转换为number和为0的变为空          
+      //console.log(typeof(currentValue.quality));
+    })
+    return data;
+  }).setMethod('handleSelectionChange', function(val){
+    this.multipleSelection = val;
+  }).setAdvancedSearch().setVueHook('mounted', function(){
+    var vmThis = this;
+    this.$http.get('{:U("Area/getAreasByPid")}', {params:{pid:1} }).then(function(response){
+      var provinces = [];
+      response.body.forEach(function(currentValue,index){
+        provinces.push({id: currentValue.id, name: currentValue.name});
+      })
+      vmThis.$set(vmThis, 'provinces', provinces);
+    });
+    // this.dialogLabelWidth = "100px";
+  }).setMethod('trackLog',function(row,event,column){
+      this.$http.post(page.getTrackLogUrl,row).then(function(response){
+        this.tableData = response.body;
+      },function(response){
+        console.log("操作失败");
+      });
+
+      this.$http.post("{:U('CommonFindDetail/complainInfo')}",row).then(function(response){
+        this.tableDataOne = response.body;
+      },function(response){
+        console.log("操作失败");
+      });
+
+  }).setMethod('refresh',function(){
+    window.location.reload();
+
+  }).setMethod('startDateChange', function(v){
+    this.searchForm.start = v;
+  }).setMethod('endDateChange', function(v){
+    this.searchForm.end = v;
+  }).setMethod('startTrackChange', function(v){
+    this.searchForm.track_start = v;
+  }).setMethod('endTrackChange', function(v){
+    this.searchForm.track_end = v;
+  }).setMethod('searchCustomer', function(){
+    
+  }).setMethod('sortChange', function(sortObject){
+
+    var sortMap = {
+      ascending: 'asc',
+      descending: 'desc'
+    }
+
+    if (sortObject.column === null) {
+      delete this.searchForm.sort_field;
+      delete this.searchForm.sort_order;
+    } else {
+      this.searchForm.sort_field = sortObject.prop;
+      this.searchForm.sort_order = sortMap[sortObject.order];
+    }
+
+
+    this.dataLoad = true;
+    this.loadDatalist();
+
+    
+  }).setMethod('viewtraceContents',function(row,event){
+    // var index = this.tableData.indexOf(row);
+    this.traceContentFormDialog = true;
+    this.traceContentForm.content = row.content;
+  }).setMethod('viewComplainContents',function(row,event){
+    this.complainContentFormDialog = true;
+    this.complainContentForm.content = row.content;
+  }).setMethod('searchFunction', function(){
+    this.searchForm.field = "";
+    this.dataLoad = true;
+    this.loadDatalist();
+  });
+</script>
+</block>

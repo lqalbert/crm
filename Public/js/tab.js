@@ -59,6 +59,7 @@ layui.config({
 	 * @param {String} 标题
 	 */
 	Tab.prototype.exists = function(title) {
+		//console.log(Tab);
 		var that = ELEM.titleBox === undefined ? this.init() : this,
 			tabIndex = -1;
 		ELEM.titleBox.find('li').each(function(i, e) {
@@ -75,6 +76,7 @@ layui.config({
 	 * @param {Object} data
 	 */
 	Tab.prototype.tabAdd = function(data) {
+		console.log(data);
 		var that = this;
 		var tabIndex = that.exists(data.title);
 		if(tabIndex === -1) {
@@ -111,10 +113,11 @@ layui.config({
 			element.tabChange(ELEM.tabFilter, ELEM.titleBox.find('li').length - 1);
 		} else {
 			element.tabChange(ELEM.tabFilter, tabIndex);
+			//alert(1);
 		}
 	};
 	Tab.prototype.on = function(events, callback) {
-
+   // alert(events);
 	}
 
 	var tab = new Tab();

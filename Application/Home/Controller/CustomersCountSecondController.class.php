@@ -30,7 +30,8 @@ class CustomersCountSecondController extends CommonController {
 
 
                      'departmentMaster'=> 'Groups',
-                     'Groups' => 'Users'
+                     'Groups' => 'Users',
+                     // 'Users'  => 'Users'
                     );
         if (isset($map[$roleEname])) {
             return $map[$roleEname];
@@ -109,6 +110,7 @@ class CustomersCountSecondController extends CommonController {
     private function setCondition(){
         $this->roleEname = $this->getRoleEname();
         $funcName = $this->roleEname."Condition";
+        
         if (method_exists($this, $funcName)) {
             return call_user_func(array($this, $funcName));
         }

@@ -107,7 +107,7 @@
                           <el-button type="primary" icon="search" size="small" @click="loadDatalist" >查询</el-button> 
                         </el-tooltip>
 
-                        <el-tooltip content="清空搜索框并刷新表格数据" placement="right" style="margin-left:10px;">
+                        <el-tooltip content="清空搜索框及查询条件并刷新表格数据" placement="right" style="margin-left:10px;">
                           <el-button  @click="searchReset" size="small" >重置</el-button>
                         </el-tooltip>
 
@@ -142,11 +142,11 @@
 
                         <el-table-column label="跟踪员工"  >
                             <template scope="scope">
-                                {{ scope.row.department_name }}-{{ scope.row.realname}}
+                                {{ scope.row.department_name }} {{ scope.row.realname}}
                             </template>
                         </el-table-column>
 
-                        <el-table-column label="商品名称"  prop="product_name" header-align="center" width="170">
+                        <el-table-column label="商品名称"  prop="product_name" header-align="center" width="180">
                         </el-table-column>
 
                         <el-table-column label="商品价格"  prop="product_money" header-align="center">
@@ -300,7 +300,7 @@
 
     row.condition = 'service';
     row.name = row.cb_name;
-    delete row.cb_name;
+    //delete row.cb_name;
     this.$http.post("{:U('CommonFindDetail/complainInfo')}",row).then(function(response){
       this.tableDataTwo = response.body;
     },function(response){
@@ -375,6 +375,16 @@
       this.searchForm.checkState = command;
       break;
     }
+  }).setMethod('searchReset',function(){
+    this.$refs.searchForm.resetFields();
+    this.dataLoad = true;
+    this.loadDatalist();
+
+    delete this.searchForm.sort_field;
+    delete this.searchForm.sort_order;
+
+    this.searchType = '人员类型';
+    this.checkStatus = '审核状态';
   });
 </script>   
 </block>

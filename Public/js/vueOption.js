@@ -117,6 +117,11 @@ VueOption.prototype.setEdit = function(){
 		if (!arguments[2]) {
 			type='edit';
 		}
+		var f = this.$refs[FormName.getFormName(type)];
+		if (f) {
+			f.resetFields();
+		}
+		
 		this.initObject( this[FormName.getFormName(type)], row );
 		this.editIndex = index;
 		this.openDialog(type);

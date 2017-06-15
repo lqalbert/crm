@@ -61,15 +61,11 @@ class CustomerLogic extends Model{
     */
 	public function trackInfo($D){
         $type=$D->getType(I('post.type'));
-        $group_id=M('user_info')->where(array('user_id'=>I('post.user_id')))->field('group_id')->find();
-        $groupInfo=M('group_basic')->where(array('id'=>$group_id['group_id']))->field('name')->find();
-        $userName=M('user_info')->where(array('user_id'=>I('user_id')))->field('realname')->find();
-        $user=$groupInfo['name']."-".$userName['realname'];
         $arr=M('customers_log')->where(" cus_id = ".I('post.id')." AND (`track_type` <> 11 or `track_type` is null) ")->order('id desc')->select();
         foreach ($arr as $key => $value){
         	$arr[$key]['type']=$type;
-            $dep_user=M('department_basic as db')->join('user_info as ui on ui.department_id=db.id')
-                     ->where(array('ui.user_id'=>$value['user_id']))->getField("concat(db.name,'-',ui.realname) as user");
+            $dep_user=M('user_info as ui')->join('left join department_basic as db on ui.department_id=db.id')
+                     ->where(array('ui.user_id'=>$value['user_id']))->getField("IFNULL(concat(db.name,'-',ui.realname),ui.realname) as user");
             foreach ($dep_user as $k => $v) {
                 $arr[$key]['user']=$v['user'];
             }
@@ -99,7 +95,10 @@ class CustomerLogic extends Model{
     */
     public function getJoinCondition($D){
       $D->join('left join user_info as ui on customers_basic.salesman_id = ui.user_id')
-        ->field('customers_basic.*,cc.qq,cc.phone,cc.weixin,cc.qq_nickname,cc.weixin_nickname, cc.is_main as cc_main,cc2.qq as qq2,cc2.phone as phone2,cc2.weixin as weixin2,cc2.qq_nickname as qq_nickname2,cc2.weixin_nickname as weixin_nickname2, ui.realname');
+        ->join('left join user_info as usi on customers_basic.user_id = usi.user_id')
+        ->field('customers_basic.*,cc.qq,cc.phone,cc.weixin,cc.qq_nickname,cc.weixin_nickname, cc.is_main as cc_main,
+            cc2.qq as qq2,cc2.phone as phone2,cc2.weixin as weixin2,cc2.qq_nickname as qq_nickname2,
+            cc2.weixin_nickname as weixin_nickname2, ui.realname,usi.realname as lock_name');
     }
 
     /**

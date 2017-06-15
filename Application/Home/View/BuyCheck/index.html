@@ -122,7 +122,7 @@
                         <el-table-column label="操作" align="center" width="200">
                             <template scope="scope">
                                 <el-button size="small" @click="checkCustomer(scope.row.cus_id)">查看客户</el-button>
-                                <el-button type="danger" size="small" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                                <!-- <el-button type="danger" size="small" @click="handleDelete(scope.$index, scope.row)">删除</el-button> -->
                             </template>
                         </el-table-column>
                         
@@ -261,7 +261,7 @@
     this.multipleSelection = val;
   }).setMethod('viewtraceContents',function(row,event){
     this.traceContentFormDialog = true;
-    this.traceContentForm.content = row.content;;
+    this.traceContentForm.content = row.content;
   }).setMethod('viewComplainContents',function(row,event){
     this.complainContentFormDialog = true;
     this.complainContentForm.content = row.content;

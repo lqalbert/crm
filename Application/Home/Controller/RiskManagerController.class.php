@@ -29,8 +29,8 @@ class RiskManagerController extends CommonController{
     $searchName=I('get.name',null);
     switch (I('get.queryType',null)) {
       case 'cus_name':
-        $cus_id = M('customers_basic')->where(array('name'=>$searchName))->getField('id');
-        $this->M->where(array('customers_buy.cus_id'=>$cus_id));
+        $cus_id = M('customers_basic')->where(array('name'=>$searchName))->getField('id',true);
+        $this->M->where(array('customers_buy.cus_id'=>array('IN',$cus_id)));
         break;
       case 'user_name':
         $user_id = M('user_info')->where(array('realname'=>$searchName))->getField('user_id');
@@ -62,13 +62,13 @@ class RiskManagerController extends CommonController{
         $this->M->where(array('customers_buy.risk_state'=>-1));
         break;
       case 'callback_passing':
-        $this->M->where(array('customers_buy.risk_state'=>0));
+        $this->M->where(array('customers_buy.callback_state'=>0));
         break;
       case 'callback_passed':
-        $this->M->where(array('customers_buy.risk_state'=>1));
+        $this->M->where(array('customers_buy.callback_state'=>1));
         break;
       case 'callback_fail':
-        $this->M->where(array('customers_buy.risk_state'=>-1));
+        $this->M->where(array('customers_buy.callback_state'=>-1));
         break;
       case 'passed_fail':
         $this->M->where(array('customers_buy.risk_state'=>1,'customers_buy.callback_state'=>-1));

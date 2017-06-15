@@ -195,52 +195,55 @@
   	    <el-table-column width="50" align="center" type="selection"></el-table-column>
 
   	    <el-table-column label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  ></el-table-column>
-  	    <el-table-column  prop="name"  label="客户姓名" width="140"></el-table-column>
-  	    <el-table-column   prop="type" label="客户类型" sortable='customer' width="150">
+  	    <el-table-column  prop="name"  label="客户姓名" width="150" header-align="center"></el-table-column>
+  	    <el-table-column   prop="type" label="客户类型" sortable='customer' width="150" header-align="center">
           <template scope="scope">
             {{ getType(scope.row.type, 'customerType') }}
           </template>
   	    </el-table-column>
 
-        <el-table-column    prop="realname" label="跟踪员工" sortable='customer' width="190">
+        <el-table-column  prop="realname" label="跟踪员工" sortable='customer' width="150" header-align="center">
         </el-table-column>
 
-          <el-table-column   prop="qq" label="QQ号"  width="170">
-            <template scope="scope">
-              {{ scope.row.qq }}
-              <a v-if="scope.row.qq" :href="getTenct(scope.row.qq)">
-                <img width="25"  src="__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg" alt="">
-              </a>
-            </template>
-          </el-table-column>
-          <el-table-column  prop="qq_nickname" label="QQ昵称"  width="170"></el-table-column>
-  	      <el-table-column prop="phone" label="手机" align="center" width="130"></el-table-column>
-          <el-table-column  header-align="center" prop="weixin" label="微信号" align="left" width="170">
-            <template scope="scope">
-              {{ scope.row.weixin }}
-            </template>
-          </el-table-column>
+        <el-table-column  prop="lock_name" label="锁定员工" sortable='customer' width="150" header-align="center">
+        </el-table-column>
 
-          <el-table-column  header-align="center" prop="weixin_nickname" label="微信昵称" align="left" width="170">
-            <template scope="scope">
-              {{ scope.row.weixin_nickname }}
-            </template>
-          </el-table-column>
+        <el-table-column   prop="qq" label="QQ号"  width="170" header-align="center">
+          <template scope="scope">
+            {{ scope.row.qq }}
+            <a v-if="scope.row.qq" :href="getTenct(scope.row.qq)">
+              <img width="25"  src="__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg" alt="">
+            </a>
+          </template>
+        </el-table-column>
+        <el-table-column  prop="qq_nickname" label="QQ昵称"  width="170" header-align="center"></el-table-column>
+	      <el-table-column prop="phone" label="手机" align="center" width="130"></el-table-column>
+        <el-table-column  header-align="center" prop="weixin" label="微信号" header-align="center" width="170">
+          <template scope="scope">
+            {{ scope.row.weixin }}
+          </template>
+        </el-table-column>
 
-          <el-table-column  prop="last_track" sortable='customer' label="最后跟踪时间" align="center" width="175"></el-table-column>
+        <el-table-column  header-align="center" prop="weixin_nickname" label="微信昵称" header-align="center" width="170">
+          <template scope="scope">
+            {{ scope.row.weixin_nickname }}
+          </template>
+        </el-table-column>
 
-        <el-table-column  prop="commission" label="跟踪方比例" width="110">
+        <el-table-column  prop="last_track" sortable='customer' label="最后跟踪时间" align="center" width="180"></el-table-column>
+
+        <el-table-column  prop="commission" label="跟踪方比例" width="110" align="center">
           <template scope="scope">
             {{ scope.row.commission+"%" }}
           </template>
         </el-table-column>
-        <el-table-column  prop="add_commission" label="锁定方比例" width="110">
+        <el-table-column  prop="add_commission" label="锁定方比例" width="110" align="center">
           <template scope="scope">
             {{ scope.row.add_commission+"%" }}
           </template>
         </el-table-column>
-        <el-table-column  prop="plan" label="计划跟踪时间" align="center" width="175"></el-table-column>
-        <el-table-column  prop="conflict" label="最后冲突时间" align="center" width="175"></el-table-column>
+        <el-table-column  prop="plan" label="计划跟踪时间" align="center" width="180"></el-table-column>
+        <el-table-column  prop="conflict" label="最后冲突时间" align="center" width="180"></el-table-column>
         <el-table-column  header-align="center"  label="地区" width="135">
           <template scope="scope">
             {{ scope.row.province_name+"-"+scope.row.city_name }}
@@ -449,6 +452,14 @@
   }
 
   var  editCheckQq = function(rule,value,callback){
+    if (window.defaultVm.editOld.qq != value) {
+      QQValidata(rule,value,callback);
+    } else {
+      callback();
+    }
+  }
+
+  var  editCheckQq2 = function(rule,value,callback){
     if (window.defaultVm.editOld.qq2 != value) {
       QQValidata(rule,value,callback);
     } else {
@@ -457,6 +468,15 @@
   }
 
   var  editCheckWeixin = function(rule,value,callback){
+
+    if (window.defaultVm.editOld.weixin != value) {
+      WxValidata(rule,value,callback);
+    } else {
+      callback();
+    }
+  }
+
+  var  editCheckWeixin2 = function(rule,value,callback){
     if (window.defaultVm.editOld.weixin2 != value) {
       WxValidata(rule,value,callback);
     } else {
@@ -519,19 +539,19 @@
       ],
       qq:[
         { pattern:/^\d+$/, message: 'QQ号必须为数字'},
-        { validator: QQValidata, trigger:'blur' },
+        { validator: editCheckQq, trigger:'blur' },
       ],
       qq2:[
         { pattern:/^\d+$/, message: 'QQ号必须为数字'},
-        { validator: editCheckQq, trigger:'blur' },
+        { validator: editCheckQq2, trigger:'blur' },
       ],
       weixin:[
           { min: 6, max: 20, trigger:'blur', message:"长度为6-20个字符" },
-          { validator: WxValidata, trigger:'blur' },
+          { validator: editCheckWeixin, trigger:'blur' },
       ],
       weixin2:[
           {min: 6, max: 20, trigger:'blur', message:"长度为6-20个字符" },
-          { validator: editCheckWeixin, trigger:'blur' },
+          { validator: editCheckWeixin2, trigger:'blur' },
       ],
 
       type:[
@@ -629,11 +649,14 @@
       address:[
         {required: true, message:'请输入详细地址',trigger:'blur'}
       ],
+      product_money:[
+        { required: true,pattern:/^(([1-9]\d{0,9})|0)(\.\d{1,2})?$/,  message: '请产品价格为数字', trigger:'change'}
+      ],
       product_index:[
         {type:"number", required: true, message:"请选择产品",trigger:'change'}
       ],
       buy_time:[
-        { required: true, message:"请选择够买时间", trigger:'change'}
+        { type: 'date',required: true, message:"请选择够买时间", trigger:'change'}
       ] 
 
     },
@@ -960,7 +983,7 @@
     this.dialogLabelWidth = "100px";
   }).setMethod('trackLog',function(row,event,column){
       // this.$refs.select.toggleRowSelection(row);
-      this.$http.post('{:U(trackInfo)}',row).then(function(response){
+      this.$http.post("{:U('trackInfo')}",row).then(function(response){
         this.tableData = response.body;
       },function(response){
         console.log("操作失败");
@@ -1153,7 +1176,8 @@
       if (valid) {
         if (vmThis.stepActive++ > 1) vmThis.stepActive = 0;
         vmThis.buyRules.product_index = [{ type:"number",required: true, message:"请选择产品",trigger:'change',}];
-        vmThis.buyRules.buy_time = [{ required: true, message:"请选择够买时间", trigger:'change'}];
+        vmThis.buyRules.buy_time = [{ type: 'date',required: true, message:"请选择够买时间", trigger:'change'}];
+        vmThis.buyRules.product_money = [{ required: true,pattern:/^(([1-9]\d{0,9})|0)(\.\d{1,2})?$/,  message: '请产品价格为数字', trigger:'change'}];
       } else {
         return false;
       }
@@ -1183,9 +1207,16 @@
     this.buyForm.buy_time = v;
   }).setMethod('getServiceTime',function(v){
     return v != "" ? v+'个月' : '请先选择产品!';
-  }).setMethod('buyFormSubmit',function(){
-    var myDate=new Date()
-    console.log(myDate.getDate());
+  }).setMethod('steCondition',function(){
+   // console.log(this.$refs.buyForm);
+    // this.$refs.buyForm.validate(function(valid){
+    //   if (valid) {
+    //     alert('submit!');
+    //   } else {
+    //     alert('error submit!!');
+    //     return false;
+    //   }
+    // });
   });
 </script>
 

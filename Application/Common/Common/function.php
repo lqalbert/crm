@@ -121,6 +121,16 @@ function UTC_to_locale_time($v){
 }
 
 /**
+ * 将UTC时间转换为当地日期
+ * @param  string "2017-06-20T16:00:00.000Z" 
+ * @return string "2017-02-20"
+ *
+ */
+function UTCToLocaleDate($v){
+    return Date('Y-m-d',strtotime($v));
+}
+
+/**
 * 读取 excel 文件 并返回 array 形式的数据
 * 只支持第一个 Sheet;
 * 如果文件过大，可能会卡死 到时可以参考以下链接对代码进行重构
@@ -167,7 +177,9 @@ function getExcelArrayData($filename){
             // 部分有格式的列 getValue会返回原始值 例 如 日期 2016/01/01 原始值 类似于42685.466099537
         }
     }
-   
+    $objReader = null;
+    $obj = null;
+    $worksheet = null;
     return $data;
 }
 

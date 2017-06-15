@@ -84,7 +84,7 @@ class GroupCustomerStatisticsModel extends CustomerCountModel {
     * 统计 指定时间 的成交量
     */
     public function setVCount(){
-        $sql = "select count(cus_id), group_id from customers_order as cs inner join user_info as ui on cs.user_id = ui.user_id where created_at > '".$this->date['start']."' and created_at <'".$this->date['end']."' and ui.department_id=".$this->depart_id." group by group_id";
+        $sql = "select count(cus_id) as c, group_id from customers_order as cs inner join user_info as ui on cs.user_id = ui.user_id where created_at > '".$this->date['start']."' and created_at <'".$this->date['end']."' and ui.department_id=".$this->depart_id." group by group_id";
 
         $re = M()->query($sql);
         foreach ($re as  $value) {

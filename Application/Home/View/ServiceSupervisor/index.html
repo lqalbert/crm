@@ -100,6 +100,9 @@
             
 		  	    <el-table-column label="{:L('INDEX')}" type="index" width="65"  ></el-table-column>
 
+            <el-table-column v-if="roleTypeVal == 1" prop="semaster_name" label="客服主管" align="center" width="150">
+            </el-table-column>
+
 		  	    <el-table-column  header-align="center" prop="name"  label="客户姓名" width="150"></el-table-column>
             <!-- sortable -->
 		  	    <el-table-column  header-align="center" prop="type" label="客户类型"  width="170">
@@ -336,6 +339,7 @@
   page.dipacthFormUrl = "{:U('dispacth')}";
   page.addComplainFormUrl = "{:U('CommonHandleLogic/addComplain')}";
   window.defaultOption.setDatas({
+    roleTypeVal:{$roleTypeVal},
   	customerType:{:json_encode($customerType)},
   	sexType:{:json_encode($sexType)},
     products:{:json_encode($Products)},
@@ -530,7 +534,7 @@
   }).setMethod('trackLog',function(row,event,column){
     this.commonFind("{:U('CommonFindDetail/trackInfo')}",'tableDataOne',row);
     this.commonFind("{:U('CommonFindDetail/findDealInfo')}",'tableDataTwo',{user_id:row.cus_id});
-    //this.commonFind("{:U('CommonFindDetail/softwareInfo')}",'tableDataThree',row);
+    this.commonFind("{:U('CommonFindDetail/softwareInfo')}",'tableDataThree',row);
 
     row.condition = 'service';
     this.$http.post("{:U('CommonFindDetail/complainInfo')}",row).then(function(response){

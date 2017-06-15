@@ -54,12 +54,19 @@
                 {{ scope.row.mark | handleString(10) }}
               </template>
             </el-table-column> 
+            <el-table-column label="状态" prop="status" align="center">
+              <template scope="scope">
+                <span v-if="scope.row.status==1">正常</span>
+                <span v-else="scope.row.status==-1">停售</span>
+              </template>
+            </el-table-column> 
+
             <el-table-column label="发布人员" prop="operator" header-align="center"></el-table-column> 
             <el-table-column label="发布时间" prop="time" align="center"></el-table-column>
 						<el-table-column label="操作" align="center">
 							<template scope="scope">
 							  <el-button type="info" @click.stop="handleEdit(scope.$index, scope.row)" size="small">编辑</el-button>
-							  <el-button type="danger"  @click.stop="handleDelete(scope.$index, scope.row)" size="small" >删除</el-button>
+							  <el-button type="danger"  @click.stop="handleDelete(scope.$index, scope.row)" size="small" >停售</el-button>
 							</template>
 						</el-table-column> 
           </el-table>
@@ -139,7 +146,7 @@
       ],
       price:[
          { required: true, message: '请产品价格', trigger: 'blur'},
-         { pattern:/\d+/,  message: '请产品价格为数字'}
+         { pattern:/^[1-9]+(\.\d{1,2})?$/,  message: '价格格式为888或888.00'}
       ],
       mark:[
         {required: true, message: '请描述产品', trigger: 'blur'},
@@ -151,7 +158,7 @@
       ],
       price:[
          { required: true, message: '请产品价格', trigger: 'blur'},
-         { pattern:/\d+/,  message: '请产品价格为数字'}
+         { pattern:/^[1-9]+(\.\d{1,2})?$/,  message: '价格格式为888或888.00'}
       ],
       mark:[
         {required: true, message: '请描述产品', trigger: 'blur'},

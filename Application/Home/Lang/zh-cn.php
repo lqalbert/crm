@@ -20,7 +20,7 @@ return array(
 	'ADVANCED_QUERY'      => '高级查询',
 	'CUSTOMER_PRE_CHECK'      => '客户预查',
 	'EXACTS_CON'      => '索取统计',
-
+  'ADD_NEW'   => '添加新节点！',
 
 
 

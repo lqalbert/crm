@@ -165,8 +165,8 @@ class CustomerModel extends Model {
     }
 
     
-
-    public function add($data = '', $options = array(), $replace = false){
+    //$data = '', $options = array(), $replace = false
+    public function add(){
       //开启事务
       // die('asdf');
       $this->startTrans();

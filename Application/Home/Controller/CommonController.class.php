@@ -29,6 +29,7 @@ class CommonController extends Controller {
 	    	$this->redirect('Login/index');
 	    }
     }
+    
 		Rbac::AccessDecision() || $this->error(L('NO_AUTHORIZED'));
 
 		$this->parseJsonParams();

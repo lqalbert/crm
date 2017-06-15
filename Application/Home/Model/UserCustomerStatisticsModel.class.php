@@ -26,6 +26,7 @@ class UserCustomerStatisticsModel extends CustomerCountModel {
     */
     public function setTypeCount(){
         $sql = "select count(cb.id) as c , `type` , ui.user_id from customers_basic as cb inner join user_info as ui on cb.salesman_id= ui.user_id where ui.group_id =".$this->group_id." and   cb.status=1 group by cb.type, ui.user_id";
+        
         $re = M()->query($sql);
 
         foreach ($re as  $value) {
@@ -84,7 +85,7 @@ class UserCustomerStatisticsModel extends CustomerCountModel {
     * 统计 指定时间 的成交量
     */
     public function setVCount(){
-        $sql = "select count(cus_id), ui.user_id from customers_order as cs inner join user_info as ui on cs.user_id = ui.user_id where created_at > '".$this->date['start']."' and created_at <'".$this->date['end']."' and ui.group_id=".$this->group_id." group by ui.user_id";
+        $sql = "select count(cus_id) as c, ui.user_id from customers_order as cs inner join user_info as ui on cs.user_id = ui.user_id where created_at > '".$this->date['start']."' and created_at <'".$this->date['end']."' and ui.group_id=".$this->group_id." group by ui.user_id";
 
         $re = M()->query($sql);
         foreach ($re as  $value) {
