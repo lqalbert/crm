@@ -49,6 +49,8 @@ class EmployeeController extends CommonController {
 			$this->M->where(array('realname'=>array('like', I('get.realname')."%")));
 		}
 
+		
+
 		$this->M->where(array('rbac_user.id'=>array('neq', session('uid'))));
 
 

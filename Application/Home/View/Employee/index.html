@@ -422,6 +422,7 @@
 	        cities.push({id: currentValue.id, name: currentValue.name});
 	       })
 	       vmThis.$set(vmThis, 'cities', cities);
+	       vmThis.$set(vmThis['addForm'], 'area_city', "");
 	    })
 	  }).setMethod('cityChange', function(v){
 	    var vmThis = this;

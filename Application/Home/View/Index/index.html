@@ -187,9 +187,14 @@
 		  ,$ = layui.jquery; 
 		  tab = layui.tab();
 
+		 
 		  layui.tree({
 		    elem: '#allUser', //指定元素
 		    click:function(item){
+		    	// console.log(this);
+		    	// console.log(event);
+		    	var e2 = window.event || e;
+		    	$( e2.currentTarget).dblclick();
 		       if(item.field === undefined){
 		       	 console.log(item);
 		       }else{

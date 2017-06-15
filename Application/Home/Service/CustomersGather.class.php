@@ -4,7 +4,9 @@ namespace Home\Service;
 use Cli\Service\CustomerCountServiceModel;
 use Home\Model\DepartmentCustomerStatisticsModel;
 use Home\Model\GroupCustomerStatisticsModel;
+use Home\Model\GroupCustomerStatisticsAllModel;
 use Home\Model\UserCustomerStatisticsModel;
+use Home\Model\UserCustomerStatisticsAllModel;
 use Common\Lib\GetWeek;
 use Common\Lib\GetMonth;
 
@@ -71,11 +73,26 @@ class CustomersGather {
         return $n->index($this->today);
     }
 
+    private function getTodayGroupsAll(){
+        $d = new GroupCustomerStatisticsAllModel();
+        $n = new CustomersCountToday($d);
+        // $n->setOrder($this->order);
+        return $n->index($this->today);
+    }
+
     private function getTodayUsers($group_id){
         $d = new UserCustomerStatisticsModel($group_id);
         $n = new CustomersCountToday($d);
         // $n->setOrder($this->order);
         return $n->index($this->today);
+    }
+
+    private function getTodayUsersAll(){
+        $d = new UserCustomerStatisticsAllModel();
+        $n = new CustomersCountToday($d);
+
+        return $n->index($this->today);
+
     }
 
 
@@ -187,10 +204,16 @@ class CustomersGather {
     public function getAllGroups(){
         $toDaylist = array();   
         if ($this->end >=  $this->today) {
+
+            $toDaylist = $this->getTodayGroupsAll();
             $departments = D('Department')->getSalesDepartments();
-            foreach ($departments as $value) {
-                $toDaylist = array_merge($toDaylist, $this->wrapDepartment($value['id'], $value['name'], $this->getTodayGroups($value['id'])));
+            $departmentsMap = arr_to_map($departments, 'id');
+            foreach ($toDaylist as $key => $value) {
+                $toDaylist[$key]['department_name'] = $departmentsMap[$value['department_id']]['name'];
             }
+            /*foreach ($departments as $value) {
+                $toDaylist = array_merge($toDaylist, $this->wrapDepartment($value['id'], $value['name'], $this->getTodayGroups($value['id'])));
+            }*/
         } 
 
 
@@ -204,18 +227,19 @@ class CustomersGather {
         return $this->reSort($list);
     }
 
+
+
     public function getAllUsers(){
 
         $toDaylist = array();   
         if ($this->end >=  $this->today) {
             $departments = D('Department')->getSalesDepartments('id,name');
-            $groups = D('Group')->getAllGoups(array_column($departments,'id'), 'id, name, department_id');
+            // $groups = D('Group')->getAllGoups(array_column($departments,'id'), 'id, name, department_id');
             $departmentsMap = arr_to_map($departments, 'id');
-            foreach ($groups as $value) {
-                
-                $toDaylist = array_merge($toDaylist, 
-                    $this->wrapDepartment($value['department_id'], $departmentsMap[$value['department_id']]['name'], $this->getTodayUsers($value['id']))
-                    );
+            $toDaylist = $this->getTodayUsersAll();
+
+            foreach ($toDaylist as $key => $value) {
+                $toDaylist[$key]['department_name'] = $departmentsMap[$value['department_id']]['name'];
             }
         } 
 

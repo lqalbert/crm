@@ -1,7 +1,7 @@
 /** index.js By Beginner Emain:zheng_jinfan@126.com HomePage:http://www.zhengjinfan.cn */
 layui.config({
 	base: window.webRoot+'Public/js/'
-}).use(['element', 'layer', 'navbar', 'tab'], function() {
+}).use(['element', 'layer', 'navbar', 'tab','jquery'], function() {
 	var element = layui.element(),
 		$ = layui.jquery,
 		layer = layui.layer,
