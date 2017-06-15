@@ -24,7 +24,28 @@
 			<el-row>
 				<el-col :span="24">
 					<el-form :inline="true"  ref="searchForm" :model="searchForm">
-					  <el-form-item prop="name">
+						<el-form-item prop="department_id">
+							<el-select v-model="searchForm.department_id" width="50" placeholder="请选择部门">
+								<el-option v-for="item in departments" :key="item.id" :label="item.name" :value="item.id"></el-option>
+							</el-select>
+						</el-form-item>
+
+						<el-form-item prop="group_id">
+							<el-select v-model="searchForm.group_id" width="50" placeholder="请选择团队小组">
+								<el-option v-for="item in groups" :key="item.id" :label="item.name" :value="item.id"></el-option>
+							</el-select>
+						</el-form-item>
+
+
+						<el-form-item prop="type">
+							<el-select v-model="searchForm.type" width="50" placeholder="请选择查询类型">
+								<el-option v-for="item in types" :label="item.name" :value="item.value"></el-option>
+							</el-select>
+						</el-form-item>
+						<el-form-item prop="typeValue">
+							<el-input v-model="searchForm.typeValue" placeholder="请输入查询数据"></el-input>
+						</el-form-item>
+					  <!--<el-form-item prop="name">
 					   <el-input v-model="searchForm.name"  placeholder="请输入员工账号" >
 					   </el-input>
 					  </el-form-item>
@@ -32,16 +53,28 @@
 					   <el-input v-model="searchForm.realname"  placeholder="请输入员工姓名" >
 					   </el-input>
 					  </el-form-item>
+						<el-form-item prop="mphone">
+							<el-input v-model="searchForm.mphone"  placeholder="请输入手机号" >
+							</el-input>
+						</el-form-item>
+						<el-form-item prop="qq">
+							<el-input v-model="searchForm.qq"  placeholder="请输入qq号" >
+							</el-input>
+						</el-form-item>
+						<el-form-item prop="weixin">
+							<el-input v-model="searchForm.weixin"  placeholder="请输入微信号" >
+							</el-input>
+						</el-form-item>-->
 					  <el-form-item prop="status">
-					  	<el-select style="width:120px;" v-model="searchForm.status">
+					  	<el-select v-model="searchForm.status" width="50">
 					  		<el-option value="1" label="正常"></el-option>
 					  		<el-option value="-1" label="离职"></el-option>
 					  	</el-select>
 					  </el-form-item>
 					  <el-form-item> 
-					    <el-button type="primary" icon="search" @click="loadDatalist">查询</el-button> 
+					    <el-button type="primary" icon="search" @click="loadDatalist">查询</el-button>
 					    <el-button @click="searchReset" style="margin-left:10px;">重置</el-button>
-
+						  <el-button type="primary" icon="view">高级查询</el-button>
 					  </el-form-item>
 					</el-form>
 				</el-col>
@@ -303,8 +336,15 @@
 			card_back:"",
 			departmentItem:{$departmentItem},
 
-			departments:{:json_encode($departments)}
-
+			departments:{:json_encode($departments)},
+		groups:'',
+			types:[
+			    {name:"员工账号",value:'account'},
+			{name:"员工姓名",value:'realname'},
+			{name:"手机号",value:'mphone'},
+            {name:"QQ号",value:'qq'},
+            {name:"微信号",value:'weixin'}
+			    ]
 
 
 		}).setForm('add',{
@@ -357,8 +397,10 @@
 			user_id:0,
 			role_ids:0
 		},true).setForm('search',{
-			name:"",
-			realname:"",
+			department_id:"",
+			group_id:"",
+			type:"",
+			typeValue:"",
 			status:"1",
 			plan:false
 		}).setForm('editPassword',{
@@ -368,7 +410,13 @@
 			checkPass:""
 		}, true).setMethod('getType', function(type, field){
 			return this[field][type];
-		}).setMethod('getTime',function(v){
+		}).setMethod('departmentChange',function () {
+			var vmThis=this
+			vmThis.$http.get('{:U("getAllGroups")}',{params:{department_id:vmThis.searchForm.department_id}}).then(function (response) {
+				vmThis.groups=response.body
+				vmThis.searchForm.name=''
+            })
+        }).setMethod('getTime',function(v){
 			if(v==null || v==""){
 				return v;
 			}else{
@@ -422,7 +470,7 @@
 	        cities.push({id: currentValue.id, name: currentValue.name});
 	       })
 	       vmThis.$set(vmThis, 'cities', cities);
-	       vmThis.$set(vmThis['addForm'], 'area_city', "");
+	      // vmThis.$set(vmThis['addForm'], 'area_city', "");
 	    })
 	  }).setMethod('cityChange', function(v){
 	    var vmThis = this;

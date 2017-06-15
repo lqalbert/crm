@@ -19,7 +19,7 @@ class DepartmentController extends CommonController {
 		 $ename = $this->getRoleEname();
 
     	$this->assign('viewDecorator', $this->M->decoratorView($ename));
-		
+		$this->assign('departments',$this->M->getAllDepartments('id,name'));
 		$this->display();
 	}
 
@@ -65,9 +65,9 @@ class DepartmentController extends CommonController {
 	private function setConfig(){
 		//临时写到这里
 		// '销售部', 0
-    // '客服部', 1
-    // '风控部', 2
-		// '人事部', 3
+  //       '客服部', 1
+  //       '风控部'  2
+		//  人事部     3
 		$configMap = array(
 			array('EmployeeQueryCondition'=>"DepartmentEmployee"),
 			array('EmployeeQueryCondition'=>"DepartmentEmployee"),

@@ -61,6 +61,8 @@
             </el-form-item>
 					</el-form>
 				</el-col>
+				<el-col :span="12">
+				</el-col>	
 			</el-row>
 			<!-- / search form -->
 
@@ -82,15 +84,15 @@
 					    </el-table-column>
 					    <!-- <el-table-column label="单位ID" align="center" prop="id" width="90">
 					    </el-table-column> -->
-					    <el-table-column   label="单位名" header-align="center" prop="name" width="180">
+					    <el-table-column   label="单位名"  prop="name" width="180">
 					    </el-table-column>
-					    <el-table-column label="单位类型" align="center" prop="typeText" >
+					    <el-table-column label="类型" align="center" prop="typeText" >
 					    </el-table-column>
 						<!-- <el-table-column label="事业/财富区" align="center" prop="p_name" width="110">
 					    </el-table-column>
 					    <el-table-column label="片区" align="center" prop="zone">
 					    </el-table-column> -->
-					    <el-table-column label="联系人(部门经理)" header-align="center" prop="contact">
+					    <el-table-column label="联系人"  prop="contact">
 					    </el-table-column>
 					    <el-table-column label="联系电话" align="center" prop="tel" width="140">
 					    </el-table-column>
@@ -98,7 +100,7 @@
 					    </el-table-column>
 					    <el-table-column  label="拓展二" align="center" prop="expand2">
 					    </el-table-column> -->
-					  	<el-table-column label="是否启用" :context="_self" align="center" prop="status">
+						<el-table-column label="是否启用" :context="_self" align="center" prop="status">
 					      <template scope="scope">
 	  							<div>
 	  						    <el-switch
