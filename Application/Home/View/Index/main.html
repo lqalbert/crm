@@ -57,7 +57,7 @@
 			               </template>
 			          </el-table-column>
 				      <el-table-column prop="title" label="公告标题" align="center"></el-table-column>
-				      <el-table-column prop="start" label="开始日期" align="center"></el-table-column>
+				      <!-- <el-table-column prop="start" label="开始日期" align="center"></el-table-column> -->
 				    </el-table>
 				    <el-col :span="24">
 					     <div class="grid-content bg-purple-light pull-right" style="padding:2px;">
@@ -152,39 +152,65 @@
 <block name="scripts">
 <script src="__PUBLIC__/js/echarts.min.js"></script>
 	<script>
-
+	page.getEchartsOption = "{:U('IndexEcharts/index')}";
 	window.defaultOption.setVueHook('mounted', function(){
-		// console.log('mounted charts');
 		var myChart = echarts.init(document.getElementById('echarts'));
-        myChart.setOption({
-            title: { text: '个人12个月每月销售金额柱状图和当月排名' },
-            tooltip: {},
-            xAxis: {
-                data: ["2016-11","2016-12","2017-01","2017-02","2017-03","2017-04"]
-            },
-            yAxis: {},
-            legend:{
-            	show: true
-            },
-            series: [{
-                name: '销量',
-                type: 'bar',
-                data: [15000, 30000, 96000, 20000, 30000, 50000]
-            },{
-                name: '业绩',
-                type: 'line',
-                data: [25, 21, 26, 90, 15, 50]
-            }],
-            grid:{
-            	left:"50",
-            	right:"50"
-            }
-        });
+		this.$http.get(page.getEchartsOption).then(function(response){
+			console.log(JSON.parse(response.body)); 
+			// myChart.setOption(response.body);
+		}, function(response){
+			this.$message.error("图表数据出错了");
+		});
+
+		// console.log('mounted charts');
+		/*myChart.setOption({
+	             title: {
+			        text: '最近7天'
+			    },
+			    tooltip: {
+			        trigger: 'axis',
+			        axisPointer: { // 坐标轴指示器，坐标轴触发有效
+			            type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+			        }
+			    },
+			    legend: {
+			        data: ['自锁数', '成交数'],
+			        align: 'right',
+			        right: 10
+			    },
+			    grid: {
+			        left: '3%',
+			        right: '4%',
+			        bottom: '3%',
+			        containLabel: true
+			    },
+			    xAxis: [{
+			        type: 'category',
+			        data: ['2017-01-01', '2017-01-02', '2017-01-03', '2017-01-04', '2017-01-05']
+			    }],
+			    yAxis: [{
+			        type: 'value',
+			        name: '数量',
+			        axisLabel: {
+			            formatter: '{value}'
+			        }
+			    }],
+			    series: [{
+			        name: '自锁数',
+			        type: 'bar',
+			        data: [20, 12, 31, 34, 31]
+			    }, {
+			        name: '成交数',
+			        type: 'bar',
+			        data: [10, 20, 5, 9, 3]
+			    }]
+	        });*/
+	        
         
         window.onresize = myChart.resize;
 
 
-        var w=document.body.scrollWidth;
+        /*var w=document.body.scrollWidth;
       	if(w<1400){
       		var two=document.getElementById('two');
       		var th=document.getElementById('th');
@@ -192,7 +218,7 @@
             th.style.lineHeight='150%';
             th.style.marginRight="30px";
             th.style.textAlign='left';
-      	}
+      	}*/
 
 	}).setDatas({
 		NoticeType:{:json_encode($NoticeType)},
