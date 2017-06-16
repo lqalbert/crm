@@ -49,7 +49,7 @@ class RoleDepartmentMaster {
         $staffId = D('Role')->getIdByEname(RoleModel::STAFF);
         $departmentId = D('Role')->getIdByEname(RoleModel::DEPARTMENTMASTER);
         if ($depart_id) {
-            $sql = "select user_info.user_id,realname, group_basic.name as group_name  from user_info left join group_basic on user_info.group_id = group_basic.id where (user_info.role_id = $staffId or  user_info.role_id=$departmentId)  and user_info.department_id = ".$depart_id;
+            $sql = "select user_info.user_id,realname, group_basic.name as group_name  from user_info left join group_basic on user_info.group_id = group_basic.id inner join rbac_user on user_info.user_id = rbac_user.id where   (user_info.role_id = $staffId or  user_info.role_id=$departmentId)  and user_info.department_id = ".$depart_id. " and rbac_user.status > -1";
 
                     $members = M()->query($sql);
                     return $members;

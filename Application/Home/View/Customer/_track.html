@@ -8,7 +8,7 @@
     </el-col>
     <el-col :span="14">
       <el-form-item label="客户类型" prop="to_type">
-        <el-select v-model="addTrackForm.to_type" placeholder="请选择">
+        <el-select v-model="addTrackForm.to_type"  clearable placeholder="请选择">
           <el-option v-for="(type, key) in customerType" :label="type" :value="key" :disabled="key=='F' || key=='VX' || key=='VT'  || key=='V' || key=='N'"></el-option>
         </el-select>
       </el-form-item>
