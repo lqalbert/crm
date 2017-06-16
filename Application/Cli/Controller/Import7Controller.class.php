@@ -25,11 +25,9 @@ class Import7Controller extends \Think\Controller {
 
     public function index(){
         $root = getcwd();
-        $done = $root ."\\"."data4";
+        $done = $root ."\\"."data1";
 
         $updar = scandir($done);
-        
-
 
         foreach ($updar as $val) {
             $dir = $done."\\".$val;
@@ -87,7 +85,7 @@ class Import7Controller extends \Think\Controller {
 
 
     private function save(){
-        $re =  M('import_table_fixtime')->addAll($this->insert_data);
+        $re =  M('import_table_fixtime3')->addAll($this->insert_data);
         echo $re;
         echo "\n";
         $this->insert_data = array();

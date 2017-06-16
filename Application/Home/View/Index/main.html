@@ -154,16 +154,17 @@
 	<script>
 	page.getEchartsOption = "{:U('IndexEcharts/index')}";
 	window.defaultOption.setVueHook('mounted', function(){
+		
 		var myChart = echarts.init(document.getElementById('echarts'));
-		this.$http.get(page.getEchartsOption).then(function(response){
+		/*this.$http.get(page.getEchartsOption).then(function(response){
 			console.log(JSON.parse(response.body)); 
 			// myChart.setOption(response.body);
 		}, function(response){
 			this.$message.error("图表数据出错了");
-		});
+		});*/
 
 		// console.log('mounted charts');
-		/*myChart.setOption({
+		myChart.setOption({
 	             title: {
 			        text: '最近7天'
 			    },
@@ -204,7 +205,7 @@
 			        type: 'bar',
 			        data: [10, 20, 5, 9, 3]
 			    }]
-	        });*/
+	        });
 	        
         
         window.onresize = myChart.resize;
