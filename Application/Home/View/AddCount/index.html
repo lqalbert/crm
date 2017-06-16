@@ -86,24 +86,6 @@
               <el-button size="small" @click="setField('week')">本周</el-button>
               <el-button size="small" @click="setField('month')">本月</el-button>
             </el-form-item>
-<!--             <el-form-item>
-              <el-select size="small" v-model="searchForm.type" placeholder="请选择">
-                <el-option v-for="(item,index) in searchGroup" :label="item.key" :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item> -->
-            <el-tooltip content="选择一项统计类型和起止时间后点击查询可得结果" placement="bottom-start">
-              <el-form-item prop="type">
-                <el-dropdown trigger="click" menu-align="start" @command="allTypeChange">
-                  <el-button type="primary" size="small">
-                    {{allTypeName}}<i class="el-icon-caret-bottom el-icon--right"></i>
-                  </el-button>
-                  <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item v-for="item in searchGroup" :command="item.value">{{item.key}}</el-dropdown-item>
-                  </el-dropdown-menu>
-                </el-dropdown>
-              </el-form-item>
-            </el-tooltip>
             
             <el-tooltip content="选择某个部门后点击查询或者继续选择下属小组再查询" placement="bottom-start">
               <el-form-item prop="department_id">
@@ -211,8 +193,8 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-table v-show="ctrl"
-          :data="detailTable" 
+        <el-table 
+          :data="detailTable" v-show="ctrl"
           v-loading="detailLoad" 
           border highlight-current-row 
           element-loading-text="{:L('DATA_LOGIN')}"
@@ -286,12 +268,10 @@
         this.searchForm.end   = showMonthLastDay();
       }
 
-      if(this.searchForm.type != 'user' && this.searchForm.type != ""){
-        this.ctrl = true;
-      }else if(this.searchForm.department_id !="" && this.searchForm.group_id !="" && this.searchForm.user_id ==""){
-        this.ctrl = true;
-      }
 
+
+      this.setTypeCtrl();
+      this.dataLoad = true;
       this.loadDatalist();
       this.detailReset();
   }).setVueHook('mounted', function(){
@@ -323,11 +303,8 @@
         showClose: true
       })
     } else {
-      if(this.searchForm.type != 'user' && this.searchForm.type != ""){
-        this.ctrl = true;
-      }else if(this.searchForm.department_id !="" && this.searchForm.group_id !="" && this.searchForm.user_id ==""){
-        this.ctrl = true;
-      }
+
+      this.setTypeCtrl();
       this.dataLoad = true;
       this.currentPage = 1;
       this.loadDatalist();
@@ -400,6 +377,7 @@
     this.setDropdownName('deps',v,'depName');
     this.searchForm.department_id = v;
 
+
     var vmThis = this;
     //小组
     this.$http.get("{:U('getGroups')}", {params:{department_id:v} }).then(function(response){
@@ -413,10 +391,10 @@
   }).setMethod('groupChange',function(v){
     this.setDropdownName('groups',v,'groupName');
     this.searchForm.group_id = v;
-
+    var d = this.searchForm.department_id;
     var vmThis = this;
     //员工
-    this.$http.get("{:U('getUsers')}", {params:{group_id:v} }).then(function(response){
+    this.$http.get("{:U('getUsers')}", {params:{group_id:v,department_id:d} }).then(function(response){
       var users = [];
       response.body.forEach(function(currentValue,index){
         users.push({id: currentValue.id, name: currentValue.realname});
@@ -438,6 +416,28 @@
       if(this[arr][i]['id'] == v){
         this[name] = this[arr][i]['name'];
       }
+    }
+  }).setMethod('setTypeCtrl',function(){
+
+    if(this.searchForm.user_id == ""){
+      this.ctrl = true;
+    }
+
+    if(this.searchForm.department_id == 'department' && this.searchForm.group_id == "" && this.searchForm.user_id==""){
+      this.searchForm.type = this.searchForm.department_id;
+      this.ctrl = true;
+      delete this.searchForm.department_id;
+    }else if(this.searchForm.department_id == 'department' && this.searchForm.group_id == "group" && this.searchForm.user_id==""){
+      this.searchForm.type = this.searchForm.group_id;
+      this.ctrl = true;
+      delete this.searchForm.department_id;
+      delete this.searchForm.group_id;
+    }else if(this.searchForm.department_id == 'department' && this.searchForm.group_id == "group" && this.searchForm.user_id=="user"){
+      this.searchForm.type = this.searchForm.user_id;
+      this.ctrl = false;
+      delete this.searchForm.department_id;
+      delete this.searchForm.group_id;
+      delete this.searchForm.user_id;
     }
   });
 

@@ -8,60 +8,6 @@ use Home\Model\RbacUserModel;
 
 class TreeController extends CommonController{
 
-	public function setDepartment(){
-		$ename = $this->getRoleEname();
-		if($ename == RoleModel::GOLD){
-			$department = $this->getSalesDepartments(); //cache(true)->
-			$re = array();
-			foreach ($department as $k => $v) {
-				$re[] = array(
-	         'name' => $v['name'],
-	         'id' => $v['id'],
-	         'spread' => false,
-	         'children' => $this->setGroup($v['id']),
-	         'title' => $v['id'].$v['name'],
-
-				);
-			}
-		}
-		return $re;
-	}
-
-  protected function setGroup($department_id){
-  	$group = $this->getAllGoups($department_id, 'id,name');
-  	$re = array();
-  	foreach ($group as $k => $v) {
-  		$re[] = array(
-      	'name' => $v['name'],
-      	'id' => $v['id'],
-      	'spread' => false,
-				'children' => $this->setUser($v['id']),
-				'title' => $v['id'].$v['name'],
-  		);
-  	}
-
-  	return $re;
-  }
-
-  protected function setUser($group_id){
-  	$user = $this->getGroupEmployee($group_id, 'id,realname');
-  	$re = array();
-  	foreach ($user as $k => $v) {
-  		$re[] = array(
-      	'name' => $v['realname'],
-      	'id' => $v['id'],
-				'spread' => false,
-				'field' => array(
-          'icon' => "&#xe65a;",
-          'title' => $v['realname'],
-          'href' => U('DepartmentCustomer/index', array('id'=>$v['id'])),
-				),
-  		);
-  	}
-
-  	return $re;
-  }
-
   //获取所有部门
   public function getSalesDepartments($fields="id,name"){
   	return D('Department')->cache(true)->where(array('type'=>DepartmentModel::SALES_DEPARTMENT, 'status'=> array('NEQ', -1)))
@@ -88,10 +34,30 @@ class TreeController extends CommonController{
   }
 
   //获取员工
-  public function getGroupEmployee($group_id, $field="id,account,realname"){
+  public function getGroupEmployee($department_id,$group_id, $field="id,account,realname"){
     $m = new RbacUserModel;
+
+    if (is_numeric($group_id) && $group_id!=0) {
+        $m->cache(true)->where(array('group_id'=>$group_id));
+    } else if(is_array($group_id)){
+        $m->cache(true)->where(array('group_id'=>array('IN', $group_id)));
+    }else if(is_numeric($department_id) && $department_id!=0){
+        $m->cache(true)->where(array('department_id'=>$department_id));
+    }elseif (is_array($department_id)) {
+        $m->cache(true)->where(array('department_id'=>array('IN', $department_id)));
+    }elseif (is_numeric($group_id) && $group_id!=0 && is_numeric($department_id) && $department_id!=0) {
+        $m->cache(true)->where(array('department_id'=>$department_id,'group_id'=>$group_id));
+    }elseif (is_array($group_id) && is_array($department_id)) {
+        $m->cache(true)->where(array('group_id'=>array('IN', $group_id),'department_id'=>array('IN', $department_id)));
+    }elseif (is_array($group_id) && is_numeric($department_id && $department_id!=0)) {
+        $m->cache(true)->where(array('group_id'=>array('IN', $group_id),'department_id'=>$department_id));
+    }elseif (is_array($department_id) && is_numeric($group_id) && $group_id!=0) {
+        $m->cache(true)->where(array('department_id'=>array('IN', $department_id),'group_id'=>$group_id));
+    }
+    
+
     return $m->join('user_info on rbac_user.id = user_info.user_id')
-         ->cache(true)->where(array('group_id'=>$group_id, 'rbac_user.status'=>array('NEQ', RbacUserModel::DELETE_SATUS)))
+         ->cache(true)->where(array('user_info.role_id'=>array('NEQ','1'),'rbac_user.status'=>array('NEQ', RbacUserModel::DELETE_SATUS)))
          ->field($field)
          ->select();
   }
