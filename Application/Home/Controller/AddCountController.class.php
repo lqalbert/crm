@@ -113,10 +113,11 @@ class AddCountController extends CommonController{
   public function getDeps($status){
   	$treeOb = $this->treeOb();
   	$arr = $treeOb->getAlldep();
-  	$arr[] = array(
-			'id'=>'department',
-			'name'=>'所有部门'
-  	); 
+  	// $arr[] = ; 
+    array_unshift($arr, array(
+      'id'=>'department',
+      'name'=>'所有部门'
+    ));
   	//va_dump($arr);die();
   	$this->ajaxReturn($arr);
   }
@@ -125,10 +126,10 @@ class AddCountController extends CommonController{
   public function getGroups($department_id){
   	$treeOb = $this->treeOb();
   	$arr = $treeOb->getAllGoups($department_id, 'id,name');
-  	$arr[] = array(
-			'id'=>'group',
-			'name'=>'所有团组'
-  	);
+    array_unshift($arr, array(
+      'id'=>'group',
+      'name'=>'所有团组'
+    ));
   	$this->ajaxReturn($arr);
 
   }
@@ -137,10 +138,11 @@ class AddCountController extends CommonController{
   public function getUsers($department_id,$group_id){
   	$treeOb = $this->treeOb();
   	$arr = $treeOb->getGroupEmployee($department_id,$group_id, 'id,realname');
-  	$arr[] = array(
-			'id'=>'user',
-			'realname'=>'所有队员'
-  	);
+
+    array_unshift($arr, array(
+      'id'=>'user',
+      'realname'=>'所有队员'
+    ));
   	$this->ajaxReturn($arr);
   }
 
