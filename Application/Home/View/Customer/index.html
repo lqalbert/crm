@@ -153,7 +153,11 @@
             <el-button type="warning" size="small" @click="openDialog('importc')" >客户导入</el-button>
           </el-tooltip> -->
 
+<<<<<<< HEAD
           <el-tooltip content="客户预查" placement="bottom-start"  style="margin-left:10px;">
+=======
+          <el-tooltip content="查询客户资料是否已存在或者冲突" placement="bottom-start"  style="margin-left:10px;">
+>>>>>>> "6月19号更新"
             <el-button size="small"  @click="openDialog('preCheck')"  type="primary">{:L('CUSTOMER_PRE_CHECK')}</el-button>
           </el-tooltip>
 
@@ -882,7 +886,50 @@
        vmThis.$set(vmThis,'reUsers',reUsers);
      });
   }).setMethod('beforeEdit',function(){
+<<<<<<< HEAD
 
+=======
+      var form='edit';
+
+      if (this.multipleSelection.length ==0 ) {
+          this.closeDialog(form);
+          this.$message.error('请先选择一个员工');
+      } else if(this.multipleSelection.length > 1){
+          this.closeDialog(form);
+          this.$message.error('只能选择一个员工');
+      }else {
+          var row = this.multipleSelection[0];
+          this.editForm.id=row.id;
+          this.editForm.name = row.name;
+          this.editForm.type = row.type;
+          this.editForm.money=row.money;
+          this.editForm.sex=row.sex;
+          this.editForm.phone=row.phone;
+          this.editForm.source=row.source;
+          this.editForm.qq=row.qq;
+          this.editForm.qq_nickname=row.qq_nickname;
+          this.editForm.weixin=row.weixin;
+          this.editForm.weixin_nickname=row.weixin_nickname;
+          this.editForm.qq2=row.qq2;
+          this.editForm.phone2=row.phone2;
+          this.editForm.qq_nickname2=row.qq_nickname2;
+          this.editForm.weixin2=row.weixin2;
+          this.editForm.weixin_nickname2=row.weixin_nickname2;
+          this.editForm.area_province=row.area_province;
+          this.editForm.area_city=row.area_city;
+          this.editForm.quality=row.quality;
+          this.editForm.year=row.year;
+          this.editForm.re_income=row.re_income;
+          this.editForm.style=row.style;
+          this.editForm.energy=row.energy;
+          this.editForm.problem=row.problem;
+          this.editForm.mode=row.mode;
+          this.editForm.attitude=row.attitude;
+          this.editForm.profession=row.profession;
+          this.editForm.intention=row.intention;
+          this.editForm.remark=row.remark;
+      }
+>>>>>>> "6月19号更新"
     if (!this.$refs['editselect']) {
       this.provinceChange(this.editForm.area_province);
     }
@@ -966,9 +1013,9 @@
         //console.log(currentValue);
         provinces.push({id: currentValue.id, name: currentValue.name});
       })
-      console.log(vmThis.provinces);
+      /*console.log(vmThis.provinces);*/
       vmThis.$set(vmThis, 'provinces', provinces);
-      console.log(vmThis.provinces);
+      /*console.log(vmThis.provinces);*/
     });
 
     //接收单位、员工

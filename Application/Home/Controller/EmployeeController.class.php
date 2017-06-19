@@ -40,30 +40,19 @@ class EmployeeController extends CommonController {
         if (isset($_GET['department_id'])) {
             $this->M->where(array('department_id'=>$_GET['department_id']));
         }
+
+        if (isset($_GET['group_id'])) {
+            $this->M->where(array('group_id'=>$_GET['group_id']));
+        }
 		/*$user = new User;
 		$user->getRoleObject();
 		$user->setEmployQueryCondition($this->M);*/
 		$this->setRoleCondition();
-
-
-
-		if (isset($_GET['name'])) {
-			$this->M->where(array('account'=>array('like', I('get.name')."%")));
+		if (isset($_GET['type']) && isset($_GET['typeValue'])) {
+			$this->M->where(array(I('get.type')=>array('like', I('get.typeValue')."%")));
 		}
 
-		if (isset($_GET['realname'])) {
-			$this->M->where(array('realname'=>array('like', I('get.realname')."%")));
-		}
-		if(isset($_GET['mphone'])){
-		    $this->M->where(array('mphone'=>array('like',I('get.mphone').'%')));
-        }
-
-        if (isset($_GET['qq'])) {
-            $this->M->where(array('qq'=>array('like', I('get.qq')."%")));
-        }
-        if(isset($_GET['weixin'])){
-            $this->M->where(array('weixin'=>array('like',I('get.weixin').'%')));
-        }
+		
 
 		$this->M->where(array('rbac_user.id'=>array('neq', session('uid'))));
 
