@@ -900,6 +900,7 @@
      });
   }).setMethod('beforeOpenEdit', function(){
       var form='edit';
+
       if (this.multipleSelection.length ==0 ) {
           this.closeDialog(form);
           this.$message.error('请先选择一个员工');

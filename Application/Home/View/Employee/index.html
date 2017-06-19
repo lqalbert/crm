@@ -195,7 +195,7 @@
 		
 		<div class="dialogWrapper" v-show="show" style="display: none">
 			<!-- 高级查询 -->
-			
+			<include file="_searchx" />
 			<!-- / 高级查询 -->
 
 			<!-- 添加 -->
@@ -475,6 +475,7 @@
 	        cities.push({id: currentValue.id, name: currentValue.name});
 	       })
 	       vmThis.$set(vmThis, 'cities', cities);
+	       vmThis.$set(vmThis['addForm'], 'area_city', "");
 	    })
 	  }).setMethod('cityChange', function(v){
 	    var vmThis = this;
