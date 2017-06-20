@@ -83,6 +83,8 @@
                 </el-date-picker>
             </el-form-item>
             <el-form-item>
+              <el-button size="small" @click="setField('lastMonth')">上月</el-button>
+              <el-button size="small" @click="setField('lastWeek')">上周</el-button>
               <el-button size="small" @click="setField('week')">本周</el-button>
               <el-button size="small" @click="setField('month')">本月</el-button>
             </el-form-item>
@@ -259,6 +261,13 @@
   }).setMethod('endDateChange', function(v){
       this.searchForm.end = v;
   }).setMethod('setField', function(v){
+    var Nowdate=new Date();     
+    var LastWeekFirstDay=new Date(Nowdate-(Nowdate.getDay()+6)*86400000);
+    var LastWeekLastDay=new Date((LastWeekFirstDay/1000+6*86400)*1000); 
+    M=Number(LastWeekLastDay.getMonth())+1   
+  
+    console.log(LastWeekLastDay.getFullYear()+"-"+formartNumber(M)+"-"+formartNumber(LastWeekLastDay.getDate()));
+
       if (v=='week') {
         this.searchForm.start = showWeekFirstDay();
         this.searchForm.end   = showWeekLastDay();
@@ -266,6 +275,12 @@
       } else if(v=='month'){
         this.searchForm.start = showMonthFirstDay();
         this.searchForm.end   = showMonthLastDay();
+      } else if(v=='lastMonth'){
+        this.searchForm.start = showLastMonthFirstDay();
+        this.searchForm.end   = showLastMonthLastDay(); 
+      } else if(v=='lastWeek'){
+        this.searchForm.start = showLastWeekFirstDay();
+        this.searchForm.end   = showLastWeekLastDay(); 
       }
 
 

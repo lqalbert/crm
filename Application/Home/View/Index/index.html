@@ -183,23 +183,26 @@
 		<script src="https://s13.cnzz.com/z_stat.php?id=1262057085&web_id=1262057085" language="JavaScript"></script>
 		<script>
 		layui.use(['tree', 'layer','tab'], function(){
-		  var layer = layui.layer
-		  ,$ = layui.jquery; 
-		  tab = layui.tab();
+		  var layer = layui.layer,
+		      $ = layui.jquery,
+		      layer = layui.layer,
+		      tab = layui.tab();
 
 		 
 		  layui.tree({
 		    elem: '#allUser', //指定元素
 		    click:function(item){
-		    	// console.log(this);
-		    	// console.log(event);
 		    	var e2 = window.event || e;
 		    	$( e2.currentTarget).dblclick();
-		       if(item.field === undefined){
-		       	 console.log(item);
-		       }else{
-		       	 tab.tabAdd(item.field);
-		       }
+		        if(item.field === undefined){
+		       	  console.log(item);
+				      layer.msg('出现未知错误请联系技术团队', {
+				        time: 3000, //3s后自动关闭
+				        btn: ['马上去', '知道了', '哦']
+				      });
+		        }else{
+		       	  tab.tabAdd(item.field);
+		        }
 		    },
 		    nodes: {:json_encode($tree)},
 		  });

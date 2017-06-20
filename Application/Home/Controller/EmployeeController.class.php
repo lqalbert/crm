@@ -15,11 +15,11 @@ class EmployeeController extends CommonController {
 		$this->assign("groupList", D('Group')->where(array('status'=>1))->select());
 		$this->assign("sexType", array("未定义", "男", "女"));
 		$ename = $this->getRoleEname();
-    	$this->assign('viewDecorator', $this->M->decoratorView($ename));
-    	$this->assign('departments', D('Department')->getAllDepartments('id,name'));
-    	$this->assign('depart_id', $this->getDepartmentId());
-    	$this->assign('departmentItem', $this->setEmployeeDepartemtnItem());
-    	$this->assign('allRoles', D('Role')->getField('id,name', true));
+  	$this->assign('viewDecorator', $this->M->decoratorView($ename));
+  	$this->assign('departments', D('Department')->getAllDepartments('id,name'));
+  	$this->assign('depart_id', $this->getDepartmentId());
+  	$this->assign('departmentItem', $this->setEmployeeDepartemtnItem());
+  	$this->assign('allRoles', D('Role')->getField('id,name', true));
 		$this->display();
 	}
 
@@ -33,7 +33,8 @@ class EmployeeController extends CommonController {
 		        	area_province,created_at,
 		        	department_id,group_id,
 		        	head,rbac_user.id,mphone,no_authorized,phone,
-		        	qq,qq_nickname,realname,role_ename,role_id,sex,rbac_user.status,user_info.user_id,weixin,weixin_nikname,id_card,card_img,card_front,card_back,ip,location,lg_time,out_time')->where(array('no_authorized'=>0))
+		        	qq,qq_nickname,realname,role_ename,role_id,sex,rbac_user.status,user_info.user_id,weixin,
+		        	weixin_nikname,id_card,card_img,card_front,card_back,ip,location,lg_time,out_time')->where(array('no_authorized'=>0))
 		        ->where(array('rbac_user.status'=>I('get.status')));
 
 		/*$user = new User;
