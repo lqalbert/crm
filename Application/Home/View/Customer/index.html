@@ -153,11 +153,7 @@
             <el-button type="warning" size="small" @click="openDialog('importc')" >客户导入</el-button>
           </el-tooltip> -->
 
-<<<<<<< HEAD
-          <el-tooltip content="客户预查" placement="bottom-start"  style="margin-left:10px;">
-=======
           <el-tooltip content="查询客户资料是否已存在或者冲突" placement="bottom-start"  style="margin-left:10px;">
->>>>>>> "6月19号更新"
             <el-button size="small"  @click="openDialog('preCheck')"  type="primary">{:L('CUSTOMER_PRE_CHECK')}</el-button>
           </el-tooltip>
 
@@ -887,9 +883,6 @@
        vmThis.$set(vmThis,'reUsers',reUsers);
      });
   }).setMethod('beforeEdit',function(){
-<<<<<<< HEAD
-
-=======
       var form='edit';
 
       if (this.multipleSelection.length ==0 ) {
@@ -930,7 +923,6 @@
           this.editForm.intention=row.intention;
           this.editForm.remark=row.remark;
       }
->>>>>>> "6月19号更新"
     if (!this.$refs['editselect']) {
       this.provinceChange(this.editForm.area_province);
     }
