@@ -199,17 +199,17 @@
   	    <el-table-column width="50" align="center" type="selection"></el-table-column>
 
   	    <el-table-column label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  ></el-table-column>
-  	    <el-table-column  prop="name"  label="客户姓名" width="150" header-align="center"></el-table-column>
+  	    <el-table-column  prop="name"  label="客户姓名" width="150" ></el-table-column>
   	    <el-table-column   prop="type" label="客户类型" sortable='customer' width="150" header-align="center">
           <template scope="scope">
             {{ getType(scope.row.type, 'customerType') }}
           </template>
   	    </el-table-column>
 
-        <el-table-column  prop="realname" label="跟踪员工" sortable='customer' width="150" header-align="center">
+        <el-table-column  prop="realname" label="跟踪员工" sortable='customer' width="150" >
         </el-table-column>
 
-        <el-table-column  prop="lock_name" label="锁定员工" sortable='customer' width="150" header-align="center">
+        <el-table-column  prop="lock_name" label="锁定员工" sortable='customer' width="150" >
         </el-table-column>
 
         <el-table-column   prop="qq" label="QQ号"  width="170" header-align="center">
@@ -259,9 +259,10 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" width="90" fixed="right">
+        <el-table-column label="操作" width="170" fixed="right">
           <template scope="scope">
             <el-button size="small" @click="buy(scope.row)" type="primary">购买</el-button>
+            <el-button size="small" @click="buy(scope.row)" type="primary">续费</el-button>
           </template>
         </el-table-column>
 

@@ -176,6 +176,7 @@ class AddCountController extends CommonController{
     	$arr[] = $this->users[$user_id];
     	$result = array('list'=>$arr, 'count'=>count($arr));
     }elseif ($department_id != 'department' && $group_id =='group' && empty($user_id)) {
+      var_dump($this->groups);
     	foreach ($this->groups as $k => $v) {
     		if($v['department_id'] == $department_id){
     			$arr[] = $v;
@@ -190,6 +191,8 @@ class AddCountController extends CommonController{
     	}
     	$result = array('list'=>$this->splitList($arr), 'count'=>count($arr));
     }elseif ($department_id != 'department' && $group_id !='group' && empty($user_id)) {
+
+
     	$arr[] = $this->groups[$group_id];
     	$result = array('list'=>$arr, 'count'=>count($arr));
     }elseif ($department_id != 'department' && $group_id !='group' && $user_id =='user') {
