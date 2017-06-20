@@ -23,11 +23,11 @@ class LoginController extends Controller {
 				);
 			$result = $userModel->relation('userInfo')->where($where)->find();
 			if (!$result) {
-        $this->ajaxReturn(array('msg'=>L('LOGIN_ERROR'),'code'=>-1),'JSON');
+        		$this->ajaxReturn(array('msg'=>L('LOGIN_ERROR'),'code'=>-1),'JSON');
 			} else {
-        $sessionId=session_id();
-        session('ssid', $sessionId);
-       // $userModel->where(array('id'=>$result['id']))->save(array('ss_id'=>$sessionId));
+        		$sessionId=session_id();
+        		session('ssid', $sessionId);
+       			// $userModel->where(array('id'=>$result['id']))->save(array('ss_id'=>$sessionId));
         
 				// $location=new \Ip\Taobaoip\taobaoIp();//利用淘宝地址库
 				// $arr=$location->getLocation();

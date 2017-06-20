@@ -21,7 +21,7 @@
 			  <div slot="header" class="clearfix">
 			    <span>个人信息</span>
 			  </div>
-			  <div id="two" style="width:480px;display: table-cell;vertical-align:middle;">
+			  <div id="two" style="min-width:410px;display: table-cell;vertical-align:middle;">
 			  	<php>
 					$userInfo = session('account')['userInfo'];
 					$arr=M('user_info')->where(array('user_id'=>$userInfo['user_id']))->find(); 
@@ -74,7 +74,7 @@
 		<el-col :span="24">
 			<el-card class="box-card">
 				<div slot="header" class="clearfix">
-					<span>业绩走势 测试数据</span>
+					<span>业绩走势 试用数据</span>
 				</div>
 				<div>
 					<div id="echarts" style="height: 200px;">
@@ -88,17 +88,17 @@
 		<el-col :span="24">
 			<el-card class="box-card">
 				<div class="clearfix" slot="header">
-					<span>业绩报表(每日) 测试数据</span>
+					<span>业绩报表(每日) 试用数据</span>
 				</div>
 				<div>
 					<el-table :data="sysReport" border style="width: 100%">
 				    <el-table-column prop="date"  label="日期" width="180"></el-table-column>
-						<el-table-column prop="zyj"   label="总业绩"></el-table-column>
-						<el-table-column prop="cjc"   label="成交客户数（新成交/合作）"></el-table-column>
-						<el-table-column prop="xfc"   label="续费客户数（续费/合作）"></el-table-column>
-						<el-table-column prop="xfy"   label="续费业绩（续费/合作）"></el-table-column>
-						<el-table-column prop="sjc"   label="升级客户数（升级/合作）"></el-table-column>
-						<el-table-column prop="sjy"   label="升级业绩（升级/合作）"></el-table-column>
+						<el-table-column prop="v"   label="总业绩"></el-table-column>
+						<el-table-column prop="v"   label="成交客户数"></el-table-column>
+						<el-table-column prop="xfc"   label="续费客户数（暂无）"></el-table-column>
+						<el-table-column prop="xfy"   label="续费业绩（暂无）"></el-table-column>
+						<!-- <el-table-column prop="sjc"   label="升级客户数（升级/合作）"></el-table-column>
+						<el-table-column prop="sjy"   label="升级业绩（升级/合作）"></el-table-column> -->
 				    </el-table>
 				</div>
 			</el-card>
@@ -114,11 +114,11 @@
 				<div>
 					<el-table border :data="data3" style="width:100%">
 						<el-table-column prop="date" label="日期"></el-table-column>
-						<el-table-column prop="sd"   label="锁定"></el-table-column>
-						<el-table-column prop="gz"   label="跟踪"></el-table-column>
-						<el-table-column prop="tj"   label="转入"></el-table-column>
-						<el-table-column prop="xg"   label="转出"></el-table-column>
-						<el-table-column prop="xq"   label="冲突"></el-table-column>
+						<el-table-column prop="phone_c"   label="电话跟踪"></el-table-column>
+						<el-table-column prop="self_c"   label="锁定自跟"></el-table-column>
+						<!-- <el-table-column prop="tj"   label="转入"></el-table-column>
+						<el-table-column prop="xg"   label="转出"></el-table-column> -->
+						<el-table-column prop="qq_c"   label="QQ跟踪"></el-table-column>
 					</el-table>
 				</div>
 			</el-card>
@@ -126,20 +126,20 @@
 		<el-col :span="12">
 			<el-card class="box-card">
 				<div class="clearfix" slot="header">
-					<span>客户报表(每日) 测试数据</span>
+					<span>客户统计(每日) 测试数据</span>
 				</div>
 				<div>
 					<el-table border :data="data3" style="width:100%">
 						<el-table-column prop="date" label="日期"></el-table-column>
-						<el-table-column prop="sd"   label="锁定"></el-table-column>
-						<el-table-column prop="gz"   label="跟踪"></el-table-column>
-						<el-table-column prop="tj"   label="推介"></el-table-column>
-						<el-table-column prop="xg"   label="修改"></el-table-column>
-						<el-table-column prop="xq"   label="索取"></el-table-column>
+						<el-table-column prop="all_num"   label="累计客户总数"></el-table-column>
+						<el-table-column prop="create_c"   label="当日自锁数"></el-table-column>
+						<el-table-column prop="today_v"   label="当日成交数"></el-table-column>
+						<!-- <el-table-column prop="xg"   label="修改"></el-table-column> 
+						<el-table-column prop="xq"   label="索取"></el-table-column> -->
 					</el-table> 
 				</div>
 			</el-card>
-		</el-col>
+		</el-col> 
 	</el-row>
 </div>
 <div class="dialogWrapper" v-show="show" style="display: none">
@@ -152,19 +152,14 @@
 <block name="scripts">
 <script src="__PUBLIC__/js/echarts.min.js"></script>
 	<script>
-	page.getEchartsOption = "{:U('IndexEcharts/index')}";
+	page.getEchartsOption = "{:U('IndexData/echarts')}";
+	page.getSysReport = "{:U('IndexData/getSysReport')}";
+	page.getData2 = "{:U('IndexData/getData2')}";
+	page.getData3 = "{:U('IndexData/getData3')}";
 	window.defaultOption.setVueHook('mounted', function(){
 		
 		var myChart = echarts.init(document.getElementById('echarts'));
-		/*this.$http.get(page.getEchartsOption).then(function(response){
-			console.log(JSON.parse(response.body)); 
-			// myChart.setOption(response.body);
-		}, function(response){
-			this.$message.error("图表数据出错了");
-		});*/
-
-		// console.log('mounted charts');
-		myChart.setOption({
+		var option = {
 	             title: {
 			        text: '最近7天'
 			    },
@@ -175,7 +170,7 @@
 			        }
 			    },
 			    legend: {
-			        data: ['自锁数', '成交数'],
+			        data: ['自锁数'],
 			        align: 'right',
 			        right: 10
 			    },
@@ -185,10 +180,10 @@
 			        bottom: '3%',
 			        containLabel: true
 			    },
-			    xAxis: [{
+			    xAxis: {
 			        type: 'category',
 			        data: ['2017-01-01', '2017-01-02', '2017-01-03', '2017-01-04', '2017-01-05']
-			    }],
+			    },
 			    yAxis: [{
 			        type: 'value',
 			        name: '数量',
@@ -205,7 +200,11 @@
 			        type: 'bar',
 			        data: [10, 20, 5, 9, 3]
 			    }]
-	        });
+	        }
+		
+
+		// console.log('mounted charts');
+		
 	        
         
         window.onresize = myChart.resize;
@@ -220,6 +219,38 @@
             th.style.marginRight="30px";
             th.style.textAlign='left';
       	}*/
+      	this.$http.get(page.getEchartsOption).then(function(response){
+			option.xAxis.data = response.body.date;
+			option.series = response.body.series;
+			// console.log(response.body);
+			myChart.setOption(option);
+		}, function(response){
+			this.$message.error("图表数据出错了");
+		});
+
+		this.$http.get(page.getSysReport).then(function(response){
+			this.sysReport  = response.body;
+		}, function(response){
+			this.$message.error("业绩报表");
+		});
+
+		this.$http.get(page.getData2).then(function(response){
+			this.data2  = response.body;
+		}, function(response){
+			this.$message.error("业绩报表");
+		});
+
+		this.$http.get(page.getData3).then(function(response){
+			this.data3  = response.body;
+		}, function(response){
+			this.$message.error("业绩报表");
+		});
+		// setLocation()
+		
+
+		this.$http.get("{:U('setLocation')}").then(function(response){
+			// this.data3  = response.body;
+		});
 
 	}).setDatas({
 		NoticeType:{:json_encode($NoticeType)},
