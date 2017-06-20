@@ -153,11 +153,7 @@
             <el-button type="warning" size="small" @click="openDialog('importc')" >客户导入</el-button>
           </el-tooltip> -->
 
-<<<<<<< HEAD
-          <el-tooltip content="客户预查" placement="bottom-start"  style="margin-left:10px;">
-=======
           <el-tooltip content="查询客户资料是否已存在或者冲突" placement="bottom-start"  style="margin-left:10px;">
->>>>>>> "6月19号更新"
             <el-button size="small"  @click="openDialog('preCheck')"  type="primary">{:L('CUSTOMER_PRE_CHECK')}</el-button>
           </el-tooltip>
 
@@ -272,8 +268,21 @@
 
   <!-- toolbar -->
   <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
+
     <el-col :span="12"> 
-      <div class="grid-content bg-purple">
+      <el-row style="margin-bottom:6px">
+        <el-col :span="24">
+          <el-tooltip content="录入新的客户" placement="bottom-start" style="margin-left:0px;">
+              <el-button  @click="openDialog('add')" size="small" type="primary">添加客户</el-button>
+          </el-tooltip>
+          <el-tooltip content="编辑客户资料" placement="bottom-start" style="margin-left:10px;">
+              <el-button  @click="beforeOpenEdit" size="small" type="primary">修改客户</el-button>
+          </el-tooltip>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <div class="grid-content bg-purple">
         <span class="wrapper">
           <el-tooltip content="选择客户录入跟踪信息" placement="right">
             <el-button size="small" @click="openDialog('addTrack')" type="primary">录入跟踪</el-button>
@@ -296,6 +305,9 @@
           </el-tooltip>
         </span>
       </div>
+        </el-col>
+      </el-row>
+      
     </el-col>
     <el-col :span="12">
       <div class="grid-content bg-purple-light pull-right">
@@ -886,12 +898,8 @@
        })
        vmThis.$set(vmThis,'reUsers',reUsers);
      });
-  }).setMethod('beforeEdit',function(){
-<<<<<<< HEAD
-
-=======
+  }).setMethod('beforeOpenEdit', function(){
       var form='edit';
-
       if (this.multipleSelection.length ==0 ) {
           this.closeDialog(form);
           this.$message.error('请先选择一个员工');
@@ -900,37 +908,10 @@
           this.$message.error('只能选择一个员工');
       }else {
           var row = this.multipleSelection[0];
-          this.editForm.id=row.id;
-          this.editForm.name = row.name;
-          this.editForm.type = row.type;
-          this.editForm.money=row.money;
-          this.editForm.sex=row.sex;
-          this.editForm.phone=row.phone;
-          this.editForm.source=row.source;
-          this.editForm.qq=row.qq;
-          this.editForm.qq_nickname=row.qq_nickname;
-          this.editForm.weixin=row.weixin;
-          this.editForm.weixin_nickname=row.weixin_nickname;
-          this.editForm.qq2=row.qq2;
-          this.editForm.phone2=row.phone2;
-          this.editForm.qq_nickname2=row.qq_nickname2;
-          this.editForm.weixin2=row.weixin2;
-          this.editForm.weixin_nickname2=row.weixin_nickname2;
-          this.editForm.area_province=row.area_province;
-          this.editForm.area_city=row.area_city;
-          this.editForm.quality=row.quality;
-          this.editForm.year=row.year;
-          this.editForm.re_income=row.re_income;
-          this.editForm.style=row.style;
-          this.editForm.energy=row.energy;
-          this.editForm.problem=row.problem;
-          this.editForm.mode=row.mode;
-          this.editForm.attitude=row.attitude;
-          this.editForm.profession=row.profession;
-          this.editForm.intention=row.intention;
-          this.editForm.remark=row.remark;
+          this.handleEdit(this.dataList.indexOf(row) , row);
       }
->>>>>>> "6月19号更新"
+  }).setMethod('beforeEdit',function(){
+      
     if (!this.$refs['editselect']) {
       this.provinceChange(this.editForm.area_province);
     }
