@@ -83,51 +83,35 @@
                 </el-date-picker>
             </el-form-item>
             <el-form-item>
-              <el-button size="small" @click="setField('lastMonth')">上月</el-button>
               <el-button size="small" @click="setField('lastWeek')">上周</el-button>
+              <el-button size="small" @click="setField('lastMonth')">上月</el-button>
               <el-button size="small" @click="setField('week')">本周</el-button>
               <el-button size="small" @click="setField('month')">本月</el-button>
             </el-form-item>
-            
+
             <el-tooltip content="选择某个部门后点击查询或者继续选择下属小组再查询" placement="bottom-start">
               <el-form-item prop="department_id">
-                <el-dropdown trigger="click" menu-align="start" @command="depChange">
-                  <el-button type="primary" size="small">
-                    {{depName}}<i class="el-icon-caret-bottom el-icon--right"></i>
-                  </el-button>
-                  <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item v-for="dep in deps" :command="dep.id">{{dep.name}}</el-dropdown-item>
-                  </el-dropdown-menu>
-                </el-dropdown>
-              </el-form-item>
-            </el-tooltip>
-            
-            <el-tooltip content="必须先选择部门方可选择团组后点击查询或者继续选择下属队员再查询" placement="bottom-start">
-              <el-form-item prop="group_id">
-                <el-dropdown trigger="click" menu-align="start" @command="groupChange">
-                  <el-button type="primary" size="small">
-                    {{groupName}}<i class="el-icon-caret-bottom el-icon--right"></i>
-                  </el-button>
-                  <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item v-for="group in groups" :command="group.id">{{group.name}}</el-dropdown-item>
-                  </el-dropdown-menu>
-                </el-dropdown>
-              </el-form-item>
-            </el-tooltip>
-            
-            <el-tooltip content="必须先选择团组方可选择其下属的员工再点击查询" placement="bottom-start">
-              <el-form-item prop="user_id">
-                <el-dropdown trigger="click" menu-align="start" @command="userChange">
-                  <el-button type="primary" size="small">
-                    {{userName}}<i class="el-icon-caret-bottom el-icon--right"></i>
-                  </el-button>
-                  <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item v-for="user in users" :command="user.id">{{user.name}}</el-dropdown-item>
-                  </el-dropdown-menu>
-                </el-dropdown>
+                <el-select size="small" style="width:120px;" v-model="searchForm.department_id" @change="depChange" placeholder="请选择部门">
+                  <el-option v-for="dep in deps" :value="dep.id" :label="dep.name"></el-option>
+                </el-select>
               </el-form-item>
             </el-tooltip>
 
+            <el-tooltip content="必须先选择部门方可选择团组后点击查询或者继续选择下属队员再查询" placement="bottom-start">
+              <el-form-item prop="group_id">
+                <el-select size="small" style="width:120px;" v-model="searchForm.group_id" @change="groupChange" placeholder="请选择小组">
+                  <el-option v-for="group in groups" :value="group.id" :label="group.name"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-tooltip>
+
+            <el-tooltip content="必须先选择团组方可选择其下属的员工再点击查询" placement="bottom-start">
+              <el-form-item prop="user_id">
+                <el-select size="small" style="width:120px;" v-model="searchForm.user_id" @change="userChange" placeholder="请选择队员">
+                  <el-option v-for="user in users" :value="user.id" :label="user.name"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-tooltip>
 
             <el-form-item>
               <el-tooltip content="填写或者选择好筛选条件后点击此按钮" placement="bottom-start">
@@ -157,16 +141,15 @@
                     <el-table-column label="序号"  align="center" width="65" :formatter="handleIndex"  >
                     </el-table-column>
 
-                    <el-table-column   prop="name"  label="名称"   width="150">
+                    <el-table-column  prop="name" header-align="center" label="名称" width="150">
                     </el-table-column>
 
-                    <el-table-column v-if="searchForm.type=='group'"  prop="realname"  label="主管"   width="150">
+                    <el-table-column v-if="searchForm.type=='group'" header-align="center" prop="realname" label="主管" width="150">
                     </el-table-column>
 
-                    <el-table-column v-if="searchForm.type!='department'"  prop="department_name"  label="部门"   width="150">
+                    <el-table-column v-if="searchForm.type!='department'"  prop="department_name" 
+                        header-align="center" label="部门"   width="150">
                     </el-table-column>
-
-
 
                     <el-table-column sortable="custom"  align="center" prop="create_num" label="自锁数"  >
                     </el-table-column>
@@ -389,7 +372,6 @@
         this.$message.error("出错了，请联系开发");
       })
   }).setMethod('depChange',function(v){
-    this.setDropdownName('deps',v,'depName');
     this.searchForm.department_id = v;
 
 
@@ -404,7 +386,6 @@
     });
 
   }).setMethod('groupChange',function(v){
-    this.setDropdownName('groups',v,'groupName');
     this.searchForm.group_id = v;
     var d = this.searchForm.department_id;
     var vmThis = this;
@@ -417,7 +398,6 @@
       vmThis.$set(vmThis, 'users', users);
     });
   }).setMethod('userChange',function(v){
-    this.setDropdownName('users',v,'userName');
     this.searchForm.user_id = v;
   }).setMethod('allTypeChange',function(v){
     this.searchForm.type = v;

@@ -11,7 +11,6 @@ class DepartmentController extends CommonController {
 	public function index(){
 		$count = $this->M->count();
 		$type = $this->M->getType();
-		
 		$this->assign("typeList", $type);
 		$this->assign("totalCount", $count);
 		$this->assign("zoneList", M('department_zone')->getField('id,name'));
@@ -30,14 +29,31 @@ class DepartmentController extends CommonController {
 	* @return null
 	*/
 	public function setQeuryCondition() {
+		$name = I('get.name');
+		$contact = I('get.contact');
+		$tel = I('get.tel');
+		$type = I('get.type');
 		$map = array('department_basic.status'=>array('EGT',0) ); //查询的参数
 		if ( !empty(I('get.name')) ) {
-			$map['department_basic.name'] = array('like', I('get.name')."%");
+			$map['department_basic.name'] = array('like', $name ."%");
 		}
 		$this->M->where($map);
 
 		$this->M->join('left join user_info as ui on department_basic.user_id = ui.user_id ')
 				->field("department_basic.*, ui.realname as contact ,ui.mphone as tel");
+
+    if(I('get.contact')){
+      $this->M->where(array('ui.realname'=>array('like',"%".$contact."%")));
+    }
+
+    if(I('get.tel')){
+    	$this->M->where(array('ui.mphone'=>array('like',"%".$tel."%")));
+    }
+    
+    if(I('get.type')){
+    	$this->M->where(array('department_basic.type'=>$type));
+    }
+
 	}
 
 
@@ -49,9 +65,9 @@ class DepartmentController extends CommonController {
 	private function setConfig(){
 		//临时写到这里
 		// '销售部', 0
-  //       '客服部', 1
-  //       '风控部'  2
-		//  人事部     3
+    // '客服部', 1
+    // '风控部', 2
+		// '人事部', 3
 		$configMap = array(
 			array('EmployeeQueryCondition'=>"DepartmentEmployee"),
 			array('EmployeeQueryCondition'=>"DepartmentEmployee"),

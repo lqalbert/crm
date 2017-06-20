@@ -14,7 +14,7 @@
 		<div class="wrapp" v-show="show" style="display: none">
 			<!-- seach form -->
 			<el-row>
-				<el-col :span="12">
+				<el-col>
 					<el-form :inline="true"  ref="searchForm" :model="searchForm">
 					  <el-form-item style="display: none;" prop="id">
 					  	<el-input  v-model="searchForm.id">
@@ -36,10 +36,21 @@
 					    </el-input>
 					  </el-form-item>
 
+            <el-form-item prop="type">
+              <el-dropdown trigger="click" menu-align="start" @command="depTypeChange">
+                <el-button type="primary" size="small">
+                  {{depTypeName}}<i class="el-icon-caret-bottom el-icon--right"></i>
+                </el-button>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item v-for="(key,index) in typeList" :command="index.toString()">{{key}}</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </el-form-item>
+
 					  <el-form-item>
 					    <el-button size="small" type="primary" icon="search" @click="loadDatalist" >查询</el-button> 
-					    <el-tooltip content="清空搜索框并刷新表格数据" placement="right">
-					      <el-button size="small" @click="searchReset" style="margin-left:10px;">重置</el-button>
+					    <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start">
+					      <el-button size="small" @click="resetBack" style="margin-left:10px;">重置</el-button>
               </el-tooltip>
 			        	<!-- <el-button  @click="openDialog('advancedSearch')" icon="search">高级查询</el-button>  -->
 					  </el-form-item>
@@ -50,8 +61,6 @@
             </el-form-item>
 					</el-form>
 				</el-col>
-				<el-col :span="12">
-				</el-col>	
 			</el-row>
 			<!-- / search form -->
 
@@ -64,8 +73,8 @@
 					highlight-current-row
 					v-loading="dataLoad"
 					element-loading-text="{:L('DATA_LOGIN')}"
-                    @selection-change="handleSelectionChange"
-                    >
+          @selection-change="handleSelectionChange" @cell-click="showRemark"
+          >
 
 					    <el-table-column type="selection"  align="center" width="50" >
 					    </el-table-column>
@@ -103,7 +112,10 @@
 					    </el-table-column>
               <el-table-column label="地址" header-align="center" prop="address" width="180">
               </el-table-column>
-              <el-table-column label="备注" align="center" prop="remark" width="200">
+              <el-table-column label="备注(点击查看)" align="center" prop="remark" width="200">
+                <template scope="scope">
+                  {{scope.row.remark | limitRemark}}
+                </template>
               </el-table-column>
               {$viewDecorator['oprate']}
 					    
@@ -147,10 +159,12 @@
 			<include file="_edit" />
 			<!-- / 编辑 -->
 
-            <!-- 人事专员 -->
-            <include file="_setHr" />
-            <!-- / 人事专员 -->
-
+      <!-- 人事专员 -->
+      <include file="_setHr" />
+      <!-- / 人事专员 -->
+      <!-- 备注内容 -->
+      <include file="_remarkContent" />
+      <!-- /备注内容 -->
 
 		</div>
 
@@ -158,6 +172,16 @@
 	</div>
 </block>
 <block name="scripts">
+<script>
+	Vue.filter("limitRemark",function(v){
+	  if (v!=null && v.length > 6) {
+	  	var length = (arguments[1] || 6);
+	  	return v.substring(0,length)+'......';  
+	  } else {
+	  	return v;
+	  }
+	})
+</script>
 <script>
 
     
@@ -168,41 +192,44 @@
 
 
 	window.defaultOption.setDatas({
-  	    //传输照片上传地址
-  	    pathInfo:{folder:'department'},
+		remarkContentDialog:false,
+		remarkContent:"",
+		depTypeName:"选择单位类型",
+    //传输照片上传地址
+    pathInfo:{folder:'department'},
 		//放大图片
-        bigimg:false,
-        //放大图片地址
-        imageUrl:'',
-        topO:[],
-        //状态值
-        statusForm:{
-           id:0,
-           status:'1',
-        },
-        //负责主管
-        users:[],
+    bigimg:false,
+    //放大图片地址
+    imageUrl:'',
+    topO:[],
+    //状态值
+    statusForm:{
+       id:0,
+       status:'1',
+    },
+    //负责主管
+    users:[],
 
-        fileList:[
-           {name: '', url: ''}
+    fileList:[
+       {name: '', url: ''}
 		],
 		rules:{
-             name:[
-                { required: true, message: '请填写单位名称', trigger: 'blur' },
-             ],
-             type:[
-                { required: true, message: '请选择类型', trigger: 'blur' ,type: 'number'},
-                // { validator: checkType, message: '请选择类型', trigger: 'blur' },
-             ],
+      name:[
+        { required: true, message: '请填写单位名称', trigger: 'blur' },
+      ],
+      type:[
+        { required: true, message: '请选择类型', trigger: 'blur' ,type: 'number'},
+        // { validator: checkType, message: '请选择类型', trigger: 'blur' },
+      ],
 
 		},
 		typeList:{:json_encode($typeList)},
 		zoneList:{:json_encode($zoneList)},
-        topO:{:json_encode($divisions)},
+    topO:{:json_encode($divisions)},
 		computedusers:[],
-        hr:[],
-        dehrs:[],
-        multipleSelection: []
+    hr:[],
+    dehrs:[],
+    multipleSelection: []
 	}).setForm('add', {
 		id:'',
 		name:"",
@@ -236,17 +263,20 @@
 		remark:"",
 		img:"",
 		//status:0,
-		contact:"",
-		tel:""
 	}).setForm('search', {
 		name:"",
 		id:"0",
 		sortFiled:"id",
-		sortWay:"asc" // desc
+		sortWay:"asc", // desc
+		contact:"",
+		tel:"",
+		type:""
 	}).setForm('hr',{
-        id:null,
-        user_ids:[]
-    },true).setMethod("handleEdit", function(index, row){
+    id:null,
+    user_ids:[]
+  },true).setMethod('resetBack',function(){
+    window.location.href="{:U('index')}";
+  }).setMethod("handleEdit", function(index, row){
 		//将此行数据赋给editForm
 		var type='edit';
 		row['public']=row['public'] == "是"?"1":"0";
@@ -356,6 +386,14 @@
         }, function(response){
             this.$message.error('出错了');
         });
+    }).setMethod('depTypeChange',function(v){
+    	var v = parseInt(v);
+    	this.searchForm.type=v;
+    	this.depTypeName = this.typeList[v];
+
+    }).setMethod('showRemark',function(row, column, cell, event){
+    	this.remarkContent = row.remark;
+    	this.remarkContentDialog = true;
     });
 </script>
 
