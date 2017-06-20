@@ -25,26 +25,26 @@
 			<el-row>
 				<el-col :span="24">
 					<el-form :inline="true"  ref="searchForm" :model="searchForm">
-						<el-form-item prop="department_id">
-							<el-select v-model="searchForm.department_id" width="50" placeholder="请选择部门">
-								<el-option v-for="item in departments" :key="item.id" :label="item.name" :value="item.id"></el-option>
+						<el-form-item prop="department_id" style="width:100px">
+							<el-select v-model="searchForm.department_id" clearable @change="departmentChange" size="small" placeholder="请选择部门">
+								<el-option v-for="item in departments"  :label="item.name" :value="item.id"></el-option>
 							</el-select>
 						</el-form-item>
 
-						<el-form-item prop="group_id">
-							<el-select v-model="searchForm.group_id" width="50" placeholder="请选择团队小组">
-								<el-option v-for="item in groups" :key="item.id" :label="item.name" :value="item.id"></el-option>
+						<el-form-item prop="group_id" style="width:100px">
+							<el-select v-model="searchForm.group_id" clearable size="small" placeholder="请选择团队小组">
+								<el-option v-for="item in groups"  :label="item.name" :value="item.id"></el-option>
 							</el-select>
 						</el-form-item>
 
 
-						<el-form-item prop="type">
-							<el-select v-model="searchForm.type" width="50" placeholder="请选择查询类型">
+						<el-form-item prop="type" style="width:100px">
+							<el-select v-model="searchForm.type" size="small" placeholder="请选择查询类型">
 								<el-option v-for="item in types" :label="item.name" :value="item.value"></el-option>
 							</el-select>
 						</el-form-item>
 						<el-form-item prop="typeValue">
-							<el-input v-model="searchForm.typeValue" placeholder="请输入查询数据"></el-input>
+							<el-input v-model="searchForm.typeValue" size="small" placeholder="请输入查询数据"></el-input>
 						</el-form-item>
 					  <!--<el-form-item prop="name">
 					   <el-input v-model="searchForm.name"  placeholder="请输入员工账号" >
@@ -66,15 +66,15 @@
 							<el-input v-model="searchForm.weixin"  placeholder="请输入微信号" >
 							</el-input>
 						</el-form-item>-->
-					  <el-form-item prop="status">
-					  	<el-select v-model="searchForm.status" width="50">
-					  		<el-option value="1" label="正常"></el-option>
+					  <el-form-item prop="status" style="width: 90px;">
+					  	<el-select v-model="searchForm.status" size="small">
+					  		<el-option value="1" label="在职"></el-option>
 					  		<el-option value="-1" label="离职"></el-option>
 					  	</el-select>
 					  </el-form-item>
 					  <el-form-item> 
-					    <el-button type="primary" icon="search" @click="loadDatalist">查询</el-button>
-					    <el-button @click="searchReset" style="margin-left:10px;">重置</el-button>
+					    <el-button type="primary" icon="search" size="small" @click="loadDatalist">查询</el-button>
+					    <el-button @click="searchReset"  size="small" style="margin-left:10px;">重置</el-button>
 					  </el-form-item>
 					</el-form>
 				</el-col>
@@ -188,7 +188,7 @@
 		
 		<div class="dialogWrapper" v-show="show" style="display: none">
 			<!-- 高级查询 -->
-			<include file="_searchx" />
+			
 			<!-- / 高级查询 -->
 
 			<!-- 添加 -->
@@ -268,6 +268,7 @@
 		page.setUserRolesUrl="{:U('setUserRoles')}";
 		page.changePasswordUrl="{:U(changePassword)}";
 		window.defaultOption.setDatas({
+
 			roleList:{:json_encode($roleList)},
 			allRoles:{:json_encode($allRoles)},
 			pathInfo:{folder:'users'},
@@ -297,22 +298,22 @@
 					{ required: true, message: '请输入账号', trigger: 'blur' }
 				],
 				realname:[
-          {required: true, message: '请输入员工姓名', trigger: 'blur'},
+          			{required: true, message: '请输入员工姓名', trigger: 'blur'},
 				],
 				mphone:[
-          {validator: checkPhone, trigger: 'blur'},
+          			{validator: checkPhone, trigger: 'blur'},
 				],
 				phone:[
-        	{pattern:/^(0\d{2,3}-)\d{7,8}(-(\u8f6c)?\d{1,5})?$/,message: '座机号格式错误',trigger: 'blur'}
+        			{pattern:/^(0\d{2,3}-)\d{7,8}(-(\u8f6c)?\d{1,5})?$/,message: '座机号格式错误',trigger: 'blur'}
 				],
 				qq:[
-          {validator: checkQQ, trigger:'blur'},
+          			{validator: checkQQ, trigger:'blur'},
 				],
 				weixin:[
-          {pattern:/^[a-zA-Z]([a-zA-Z\d_-]){5,19}$/,message: '微信号格式错误',trigger: 'blur'}
+          			{pattern:/^[a-zA-Z]([a-zA-Z\d_-]){5,19}$/,message: '微信号格式错误',trigger: 'blur'}
 				],
 				id_card:[
-        	{pattern:/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,message:'身份证号格式错误',trigger:'blur'}
+        			{pattern:/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,message:'身份证号格式错误',trigger:'blur'}
  				]
 
 			},
