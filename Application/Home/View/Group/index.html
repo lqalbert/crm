@@ -24,6 +24,14 @@
 								<el-option v-for="item in groups" :label="item.name" :value="item.name"></el-option>
 							</el-select>
 						</el-form-item>
+						<el-form-item>
+							<el-input v-model="searchForm.realname"  placeholder="请输入负责人姓名" >
+							</el-input>
+						</el-form-item>
+						<el-form-item>
+							<el-input v-model="searchForm.phone"  placeholder="请输入联系电话" >
+							</el-input>
+						</el-form-item>
 					  <el-form-item>
 					    <el-button type="primary" @click="loadDatalist" icon="search">查询</el-button>
 					    <el-button  @click="searchReset">重置</el-button>
@@ -242,7 +250,7 @@
      tableData:[],
      multipleSelection:[],
      secondSelection:[],
-	  departments:{:json_encode($departments)},
+	  departments:{:json_encode($departments['list'])},
   groups:""
   }).setForm('add',{
   	id:'',
@@ -261,11 +269,13 @@
   	remark:"",
   	img:'',
   }).setForm('search',{
-	name:"",
-	input:"",
-	sortFiled:"id",
-	  department_id:"",
-	sortWay:"asc" // desc
+      name:"",
+	  input:"",
+	  realname:"",
+	  phone:"",
+	  sortFiled:"id",
+	  department_id:{:json_encode($departments['account'])},
+	  sortWay:"asc" // desc
   }).setForm('addMember',{
     id:0,
     name:"",

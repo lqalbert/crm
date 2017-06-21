@@ -2,11 +2,12 @@
 namespace Home\Controller;
 
 use Common\Lib\User;
-use Home\Model\RoleModle;
+use Home\Model\RoleModel;
 use Home\Model\GroupModel;
 
 class GroupController extends CommonController {
 	protected $table="group_basic";
+	protected $departmentSelect=NULL;
 
 	
 	public function index (){
@@ -18,9 +19,14 @@ class GroupController extends CommonController {
 		//上级组织
 		$org = $user->getRoleGroupOrgs();
 
-		$departments=D('Department')->getAllDepartments('id,name');
-
-		
+		$ename=$this->getRoleEname();
+		if($ename == RoleModel::GOLD || $ename==RoleModel::HR ||$ename==RoleModel::HR_MASTER)
+		{
+            $departments=array('list'=>D('Department')->getAllDepartments('id,name'),'account'=>'');
+        }else{
+		    $arr=D('Department')->where(array('id'=>session('account')['userInfo']['department_id']))->field('id,name')->select();
+		    $departments=array('list'=>$arr,'account'=>$arr[0]['name']);
+        }
 		$this->assign("namelist",    $org);
 		$this->assign("contactList", array());
 		// $this->assign("memberList",  $members);
