@@ -19,9 +19,9 @@
 								<el-option v-for="item in departments" :key="item.id" :label="item.name" :value="item.id"></el-option>
 							</el-select>
 						</el-form-item>
-						<el-form-item prop="name">
-							<el-select v-model="searchForm.name"  width="50" placeholder="请选择团队小组">
-								<el-option v-for="item in groups" :label="item.name" :value="item.name"></el-option>
+						<el-form-item prop="group_id">
+							<el-select v-model="searchForm.group_id"  width="50" placeholder="请选择团队小组">
+								<el-option v-for="item in groups" :label="item.name" :value="item.id"></el-option>
 							</el-select>
 						</el-form-item>
 						<el-form-item>
@@ -251,7 +251,7 @@
      multipleSelection:[],
      secondSelection:[],
 	  departments:{:json_encode($departments['list'])},
-  groups:""
+  groups:{:json_encode($departments['group'])}
   }).setForm('add',{
   	id:'',
   	name:"",
@@ -269,12 +269,12 @@
   	remark:"",
   	img:'',
   }).setForm('search',{
-      name:"",
+      group_id:"",
 	  input:"",
 	  realname:"",
 	  phone:"",
 	  sortFiled:"id",
-	  department_id:{:json_encode($departments['account'])},
+	  department_id:{:json_encode($departments['account'][0]['id'])},
 	  sortWay:"asc" // desc
   }).setForm('addMember',{
     id:0,

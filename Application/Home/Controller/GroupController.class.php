@@ -22,10 +22,10 @@ class GroupController extends CommonController {
 		$ename=$this->getRoleEname();
 		if($ename == RoleModel::GOLD || $ename==RoleModel::HR ||$ename==RoleModel::HR_MASTER)
 		{
-            $departments=array('list'=>D('Department')->getAllDepartments('id,name'),'account'=>'');
+            $departments=array('list'=>D('Department')->getAllDepartments('id,name'),'account'=>'','group'=>"");
         }else{
 		    $arr=D('Department')->where(array('id'=>session('account')['userInfo']['department_id']))->field('id,name')->select();
-		    $departments=array('list'=>$arr,'account'=>$arr[0]['name']);
+		    $departments=array('list'=>$arr,'account'=>$arr,'group'=>$arr=D('Group')->getAllGoups(session('account')['userInfo']['department_id'],'id,name'));
         }
 		$this->assign("namelist",    $org);
 		$this->assign("contactList", array());
@@ -46,8 +46,8 @@ class GroupController extends CommonController {
 
 	public function setQeuryCondition(){
 		$map=array();
-		if (!empty(I('get.name'))) {
-			$map['group_basic.name']=array('like', I('get.name')."%");
+		if (!empty(I('get.group_id'))) {
+			$map['group_basic.id']=I('get.group_id');
 		}
 		if(isset($_GET['department_id'])){
             $map['group_basic.department_id']=$_GET['department_id'];
