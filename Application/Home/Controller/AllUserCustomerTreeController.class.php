@@ -37,6 +37,18 @@ class AllUserCustomerTreeController extends CommonController{
     $this->assign('group_id', $group_id);
     $this->assign('customerType', $D->getType());
     $this->assign('sexType',      $D->getSexType());
+    $this->assign('Quality',      $D->getQuality());
+    $this->assign('Year',         $D->getYear());
+    $this->assign('Income',       $D->getIncome());
+    $this->assign('Sty',          $D->getStyle());
+    $this->assign('Money',        $D->getMoney());
+    $this->assign('Energy',       $D->getEnergy());
+    $this->assign('Problem',      $D->getProblem());
+    $this->assign('Mode',         $D->getMode());
+    $this->assign('Attitude',     $D->getAttitude());
+    $this->assign('Profession',   $D->getProfession());
+    $this->assign('Intention',    $D->getIntention());
+    $this->assign('Source',       $D->getSource());
     $this->assign('Departments',  D('Department')->getAllDepartments('id,name'));
     $this->display();
   }

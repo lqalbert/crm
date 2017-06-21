@@ -113,7 +113,7 @@
       element-loading-text="{:L('DATA_LOGIN')}"
       highlight-current-row
       @selection-change="handleSelectionChange"
-      @row-click="trackLog"  ref="select" 
+      @row-click="trackLog" @row-dblclick="userInfo" ref="select" 
       @sort-change="sortChange">
 
         <el-table-column type="selection"  width="50" ></el-table-column>
@@ -265,6 +265,9 @@
   <!-- 投诉内容 -->
   <include file="Customer::_complainContent" />
   <!-- /投诉内容 -->
+  <!-- 显示客户资料 -->
+  <include file="_edit" />
+  <!-- /显示客户资料 -->
 </div>
 
 </div>
@@ -305,6 +308,18 @@ Vue.filter("handleString", function(v) {
     }],
     customerType:{:json_encode($customerType)},
     sexType:{:json_encode($sexType)},
+    Quality:{:json_encode($Quality)},
+    Year:{:json_encode($Year)},
+    Income:{:json_encode($Income)},
+    Sty:{:json_encode($Sty)},
+    Money:{:json_encode($Money)},
+    Energy:{:json_encode($Energy)},
+    Problem:{:json_encode($Problem)},
+    Mode:{:json_encode($Mode)},
+    Attitude:{:json_encode($Attitude)},
+    Profession:{:json_encode($Profession)},
+    Intention:{:json_encode($Intention)},
+    Source:{:json_encode($Source)},
     products:{:json_encode($Products)},
     provinces:[],
     cities:[],
@@ -321,6 +336,34 @@ Vue.filter("handleString", function(v) {
 
     cusNameList:[],
 
+  }).setForm('edit',{
+    id:"",
+    name:"",
+    type:"",
+    phone:"",
+    phone2:"",
+    qq:"",
+    qq2:"",
+    qq_nickname:"",
+    qq_nickname2:"",
+    sex:0,
+    weixin:"",
+    weixin_nickname:"",
+    area_province:null,
+    area_city:null,
+    quality:'',
+    year:'',
+    re_income:'',
+    style:'',
+    money:'',
+    energy:'',
+    problem:'',
+    mode:'',
+    attitude:'',
+    profession:'',
+    intention:'',
+    source:'',
+    remark:"",
   }).setForm('search', {
     field: '',
     start:'',
@@ -344,7 +387,19 @@ Vue.filter("handleString", function(v) {
     return this[field][type];
   }).setMethod('beforeList', function(data){
     data.forEach(function(currentValue){
-      //将string类型转换为number和为0的变为空          
+      //将string类型转换为number和为0的变为空
+      currentValue.quality = currentValue.quality == 0?"":currentValue.quality;      
+      currentValue.year = currentValue.year == 0?"":currentValue.year;      
+      currentValue.re_income = currentValue.re_income == 0?"":currentValue.re_income;      
+      currentValue.style = currentValue.style == 0?"":currentValue.style;      
+      currentValue.money = currentValue.money == 0?"":currentValue.money;      
+      currentValue.energy = currentValue.energy == 0?"":currentValue.energy;      
+      currentValue.problem = currentValue.problem == 0?"":currentValue.problem;      
+      currentValue.mode = currentValue.mode == 0?"":currentValue.mode;      
+      currentValue.attitude = currentValue.attitude == 0?"":currentValue.attitude;      
+      currentValue.profession = currentValue.profession == 0?"":currentValue.profession;      
+      currentValue.intention = currentValue.intention == 0?"":currentValue.intention;      
+      currentValue.source = currentValue.source == 0?"":currentValue.source; 
       //console.log(typeof(currentValue.quality));
     })
     return data;
@@ -417,6 +472,22 @@ Vue.filter("handleString", function(v) {
     this.searchForm.field = "";
     this.dataLoad = true;
     this.loadDatalist();
+  }).setMethod('userInfo',function(row,event){
+    var index = this.dataList.indexOf(row);
+    this.handleEdit(index, row);
+  }).setMethod('beforeEdit',function(){
+    if (!this.$refs['editselect']) {
+      this.provinceChange(this.editForm.area_province);
+    }
+  }).setMethod('provinceChange', function(v){
+    var vmThis = this;
+    this.$http.get('{:U("Area/getAreasByPid")}', {params:{pid:v} }).then(function(response){
+      var cities = [];
+       response.body.forEach(function(currentValue,index){
+        cities.push({id: currentValue.id, name: currentValue.name});
+       })
+       vmThis.$set(vmThis, 'cities', cities);
+    });
   });
 </script>
 </block>

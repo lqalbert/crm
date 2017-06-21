@@ -1,0 +1,225 @@
+<el-dialog title="客户详细资料" v-model="editFormDialog" @open="beforeEdit">
+<!-- <el-form :model="form"> -->
+<el-form ref="editForm" :model="editForm" v-model="editForm" :label-width="dialogLabelWidth">
+    <el-tabs type="card">
+      <el-tab-pane label="核心资料" name="first">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="客户姓名" prop="name">
+              <el-input  v-model="editForm.name" auto-complete="off" placeholder="请填写客户名称" :disabled="true"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="客户类型" prop="type">
+              <el-select v-model="editForm.type" placeholder="请选择客户类型" :disabled="true">
+                <el-option v-for="(type, key) in customerType" :label="type" :value="key" ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="手机号1">
+              <el-input v-model="editForm.phone" auto-complete="off" placeholder="请填写手机号" :disabled="true"></el-input>
+            </el-form-item>
+          </el-col>
+          
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="QQ号1">
+              <el-input v-model="editForm.qq" auto-complete="off" placeholder="请填写QQ号" :disabled="true" ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="QQ昵称1" >
+              <el-input v-model="editForm.qq_nickname" auto-complete="off" placeholder="请填写QQ昵称" :disabled="true"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="微信号1" >
+              <el-input v-model.lazy="editForm.weixin"  auto-complete="off" placeholder="请填写微信号" :disabled="true"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="微信昵称1" >
+              <el-input v-model="editForm.weixin_nickname"  auto-complete="off" placeholder="请填写微信昵称" :disabled="true"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="手机号2" prop="phone2">
+              <el-input v-model="editForm.phone2" auto-complete="off" placeholder="请填写手机号" :disabled="true"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="QQ号2" prop="qq2">
+              <el-input v-model.number="editForm.qq2" auto-complete="off" placeholder="请填写QQ号" :disabled="true"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="QQ昵称2" >
+              <el-input v-model="editForm.qq_nickname2" auto-complete="off" placeholder="请填写QQ昵称" :disabled="true"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="微信号2" >
+              <el-input v-model="editForm.weixin2"  auto-complete="off" placeholder="请填写微信号" :disabled="true"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="微信昵称2" >
+              <el-input v-model="editForm.weixin_nickname2"  auto-complete="off" placeholder="请填写微信昵称" :disabled="true"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item  label="资金量" prop="money">
+              <el-select v-model="editForm.money"   placeholder="选择客户资金量" :disabled="true">
+                <el-option v-for="(money,key) in Money" :label="money"  :value="key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="性别" :disabled="true">
+              <el-radio class="radio" v-model="editForm.sex" label="1">男</el-radio>
+              <el-radio class="radio" v-model="editForm.sex" label="2">女</el-radio>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-tab-pane>
+      <el-tab-pane label="一般资料" name="second">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="省份" >
+              <el-select v-model="editForm.area_province" filterable @change="provinceChange" placeholder="请选择省份" :disabled="true">
+                <el-option v-for="province in provinces" :label="province.name"  :value="province.id"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item  label="城市" >
+              <el-select v-model="editForm.area_city"   placeholder="请选择城市" :disabled="true">
+                <el-option v-for="city in cities" :label="city.name"  :value="city.id"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item  label="客户质量" >
+              <el-select v-model="editForm.quality"   placeholder="请选择客户质量" :disabled="true">
+                <el-option v-for="(quality,key) in Quality" :label="quality"  :value="key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item  label="股龄" >
+              <el-select v-model="editForm.year"   placeholder="请选择客户股龄" :disabled="true">
+                <el-option v-for="(year,key) in Year" :label="year"  :value="key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item  label="近期收益" >
+              <el-select v-model="editForm.re_income"   placeholder="选择客户近期收益" :disabled="true">
+                <el-option v-for="(re_income,key) in Income" :label="re_income"  :value="key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item  label="投资风格" >
+              <el-select v-model="editForm.style"   placeholder="选择客户投资风格" :disabled="true">
+                <el-option v-for="(style,key) in Sty" :label="style"  :value="key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item  label="看盘精力" >
+              <el-select v-model="editForm.energy"   placeholder="选择客户看盘精力" :disabled="true">
+                <el-option v-for="(energy,key) in Energy" :label="energy"  :value="key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item  label="投资问题" >
+              <el-select v-model="editForm.problem"   placeholder="选择客户投资问题" :disabled="true">
+                <el-option v-for="(problem,key) in Problem" :label="problem"  :value="key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item  label="盈利模式" >
+              <el-select v-model="editForm.mode"   placeholder="选择客户盈利模式" :disabled="true">
+                <el-option v-for="(mode,key) in Mode" :label="mode"  :value="key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item  label="态度" >
+              <el-select v-model="editForm.attitude"   placeholder="选择客户态度" :disabled="true">
+                <el-option v-for="(attitude,key) in Attitude" :label="attitude"  :value="key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item  label="职业" >
+              <el-select v-model="editForm.profession"   placeholder="选择客户职业" :disabled="true">
+                <el-option v-for="(profession,key) in Profession" :label="profession"  :value="key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item  label="软件意向" >
+              <el-select v-model="editForm.intention"   placeholder="客户对软件意向" :disabled="true">
+                <el-option v-for="(intention,key) in Intention" :label="intention"  :value="key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item  label="客户来源" >
+              <el-select v-model="editForm.source"   placeholder="选择客户来源" :disabled="true">
+                <el-option v-for="(source,key) in Source" :label="source"  :value="key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="10">
+            <el-form-item label="备注">
+              <el-input
+                v-model="editForm.remark"
+                type="textarea"
+                :autosize="{ minRows: 2, maxRows: 2}"
+                placeholder="填写备注内容,标签" :disabled="true"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-tab-pane>
+    </el-tabs>
+  </el-form>
+  <div slot="footer" class="dialog-footer">
+    <el-button @click="closeDialog('edit')">取 消</el-button>
+    <el-button type="primary" v-show="!editFormSubmitStatus" @click="closeDialog('edit')" >确 定</el-button>
+  </div>
+</el-dialog>

@@ -4,6 +4,53 @@
     .el-table__body tr.current-row>td{
       background: rgba(157, 195, 232, 0.7);
     }
+    .el-tabs__header{
+      border-top:2px solid #ea4b4b;
+      border-bottom: 1px solid #c51f1f;
+    }
+    .el-dialog .el-tabs__header{
+      border-top:none;
+    }
+    .el-tabs--border-card .el-tabs__item{
+      border-left: none;
+    }
+    .el-tabs--border-card .el-tabs__item.is-active {
+      background-color: #fff;
+      border-right-color: #d3dce6;
+      background: #544b8f;
+      color: #fff;
+    }
+    .el-tabs--border-card .el-tabs__header {
+      background-color: #fff;
+      margin: 0;
+    }
+    .container > .wrapp > .el-row {
+      margin-bottom: 6px;
+    }
+    .el-tabs--border-card .el-tabs__content{
+      padding:0 9px 5px 9px;
+    }
+    .el-card, .el-menu--horizontal .el-submenu>.el-menu, .el-tabs--border-card{
+      box-shadow: none;
+    }
+    .el-tabs--border-card{
+      border: none;
+    }
+    .el-table__body tr.current-row>td{
+      background: rgba(157, 195, 232, 0.7);
+    }
+    .el-tabs__item{
+        font-family: Microsoft YaHei;
+        color:#0d0f10;
+        font-size: 14px;
+    }
+    .el-form-item__content{
+      font-size: 16px;
+    }
+    .el-dropdown-menu {
+      overflow-y: auto;
+      max-height: 400px;
+    }
   </style>
 </block>
 <block name="body">
@@ -30,7 +77,13 @@
                 </el-date-picker>
             </el-form-item>
             
-            
+            <el-form-item>
+              <el-button size="small" @click="setField('lastWeek')">上周</el-button>
+              <el-button size="small" @click="setField('lastMonth')">上月</el-button>
+              <el-button size="small" @click="setField('week')">本周</el-button>
+              <el-button size="small" @click="setField('month')">本月</el-button>
+            </el-form-item>
+
             <el-form-item>
               <el-button type="info" size="small" icon="search" @click="search2">查询</el-button>
               <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start">
@@ -38,8 +91,9 @@
               </el-tooltip>
             </el-form-item>
             <el-form-item>
-              <el-button size="small" @click="setField('week')">本周</el-button>
-              <el-button size="small" @click="setField('month')">本月</el-button>
+              <el-tooltip content="点击刷新当前页面" placement="right">
+                <el-button @click="refresh" size="small" type="danger">刷新</el-button>
+              </el-tooltip>
             </el-form-item>
           </el-form>
         </el-col>
@@ -121,6 +175,12 @@
       } else if(v=='month'){
         this.searchForm.start = showMonthFirstDay();
         this.searchForm.end   = showMonthLastDay();
+      }else if(v=='lastMonth'){
+        this.searchForm.start = showLastMonthFirstDay();
+        this.searchForm.end   = showLastMonthLastDay(); 
+      } else if(v=='lastWeek'){
+        this.searchForm.start = showLastWeekFirstDay();
+        this.searchForm.end   = showLastWeekLastDay(); 
       }
       
       this.loadDatalist();
