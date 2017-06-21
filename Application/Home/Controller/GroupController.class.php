@@ -19,13 +19,19 @@ class GroupController extends CommonController {
 		//上级组织
 		$org = $user->getRoleGroupOrgs();
 
+        //部门选项权限
 		$ename=$this->getRoleEname();
 		if($ename == RoleModel::GOLD || $ename==RoleModel::HR ||$ename==RoleModel::HR_MASTER)
 		{
+		    //总经办、人事经理、人事专员
             $departments=array('list'=>D('Department')->getAllDepartments('id,name'),'account'=>'','group'=>"");
         }else{
+		    //部门经理
+            //查询所在部门
 		    $arr=D('Department')->where(array('id'=>session('account')['userInfo']['department_id']))->field('id,name')->select();
-		    $departments=array('list'=>$arr,'account'=>$arr,'group'=>$arr=D('Group')->getAllGoups(session('account')['userInfo']['department_id'],'id,name'));
+		    //部门所属团队小组
+		    $ar=D('Group')->getAllGoups(session('account')['userInfo']['department_id'],'id,name');
+		    $departments=array('list'=>$arr,'account'=>$arr,'group'=>$ar);
         }
 		$this->assign("namelist",    $org);
 		$this->assign("contactList", array());

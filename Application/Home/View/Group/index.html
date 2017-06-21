@@ -286,7 +286,7 @@
 	  var vmThis=this
 	  vmThis.$http.get('{:U("getGroups")}',{params:{department_id:vmThis.searchForm.department_id}}).then(function (response) {
 		  vmThis.groups=response.body
-		  vmThis.searchForm.name=''
+		  vmThis.searchForm.group_id=''
       })
 
   }).setMethod('bigImg',function(url){
