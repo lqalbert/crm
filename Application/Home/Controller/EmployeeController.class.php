@@ -341,6 +341,6 @@ class EmployeeController extends CommonController {
 	    if(isset($_GET['department_id'])){
 	        $arr=D('Group')->getAllGoups($_GET['department_id'],'id,name');
 	        $this->ajaxReturn($arr);
-        }
-    }
+      }
+  }
 }

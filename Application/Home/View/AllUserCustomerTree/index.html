@@ -251,6 +251,32 @@
               </el-table-column>
             </el-table>
           </el-tab-pane>
+          <el-tab-pane label="购买纪录">
+            <el-table :data="tableDataTwo" empty-text="请点击客户显示其购买纪录" border style="width: 100%">
+              <!-- <el-table-column label="操作员工" prop="realname" header-align="center">
+              </el-table-column> -->
+
+              <el-table-column label="产品金额" prop="product_money" header-align="center">
+              </el-table-column>
+
+              <el-table-column label="产品名称" prop="product_name" header-align="center">
+              </el-table-column>
+
+              <el-table-column label="产品周期" prop="product_t" header-align="center">
+              </el-table-column>
+              
+              <el-table-column label="购买时间" prop="buy_time" header-align="center">
+              </el-table-column>
+              <!-- <el-table-column label="身份证" prop="identity" align="center">
+              </el-table-column>
+              
+              <el-table-column label="通讯地址" prop="address" header-align="center">
+              </el-table-column> -->
+
+              <!-- <el-table-column label="创建时间" prop="time" align="center">
+              </el-table-column> -->
+            </el-table>
+          </el-tab-pane>
         </el-tabs>
      </el-col>
     </el-row>
@@ -292,19 +318,29 @@ Vue.filter("handleString", function(v) {
     ddprops:'name',
     dialogVisible:false,
     sb:[],
-    tableData: [{'name':'',
-                 'created_at':'',
-                 'type':'',
-                 'track_type':'',
-                 'content':'',
-                 'user':''
+    tableData: [{
+       'name':'',
+       'created_at':'',
+       'type':'',
+       'track_type':'',
+       'content':'',
+       'user':''
     }],
-    tableDataOne: [{'name':'',
-                 'created_at':'',
-                 'type':'',
-                 'track_type':'',
-                 'content':'',
-                 'user':''     
+    tableDataOne: [{
+       'name':'',
+       'created_at':'',
+       'type':'',
+       'track_type':'',
+       'content':'',
+       'user':''     
+    }],
+    tableDataTwo:[{
+       'user':'',
+       'expense':'',
+       'pdt_id':'',
+       'identity':'',
+       'address':'',
+       'time':''
     }],
     customerType:{:json_encode($customerType)},
     sexType:{:json_encode($sexType)},
@@ -428,6 +464,15 @@ Vue.filter("handleString", function(v) {
         console.log("操作失败");
       });
 
+      this.commonFind("{:U('CommonFindDetail/findDealInfo')}",'tableDataTwo',{user_id:row.id});
+  }).setMethod('commonFind',function(url,table,row){
+    var vmThis = this;
+    this.$http.post(url,row).then(function(response){
+      vmThis[table] = response.body;
+    },function(response){
+      vmThis.$message.error("查询出错啦");
+    });
+    // console.log(this.tableDataTwo);
   }).setMethod('refresh',function(){
     window.location.reload();
 

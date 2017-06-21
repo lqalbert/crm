@@ -187,21 +187,20 @@
 		  var layer = layui.layer
 		  ,$ = layui.jquery; 
 		  tab = layui.tab();
-
-		 
 		  layui.tree({
 		    elem: '#allUser', //指定元素
 		    click:function(item){
-		       if(item.field === undefined){
-		       	 console.log(item);
-			 layer.msg('出现未知错误请联系技术团队', {
-			        time: 3000, //3s后自动关闭
-			        btn: ['马上去', '知道了', '哦']
-			      });
-		       }else{
-		       	 tab.tabAdd(item.field);
-		       }
-		    },
+		        if(item.field === undefined){
+		       	  console.log(item);
+			        layer.msg('出现未知错误请联系技术团队', {
+			          time: 3000, //3s后自动关闭
+			          btn: ['马上去', '知道了', '哦']
+			        });
+		        }else{
+
+		       	  tab.tabAdd(item.field);
+		        }
+		    }, 
 		    nodes: {:json_encode($tree)},
 		  });
 		 

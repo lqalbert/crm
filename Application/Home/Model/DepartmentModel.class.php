@@ -70,13 +70,41 @@ class DepartmentModel extends Model {
         return $this->select();
     }
 
+    /**
+    * 获得指定部门
+    * @param int|array
+    *
+    * @return []
+    */
+    public function getTheDepartments($id,$field=null){
+        $this->where(array('status'=>1));
+
+        if (!empty($field)) {
+            $this->field($field);
+        }
+        
+        if (is_numeric($id) && $id!=0) {
+          $this->where(array('id'=>$id));
+        } else if(is_array($id)){
+          $this->where(array('id'=>array('IN', $id)));
+        }
+
+        return $this->select();
+    }
+
+
     public function delete($ids){
         $groups = D('Group')->where(array('department_id'=>array('in', $ids)))->getField('id', true);
         D('Group')->delete($groups);
         return $this->where(array('id'=>array('in', $ids )))->save(array('status'=>-1, 'user_id'=>null));
     }
 
-
+    /**
+    * 获得销售部门
+    * @param int|array
+    *
+    * @return []
+    */
     public function getSalesDepartments($fields="id,name"){
         return $this->where(array('type'=>self::SALES_DEPARTMENT, 'status'=> array('NEQ', -1)))->field($fields)->select();
     }

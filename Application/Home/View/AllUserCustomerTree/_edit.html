@@ -94,8 +94,8 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="性别" :disabled="true">
-              <el-radio class="radio" v-model="editForm.sex" label="1">男</el-radio>
-              <el-radio class="radio" v-model="editForm.sex" label="2">女</el-radio>
+              <el-radio class="radio" v-model="editForm.sex" disabled label="1">男</el-radio>
+              <el-radio class="radio" v-model="editForm.sex" disabled label="2">女</el-radio>
             </el-form-item>
           </el-col>
         </el-row>
@@ -219,7 +219,6 @@
     </el-tabs>
   </el-form>
   <div slot="footer" class="dialog-footer">
-    <el-button @click="closeDialog('edit')">取 消</el-button>
-    <el-button type="primary" v-show="!editFormSubmitStatus" @click="closeDialog('edit')" >确 定</el-button>
+    <el-button type="danger" @click="closeDialog('edit')">关 闭</el-button>
   </div>
 </el-dialog>
