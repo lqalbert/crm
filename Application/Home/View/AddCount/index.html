@@ -244,12 +244,6 @@
   }).setMethod('endDateChange', function(v){
       this.searchForm.end = v;
   }).setMethod('setField', function(v){
-    var Nowdate=new Date();     
-    var LastWeekFirstDay=new Date(Nowdate-(Nowdate.getDay()+6)*86400000);
-    var LastWeekLastDay=new Date((LastWeekFirstDay/1000+6*86400)*1000); 
-    M=Number(LastWeekLastDay.getMonth())+1   
-  
-    console.log(LastWeekLastDay.getFullYear()+"-"+formartNumber(M)+"-"+formartNumber(LastWeekLastDay.getDate()));
 
       if (v=='week') {
         this.searchForm.start = showWeekFirstDay();
@@ -418,21 +412,9 @@
       this.ctrl = true;
     }
 
-    if(this.searchForm.department_id == 'department' && this.searchForm.group_id == "" && this.searchForm.user_id==""){
-      this.searchForm.type = this.searchForm.department_id;
+    if(this.searchForm.department_id == '' && this.searchForm.group_id == "" && this.searchForm.user_id==""){
+      this.searchForm.type = 'department';
       this.ctrl = true;
-      delete this.searchForm.department_id;
-    }else if(this.searchForm.department_id == 'department' && this.searchForm.group_id == "group" && this.searchForm.user_id==""){
-      this.searchForm.type = this.searchForm.group_id;
-      this.ctrl = true;
-      delete this.searchForm.department_id;
-      delete this.searchForm.group_id;
-    }else if(this.searchForm.department_id == 'department' && this.searchForm.group_id == "group" && this.searchForm.user_id=="user"){
-      this.searchForm.type = this.searchForm.user_id;
-      this.ctrl = false;
-      delete this.searchForm.department_id;
-      delete this.searchForm.group_id;
-      delete this.searchForm.user_id;
     }
   });
 
