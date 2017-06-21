@@ -15,9 +15,9 @@
 		    text-align: right;
 		    box-sizing: border-box;
 		}
-    .container > .wrapp > .el-row {
-      margin-bottom: 6px;
-    }
+	  input.el-input__inner{
+		  margin-bottom: 10px;
+	  }
   </style>
 </block>
 <block name="body">
@@ -27,21 +27,26 @@
 			<el-row>
 				<el-col :span="24">
 					<el-form :inline="true"  ref="searchForm" :model="searchForm">
-						<el-form-item prop="department_id" style="width:140px">
-							<el-select v-model="searchForm.department_id" clearable @change="departmentChange" size="small" placeholder="请选择部门">
-								<el-option v-for="item in departments"  :label="item.name" :value="item.id"></el-option>
+
+						<el-form-item prop="typeValue">
+							<el-input v-model="searchForm.typeValue" size="small" placeholder="请输入查询数据"></el-input>
+						</el-form-item>
+
+						<el-form-item prop="department_id" style="width: 120px">
+							<el-select v-model="searchForm.department_id" size="small" clearable @change="departmentChange" width="50" placeholder="请选择部门">
+								<el-option v-for="item in departments" :key="item.id" :label="item.name" :value="item.id"></el-option>
 							</el-select>
 						</el-form-item>
 
-						<el-form-item prop="group_id" style="width:140px">
-							<el-select v-model="searchForm.group_id" clearable size="small" placeholder="请选择团队小组">
-								<el-option v-for="item in groups"  :label="item.name" :value="item.id"></el-option>
+						<el-form-item prop="group_id">
+							<el-select v-model="searchForm.group_id" size="small" clearable width="50" placeholder="请选择团队小组">
+								<el-option v-for="item in groups" :key="item.id" :label="item.name" :value="item.id"></el-option>
 							</el-select>
 						</el-form-item>
 
 
-						<el-form-item prop="type" style="width:140px">
-							<el-select v-model="searchForm.type" size="small" placeholder="请选择查询类型">
+						<el-form-item prop="type">
+							<el-select v-model="searchForm.type" size="small" clearable width="50" placeholder="请选择查询类型">
 								<el-option v-for="item in types" :label="item.name" :value="item.value"></el-option>
 							</el-select>
 						</el-form-item>
@@ -69,20 +74,15 @@
 							</el-input>
 						</el-form-item>-->
 					  <el-form-item prop="status" style="width: 90px;">
-					  	<el-select v-model="searchForm.status" size="small">
+					  	<el-select size="small" v-model="searchForm.status">
 					  		<el-option value="1" label="在职"></el-option>
 					  		<el-option value="-1" label="离职"></el-option>
 					  	</el-select>
 					  </el-form-item>
 					  <el-form-item> 
-					    <el-button type="primary" icon="search" size="small" @click="loadDatalist">查询</el-button>
-					    <el-button @click="searchReset"  size="small" style="margin-left:10px;">重置</el-button>
+					    <el-button type="primary" icon="search" @click="loadDatalist">查询</el-button>
+					    <el-button @click="searchReset" style="margin-left:10px;">重置</el-button>
 					  </el-form-item>
-            <el-form-item>
-              <el-tooltip content="点击刷新当前页面" placement="right">
-                <el-button @click="refresh" size="small" type="danger">刷新</el-button>
-              </el-tooltip>
-            </el-form-item>
 					</el-form>
 				</el-col>
 			</el-row>
@@ -304,22 +304,22 @@
 					{ required: true, message: '请输入账号', trigger: 'blur' }
 				],
 				realname:[
-          			{required: true, message: '请输入员工姓名', trigger: 'blur'},
+          {required: true, message: '请输入员工姓名', trigger: 'blur'},
 				],
 				mphone:[
-          			{validator: checkPhone, trigger: 'blur'},
+          {validator: checkPhone, trigger: 'blur'},
 				],
 				phone:[
-        			{pattern:/^(0\d{2,3}-)\d{7,8}(-(\u8f6c)?\d{1,5})?$/,message: '座机号格式错误',trigger: 'blur'}
+        	{pattern:/^(0\d{2,3}-)\d{7,8}(-(\u8f6c)?\d{1,5})?$/,message: '座机号格式错误',trigger: 'blur'}
 				],
 				qq:[
-          			{validator: checkQQ, trigger:'blur'},
+          {validator: checkQQ, trigger:'blur'},
 				],
 				weixin:[
-          			{pattern:/^[a-zA-Z]([a-zA-Z\d_-]){5,19}$/,message: '微信号格式错误',trigger: 'blur'}
+          {pattern:/^[a-zA-Z]([a-zA-Z\d_-]){5,19}$/,message: '微信号格式错误',trigger: 'blur'}
 				],
 				id_card:[
-        			{pattern:/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,message:'身份证号格式错误',trigger:'blur'}
+        	{pattern:/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,message:'身份证号格式错误',trigger:'blur'}
  				]
 
 			},
@@ -415,17 +415,17 @@
 			checkPass:""
 		}, true).setMethod('getType', function(type, field){
 			return this[field][type];
-		}).setMethod('departmentChange',function (v) {
+		}).setMethod('departmentChange',function () {
 			var vmThis=this
-			vmThis.$http.get('{:U("getAllGroups")}',{params:{department_id:v}}).then(function (response) {
+			vmThis.$http.get('{:U("getAllGroups")}',{params:{department_id:vmThis.searchForm.department_id}}).then(function (response) {
 				vmThis.groups=response.body
 				vmThis.searchForm.group_id=''
-      })
-    }).setMethod('getTime',function(v){
+            })
+        }).setMethod('getTime',function(v){
 			if(v==null || v==""){
 				return v;
 			}else{
-		    var date = new Date(v*1000);
+		      var date = new Date(v*1000);
 			  var year = date.getFullYear();
 			  var month = date.getMonth()+1;
 			  var day = date.getDate();
