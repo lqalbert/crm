@@ -136,7 +136,12 @@
 
                         <el-table-column label="序号"  align="center" width="65" :formatter="handleIndex"  >
                         </el-table-column>
-
+                        <el-table-column label="类型" >
+                          <template scope="scope">
+                                <el-tag v-if="scope.row.type==0" type="primary">购买</el-tag>
+                                <el-tag v-else type="primary">续费</el-tag>
+                            </template>
+                        </el-table-column>
                         <el-table-column   label="客户姓名" prop="cb_name" header-align="center">
                         </el-table-column>
 
@@ -175,6 +180,13 @@
                         </el-table-column>
 
                         <el-table-column label="购买时间" prop="buy_time" align="center">
+                        </el-table-column>
+
+                        <el-table-column label="开单" prop="" align="center">
+                        <template scope="scope">
+                                <el-tag v-if="scope.row.status==0" type="primary">未开单</el-tag>
+                                <el-tag v-else type="primary">已开单</el-tag>
+                            </template>
                         </el-table-column>
 
                         <el-table-column label="操作" align="center">
