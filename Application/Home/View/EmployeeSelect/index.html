@@ -52,6 +52,7 @@
                     <el-table :data="dataList" v-loading="dataLoad" element-loading-text="{:L('DATA_LOGIN')}" highlight-current-row @selection-change="handleSelectionChange" border>
                         <el-table-column label="序号" width="70" :formatter="handleIndex"></el-table-column>
                         <el-table-column prop="realname" width="150" label="员工姓名"></el-table-column>
+                        <el-table-column prop="department_name" width="150" label="部门"></el-table-column>
                         <el-table-column prop="mphone" label="手机" width="180" align="center"></el-table-column>
                         <el-table-column prop="qq" label="QQ号" width="180" align="center"></el-table-column>
                         <el-table-column prop="qq_nickname" label="QQ昵称" width="180" align="center"></el-table-column>
