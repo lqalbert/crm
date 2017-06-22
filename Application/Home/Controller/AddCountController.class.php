@@ -39,13 +39,27 @@ class AddCountController extends CommonController{
     $this->getDepartmentCount();
     $this->getGroupCount();
     $this->getUserCount();
+    $type = I('get.type');
+
+    switch (I('get.type')) {
+      case 'user':
+           $result = $this->setReturnArr($this->users); //基于个人为条件查询
+        break;
+      case 'group':
+          $result = $this->setReturnArr($this->groups); //基于团组为条件查询
+        break;
+      case 'department':
+          $result = $this->setReturnArr($this->deps);
+         break;
+      default:
+         $result = $this->setReturnArr($this->deps); //基于部门为条件查询
+        break;
+    }
 
     if(isset($_GET['department_id']) || isset($_GET['group_id']) || isset($_GET['user_id'])){
     	$result = $this->getSelectCtrl();
-	  }else{
-      $result = $this->setReturnArr($this->deps);
-    }
-
+	  }
+    
 		$this->ajaxReturn($result);
 	}
 
