@@ -51,7 +51,7 @@ class DepartmentController extends CommonController {
     	$this->M->where(array('ui.mphone'=>array('like',"%".$tel."%")));
     }
     
-    if(I('get.type')){
+    if(isset($_GET['type'])){
     	$this->M->where(array('department_basic.type'=>$type));
     }
 
