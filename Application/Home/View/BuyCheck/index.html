@@ -250,6 +250,7 @@
             this.$message.error("出错了");
         });
     }).setMethod('beforeCheck', function(){
+      this.checkForm.ids = [];
     if (this.multipleSelection.length == 0) {
       this.$message.error("请至少选择一个客户");
       this.checkFormDialog = false;
