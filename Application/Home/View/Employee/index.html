@@ -38,15 +38,15 @@
 							</el-select>
 						</el-form-item>
 
-						<el-form-item prop="group_id">
+						<el-form-item prop="group_id" style="width: 140px">
 							<el-select v-model="searchForm.group_id" size="small" clearable width="50" placeholder="请选择团队小组">
 								<el-option v-for="item in groups" :key="item.id" :label="item.name" :value="item.id"></el-option>
 							</el-select>
 						</el-form-item>
 
 
-						<el-form-item prop="type">
-							<el-select v-model="searchForm.type" size="small" clearable width="50" placeholder="请选择查询类型">
+						<el-form-item prop="type" style="width: 140px">
+							<el-select v-model="searchForm.type" size="small" clearable placeholder="请选择查询类型">
 								<el-option v-for="item in types" :label="item.name" :value="item.value"></el-option>
 							</el-select>
 						</el-form-item>
@@ -197,7 +197,7 @@
 		
 		<div class="dialogWrapper" v-show="show" style="display: none">
 			<!-- 高级查询 -->
-			<!-- <include file="_searchx" /> -->
+			<!--<include file="_searchx" />-->
 			<!-- / 高级查询 -->
 
 			<!-- 添加 -->
@@ -556,53 +556,47 @@
 
         return isLt8M;
 	  }).setMethod("handleQuit", function(index, row, url){
-		if (!arguments[2]) {
-			url= this.page.deleteUrl;
-		}
-		var vmThis = this;
-		this.$confirm('确定离职?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(function(){
-        	vmThis.$http.post(url, {ids:[row.id]}).then(function(response){
-        		var message = '离职成功!';
-        		if (response.body.info) {
-        			message = response.body.info;
-        		}
-        		vmThis.$message({
-		            type: 'success',
-		            message: message
+			if (!arguments[2]) {
+				url= this.page.deleteUrl;
+			}
+			var vmThis = this;
+			this.$confirm('确定离职?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+	    }).then(function(){
+      	vmThis.$http.post(url, {ids:[row.id]}).then(function(response){
+      		var message = '离职成功!';
+      		if (response.body.info) {
+      			message = response.body.info;
+      		}
+      		vmThis.$message({
+	            type: 'success',
+	            message: message
+	          });
+
+      		// vmThis.dataList.splice(index, 1);
+
+      		vmThis.loadDatalist();
+      		//this.dataLoad = true;
+	       // this.loadDatalist();
+
+	      	}, function(response){
+	      		var message = '离职失败';
+	      		if (response.body.info) {
+	      			message = response.body.info;
+	      		}
+	      		vmThis.$message({
+		            type: 'error',
+		            message: '离职失败'
 		          });
-
-        		// vmThis.dataList.splice(index, 1);
-
-        		vmThis.loadDatalist();
-        		//this.dataLoad = true;
-		       // this.loadDatalist();
-
-		      	}, function(response){
-		      		var message = '离职失败';
-		      		if (response.body.info) {
-		      			message = response.body.info;
-		      		}
-		      		vmThis.$message({
-			            type: 'error',
-			            message: '离职失败'
-			          });
-		      })
-        }).catch(function() {
-          vmThis.$message({
-            type: 'info',
-            message: '已取消离职'
-          });          
-    });
-	});
-	</script>
-	<script>
-
-
-		
-		
+	      })
+	    }).catch(function() {
+        vmThis.$message({
+          type: 'info',
+          message: '已取消离职'
+        });          
+	    });
+	  });
 	</script>
 </block>
