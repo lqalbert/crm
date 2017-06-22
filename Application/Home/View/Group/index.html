@@ -14,22 +14,22 @@
 				<el-col :span="24">
 					<el-form :inline="true" ref="searchForm" :model="searchForm">
 
-						<el-form-item prop="department_id">
-							<el-select v-model="searchForm.department_id" @change="departmentChange" width="50" placeholder="请选择部门">
+						<el-form-item prop="department_id" style="width: 120px">
+							<el-select v-model="searchForm.department_id" size="small" clearable @change="departmentChange" placeholder="选择部门">
 								<el-option v-for="item in departments" :key="item.id" :label="item.name" :value="item.id"></el-option>
 							</el-select>
 						</el-form-item>
-						<el-form-item prop="group_id">
-							<el-select v-model="searchForm.group_id"  width="50" placeholder="请选择团队小组">
+						<el-form-item prop="group_id" style="width: 120px">
+							<el-select v-model="searchForm.group_id" size="small" clearable placeholder="选择团队小组">
 								<el-option v-for="item in groups" :label="item.name" :value="item.id"></el-option>
 							</el-select>
 						</el-form-item>
-						<el-form-item>
-							<el-input v-model="searchForm.realname"  placeholder="请输入负责人姓名" >
+						<el-form-item style="width: 120px">
+							<el-input v-model="searchForm.realname" size="small"  placeholder="输入负责人姓名" >
 							</el-input>
 						</el-form-item>
-						<el-form-item>
-							<el-input v-model="searchForm.phone"  placeholder="请输入联系电话" >
+						<el-form-item style="width: 120px">
+							<el-input v-model="searchForm.phone" size="small"  placeholder="输入联系电话" >
 							</el-input>
 						</el-form-item>
 					  <el-form-item>

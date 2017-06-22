@@ -58,6 +58,14 @@ class GroupController extends CommonController {
 		if(isset($_GET['department_id'])){
             $map['group_basic.department_id']=$_GET['department_id'];
         }
+        if(!empty(I('get.realname')))
+        {
+            $map['realname']=array('like',I('get.realname').'%');
+        }
+        if(!empty(I('get.phone')))
+        {
+            $map['ui.mphone']=array('like',I('get.phone').'%');
+        }
 		$map['group_basic.status'] = array('GT', GroupModel::DELETE_STATUS);
 		$user = new User();
 		$user->getRoleObject();
@@ -119,7 +127,6 @@ class GroupController extends CommonController {
 
 		$this->ajaxReturn($contactList);
 	}
-
 	/***
 	*获取所选部门所属的团队小组
      */
