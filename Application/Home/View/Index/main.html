@@ -38,7 +38,7 @@
 			  		&nbsp;&nbsp;&nbsp;<span>单位：{$arr['d_name']}-{$arr['g_name']}</span><br>
 			  		&nbsp;&nbsp;&nbsp;<span>Q  Q：{$arr['qq']}</span><br>
 			  		&nbsp;&nbsp;&nbsp;<span>电话：{$arr['phone']}</span><br>
-			  		&nbsp;&nbsp;&nbsp;<span>地址：{$arr['address']}</span>
+			  		&nbsp;&nbsp;&nbsp;<span>地址：{$arr['address']|mb_substr=###,0,5}</span>
 			  	</div>
 			  </div>
 			</el-card>

@@ -754,6 +754,19 @@ class CustomerController extends CommonController {
         $buy_time = I('post.buy_time');
         $data['buy_time'] = UTCToLocaleDate($buy_time);
 
+
+        $row = $this->M->find(I("post.cus_id"));
+        
+        if (!$row) {
+            $this->error("没找到对应的数据");
+        }
+       
+        $this->setDetail($this->M, array('address'=>I('post.address')));
+        $re = $this->M->save();
+        if ($re === false) {
+            $this->error('更新失败');
+        }
+
         $tmp = json_decode($data['todo_list'], true);
         unset($tmp['distribute']);
         $data['todo_list'] = json_encode($tmp);

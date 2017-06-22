@@ -863,7 +863,8 @@
     product_money:"",
     product_t:"",
     cus_id:"",
-    buy_time:""
+    buy_time:"",
+    address:""
   },true).setMethod('getType', function(type, field){
       return this[field][type];
   }).setMethod('searchCustomer', function(){
@@ -1267,6 +1268,7 @@
     // });
   }).setMethod('openRenewal', function(row){
     this.renewalForm.cus_id = row.id;
+    this.renewalForm.address = row.address;
     // console.log(row);
     // page.getBuyHistory
     this.$http.get(page.getBuyHistory, {params:{cus_id:row.id} }).then(function(response){

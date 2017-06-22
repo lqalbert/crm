@@ -10,6 +10,10 @@
             还没有购买过。请先购买
         </el-form-item>
 
+        <el-form-item label="详细地址:" prop="address">
+            <el-input type="textarea" placeholder="详细地址" v-model="renewalForm.address"></el-input>
+        </el-form-item>
+
         <el-form-item label="商品:" prop="product_index">
             <el-select placheholder="请选择" v-model="renewalForm.product_index" @change="renewalSelectChange">
                 <el-option v-for="(product,index) in products" :label="product.name" :value="index"></el-option>
