@@ -263,7 +263,10 @@ class CustomerCountServiceModel extends \Think\Model{
 
         $roleM = new RoleModel();
 
-        $alluser= M()->query("select id,group_id,department_id from rbac_user inner join user_info on rbac_user.id = user_info.user_id where rbac_user.status>=0 and group_id<>0 and department_id<>0 and role_id in(".$roleM->getIdByEname(RoleModel::CAPTAIN).",". $roleM->getIdByEname(RoleModel::STAFF) .")");
+        $alluser= M()->query("select id,group_id,department_id from rbac_user inner join user_info on rbac_user.id = user_info.user_id where rbac_user.status>=0 and group_id<>0 and department_id<>0 and role_id in(".
+            $roleM->getIdByEname(RoleModel::CAPTAIN).",". 
+            $roleM->getIdByEname(RoleModel::STAFF) .",".
+            $roleM->getIdByEname(RoleModel::DEPARTMENTMASTER).")");
 
         /*$this->customerTypes = array_keys(D('Home/Customer')->getType());
         $fields = array_merge( $this->customerTypes, array('today_v', 'conflict_to', 'conflict_from', 'pulls_num', 'create_num', 'all_num'));*/

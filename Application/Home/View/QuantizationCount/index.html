@@ -26,6 +26,14 @@
             </el-select>
           </el-form-item>
 
+            <el-form-item prop="group" style="width:170px">
+                <el-select v-model="searchForm.group" placeholder="请选择部门单位">
+                    <el-option label="一中队" value="一中队"></el-option>
+                    <el-option label="四分队" value="四分队"></el-option>
+                    <el-option label="五大队" value="五大队"></el-option>
+                    <el-option label="六小队" value="六小队"></el-option>
+            </el-form-item>
+
 	        <el-form-item prop="name" style="width:170px">
 	          <el-input v-model="searchForm.name" placeholder="员工姓名关键字"></el-input>
 	        </el-form-item>
@@ -54,6 +62,10 @@
           <el-table-column width="50" align="center" type="selection"></el-table-column>
 
           <el-table-column  label="序号"  align="center" width="65" :formatter="handleIndex"></el-table-column>
+
+            <el-table-column prop="department" label="部门" align="center" header-align="center"></el-table-column>
+
+            <el-table-column prop="group" label="团队" align="center" header-align="center"></el-table-column>
           
           <el-table-column prop="name" label="员工/单位" header-align="center"></el-table-column>
 
@@ -96,27 +108,28 @@
 <script>
   window.defaultOption.setDatas({
 		dataList:[
-      {name:'美国-唐纳德·特朗普',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
-      {name:'美国-贝拉克·奥巴马',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
-      {name:'美国-乔治·布什',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
-      {name:'美国-比尔·克林顿',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
-      {name:'美国-罗纳德·里根',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
-      {name:'美国-吉米·卡特',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
-      {name:'美国-杰拉尔德·福特',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
-      {name:'美国-理查德·尼克松',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
-      {name:'美国-林登·约翰逊',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
-      {name:'美国-约翰·肯尼迪',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
-      {name:'美国-艾森豪威尔',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
-      {name:'美国-哈里·S 杜鲁门',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
-      {name:'美国-赫伯特·胡佛',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
-      {name:'美国-西奥多·罗斯福',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
-      {name:'美国-西奥多·罗斯福',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
+      {department:"地球",group:"美洲",name:'美国-唐纳德·特朗普',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
+      {department:"地球",group:"美洲",name:'美国-贝拉克·奥巴马',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
+      {department:"地球",group:"美洲",name:'美国-乔治·布什',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
+      {department:"地球",group:"美洲",name:'美国-比尔·克林顿',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
+      {department:"地球",group:"美洲",name:'美国-罗纳德·里根',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
+      {department:"地球",group:"美洲",name:'美国-吉米·卡特',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
+      {department:"地球",group:"美洲",name:'美国-杰拉尔德·福特',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
+      {department:"地球",group:"美洲",name:'美国-理查德·尼克松',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
+      {department:"地球",group:"美洲",name:'美国-林登·约翰逊',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
+      {department:"地球",group:"美洲",name:'美国-约翰·肯尼迪',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
+      {department:"地球",group:"美洲",name:'美国-艾森豪威尔',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
+      {department:"地球",group:"美洲",name:'美国-哈里·S 杜鲁门',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
+      {department:"地球",group:"美洲",name:'美国-赫伯特·胡佛',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
+      {department:"地球",group:"美洲",name:'美国-西奥多·罗斯福',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
+      {department:"地球",group:"美洲",name:'美国-西奥多·罗斯福',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
 		]
   }).setForm('search',{
     dist:'',
     name:'',
     field:'',
-    department:''
+    department:'',
+      group:''
   }).setMethod('refresh',function(){
   	window.location.reload();
   }).setMethod('searchReset2',function(){

@@ -1,0 +1,237 @@
+<el-dialog title="添加员工" v-model="addFormDialog">
+    <!-- <el-form :model="form"> -->
+    <el-form ref="addForm" :rules="addRules" :model="addForm" :label-width="dialogLabelWidth">
+        <el-tabs  type="card" >
+            <el-tab-pane label="账号" name="first">
+                <el-row>
+                    <el-col :span="12">
+                        <el-form-item label="登录账号" prop="account">
+                            <el-input v-model="addForm.account"  auto-complete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="密码">
+                            <el-input v-model="addForm.password" auto-complete="off"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="员工姓名" prop="realname">
+                            <el-input v-model="addForm.realname" auto-complete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="员工职能">
+                            <el-select v-model="addForm.role_id">
+                                <el-option v-for="role in roleList" :label="role.name" :value="role.id"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row v-if="departmentItem==1">
+                    <el-col>
+                        <el-form-item label="所属部门" prop="department_id">
+                            <el-select v-model="addForm.department_id">
+                                <el-option v-for="department in departments" :label="department.name" :value="department.id"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </el-tab-pane>
+            <el-tab-pane label="其它信息" name="second">
+                <el-row>
+                    <el-col :span="12">
+
+                        <el-form-item label="头像">
+                            <img v-show='addUploadImg' :src="addUpload" alt="" style="max-width: 200px; max-height: 200px;">
+                            <el-upload
+                                    action="{:U('Upload/index2')}"
+                                    accept="image/jpeg,image/png,image/jpg,image/gif,image/bmp"
+                                    :on-success="addFormUploadSuccess"
+                                    :on-error="addFormUploadError"
+                                    :data="pathInfo"
+                                    :headers="xuploadheader"
+                                    :multiple="false"
+                                    :show-upload-list="false">
+                                <el-button size="small" type="primary">点击上传</el-button>
+                            </el-upload>
+                        </el-form-item>
+                    </el-col>
+                    <!--  <el-col :span="12">
+                       <el-form-item label="员工类型">
+                         <el-select  placeholder="请选择">
+                           <el-option label="测试数据" value="区域一"></el-option>
+                         </el-select>
+                       </el-form-item>
+                     </el-col> -->
+                </el-row>
+                <el-row>
+                    <!-- <el-col :span="12">
+                      <el-form-item label="所属团队">
+                        <el-select  v-model='addForm.group_id' placeholder="请选择">
+                          <el-option  v-for="group in groupList" :label="group.name" :value="group.id"></el-option>
+                        </el-select>
+                      </el-form-item>
+                    </el-col> -->
+                    <el-col :span="12">
+                        <el-form-item label="性别">
+                            <el-radio class="radio" v-model="addForm.sex" label="1">男</el-radio>
+                            <el-radio class="radio" v-model="addForm.sex" label="2">女</el-radio>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="12">
+
+                        <el-form-item label="手机" prop="mphone">
+                            <el-input v-model="addForm.mphone"  auto-complete="off"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="固话座机" prop="phone">
+                            <el-input v-model="addForm.phone" auto-complet="off"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="12">
+                        <el-form-item label="QQ号" prop="qq">
+                            <el-input v-model="addForm.qq" auto-complete="off"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="QQ昵称">
+                            <el-input v-model="addForm.qq_nickname" auto-complet="off"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="12">
+                        <el-form-item label="微信号">
+                            <el-input v-model="addForm.weixin" auto-complete="off"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="微信昵称">
+                            <el-input v-model="addForm.weixin_nikname" auto-complet="off"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="12">
+                        <el-form-item label="身份证号">
+                            <el-input v-model="addForm.id_card" auto-complet="off"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+
+                <el-row>
+                    <el-col :span="12">
+                        <el-form-item label="省份">
+                            <el-select v-model="addForm.area_province" @change="provinceChange" placeholder="请选择">
+                                <el-option v-for="province in provinces" :label="province.name"  :value="province.id"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-form-item label="城市">
+                            <el-select v-model="addForm.area_city" @change="cityChange"   placeholder="请选择">
+                                <el-option v-for="city in cities" :label="city.name"  :value="city.id"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="12">
+                        <el-form-item label="区县">
+                            <el-select v-model="addForm.area_district" placeholder="请选择">
+                                <el-option v-for="dis in districts" :label="dis.name"  :value="dis.id"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <!--  <el-col :span="12">
+                       <el-form-item label="街道">
+                         <el-select placeholder="请选择">
+                           <el-option label="测试数据" value="测试数据"></el-option>
+                         </el-select>
+                       </el-form-item>
+                     </el-col> -->
+                </el-row>
+                <el-form-item label="住址">
+                    <el-input
+                            v-model="addForm.address"
+                            type="textarea"
+                            :autosize="{ minRows: 2, maxRows: 4}"
+                            placeholder="请输入内容">
+                    </el-input>
+                </el-form-item>
+            </el-tab-pane>
+            <el-tab-pane label="身份证照" name="third" class="third">
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="手持身份证照">
+                            <el-upload
+                                    class="card_img"
+                                    action="{:U('Upload/index2')}"
+                                    accept="image/jpeg,image/png,image/jpg,image/gif,image/bmp"
+                                    :on-success="cardImg"
+                                    :data="pathInfo"
+                                    :headers="xuploadheader"
+                                    :multiple="false"
+                                    :show-upload-list="false"
+                                    :before-upload="beforeAvatarUpload">
+                                <img v-if='addForm.card_img' :src="'__ROOT__' + addForm.card_img" alt="" style="max-width: 400px; max-height:300px;">
+                                <i  v-else class="el-icon-plus avatar-uploader-icon"></i>
+                            </el-upload>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="身份证正面照">
+                            <el-upload
+                                    class="card_front"
+                                    action="{:U('Upload/index2')}"
+                                    accept="image/jpeg,image/png,image/jpg,image/gif,image/bmp"
+                                    :on-success="cardFront"
+                                    :data="pathInfo"
+                                    :headers="xuploadheader"
+                                    :multiple="false"
+                                    :show-upload-list="false"
+                                    :before-upload="beforeAvatarUpload">
+                                <img v-if='addForm.card_front' :src="'__ROOT__' + addForm.card_front" alt="" style="max-width: 400px; max-height:234px;">
+                                <i  v-else class="el-icon-plus avatar-uploader-icon"></i>
+                            </el-upload>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="24">
+                        <el-form-item label="身份证反面照">
+                            <el-upload
+                                    class="card_back"
+                                    action="{:U('Upload/index2')}"
+                                    accept="image/jpeg,image/png,image/jpg,image/gif,image/bmp"
+                                    :on-success="cardBack"
+                                    :data="pathInfo"
+                                    :headers="xuploadheader"
+                                    :multiple="false"
+                                    :show-upload-list="false"
+                                    :before-upload="beforeAvatarUpload">
+                                <img v-if='addForm.card_back' :src="'__ROOT__' + addForm.card_back" alt="" style="max-width: 400px; max-height:234px;">
+                                <i  v-else class="el-icon-plus avatar-uploader-icon"></i>
+                            </el-upload>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+            </el-tab-pane>
+        </el-tabs>
+
+
+
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+        <include file="Common:_add" />
+    </div>
+</el-dialog>

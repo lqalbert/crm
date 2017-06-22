@@ -1,0 +1,14 @@
+<el-dialog title="单位备注说明" v-model="remarkContentDialog">
+
+	<el-row>
+	   <el-col :span="20">
+	   <div style="text-indent: 1em;">
+	       {{remarkContent}}
+	   </div>
+	   </el-col>
+	</el-row>
+
+  <div slot="footer" class="dialog-footer">
+    <el-button type="danger" @click="remarkContentDialog=false">关 闭</el-button>
+  </div>
+</el-dialog>

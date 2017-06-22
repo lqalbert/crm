@@ -54,6 +54,17 @@ class UserModel extends  Model{
              ->select();
     }
 
+    public function getHasCustomerEmployee($field="id,account,realname"){
+        $roleModel = new RoleModel;
+        // 部门经理 主管 员工
+        return $this->m->join('user_info on rbac_user.id = user_info.user_id')
+             ->where(array('rbac_user.status'=>
+                array('NEQ', RbacUserModel::DELETE_SATUS),'user_info.role_id'=>
+                    array('IN', array($roleModel->getIdByEname(RoleModel::CAPTAIN), $roleModel->getIdByEname(RoleModel::STAFF), $roleModel->getIdByEname(RoleModel::DEPARTMENTMASTER)))))
+             ->field($field)
+             ->select();
+    }
+
     /**
     * 未分配的hr
     */

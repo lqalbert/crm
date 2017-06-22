@@ -61,7 +61,7 @@
 		          <input type="hidden" size="small" v-model="searchForm.field">
 		        </el-form-item>
 
-            <el-form-item >
+            <el-form-item prop="gen">
               <el-select size="small" v-model="searchForm.gen">
                 <el-option value="0" label="未分配"></el-option>
                 <el-option value="1" label="已分配"></el-option>
@@ -100,7 +100,7 @@
             
 		  	    <el-table-column label="{:L('INDEX')}" type="index" width="65"  ></el-table-column>
 
-            <el-table-column v-if="roleTypeVal == 1" prop="semaster_name" label="客服主管" align="center" width="150">
+            <el-table-column v-if="roleTypeVal == 1 || roleTypeVal == 2 " prop="semaster_name" label="客服主管" align="center" width="150">
             </el-table-column>
 
 		  	    <el-table-column  header-align="center" prop="name"  label="客户姓名" width="150"></el-table-column>
@@ -273,7 +273,7 @@
 	              </el-table-column> -->
 	            </el-table>
 	          </el-tab-pane>
-<el-tab-pane label="投诉记录">
+            <el-tab-pane label="投诉记录">
               <el-table :data="tableDataFour"  empty-text="请点击客户显示跟踪信息" border style="width: 100%"  @row-dblclick="viewComplainContents">
                 <el-table-column prop="user" label="操作员工" header-align="center">
                 </el-table-column>
@@ -386,7 +386,7 @@
     name:'',
     contact:'',
     field: '',
-    gen:'',
+    gen:'0',
   }).setForm('advancedQuery',{
     start:'',
     end:'',

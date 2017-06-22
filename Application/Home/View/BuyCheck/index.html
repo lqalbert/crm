@@ -138,8 +138,12 @@
               <el-col :span="12">
               <div class="grid-content bg-purple">
                 <span class="wrapper">
-                    <el-tooltip content="选择客户审核" placement="right" style="margin-left:10px;">
+                  <el-tooltip content="选择客户审核" placement="right">
                     <el-button size="small" @click="openDialog('check')" type="primary">审核</el-button>
+                  </el-tooltip>
+
+                  <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:10px;">
+                    <el-button @click="refresh" size="small" type="danger">刷新</el-button>
                   </el-tooltip>
                 </span>
               </div>
@@ -255,6 +259,8 @@
       
       this.checkForm.ids.push(this.multipleSelection[i].id);
     }
+    this.multipleSelection = [];
+
 
 
   }).setMethod('handleSelectionChange',function(val){

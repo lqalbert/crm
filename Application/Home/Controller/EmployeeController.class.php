@@ -15,11 +15,11 @@ class EmployeeController extends CommonController {
 		$this->assign("groupList", D('Group')->where(array('status'=>1))->select());
 		$this->assign("sexType", array("未定义", "男", "女"));
 		$ename = $this->getRoleEname();
-    	$this->assign('viewDecorator', $this->M->decoratorView($ename));
-    	$this->assign('departments', D('Department')->getAllDepartments('id,name'));
-    	$this->assign('depart_id', $this->getDepartmentId());
-    	$this->assign('departmentItem', $this->setEmployeeDepartemtnItem());
-    	$this->assign('allRoles', D('Role')->getField('id,name', true));
+  	$this->assign('viewDecorator', $this->M->decoratorView($ename));
+  	$this->assign('departments', D('Department')->getAllDepartments('id,name'));
+  	$this->assign('depart_id', $this->getDepartmentId());
+  	$this->assign('departmentItem', $this->setEmployeeDepartemtnItem());
+  	$this->assign('allRoles', D('Role')->getField('id,name', true));
 		$this->display();
 	}
 
@@ -33,21 +33,26 @@ class EmployeeController extends CommonController {
 		        	area_province,created_at,
 		        	department_id,group_id,
 		        	head,rbac_user.id,mphone,no_authorized,phone,
-		        	qq,qq_nickname,realname,role_ename,role_id,sex,rbac_user.status,user_info.user_id,weixin,weixin_nikname,id_card,card_img,card_front,card_back,ip,location,lg_time,out_time')->where(array('no_authorized'=>0))
+		        	qq,qq_nickname,realname,role_ename,role_id,sex,rbac_user.status,user_info.user_id,weixin,
+		        	weixin_nikname,id_card,card_img,card_front,card_back,ip,location,lg_time,out_time')->where(array('no_authorized'=>0))
 		        ->where(array('rbac_user.status'=>I('get.status')));
 
+        if (isset($_GET['department_id'])) {
+            $this->M->where(array('department_id'=>$_GET['department_id']));
+        }
+
+        if (isset($_GET['group_id'])) {
+            $this->M->where(array('group_id'=>$_GET['group_id']));
+        }
 		/*$user = new User;
 		$user->getRoleObject();
 		$user->setEmployQueryCondition($this->M);*/
 		$this->setRoleCondition();
-
-		if (isset($_GET['name'])) {
-			$this->M->where(array('account'=>array('like', I('get.name')."%")));
+		if (isset($_GET['type']) && isset($_GET['typeValue'])) {
+			$this->M->where(array(I('get.type')=>array('like', I('get.typeValue')."%")));
 		}
 
-		if (isset($_GET['realname'])) {
-			$this->M->where(array('realname'=>array('like', I('get.realname')."%")));
-		}
+		
 
 		$this->M->where(array('rbac_user.id'=>array('neq', session('uid'))));
 
@@ -329,4 +334,13 @@ class EmployeeController extends CommonController {
 	/*public function _before_delete() {
 		$this->setQeuryCondition();
 	}*/
+	/**
+	*获取所选部门所包含小组
+     */
+	public function getAllGroups(){
+	    if(isset($_GET['department_id'])){
+	        $arr=D('Group')->getAllGoups($_GET['department_id'],'id,name');
+	        $this->ajaxReturn($arr);
+      }
+  }
 }

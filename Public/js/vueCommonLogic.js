@@ -117,7 +117,7 @@ function setCommonLogic(opt){
 		this.loadDatalist();
 
 		delete this.searchForm.sort_field;
-        delete this.searchForm.sort_order;
+    delete this.searchForm.sort_order;
 		// window.location.reload();
 
 	})
@@ -214,7 +214,7 @@ function setAdvancedSearch(opt){
 	var fieldName = FormName.getDialog("advancedSearch");;
 	opt.setData(fieldName, false);
 
-	
+
 }
 
 /**

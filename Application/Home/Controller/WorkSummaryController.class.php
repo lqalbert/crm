@@ -69,6 +69,14 @@ class WorkSummaryController extends CommonController{
     $this->M->where(array('su_user'=>array('IN', array_column($user_ids, 'id'))));
   }
 
+  private function serviceMasterCondition(){
+    $this->departmentMasterCondition();
+  }
+
+  private function hrMasterCondition(){
+    $this->departmentMasterCondition();
+  }
+
 
 
 }

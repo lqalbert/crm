@@ -41,6 +41,7 @@ class CustomersCountToday {
         $targets = $this->entity->getTargets();
         $fields  = $this->entity->getFields();
         
+
         $re = array();
         foreach ($targets as $value) {
             $tmp_row = array(
@@ -48,11 +49,15 @@ class CustomersCountToday {
                 'name'=>$value['name'],
                 'date'=>$date
             );
+            if (isset($value['department_id'])) {
+                $tmp_row['department_id'] = $value['department_id'];
+            }
+
 
             foreach ($fields as $v2) {
+
                 $tmp_row[strtolower($v2)] = call_user_func(array($this->entity, 'get'.parse_name($v2, 1)), $value['id']);
             }
-            
             $re[] = $tmp_row;
         }
         return  $re ; //$this->reSort($re);

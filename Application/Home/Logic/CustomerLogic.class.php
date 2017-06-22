@@ -7,6 +7,7 @@ use Home\Model\CustomerModel;
 class CustomerLogic extends Model{
     const THREE_MONTH_AGE = 7776000;
     protected $tableName = 'customers_basic';
+    protected $where = null;
 
     /**
     * 计算3个月前的时间日期
@@ -100,6 +101,8 @@ class CustomerLogic extends Model{
             cc2.qq as qq2,cc2.phone as phone2,cc2.weixin as weixin2,cc2.qq_nickname as qq_nickname2,
             cc2.weixin_nickname as weixin_nickname2, ui.realname,usi.realname as lock_name');
     }
+
+
 
     /**
     *   获取表格上面的按钮条件

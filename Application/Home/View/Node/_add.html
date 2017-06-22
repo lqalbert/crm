@@ -1,7 +1,7 @@
 <el-dialog title="添加节点" v-model="addFormDialog">
  <el-form :model="addForm" :label-width="dialogLabelWidth">
     <el-form-item label="节点分类："  >
-      <el-select @change="addFormSelect" v-model="addForm.pid" placeholder="请选择节点分类" style="width:270px;">
+      <el-select @change="addFormSelect" v-model="addForm.pid" filterable  placeholder="请选择节点分类" style="width:270px;">
         <el-option v-for="item in levelOne" :label="item.name" :value="item.id"></el-option>
       </el-select>
     </el-form-item>

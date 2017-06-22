@@ -91,6 +91,14 @@ class DepNoticeModel extends Model{
     );
   }
 
+  private function serviceMasterGetView(){
+    return $this->departmentMasterGetView();
+  }
+
+  private function hrMasterGetView(){
+    return $this->departmentMasterGetView();
+  }
+
   private function departmentMasterGetView(){
     $oprateColumn = <<<'EOD'
 <el-table-column label="操作"  align="center" width="180">

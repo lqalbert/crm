@@ -28,7 +28,7 @@ class ImportDepartmentController extends \Think\Controller{
 
     public function index(){
         $root = getcwd();
-        $done = $root ."\\"."data2";
+        $done = $root ."\\"."data1";
 
         $updar = scandir($done);
         
@@ -174,7 +174,7 @@ class ImportDepartmentController extends \Think\Controller{
 
 
     private function save(){
-        $re =  M('import_tabledepartment')->addAll($this->insert_data);
+        $re =  M('import_table_fixtime3')->addAll($this->insert_data);
         echo $re;
         echo "\n";
         $this->insert_data = array();

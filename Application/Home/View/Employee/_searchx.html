@@ -1,0 +1,7 @@
+<el-dialog title="高级查询" :visible.sync="advancedQueryVisible">
+    <el-form ref="advanceForm" :model="advanceForm" >
+        <el-form-item label="部门">
+            <el-input v-model="advanceForm.department"></el-input>
+        </el-form-item>
+    </el-form>
+</el-dialog>

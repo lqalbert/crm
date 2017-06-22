@@ -1,7 +1,7 @@
 <el-dialog title="编辑节点" v-model="editFormDialog">
  <el-form :model="editForm" :label-width="dialogLabelWidth">
     <el-form-item label="节点分类：" style="width:270px;">
-     <el-select  v-model="editForm.pid" placeholder="请选择节点分类">
+     <el-select  v-model="editForm.pid" filterable  placeholder="请选择节点分类">
        <el-option v-for="item in levelOne" :label="item.name" :value="item.id" :disabled="item.disabled"></el-option>
      </el-select>
      <!-- <span>

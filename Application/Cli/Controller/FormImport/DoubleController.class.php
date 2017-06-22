@@ -14,21 +14,49 @@ class DoubleController extends \Think\Controller {
         return iconv('UTF-8', 'EUC-CN', $dirName);
     }
 
-    public function index($name="成都"){
 
-        echo $name, "=======================";
+    public function index(){
+
+       $sql = "SELECT distinct department2 FROM `import_table_fixtime3` " ;
+
+       $re = M()->query($sql);
+
+       $root = getcwd();
+       $done = $root ."\\"."data3";
+
+       foreach ($re as $value) {
+            $val = $value['department2'];
+            $dirName = $this->strtoTransform($val);
+            var_dump($dirName);
+            $dir = $done."\\".$dirName;
+            mkdir($dir);
+
+            $sql = "SELECT distinct department FROM import_table_fixtime3 where department2='". $val ."' " ;
+            $gorups = M()->query($sql);
+            foreach ($gorups as $group) {
+                $this->deal($group['department'], $val, $dir);
+            }     
+       }
+    }
+
+    public function deal($group, $depart, $dir){
+
+        
+
+        echo $this->strtoTransform($group), "=======================";
         echo "\n";
         import('Common.Vender.PhpExcel.PHPExcel',APP_PATH,'.php');
         $root = getcwd();
         $done = $root ."\\"."data3";
 
-        $sql = "select * from import_table_fixtime2 where phone in (select phone  from import_table_fixtime2 group by `phone` having count(id) > 1) ";
+        $sql = "select * from import_table_fixtime3 where phone in (select phone  from import_table_fixtime3 group by `phone` having count(id) > 1) and department2='".$depart."' and department='". $group ."'  ";
 
         $objPHPExcel = new \PHPExcel();
 
         $objPHPExcel->getProperties()->setCreator("yczx")
                                  ->setLastModifiedBy("yczx")
-                                 ->setTitle($name);
+                                 ->setTitle($group);
+
         $objPHPExcel->removeSheetByIndex(0);
         $myWorkSheet = $objPHPExcel->createSheet();
         
@@ -56,7 +84,7 @@ class DoubleController extends \Think\Controller {
 
         $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
 
-        $objWriter->save($done."\\". $name.".xls");
+        $objWriter->save($dir."\\". $this->strtoTransform($group).".xls");
 
         $objPHPExcel = null;
         $myWorkSheet = null;

@@ -153,7 +153,7 @@
             <el-button type="warning" size="small" @click="openDialog('importc')" >客户导入</el-button>
           </el-tooltip> -->
 
-          <el-tooltip content="客户预查" placement="bottom-start"  style="margin-left:10px;">
+          <el-tooltip content="查询客户资料是否已存在或者冲突" placement="bottom-start"  style="margin-left:10px;">
             <el-button size="small"  @click="openDialog('preCheck')"  type="primary">{:L('CUSTOMER_PRE_CHECK')}</el-button>
           </el-tooltip>
 
@@ -195,17 +195,17 @@
   	    <el-table-column width="50" align="center" type="selection"></el-table-column>
 
   	    <el-table-column label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  ></el-table-column>
-  	    <el-table-column  prop="name"  label="客户姓名" width="150" header-align="center"></el-table-column>
+  	    <el-table-column  prop="name"  label="客户姓名" width="150" ></el-table-column>
   	    <el-table-column   prop="type" label="客户类型" sortable='customer' width="150" header-align="center">
           <template scope="scope">
             {{ getType(scope.row.type, 'customerType') }}
           </template>
   	    </el-table-column>
 
-        <el-table-column  prop="realname" label="跟踪员工" sortable='customer' width="150" header-align="center">
+        <el-table-column  prop="realname" label="跟踪员工" sortable='customer' width="150" >
         </el-table-column>
 
-        <el-table-column  prop="lock_name" label="锁定员工" sortable='customer' width="150" header-align="center">
+        <el-table-column  prop="lock_name" label="锁定员工" sortable='customer' width="150" >
         </el-table-column>
 
         <el-table-column   prop="qq" label="QQ号"  width="170" header-align="center">
@@ -255,9 +255,10 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" width="90" fixed="right">
+        <el-table-column label="操作" width="170" fixed="right">
           <template scope="scope">
             <el-button size="small" @click="buy(scope.row)" type="primary">购买</el-button>
+            <el-button size="small" @click="buy(scope.row)" type="primary">续费</el-button>
           </template>
         </el-table-column>
 
@@ -267,8 +268,21 @@
 
   <!-- toolbar -->
   <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
+
     <el-col :span="12"> 
-      <div class="grid-content bg-purple">
+      <el-row style="margin-bottom:6px">
+        <el-col :span="24">
+          <el-tooltip content="录入新的客户" placement="bottom-start" style="margin-left:0px;">
+              <el-button  @click="openDialog('add')" size="small" type="primary">添加客户</el-button>
+          </el-tooltip>
+          <el-tooltip content="编辑客户资料" placement="bottom-start" style="margin-left:10px;">
+              <el-button  @click="beforeOpenEdit" size="small" type="primary">修改客户</el-button>
+          </el-tooltip>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <div class="grid-content bg-purple">
         <span class="wrapper">
           <el-tooltip content="选择客户录入跟踪信息" placement="right">
             <el-button size="small" @click="openDialog('addTrack')" type="primary">录入跟踪</el-button>
@@ -291,6 +305,9 @@
           </el-tooltip>
         </span>
       </div>
+        </el-col>
+      </el-row>
+      
     </el-col>
     <el-col :span="12">
       <div class="grid-content bg-purple-light pull-right">
@@ -656,7 +673,7 @@
         {type:"number", required: true, message:"请选择产品",trigger:'change'}
       ],
       buy_time:[
-        { type: 'date',required: true, message:"请选择够买时间", trigger:'change'}
+        { type: 'date',required: true, message:"请选择购买时间", trigger:'change'}
       ] 
 
     },
@@ -881,8 +898,19 @@
        })
        vmThis.$set(vmThis,'reUsers',reUsers);
      });
+  }).setMethod('beforeOpenEdit', function(){
+      var form='edit';
+      if (this.multipleSelection.length ==0 ) {
+          this.closeDialog(form);
+          this.$message.error('请先选择一个员工');
+      } else if(this.multipleSelection.length > 1){
+          this.closeDialog(form);
+          this.$message.error('只能选择一个员工');
+      }else {
+          var row = this.multipleSelection[0];
+          this.handleEdit(this.dataList.indexOf(row) , row);
+      }
   }).setMethod('beforeEdit',function(){
-
     if (!this.$refs['editselect']) {
       this.provinceChange(this.editForm.area_province);
     }
@@ -966,7 +994,9 @@
         //console.log(currentValue);
         provinces.push({id: currentValue.id, name: currentValue.name});
       })
+      /*console.log(vmThis.provinces);*/
       vmThis.$set(vmThis, 'provinces', provinces);
+      /*console.log(vmThis.provinces);*/
     });
 
     //接收单位、员工

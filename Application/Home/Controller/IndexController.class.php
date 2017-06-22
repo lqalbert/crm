@@ -104,6 +104,18 @@ NAV;
 
 
 
+  public function setLocation(){
+    $location=new \Ip\Taobaoip\taobaoIp();//利用淘宝地址库
+    $arr=$location->getLocation();
+    $data=array(
+       'ip'=>$arr['ip'],
+       'location'=>$arr['country'].$arr['region'].$arr['city'].$arr['county'],
+       
+    );
+    $re=D('rbac_user')->where(array('id'=>session('uid')))->save($data);
+    $this->success();
+  }
+
 
 
 

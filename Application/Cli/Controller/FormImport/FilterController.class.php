@@ -41,14 +41,20 @@ class FilterController extends \Think\Controller{
         foreach ($updar as $name) {
             if ($name!="." && $name!="..") {
                 $subdir = $dir."\\".$name;
+               
                 if (is_dir($subdir)) {
-                    $this->dealDir($subdir);
+
                     $iconvName = $this->strtoTransform($name);
+                    
                     if (mb_substr($this->getName($iconvName), -1)=="部") {
-                        $this->dep2 = $iconvName;
-                        // $this->outPut($name);
-                        // $this->clear();
+                        
+                        $this->dep2 = $this->getName($iconvName);
+                        /*$this->outPut($name);
+                        $this->clear();*/
                     }
+
+                    $this->dealDir($subdir);
+                    
                 } else if(is_file($subdir)) {
                     /*echo "detect:";
                     var_dump($subdir);
@@ -68,22 +74,18 @@ class FilterController extends \Think\Controller{
                            continue;
                        }
                     }
-                    $this->dealFile($subdir);
+                    $this->dealFile($subdir, $dirName);
                 }   
             }
         }
     }
 
 
-    private function dealFile($file){
-        $filInfo = pathinfo($this->strtoTransform($file));
-       
-        if (empty($filInfo)) {
-            var_dump($file);
-            die();
-            return;
-        }
-        if ($filInfo['extension'] != 'xls') {
+    private function dealFile($file, $filename){
+        
+        $filInfo = pathinfo($this->strtoTransform($file), PATHINFO_EXTENSION );
+        
+        if ($filInfo != 'xls') {
            return ;
         }
 
@@ -99,7 +101,7 @@ class FilterController extends \Think\Controller{
 
         foreach ($data as $key => $value) {
          if (!empty($value['D']) &&  !empty($value['A']) &&  mb_strpos($value['A'], '简称')=== false) {
-            $this->setFail($value);
+            $this->setFail($value, $filename);
          }
         }
 
@@ -108,7 +110,8 @@ class FilterController extends \Think\Controller{
     }
 
 
-    private function setFail($data){
+    private function setFail($data, $group){
+        // var_dump($this->strtoBack($group));
         $importData = array(
             'name' => $data['A'],
             'ctype' => $data['B'],
@@ -118,7 +121,7 @@ class FilterController extends \Think\Controller{
             'glr' => $data['F'],
             'cjr' => $data['G'],
             'create_at' => $data['H'],
-            'department' => $data['I'],
+            'department' => $group,// $data['I'],
             'department2' => $this->dep2,
             'city' => $data['J'],
             'encode' => $data['K'],
@@ -130,7 +133,7 @@ class FilterController extends \Think\Controller{
 
         $this->insert_data[] = $importData;
 
-        if (count($this->insert_data)==100) {
+        if (count($this->insert_data)==500) {
             $this->save();
         }
     }
