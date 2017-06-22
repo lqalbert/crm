@@ -89,30 +89,36 @@
               <el-button size="small" @click="setField('month')">本月</el-button>
             </el-form-item>
 
+            <el-form-item>
+              <el-select size="small" style="width:120px;" v-model="searchForm.type" placeholder="请选择类型">
+                <el-option v-for="item in searchGroup" :label="item.key" :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
             
-              <el-form-item prop="department_id">
+            <el-form-item prop="department_id">
               <el-tooltip content="选择某个部门后点击查询或者继续选择下属小组再查询" placement="bottom-start">
                 <el-select size="small" style="width:120px;" clearable filterable   v-model="searchForm.department_id" @change="depChange" placeholder="请选择部门">
                   <el-option v-for="dep in deps" :value="dep.id" :label="dep.name"></el-option>
                 </el-select>
               </el-tooltip>
-              </el-form-item>
+            </el-form-item>
 
-              <el-form-item prop="group_id">
-                <el-tooltip content="必须先选择部门方可选择团组后点击查询或者继续选择下属队员再查询" placement="bottom-start">
+            <el-form-item prop="group_id">
+              <el-tooltip content="必须先选择部门方可选择团组后点击查询或者继续选择下属队员再查询" placement="bottom-start">
                 <el-select size="small" style="width:120px;"  clearable filterable  v-model="searchForm.group_id" @change="groupChange" placeholder="请选择小组">
                   <el-option v-for="group in groups" :value="group.id" :label="group.name"></el-option>
                 </el-select>
-                </el-tooltip>
-              </el-form-item>
+              </el-tooltip>
+            </el-form-item>
 
-              <el-form-item prop="user_id">
-                <el-tooltip content="必须先选择团组方可选择其下属的员工再点击查询" placement="bottom-start">
+            <el-form-item prop="user_id">
+              <el-tooltip content="必须先选择团组方可选择其下属的员工再点击查询" placement="bottom-start">
                 <el-select size="small" style="width:120px;" clearable  filterable  v-model="searchForm.user_id" @change="userChange" placeholder="请选择队员">
                   <el-option v-for="user in users" :value="user.id" :label="user.name"></el-option>
                 </el-select>
-                </el-tooltip>
-              </el-form-item>
+              </el-tooltip>
+            </el-form-item>
 
             <el-form-item>
               <el-tooltip content="填写或者选择好筛选条件后点击此按钮" placement="bottom-start">
@@ -422,9 +428,9 @@
       this.ctrl = true;
     }
 
-    if(this.searchForm.department_id == '' && this.searchForm.group_id == "" && this.searchForm.user_id==""){
-      this.searchForm.type = 'department';
-      this.ctrl = true;
+    if(this.searchForm.type == "user"){
+      //this.searchForm.type = 'department';
+      this.ctrl = false;
     }
   });
 
