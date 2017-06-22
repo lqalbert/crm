@@ -94,6 +94,12 @@
                         </el-table-column>
                         <el-table-column label="序号"  align="center" width="65" :formatter="handleIndex"  >
                         </el-table-column>
+                        <el-table-column label="类型" >
+                          <template scope="scope">
+                                <el-tag v-if="scope.row.type==0" type="primary">购买</el-tag>
+                                <el-tag v-else type="primary">续费</el-tag>
+                            </template>
+                        </el-table-column>
                         <el-table-column   label="客户"  prop="cb_name" width="180">
                         </el-table-column>
                         <el-table-column label="操作员工"  >
@@ -250,6 +256,7 @@
             this.$message.error("出错了");
         });
     }).setMethod('beforeCheck', function(){
+      this.checkForm.ids = [];
     if (this.multipleSelection.length == 0) {
       this.$message.error("请至少选择一个客户");
       this.checkFormDialog = false;
