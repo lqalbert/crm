@@ -15,9 +15,6 @@
 		    text-align: right;
 		    box-sizing: border-box;
 		}
-	  input.el-input__inner{
-		  margin-bottom: 10px;
-	  }
   </style>
 </block>
 <block name="body">
@@ -38,20 +35,17 @@
 							</el-select>
 						</el-form-item>
 
-						<el-form-item prop="group_id">
+						<el-form-item prop="group_id" style="width: 140px">
 							<el-select v-model="searchForm.group_id" size="small" clearable width="50" placeholder="请选择团队小组">
 								<el-option v-for="item in groups" :key="item.id" :label="item.name" :value="item.id"></el-option>
 							</el-select>
 						</el-form-item>
 
 
-						<el-form-item prop="type">
-							<el-select v-model="searchForm.type" size="small" clearable width="50" placeholder="请选择查询类型">
+						<el-form-item prop="type" style="width: 140px">
+							<el-select v-model="searchForm.type" size="small" clearable placeholder="请选择查询类型">
 								<el-option v-for="item in types" :label="item.name" :value="item.value"></el-option>
 							</el-select>
-						</el-form-item>
-						<el-form-item prop="typeValue">
-							<el-input v-model="searchForm.typeValue" size="small" placeholder="请输入查询数据"></el-input>
 						</el-form-item>
 					  <!--<el-form-item prop="name">
 					   <el-input v-model="searchForm.name"  placeholder="请输入员工账号" >
@@ -195,7 +189,7 @@
 		
 		<div class="dialogWrapper" v-show="show" style="display: none">
 			<!-- 高级查询 -->
-			<include file="_searchx" />
+			<!--<include file="_searchx" />-->
 			<!-- / 高级查询 -->
 
 			<!-- 添加 -->
