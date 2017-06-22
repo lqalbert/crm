@@ -217,7 +217,7 @@ class CustomersGather {
         } 
 
 
-        $list2 = M('statistics_usercustomers')->field($this->getSqlFields().",statistics_usercustomers.group_id as id , group_name as name,  department_name, ui.realname")
+        $list2 = M('statistics_usercustomers')->field($this->getSqlFields().",statistics_usercustomers.group_id as id , group_name as name, statistics_usercustomers.department_id, department_name, ui.realname")
                                               ->join('group_basic as gb on statistics_usercustomers.group_id = gb.id ', 'left')
                                               ->join('user_info as ui on gb.user_id = ui.user_id', 'left')
                                                 ->where(array('date'=> array(array('EGT',$this->start),array('ELT',$this->end))))

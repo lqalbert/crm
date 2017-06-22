@@ -232,6 +232,9 @@
       depName:"请选择部门",
       groupName:"请选择小组",
       userName:"请选择队员",
+      oldDepValue:'',
+      oldGroupValue:'',
+      oldUserValue:''
   }).setForm('search',{
       start:"{$start}",
       end:"{$end}",
@@ -366,9 +369,11 @@
         this.$message.error("出错了，请联系开发");
       })
   }).setMethod('depChange',function(v){
+    if(v != this.oldDepValue){
+      this.searchForm.group_id = "";
+      this.searchForm.user_id = ""; 
+    }
     this.searchForm.department_id = v;
-
-
     var vmThis = this;
     //小组
     this.$http.get("{:U('getGroups')}", {params:{department_id:v} }).then(function(response){
@@ -378,8 +383,11 @@
       })
       vmThis.$set(vmThis, 'groups', groups);
     });
-
+    this.oldDepValue = v;
   }).setMethod('groupChange',function(v){
+    if(v != this.oldGroupValue){
+      this.searchForm.user_id = ""; 
+    }
     this.searchForm.group_id = v;
     var d = this.searchForm.department_id;
     var vmThis = this;
@@ -391,6 +399,7 @@
       })
       vmThis.$set(vmThis, 'users', users);
     });
+    this.oldGroupValue = v;
   }).setMethod('userChange',function(v){
     this.searchForm.user_id = v;
   }).setMethod('allTypeChange',function(v){

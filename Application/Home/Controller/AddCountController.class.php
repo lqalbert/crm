@@ -33,7 +33,7 @@ class AddCountController extends CommonController{
 	 * 
 	 **/
 	public function getList(){
-
+    
 		$this->d = new CustomersGather;
 		$this->setServiceQuery();
     $this->getDepartmentCount();
