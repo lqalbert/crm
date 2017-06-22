@@ -743,6 +743,38 @@ class CustomerController extends CommonController {
         }
     }
 
+    /**
+    * 续费
+    */
+    public function renewal(){
+        $data = D('CustomerBuy')->create($_POST);
+        $data['user_id'] = session("uid");
+        $data['type'] = 1;
+
+        $buy_time = I('post.buy_time');
+        $data['buy_time'] = UTCToLocaleDate($buy_time);
+
+        $tmp = json_decode($data['todo_list'], true);
+        unset($tmp['distribute']);
+        $data['todo_list'] = json_encode($tmp);
+
+        $re = $this->addBuy($data);
+        if (!$re) {
+            $this->error("操作失敗");
+        }
+    }
+
+    /**
+    * "成功"的历史纪录
+    */
+    public function history(){
+        $cus_id = I("get.cus_id");
+        $re = $this->M->where(array('cus_id'=>$cus_id, "status"=>1))->select();
+        $this->ajaxReturn($re);
+    }
+
+    
+
     
 
 }

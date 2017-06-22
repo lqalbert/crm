@@ -32,10 +32,10 @@ class DepartmentModel extends Model {
    );
 
 	private $types = array(
-		'销售部',
-        '客服部',
-        '风控部',
-        '人事部'
+		0=>'销售部',
+        1=>'客服部',
+        // 2=>'风控部',
+        3=>'人事部'
 	);
 
 

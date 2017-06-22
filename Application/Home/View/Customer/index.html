@@ -95,9 +95,9 @@
             <el-button  size="small" @click="searchReset2">重置</el-button>
           </el-tooltip>
 
-          <el-tooltip content="录入新的客户" placement="bottom-start" style="margin-left:10px;">
+          <!-- <el-tooltip content="录入新的客户" placement="bottom-start" style="margin-left:10px;">
             <el-button  @click="openDialog('add')" size="small" icon="plus" type="primary">{:L('ADD')}</el-button>
-          </el-tooltip>
+          </el-tooltip> -->
 
           <el-tooltip content="本人跟踪的客户" placement="bottom-start">
             <el-badge :value="{$aggregation.log}" :max="9" style="margin-left:10px;">
@@ -258,7 +258,7 @@
         <el-table-column label="操作" width="170" fixed="right">
           <template scope="scope">
             <el-button size="small" @click="buy(scope.row)" type="primary">购买</el-button>
-            <el-button size="small" @click="buy(scope.row)" type="primary">续费</el-button>
+            <el-button size="small" @click="openRenewal(scope.row)" type="primary">续费</el-button>
           </template>
         </el-table-column>
 
@@ -436,6 +436,12 @@
   <!-- 购买 -->
   <include file="_buy" />
   <!-- /购买 -->
+
+  <!-- 续费 -->
+  <include file="_renewal" />
+  <!-- /续费 -->
+
+
 </div>
 
 </div>
@@ -449,6 +455,10 @@
   page.addRealInfoUrl = "{:U('realInfo')}";
   page.addComplainFormUrl = "{:U('CommonHandleLogic/addComplain')}";
   page.buyUrl = "{:U('buy')}";
+  page.getBuyHistory = "{:U('history')}";
+  page.addRenewalFormUrl = "{:U('renewal')}";
+  // page.getrenewalHistoryUrl = "{:U('renewalHistory')}";
+
   var checkIdNum=function(rule,value,callback){
     var number=/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
     if(value==='' || value===null){
@@ -585,6 +595,7 @@
 
 
   window.defaultOption.setDatas({
+    buyHistory:[],
     flag:false,
     realInfo:false,
     gridData:[],
@@ -677,8 +688,8 @@
       ] 
 
     },
-    stepActive:0
-
+    stepActive:0,
+    // renewalHistory:[]
   }).setForm('search', {
     name:'',
     contact:'',
@@ -845,6 +856,14 @@
     product_t:"",
     name:"",
     buy_time:"",
+  },true).setForm('renewal',{
+    product_id:null,
+    product_index:null,
+    product_name:"",
+    product_money:"",
+    product_t:"",
+    cus_id:"",
+    buy_time:""
   },true).setMethod('getType', function(type, field){
       return this[field][type];
   }).setMethod('searchCustomer', function(){
@@ -1225,8 +1244,6 @@
       this.buyForm.product_money = row.price;
       this.buyForm.product_t = row.service_cycle;
     }
-    
-
   }).setMethod('buy', function(row){
     
     this.buyForm.id = row.id;
@@ -1248,6 +1265,25 @@
     //     return false;
     //   }
     // });
+  }).setMethod('openRenewal', function(row){
+    this.renewalForm.cus_id = row.id;
+    // console.log(row);
+    // page.getBuyHistory
+    this.$http.get(page.getBuyHistory, {params:{cus_id:row.id} }).then(function(response){
+      // console.log(response);
+      this.buyHistory = response.body;
+    },function(response){
+
+    });
+    this.openDialog('renewal')
+  }).setMethod('renewalSelectChange', function(val){
+    if (val!= undefined ) {
+      var row = this.products[val];
+      this.renewalForm.product_id = row.id;
+      this.renewalForm.product_name = row.name;
+      this.renewalForm.product_money = row.price;
+      this.renewalForm.product_t = row.service_cycle;
+    }
   });
 </script>
 

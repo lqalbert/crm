@@ -93,5 +93,7 @@ class BuyCheckController extends CommonController{
     private function callBackCheckCondition(){
         $this->M->where(array('callback_id'=>session('uid'), 'callback_state'=>0))->data(array('callback_state'=>I("post.state")));
     }
+
+    
 }
 
