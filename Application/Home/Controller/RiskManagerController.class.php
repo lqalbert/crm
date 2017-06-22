@@ -20,7 +20,7 @@ class RiskManagerController extends CommonController{
             ->join('user_info as usin on customers_buy.callback_id = usin.user_id')
             ->join('department_basic as db on ui.department_id = db.id', 'left')
             ->field('customers_buy.id,customers_buy.user_id,customers_buy.cus_id,customers_buy.risk_state,customers_buy.callback_state,
-              customers_buy.product_id,customers_buy.product_name,customers_buy.product_money,customers_buy.product_t,customers_buy.buy_time,
+              customers_buy.product_id,customers_buy.product_name,customers_buy.product_money,customers_buy.product_t,customers_buy.buy_time,customers_buy.type,customers_buy.status,
               ui.realname,usi.realname as risk_name,usin.realname as callback_name,db.name as department_name, cb.name as cb_name')
             ->order('customers_buy.id desc');
   }

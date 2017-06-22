@@ -2,6 +2,7 @@
 namespace Home\Controller;
 use Common\Lib\User;
 use Home\Model\DepartmentModel;
+use Home\Model\RoleModel;
 
 class EmployeeController extends CommonController {
 	protected $table="RbacUser";
@@ -16,7 +17,21 @@ class EmployeeController extends CommonController {
 		$this->assign("sexType", array("未定义", "男", "女"));
 		$ename = $this->getRoleEname();
     	$this->assign('viewDecorator', $this->M->decoratorView($ename));
-    	$this->assign('departments', D('Department')->getAllDepartments('id,name'));
+
+    	//部门选项权限
+    	$ename=$this->getRoleEname();
+    	if($ename==RoleModel::GOLD||$ename==RoleModel::HR||$ename==RoleModel::HR_MASTER){
+    	    //总经办、人事经理、人事专员权限
+            $departments=array('list'=>D('Department')->getAllDepartments('id,name'),'account'=>'','group'=>'');
+        }else{
+    	    //部门经理权限
+            //所属部门
+            $arr=D('Department')->where(array('id'=>session('account')['userInfo']['department_id']))->field('id,name')->select();
+            //部门所属团队小组
+            $ar=D('Group')->getAllGoups(session('account')['userInfo']['department_id'],'id,name');
+            $departments=array('list'=>$arr,'account'=>$arr,'group'=>$ar);
+        }
+    	$this->assign('departments',$departments);
     	$this->assign('depart_id', $this->getDepartmentId());
     	$this->assign('departmentItem', $this->setEmployeeDepartemtnItem());
     	$this->assign('allRoles', D('Role')->getField('id,name', true));
