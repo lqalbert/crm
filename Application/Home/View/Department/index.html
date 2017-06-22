@@ -102,15 +102,15 @@
 					    </el-table-column> -->
 						<el-table-column label="是否启用" :context="_self" align="center" prop="status">
 					      <template scope="scope">
-	  							<div>
-	  						    <el-switch
-	  								  v-model="scope.row.switch"
-	  								  on-color="#13ce66"
-	  								  off-color="#ff4949" 
-	  								  @change="switchHandle(scope.$index, scope.row)">
-	  								</el-switch>
-	  							</div>
-                </template>
+  							<div>
+  						        <el-switch
+  								  v-model="scope.row.switch"
+  								  on-color="#13ce66"
+  								  off-color="#ff4949" 
+  								  @change="switchHandle(scope.$index, scope.row)">
+  								</el-switch>
+  							</div>
+                         </template>
 					    </el-table-column>
               <el-table-column label="地址" header-align="center" prop="address" width="180">
               </el-table-column>
@@ -388,14 +388,6 @@
         }, function(response){
             this.$message.error('出错了');
         });
-    }).setMethod('depTypeChange',function(v){
-    	var v = parseInt(v);
-    	this.searchForm.type=v;
-    	this.depTypeName = this.typeList[v];
-
-    }).setMethod('showRemark',function(row, column, cell, event){
-    	this.remarkContent = row.remark;
-    	this.remarkContentDialog = true;
     });
 </script>
 

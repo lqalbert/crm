@@ -2,11 +2,12 @@
 namespace Home\Controller;
 
 use Common\Lib\User;
-use Home\Model\RoleModle;
+use Home\Model\RoleModel;
 use Home\Model\GroupModel;
 
 class GroupController extends CommonController {
 	protected $table="group_basic";
+	protected $departmentSelect=NULL;
 
 	
 	public function index (){
@@ -17,11 +18,25 @@ class GroupController extends CommonController {
 		/*$contactList = $user->getRoleGroupContacts();*/
 		//上级组织
 		$org = $user->getRoleGroupOrgs();
-		
+
+        //部门选项权限
+		$ename=$this->getRoleEname();
+		if($ename == RoleModel::GOLD || $ename==RoleModel::HR ||$ename==RoleModel::HR_MASTER)
+		{
+		    //总经办、人事经理、人事专员
+            $departments=array('list'=>D('Department')->getAllDepartments('id,name'),'account'=>'','group'=>"");
+        }else{
+		    //部门经理
+            //查询所在部门
+		    $arr=D('Department')->where(array('id'=>session('account')['userInfo']['department_id']))->field('id,name')->select();
+		    //部门所属团队小组
+		    $ar=D('Group')->getAllGoups(session('account')['userInfo']['department_id'],'id,name');
+		    $departments=array('list'=>$arr,'account'=>$arr,'group'=>$ar);
+        }
 		$this->assign("namelist",    $org);
 		$this->assign("contactList", array());
 		// $this->assign("memberList",  $members);
-        $this->assign('departments', D('Department')->getAllDepartments('id,name'));
+        $this->assign('departments', $departments);
 		$this->display();
 	}
 
@@ -37,11 +52,19 @@ class GroupController extends CommonController {
 
 	public function setQeuryCondition(){
 		$map=array();
-		if (!empty(I('get.name'))) {
-			$map['group_basic.name']=array('like', I('get.name')."%");
+		if (!empty(I('get.group_id'))) {
+			$map['group_basic.id']=I('get.group_id');
 		}
 		if(isset($_GET['department_id'])){
             $map['group_basic.department_id']=$_GET['department_id'];
+        }
+        if(!empty(I('get.realname')))
+        {
+            $map['realname']=array('like',I('get.realname').'%');
+        }
+        if(!empty(I('get.phone')))
+        {
+            $map['ui.mphone']=array('like',I('get.phone').'%');
         }
 		$map['group_basic.status'] = array('GT', GroupModel::DELETE_STATUS);
 		$user = new User();
@@ -113,5 +136,14 @@ class GroupController extends CommonController {
 	        $this->ajaxReturn($arr);
         }
     }
+
+    public function getGroupsByDepartmentId(){
+		$department_id = I('get.department_id');
+		$list = $this->M->where(array("department_id"=>$department_id))->select();
+
+		$this->ajaxReturn($list);
+        // echo json_decode($list);
+	}
+
 
 }

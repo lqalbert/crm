@@ -11,6 +11,7 @@ class DepartmentController extends CommonController {
 	public function index(){
 		$count = $this->M->count();
 		$type = $this->M->getType();
+		
 		$this->assign("typeList", $type);
 		$this->assign("totalCount", $count);
 		$this->assign("zoneList", M('department_zone')->getField('id,name'));
@@ -35,7 +36,7 @@ class DepartmentController extends CommonController {
 		$type = I('get.type');
 		$map = array('department_basic.status'=>array('EGT',0) ); //查询的参数
 		if ( !empty(I('get.name')) ) {
-			$map['department_basic.name'] = array('like', $name ."%");
+			$map['department_basic.name'] = array('like', I('get.name')."%");
 		}
 		$this->M->where($map);
 
@@ -195,6 +196,17 @@ class DepartmentController extends CommonController {
 
 		$this->ajaxReturn(array('bhr'=>$bHr, 'hrs'=>$hrs));
 	}
+
+
+	public function getDepartmentsByStatus(){
+		$status = I('get.status',1);
+		$list = $this->M->where(array("status"=>$status))->select();
+		$this->ajaxReturn($list);
+        // echo json_decode($list);
+	}
+
+	
+
 
 
 

@@ -16,9 +16,9 @@ class RbacUserModel extends RelationModel {
 
     protected $_link = array(
         'userInfo'=> array(
-        	'mapping_type'      => self::HAS_ONE,
-        	'class_name'        => 'userInfo',
-        	'foreign_key'       => 'user_id'
+          'mapping_type'      => self::HAS_ONE,
+          'class_name'        => 'userInfo',
+          'foreign_key'       => 'user_id'
         )
      );
 

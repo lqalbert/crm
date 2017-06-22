@@ -15,11 +15,11 @@ class EmployeeController extends CommonController {
 		$this->assign("groupList", D('Group')->where(array('status'=>1))->select());
 		$this->assign("sexType", array("未定义", "男", "女"));
 		$ename = $this->getRoleEname();
-  	$this->assign('viewDecorator', $this->M->decoratorView($ename));
-  	$this->assign('departments', D('Department')->getAllDepartments('id,name'));
-  	$this->assign('depart_id', $this->getDepartmentId());
-  	$this->assign('departmentItem', $this->setEmployeeDepartemtnItem());
-  	$this->assign('allRoles', D('Role')->getField('id,name', true));
+    	$this->assign('viewDecorator', $this->M->decoratorView($ename));
+    	$this->assign('departments', D('Department')->getAllDepartments('id,name'));
+    	$this->assign('depart_id', $this->getDepartmentId());
+    	$this->assign('departmentItem', $this->setEmployeeDepartemtnItem());
+    	$this->assign('allRoles', D('Role')->getField('id,name', true));
 		$this->display();
 	}
 
@@ -50,10 +50,7 @@ class EmployeeController extends CommonController {
 		$this->setRoleCondition();
 		if (isset($_GET['type']) && isset($_GET['typeValue'])) {
 			$this->M->where(array(I('get.type')=>array('like', I('get.typeValue')."%")));
-		}
-
-		
-
+		}	
 		$this->M->where(array('rbac_user.id'=>array('neq', session('uid'))));
 
 
@@ -341,6 +338,6 @@ class EmployeeController extends CommonController {
 	    if(isset($_GET['department_id'])){
 	        $arr=D('Group')->getAllGoups($_GET['department_id'],'id,name');
 	        $this->ajaxReturn($arr);
-      }
-  }
+        }
+    }
 }

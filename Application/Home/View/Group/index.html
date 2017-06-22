@@ -14,16 +14,26 @@
 				<el-col :span="24">
 					<el-form :inline="true" ref="searchForm" :model="searchForm">
 
-						<el-form-item prop="department_id">
-							<el-select v-model="searchForm.department_id" width="50" placeholder="请选择部门">
+						<el-form-item prop="department_id" style="width: 120px">
+							<el-select v-model="searchForm.department_id" size="small" clearable @change="departmentChange" placeholder="选择部门">
 								<el-option v-for="item in departments" :key="item.id" :label="item.name" :value="item.id"></el-option>
 							</el-select>
 						</el-form-item>
-						<el-form-item prop="name">
-							<el-input  placeholder="请输入团队小组名" v-model="searchForm.name"></el-input>
+						<el-form-item prop="group_id" style="width: 120px">
+							<el-select v-model="searchForm.group_id" size="small" clearable placeholder="选择团队小组">
+								<el-option v-for="item in groups" :label="item.name" :value="item.id"></el-option>
+							</el-select>
+						</el-form-item>
+						<el-form-item style="width: 120px">
+							<el-input v-model="searchForm.realname" size="small"  placeholder="输入负责人姓名" >
+							</el-input>
+						</el-form-item>
+						<el-form-item style="width: 120px">
+							<el-input v-model="searchForm.phone" size="small"  placeholder="输入联系电话" >
+							</el-input>
 						</el-form-item>
 					  <el-form-item>
-					    <el-button type="primary" @click="loadDatalist" icon="search">查询</el-button> 
+					    <el-button type="primary" @click="loadDatalist" icon="search">查询</el-button>
 					    <el-button  @click="searchReset">重置</el-button>
 			        	<!-- <el-button  @click="openDialog('advancedSearch')" icon="search">高级查询</el-button>  -->
 					  </el-form-item>
@@ -240,8 +250,8 @@
      tableData:[],
      multipleSelection:[],
      secondSelection:[],
-	  departments:{:json_encode($departments)},
-  groups:""
+	  departments:{:json_encode($departments['list'])},
+  groups:{:json_encode($departments['group'])}
   }).setForm('add',{
   	id:'',
   	name:"",
@@ -259,11 +269,13 @@
   	remark:"",
   	img:'',
   }).setForm('search',{
-	name:"",
-	input:"",
-	sortFiled:"id",
-	  department_id:"",
-	sortWay:"asc" // desc
+      group_id:"",
+	  input:"",
+	  realname:"",
+	  phone:"",
+	  sortFiled:"id",
+	  department_id:{:json_encode($departments['account'][0]['id'])},
+	  sortWay:"asc" // desc
   }).setForm('addMember',{
     id:0,
     name:"",
@@ -274,7 +286,7 @@
 	  var vmThis=this
 	  vmThis.$http.get('{:U("getGroups")}',{params:{department_id:vmThis.searchForm.department_id}}).then(function (response) {
 		  vmThis.groups=response.body
-		  vmThis.searchForm.name=''
+		  vmThis.searchForm.group_id=''
       })
 
   }).setMethod('bigImg',function(url){

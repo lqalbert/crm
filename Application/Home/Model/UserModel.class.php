@@ -107,6 +107,7 @@ class UserModel extends  Model{
 
         return M('user_info')->select();
     }
+ 
 
     public function getSupService($field="id,realname"){
         $roleId = D('Role')->getIdByEname(RoleModel::SUP_SERVICE);

@@ -19,6 +19,7 @@ class RoleModel extends Model {
 	const HR  = 'humanResource';
 	const DIVISIONMASTER ='divisionMaster';
 	const DATASTAFF = 'dataStaff';
+	const HR_MASTER='hrMaster';
 
 	protected $tableName = 'rbac_role';
 

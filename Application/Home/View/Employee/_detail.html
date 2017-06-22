@@ -1,0 +1,479 @@
+<el-dialog title="员工信息" v-model="detailFormDialog">
+
+
+<el-form ref="editForm" :rules="editRules" :model="editForm" :label-width="dialogLabelWidth">
+    
+
+    <el-tabs  type="card" >
+      <el-tab-pane label="基本信息" name="first">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="登录账号：" prop="account">
+              <span>
+                {{ account }}
+              </span>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="员工姓名：" prop="realname">
+              <span>
+              {{ realname }}
+            </span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="12">
+              <el-form-item label="所属部门：">
+                 <span>
+                   <template >
+                     {{ getType(department_id, 'allDepartments') }}
+                   </template>
+                 </span>
+              </el-form-item>
+            </el-col>
+             <el-col :span="12">
+              <el-form-item label="所属团队小组：">
+                 <span>
+                   <template >
+                     {{ getType(group_id, 'allGroups') }}
+                   </template>
+                 </span>
+              </el-form-item>
+            </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="员工编号：">
+               <span>
+                   {{ identifier }}
+              </span>
+            </el-form-item>
+          </el-col>
+              <el-col :span="12">
+              <el-form-item label="员工职能：">
+                 <span>
+                   <template >
+                     {{ getType(role_id, 'allRoles') }}
+                   </template>
+                 </span>
+              </el-form-item>
+            </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="头像：">
+              <img  :src="'__ROOT__' + head" alt="" style="max-width: 200px; max-height:200px;">
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="性别：">
+                <span>
+                  <template >
+                    {{ getType(sex, 'sexType') }}
+                  </template>
+                </span>
+            </el-form-item>
+          </el-col>
+           <el-col :span="12">
+            <el-form-item label="婚否：">
+             <!--  <span v-if="marriage == 1">已婚</span>
+             <span v-if="marriage == 2">未婚</span>
+               <span v-else>未定义</span> -->
+                <span>
+                  <template >
+                    {{ getType(marriage, 'marriageType') }}
+                  </template>
+                </span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+        
+            <el-col :span="12">
+              <el-form-item prop="birth_date" label="出生年月：">
+                    <span>
+                      {{ birth_date }}
+                    </span>
+                </el-form-item>
+            </el-col>
+             <el-col :span="12">
+              <el-form-item prop="graduation_date" label="毕业时间：">
+                   <span>
+                        {{ graduation_date }}
+                   </span>
+                </el-form-item>
+            </el-col>
+        </el-row>
+            <el-row>
+            <el-col :span="12">
+              <el-form-item prop="entry_date" label="入职日期：">
+                  <span>
+                        {{ entry_date }}
+                   </span>
+                </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item prop="completion_date" label="转正日期：">
+                  <span>
+                        {{ completion_date }}
+                   </span>
+                </el-form-item>
+            </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="省份：">
+              <!--    <el-select ref="editselect" v-model="editForm.area_province" @change="provinceChange" placeholder="请选择" >
+              <el-option v-for="province in provinces" :label="province.name"  :value="province.id" v-if="area_province == province.id" selected>{{province.name}}</el-option>
+                            </el-select>
+              
+              <span v-for="province in provinces"   :value="province.id"  v-if="area_province == province.id" selected>{{province.name}}</span> -->
+              <span>
+                  <template >
+                    {{ getType(area_province, 'allProvinces') }}
+                  </template>
+              </span>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="城市：">
+              <!--  <el-select v-model="editForm.area_city" @change="cityChange"   placeholder="请选择">
+               <el-option v-for="city in cities" :label="city.name"  :value="city.id" v-if="area_city == city.id" selected></el-option>
+                            </el-select>
+                            <span v-for="city in cities"   :value="city.id"  v-if="area_city == city.id" selected>{{city.name}}</span> -->
+               <span>
+           <template >
+             {{ getType(area_city, 'allCities') }}
+           </template>
+       </span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="区县：">
+            <!--   <el-select v-model="editForm.area_district" placeholder="请选择">
+              <el-option v-for="dis in districts" :label="dis.name"  :value="dis.id" v-if="area_district == dis.id" selected></el-option>
+            </el-select>
+             <span v-for="dis in districts"   :value="dis.id"  v-if="area_district == dis.id" selected>{{dis.name}}</span> -->
+           <span>
+               <template >
+                 {{ getType(area_district, 'allDistricts') }}
+               </template>
+           </span>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="入职来源：">
+              <span>
+                   {{ entry_sources }}
+              </span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="民族：">
+               <span>
+                   {{ nation }}
+              </span>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="毕业院校：">
+               <span>
+                   {{ university }}
+              </span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+           <el-row>
+           <el-col :span="12">
+              <el-form-item label="血型：">
+                 <span>
+                   {{ blood_type }}
+              </span>
+              </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="所学专业：">
+               <span>
+                   {{ major }}
+              </span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="身高：" prop="height">
+               <span>
+                   {{ height }}
+              </span>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="体重：">
+               <span>
+                   {{ weight }}
+              </span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+           <el-col :span="12">
+              <el-form-item label="固话：">
+                 <span>
+                   {{ phone }}
+              </span>
+              </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="手机：" prop="mphone">
+               <span>
+                   {{ mphone }}
+              </span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="QQ号：" prop="qq">
+               <span>
+                   {{ qq }}
+              </span>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="QQ昵称：">
+               <span>
+                   {{ qq_nickname }}
+              </span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="微信号：">
+               <span>
+                   {{ weixin }}
+              </span>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="微信昵称：">
+               <span>
+                   {{ weixin_nickname }}
+              </span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="12">
+            <el-form-item label="身份证号：">
+               <span>
+                   {{ id_card }}
+              </span>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="入职经办人：" prop="entry_manager">
+               <span>
+                   {{ entry_manager }}
+              </span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-form-item label="住址：">
+           <span>
+              {{ address }}
+            </span>
+        </el-form-item>
+      </el-tab-pane>
+      <el-tab-pane label="身份证照" name="second">
+        <el-row>
+          <el-col :span="24">
+             <el-form-item label="手持身份证照：">
+                <span>
+                   <img  :src="'__ROOT__' + card_img" alt="" style="max-width: 400px; max-height:234px;">
+              </span>
+              </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="24">
+             <el-form-item label="身份证正面照：">
+              <img  :src="'__ROOT__' + card_front" alt="" style="max-width: 400px; max-height:234px;">
+              </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="24">
+             <el-form-item label="身份证反面照：">
+              <img  :src="'__ROOT__' + card_back" alt="" style="max-width: 400px; max-height:234px;">
+              </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+             <el-form-item label="户口本首页：">
+                <img  :src="'__ROOT__' + household_home_page" alt="" style="max-width: 400px; max-height:234px;">
+              </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+             <el-form-item label="户主页：">
+                <img  :src="'__ROOT__' + household_housemaster" alt="" style="max-width: 400px; max-height:234px;">
+              </el-form-item>
+          </el-col>
+        </el-row>
+               <el-row>
+          <el-col :span="24">
+             <el-form-item label="本人页：">
+                <img  :src="'__ROOT__' + household_personal" alt="" style="max-width: 400px; max-height:234px;">
+              </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+             <el-form-item label="学历证：">
+                <img  :src="'__ROOT__' + education_certificate" alt="" style="max-width: 400px; max-height:234px;">
+              </el-form-item>
+          </el-col>
+        </el-row>
+         <el-row>
+          <el-col :span="24">
+             <el-form-item label="学位证：">
+               <img  :src="'__ROOT__' + degree_diploma" alt="" style="max-width: 400px; max-height:234px;">
+              </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+             <el-form-item label="相关从业资格证：">
+                <img  :src="'__ROOT__' + practitioner_certificate" alt="" style="max-width: 400px; max-height:234px;">
+              </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+             <el-form-item label="离职证明：">
+               <img  :src="'__ROOT__' + leaving_certificate" alt="" style="max-width: 400px; max-height:234px;">
+              </el-form-item>
+          </el-col>
+        </el-row>
+
+      </el-tab-pane>
+      <el-tab-pane label="家庭主要成员" name="third">
+      <el-row>
+          <el-col :span="12">
+            <el-form-item label="亲属姓名：">
+               <span>
+                   {{ family_member }}
+              </span>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="与自己的关系：">
+               <span>
+                   {{ family_relation }}
+              </span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      <el-row>
+          <el-col :span="12">
+            <el-form-item label="任职单位：">
+               <span>
+                   {{ family_job_unit }}
+              </span>
+            </el-form-item>
+          </el-col>
+            <el-col :span="12">
+            <el-form-item label="职务：">
+               <span>
+                   {{ family_position }}
+              </span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="联系电话：">
+               <span>
+                   {{ family_phone }}
+              </span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-tab-pane>
+       <el-tab-pane label="工作简历" name="four">
+       <el-row>
+            <el-col :span="12">
+              <el-form-item prop="birth_date" label="任职时间：">
+                   <span>
+                       {{ resume_entry_date }}
+                  </span>
+                </el-form-item>
+            </el-col>
+       </el-row>
+       <el-row>
+          <el-col :span="12">
+            <el-form-item label="企业名称：">
+              <span>
+                   {{ resume_enterprise_name }}
+              </span>
+            </el-form-item>
+          </el-col>
+            <el-col :span="12">
+            <el-form-item label="任职职务：">
+              <span>
+                   {{ resume_position }}
+              </span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="直属上司姓名：">
+              <span>
+                   {{ resume_leader }}
+              </span>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="直属上司联系电话：">
+              <span>
+                   {{ resume_leader_phone }}
+              </span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-form-item label="离职原因：">
+          <span>
+                   {{ resume_leaving_reasons }}
+              </span>
+        </el-form-item>
+      </el-tab-pane>
+    </el-tabs>
+
+
+  
+    
+  </el-form>
+
+  <div slot="footer" class="dialog-footer">
+    <el-button type="primary" @click="closeDialog('detail')">确 定</el-button>
+  </div>
+</el-dialog>
+<script type="text/javascript">
+alert(cities);
+</script>
+

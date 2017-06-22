@@ -138,7 +138,6 @@ class AddCountController extends CommonController{
     $group_id = I('get.group_id');
     $user_id = I('get.user_id');
 
-
     if($department_id != 'department' && empty($group_id) && empty($user_id)){
     	$arr[] = $this->deps[$department_id];
     	$result = array('list'=>$arr, 'count'=>count($arr));
