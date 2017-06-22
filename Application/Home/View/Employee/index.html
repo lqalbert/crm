@@ -345,8 +345,8 @@
 			card_back:"",
 			departmentItem:{$departmentItem},
 
-			departments:{:json_encode($departments)},
-		groups:'',
+			departments:{:json_encode($departments['list'])},
+		groups:{:json_encode($departments['group'])},
 			types:[
 			    {name:"员工账号",value:'account'},
 			{name:"员工姓名",value:'realname'},
@@ -404,7 +404,7 @@
 			user_id:0,
 			role_ids:0
 		},true).setForm('search',{
-			department_id:"",
+			department_id:{:json_encode($departments['account'][0]['id'])},
 			group_id:"",
 			type:"",
 			typeValue:"",
