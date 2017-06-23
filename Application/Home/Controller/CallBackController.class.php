@@ -46,7 +46,16 @@ class CallBackController extends CommonController{
   }
 
   private function getMycust(){
-    $where = array('callback_id'=>session('uid'));
+
+    $roleName = $this->getRoleEname();
+
+    if ($roleName!= RoleModel::GOLD) {
+      $where = array('callback_id'=>session('uid'));
+    }  else {
+      $where = array();
+    }
+    
+    
     switch (I('get.field')) {
       case 'already':
         $where['callback_state'] = array('neq', 0);
