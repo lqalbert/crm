@@ -20,13 +20,19 @@ class EmployeeController extends CommonController {
 
     	//部门选项权限
     	$ename=$this->getRoleEname();
+
+        //所属部门
+        $arr=D('Department')->where(array('id'=>session('account')['userInfo']['department_id']))->field('id,name,type')->select();
     	if($ename==RoleModel::GOLD||$ename==RoleModel::HR||$ename==RoleModel::HR_MASTER){
     	    //总经办、人事经理、人事专员权限
-            $departments=array('list'=>D('Department')->getAllDepartments('id,name'),'account'=>'','group'=>'');
+            if($ename==RoleModel::HR&&$arr[0]['type']!='3'){
+                $ar=D('Group')->getAllGoups(session('account')['userInfo']['department_id'],'id,name');
+                $departments=array('list'=>$arr,'account'=>$arr,'group'=>$ar);
+            }else{
+                $departments=array('list'=>D('Department')->getAllDepartments('id,name'),'account'=>'','group'=>'');
+            }
         }else{
     	    //部门经理权限
-            //所属部门
-            $arr=D('Department')->where(array('id'=>session('account')['userInfo']['department_id']))->field('id,name')->select();
             //部门所属团队小组
             $ar=D('Group')->getAllGoups(session('account')['userInfo']['department_id'],'id,name');
             $departments=array('list'=>$arr,'account'=>$arr,'group'=>$ar);
