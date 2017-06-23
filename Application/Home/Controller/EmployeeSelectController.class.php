@@ -31,7 +31,7 @@ class EmployeeSelectController extends CommonController
 		        	head,rbac_user.id,mphone,no_authorized,phone,
 		        	qq,qq_nickname,realname,role_ename,role_id,sex,rbac_user.status,user_info.user_id,weixin,weixin_nikname,id_card,card_img,card_front,card_back,ip,location,lg_time,out_time')->where(array('no_authorized'=>0))
             ->where(array('rbac_user.status'=>I('get.status')));
-        $arr=array('realname','qq','weinxin','mphone');
+        $arr=array('realname','qq','weixin','mphone');
         $num=0;
         foreach ($arr as $v){
             if(I('get.'.$v)==''){
