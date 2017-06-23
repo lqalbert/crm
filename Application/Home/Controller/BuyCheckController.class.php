@@ -15,7 +15,12 @@ class BuyCheckController extends CommonController{
                 'riskOne'=>'risk_state',
                 'callBack'=>'callback_state'
             );
-        return $map[$this->getRoleEname()];
+        if (isset($map[$this->getRoleEname()])) {
+            return $map[$this->getRoleEname()];
+        } else {
+            return 'risk_state';
+        }
+        
     }
 
     public function index(){

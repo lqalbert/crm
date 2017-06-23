@@ -41,7 +41,7 @@ class WorkSumController extends \Think\Controller {
     }
 
     private function setDateRe(){
-        $sql="SELECT count(id) as c, user_id, track_type FROM `beta_testcrm`.`customers_log` where created_at >= '".$this->startDate."' and created_at <'".$this->endDate."' and track_type is not null  group by user_id,track_type ";
+        $sql="SELECT count(id) as c, user_id, track_type FROM  `customers_log` where created_at >= '".$this->startDate."' and created_at <'".$this->endDate."' and track_type is not null  group by user_id,track_type ";
         $allData = M()->query($sql);
         $allDataGroup = arr_group($allData, 'user_id');
         $re = array();
@@ -126,7 +126,7 @@ class WorkSumController extends \Think\Controller {
     }
 
     private function lastSave(){
-        $re = M('statistics_quantization2')->addAll($this->insert_data);
+        $re = M('statistics_quantization')->addAll($this->insert_data);
         echo $re;
         echo "\n";
         $this->insert_data  =array();

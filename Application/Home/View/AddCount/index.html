@@ -90,7 +90,7 @@
             </el-form-item>
 
             <el-form-item>
-              <el-select size="small" style="width:120px;" v-model="searchForm.type" placeholder="请选择类型">
+              <el-select size="small" style="width:120px;" v-model="searchForm.type" placeholder="查询类型" @change="allTypeChange">
                 <el-option v-for="item in searchGroup" :label="item.key" :value="item.value">
                 </el-option>
               </el-select>
@@ -106,19 +106,19 @@
 
             <el-form-item prop="group_id">
               <el-tooltip content="必须先选择部门方可选择团组后点击查询或者继续选择下属队员再查询" placement="bottom-start">
-                <el-select size="small" style="width:120px;"  clearable filterable  v-model="searchForm.group_id" @change="groupChange" placeholder="请选择小组">
+                <el-select size="small" style="width:120px;" :disabled="ctrlSelect" clearable filterable  v-model="searchForm.group_id" @change="groupChange" placeholder="请选择小组">
                   <el-option v-for="group in groups" :value="group.id" :label="group.name"></el-option>
                 </el-select>
               </el-tooltip>
             </el-form-item>
 
-            <el-form-item prop="user_id">
+<!--             <el-form-item prop="user_id">
               <el-tooltip content="必须先选择团组方可选择其下属的员工再点击查询" placement="bottom-start">
                 <el-select size="small" style="width:120px;" clearable  filterable  v-model="searchForm.user_id" @change="userChange" placeholder="请选择队员">
                   <el-option v-for="user in users" :value="user.id" :label="user.name"></el-option>
                 </el-select>
               </el-tooltip>
-            </el-form-item>
+            </el-form-item> -->
 
             <el-form-item>
               <el-tooltip content="填写或者选择好筛选条件后点击此按钮" placement="bottom-start">
@@ -223,6 +223,7 @@
   window.defaultOption.hooks.delAll('mounted');
 
   window.defaultOption.setDatas({
+      ctrlSelect:false,
       ctrl:false,
       searchGroup:{:json_encode($searchGroup)},
       sortMap:{
@@ -410,12 +411,7 @@
   }).setMethod('userChange',function(v){
     this.searchForm.user_id = v;
   }).setMethod('allTypeChange',function(v){
-    this.searchForm.type = v;
-    for(var i =0; i< this.searchGroup.length; i++){
-      if(this.searchGroup[i]['value'] == v){
-        this.allTypeName = this.searchGroup[i]['key'];
-      }
-    };
+     this.ctrlSelect = v=="department" ? true : false;
   }).setMethod('setDropdownName',function(arr,v,name){
     for(var i = 0; i < this[arr].length; i++){
       if(this[arr][i]['id'] == v){
@@ -429,9 +425,9 @@
     }
 
     if(this.searchForm.type == "user"){
-      //this.searchForm.type = 'department';
       this.ctrl = false;
     }
+
   });
 
 

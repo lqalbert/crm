@@ -46,7 +46,16 @@ class RiskCtrlOneController extends CommonController{
   }
 
   private function getMycust(){
-    $where = array('risk_id'=>session('uid'));
+    $roleName = $this->getRoleEname();
+
+    if ($roleName!= RoleModel::GOLD) {
+      $where = array('risk_id'=>session('uid'));
+    }  else {
+      $where = array();
+    }
+    
+    
+
     switch (I('get.field')) {
       case 'already':
         $where['risk_state'] = array('neq', 0);

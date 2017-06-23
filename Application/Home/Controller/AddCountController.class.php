@@ -11,9 +11,9 @@ class AddCountController extends CommonController{
 
  	protected function getSearchGroup(){
  		$searchGroup = array(
-    	array('value'=>'user','key'=>"所有队员" ),
-      array('value'=>'group','key'=>"所有团组" ),
-      array('value'=>'department','key'=>'所有部门')
+    	array('value'=>'user','key'=>"查询队员" ),
+      array('value'=>'group','key'=>"查询团组" ),
+      array('value'=>'department','key'=>'查询部门')
  		);
 
  		return $searchGroup;
@@ -39,27 +39,27 @@ class AddCountController extends CommonController{
     $this->getDepartmentCount();
     $this->getGroupCount();
     $this->getUserCount();
-    $type = I('get.type');
+    
+    if(isset($_GET['department_id']) || isset($_GET['group_id'])){
+    	$result = $this->getSelectCtrl();
 
-    switch (I('get.type')) {
-      case 'user':
-           $result = $this->setReturnArr($this->users); //基于个人为条件查询
-        break;
-      case 'group':
-          $result = $this->setReturnArr($this->groups); //基于团组为条件查询
-        break;
-      case 'department':
-          $result = $this->setReturnArr($this->deps);
-         break;
-      default:
-         $result = $this->setReturnArr($this->deps); //基于部门为条件查询
-        break;
+	  }else{
+      switch (I('get.type')) {
+        case 'user':
+             $result = $this->setReturnArr($this->users); //基于个人为条件查询
+          break;
+        case 'group':
+            $result = $this->setReturnArr($this->groups); //基于团组为条件查询
+          break;
+        case 'department':
+            $result = $this->setReturnArr($this->deps);
+           break;
+        default:
+           $result = $this->setReturnArr($this->deps); //基于部门为条件查询
+          break;
+      }
     }
 
-    if(isset($_GET['department_id']) || isset($_GET['group_id']) || isset($_GET['user_id'])){
-    	$result = $this->getSelectCtrl();
-	  }
-    
 		$this->ajaxReturn($result);
 	}
 
@@ -114,11 +114,6 @@ class AddCountController extends CommonController{
   public function getDeps($status){
   	$treeOb = $this->treeOb();
   	$arr = $treeOb->getAlldep();
-    array_unshift($arr, array(
-      'id'=>'department',
-      'name'=>'所有部门'
-    ));
-
   	$this->ajaxReturn($arr);
   }
 
@@ -126,23 +121,13 @@ class AddCountController extends CommonController{
   public function getGroups($department_id){
   	$treeOb = $this->treeOb();
   	$arr = $treeOb->getAllGoups($department_id, 'id,name');
-    array_unshift($arr, array(
-      'id'=>'group',
-      'name'=>'所有团组'
-    ));
   	$this->ajaxReturn($arr);
-
   }
 
   //获取所选小组下的员工
   public function getUsers($department_id,$group_id){
   	$treeOb = $this->treeOb();
   	$arr = $treeOb->getGroupEmployee($department_id,$group_id, 'id,realname');
-
-    array_unshift($arr, array(
-      'id'=>'user',
-      'realname'=>'所有队员'
-    ));
   	$this->ajaxReturn($arr);
   }
 
@@ -150,70 +135,37 @@ class AddCountController extends CommonController{
   protected function getSelectCtrl(){
     $department_id = I('get.department_id');
     $group_id = I('get.group_id');
-    $user_id = I('get.user_id');
+    $type = I('get.type');
 
-    if($department_id != 'department' && empty($group_id) && empty($user_id)){
-    	$arr[] = $this->deps[$department_id];
-    	$result = array('list'=>$arr, 'count'=>count($arr));
-    }elseif ($department_id != 'department' && $group_id !='group' && empty($user_id)) {
-    	$arr[] = $this->groups[$group_id];
-    	$result = array('list'=>$arr, 'count'=>count($arr));
-    }elseif($department_id != 'department' && $group_id !='group' && $user_id !='user'){
-    	$arr[] = $this->users[$user_id];
-    	$result = array('list'=>$arr, 'count'=>count($arr));
-    }elseif ($department_id == 'department' && $group_id !='group' && !empty($group_id) && empty($user_id)) {
-    	$arr[] = $this->groups[$group_id];
-    	$result = array('list'=>$arr, 'count'=>count($arr));
-    }elseif($department_id == 'department' && $group_id !='group' && $user_id =='user'){
-    	$res = M('user_info')>where(array('group_id'=>$group_id))->getField('user_id',true);
-    	foreach ($res as $k => $v) {
-    		if(array_key_exists($v,$this->users)){
-    			$arr[] = $this->users[$v];
-    		}
-    	}
-    	$result = array('list'=>$arr, 'count'=>count($arr));
-    }elseif($department_id == 'department' && $group_id !='group' && !empty($group_id) && $user_id !='user' && !empty($user_id)){
-    	$arr[] = $this->users[$user_id];
-    	$result = array('list'=>$arr, 'count'=>count($arr));
-    }elseif ($department_id != 'department' && $group_id =='group' && empty($user_id)) {
-    	foreach ($this->groups as $k => $v) {
-    		if($v['department_id'] == $department_id){
-    			$arr[] = $v;
-    		}
-    	}
-    	$result = array('list'=>$this->splitList($arr), 'count'=>count($arr));
-    }elseif ($department_id != 'department' && $group_id =='group' && $user_id =='user') {
-    	foreach ($this->users as $k => $v) {
-    		if($v['department_id'] == $department_id){
-    			$arr[] = $v;
-    		}
-    	}
-    	$result = array('list'=>$this->splitList($arr), 'count'=>count($arr));
-    }elseif ($department_id != 'department' && $group_id !='group' && empty($user_id)) {
+    if($type=="user" && isset($_GET['department_id']) && !isset($_GET['group_id'])){
+      foreach ($this->users as $k => $v) {
+        if($v['department_id'] == $department_id){
+          $arr[] = $v;
+        }
+      }
+      $result = array('list'=>$this->splitList($arr), 'count'=>count($arr));
+    }elseif ($type=="user" && isset($_GET['department_id']) && isset($_GET['group_id'])) {
+      $res = M('user_info')->where(array('department'=>$department_id,'group_id'=>$group_id))->getField('user_id',true);
+      foreach ($res as $k => $v) {
+        if(array_key_exists($v,$this->users)){
 
-
-    	$arr[] = $this->groups[$group_id];
-    	$result = array('list'=>$arr, 'count'=>count($arr));
-    }elseif ($department_id != 'department' && $group_id !='group' && $user_id =='user') {
-    	$res = M('user_info')->where(array('department'=>$department_id,'group_id'=>$group_id))->getField('user_id',true);
-    	foreach ($res as $k => $v) {
-    		if(array_key_exists($v,$this->users)){
-    			$arr[] = $this->users[$v];
-    		}
-    	}
-    	$result = array('list'=>$this->splitList($arr), 'count'=>count($arr));
-    }elseif ($department_id == 'department' && $group_id =='group' && $user_id !='user' && !empty($user_id)) {
-    	$arr[] = $this->users[$user_id];
-    	$result = array('list'=>$arr, 'count'=>count($arr));
-    }elseif ($department_id != 'department' && $group_id =='group' && $user_id !='user') {
-    	$arr[] = $this->users[$user_id];
-    	$result = array('list'=>$arr, 'count'=>count($arr));
-    }elseif ($department_id == 'department' && empty($group_id) && empty($user_id)) {
-      $result = $this->setReturnArr($this->deps);
-    }elseif ($department_id == 'department' && $group_id =='group' && empty($user_id)){
-      $result = $this->setReturnArr($this->groups);
-    }elseif ($department_id == 'department' && $group_id =='group' && $user_id =='user') {
-      $result = $this->setReturnArr($this->users);
+          $arr[] = $this->users[$v];
+        }
+      }
+      $result = array('list'=>$this->splitList($arr), 'count'=>count($arr));
+    }elseif ($type=="group" && isset($_GET['department_id']) && !isset($_GET['group_id'])) {
+      foreach ($this->groups as $k => $v) {
+        if($v['department_id'] == $department_id){
+          $arr[] = $v;
+        }
+      }
+      $result = array('list'=>$this->splitList($arr), 'count'=>count($arr));
+    }elseif ($type=="group" && isset($_GET['department_id']) && isset($_GET['group_id'])) {
+      $arr[] = $this->groups[$group_id];
+      $result = array('list'=>$arr, 'count'=>count($arr));
+    }elseif ($type=="department" && isset($_GET['department_id']) && !isset($_GET['group_id'])) {
+      $arr[] = $this->deps[$department_id];
+      $result = array('list'=>$arr, 'count'=>count($arr));
     }
 
     return $result;
