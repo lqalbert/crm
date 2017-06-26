@@ -775,6 +775,11 @@ class CustomerController extends CommonController {
         if (!$re) {
             $this->error("操作失敗");
         }
+
+        $data['id'] = $id;
+
+        //自动分配给风控专员和回访专员
+        tag(HOOK_DISTRIBUTE_BUY_CUSTOMER, $data);
     }
 
     /**
