@@ -107,37 +107,38 @@
               <el-option v-for="item in memeberList" :label="item.realname" :value="item.user_id" :disabled="item.disabled"></el-option>
             </el-select>
           </el-form-item>
+          <el-row>
+            <el-form-item prop="start" label="锁定起始时间">
+            <el-date-picker v-model="searchForm.start" size="small" placeholder="请选择起日期" @change="startDateChange">
+            </el-date-picker>
+          </el-form-item>
 
-          <el-row v-show="advanchShow">
-            <el-col :span="24">
-              <el-form-item prop="start" label="锁定起始时间">
-                <el-date-picker v-model="searchForm.start" size="small" placeholder="请选择起日期" @change="startDateChange">
-                </el-date-picker>
-              </el-form-item>
-
-              <el-form-item prop="end" label="锁定截止时间">
+          <el-form-item prop="end" label="锁定截止时间">
                 <el-date-picker v-model="searchForm.end" size="small" placeholder="请选择止日期" @change="endDateChange">
                 </el-date-picker>
               </el-form-item>
 
-              <el-form-item prop="start" label="最后跟踪起始时间">
+           <el-form-item prop="start" label="最后跟踪起始时间">
                 <el-date-picker v-model="searchForm.track_start" size="small" placeholder="请选择起日期" @change="startTrackChange">
                 </el-date-picker>
               </el-form-item>
 
-              <el-form-item prop="end" label="最后跟踪截止时间">
+            <el-form-item prop="end" label="最后跟踪截止时间">
                 <el-date-picker v-model="searchForm.track_end" size="small" placeholder="请选择止日期" @change="endTrackChange">
                 </el-date-picker>
               </el-form-item>
-            </el-col>
           </el-row>
+
+          
+
+         
 
          <el-form-item>
            <el-button type="info"  size="small" icon="search" @click="searchFunction">查询</el-button> 
            <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start">
              <el-button size="small" @click="searchReset">重置</el-button>
            </el-tooltip>
-           <el-button size="small" @click="toggleShow">{{ buttonText }}</el-button>
+           <!-- <el-button size="small" @click="toggleShow">{{ buttonText }}</el-button> -->
          </el-form-item>
 
         </el-form>

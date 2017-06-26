@@ -15,12 +15,12 @@
 					<el-form :inline="true" ref="searchForm" :model="searchForm">
 
 						<el-form-item prop="department_id" style="width: 120px">
-							<el-select v-model="searchForm.department_id" size="small" clearable @change="departmentChange" placeholder="选择部门">
+							<el-select v-model="searchForm.department_id" size="small" clearable @change="departmentChange" placeholder="部门">
 								<el-option v-for="item in departments" :key="item.id" :label="item.name" :value="item.id"></el-option>
 							</el-select>
 						</el-form-item>
 						<el-form-item prop="group_id" style="width: 120px">
-							<el-select v-model="searchForm.group_id" size="small" clearable placeholder="选择团队小组">
+							<el-select v-model="searchForm.group_id" size="small" clearable placeholder="团队小组">
 								<el-option v-for="item in groups" :label="item.name" :value="item.id"></el-option>
 							</el-select>
 						</el-form-item>
@@ -33,8 +33,8 @@
 							</el-input>
 						</el-form-item>
 					  <el-form-item>
-					    <el-button type="primary" @click="loadDatalist" icon="search">查询</el-button>
-					    <el-button  @click="searchReset">重置</el-button>
+					    <el-button type="primary" size="small" @click="loadDatalist" icon="search">查询</el-button>
+					    <el-button size="small"  @click="searchReset">重置</el-button>
 			        	<!-- <el-button  @click="openDialog('advancedSearch')" icon="search">高级查询</el-button>  -->
 					  </el-form-item>
 					</el-form>

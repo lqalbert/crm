@@ -15,7 +15,12 @@ class BuyCheckController extends CommonController{
                 'riskOne'=>'risk_state',
                 'callBack'=>'callback_state'
             );
-        return $map[$this->getRoleEname()];
+        if (isset($map[$this->getRoleEname()])) {
+            return $map[$this->getRoleEname()];
+        } else {
+            return 'risk_state';
+        }
+        
     }
 
     public function index(){
@@ -30,7 +35,7 @@ class BuyCheckController extends CommonController{
         $this->M->join('customers_basic as cb on customers_buy.cus_id = cb.id')
                 ->join('user_info as  ui on customers_buy.user_id = ui.user_id')
                 ->join('department_basic as db on ui.department_id = db.id', 'left')
-                ->field('customers_buy.id,customers_buy.user_id,customers_buy.cus_id,customers_buy.risk_state,customers_buy.callback_state,product_id,product_name,product_money,product_t,ui.realname,db.name as department_name, cb.name as cb_name')
+                ->field('customers_buy.id,customers_buy.user_id,customers_buy.cus_id,customers_buy.risk_state,customers_buy.callback_state,product_id,product_name,product_money,product_t,customers_buy.type,ui.realname,db.name as department_name, cb.name as cb_name')
                 ->order('customers_buy.id desc');
     }
 

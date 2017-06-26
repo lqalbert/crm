@@ -34,7 +34,7 @@ class DepartmentModel extends Model {
 	private $types = array(
 		0=>'销售部',
         1=>'客服部',
-        // 2=>'风控部',
+        2=>'风控部',
         3=>'人事部'
 	);
 

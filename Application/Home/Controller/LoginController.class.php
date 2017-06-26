@@ -25,6 +25,9 @@ class LoginController extends Controller {
 			if (!$result) {
         		$this->ajaxReturn(array('msg'=>L('LOGIN_ERROR'),'code'=>-1),'JSON');
 			} else {
+				if ($result['status'] < 1) {
+					$this->ajaxReturn(array('msg'=>'该账号暂不能登录', 'code'=>-1), 'JSON');
+				}
         		$sessionId=session_id();
         		session('ssid', $sessionId);
        			// $userModel->where(array('id'=>$result['id']))->save(array('ss_id'=>$sessionId));
