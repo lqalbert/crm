@@ -1,0 +1,257 @@
+<extend name="Common:base" />
+<block name="head">
+  <style>
+   .el-table .last {
+      background: #c9e5f5;
+    }
+    .el-table__body tr.current-row>td{
+      background: rgba(157, 195, 232, 0.7);
+    }
+    .container > .wrapp > .a > .el-row {
+      margin-bottom: 6px;
+    }
+  </style>
+</block>
+<block name="body">
+  
+
+<div id="app" class="container">
+
+<div class="wrapp"  v-show="show" style="display: none;">
+  <div class="a" id="app3">
+  <el-row>
+    <el-col :span="24">
+      <el-form :inline="true" ref="searchForm" :model="searchForm">
+<!--         <el-form-item prop="dist">
+          <el-date-picker size="small" v-model="searchForm.dist" placeholder="请选择日期"  @change="dateChange">
+          </el-date-picker>
+        </el-form-item> -->
+        <el-form-item prop="start">
+          <el-date-picker size="small" v-model="searchForm.start" 
+            placeholder="请选择起日期" 
+            @change="startDateChange"
+            >
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item prop="end">
+          <el-date-picker 
+            v-model="searchForm.end" 
+            placeholder="请选择止日期" 
+            @change="endDateChange"
+            size="small"
+            >
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item>
+          <el-button size="small" @click="setField('lastWeek')">上周</el-button>
+          <el-button size="small" @click="setField('lastMonth')">上月</el-button>
+          <el-button size="small" @click="setField('week')">本周</el-button>
+          <el-button size="small" @click="setField('month')">本月</el-button>
+        </el-form-item>
+        <el-form-item prop="department_id">
+          <el-tooltip content="选择某个部门后点击查询" placement="bottom-start">
+            <el-select size="small" style="width:120px;" clearable filterable v-model="searchForm.department_id" placeholder="请选择部门">
+              <el-option v-for="dep in Alldeps" :value="dep.id" :label="dep.name"></el-option>
+            </el-select>
+          </el-tooltip>
+        </el-form-item>
+
+        <el-form-item prop="field" v-show="false">
+          <input type="hidden" size="small" v-model="searchForm.field">
+        </el-form-item>
+
+        <el-form-item>
+          <el-button type="info" size="small" icon="search"  @click="loadDatalist" >查询</el-button> 
+          <!-- <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
+            <el-button  size="small" @click="searchReset"  >重置</el-button>
+          </el-tooltip> -->
+          <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:10px;">
+            <el-button  size="small" type="danger" @click="resetBack" >刷新</el-button>
+          </el-tooltip>
+
+        </el-form-item>
+        <!-- <el-form-item>
+          <el-button size="small" @click="setField('week')">本周</el-button>
+          <el-button size="small" @click="setField('month')">本月</el-button>
+        </el-form-item> -->
+      </el-form>
+      </el-col>
+  </el-row>
+  <!-- max-height="500" -->
+
+  <el-row>
+    <el-col :span="24">
+      <el-table 
+      :data="dataList" 
+      border
+      v-loading="dataLoad" 
+      element-loading-text="{:L('DATA_LOGIN')}"
+      highlight-current-row
+      empty-text="暂无数据"
+      @sort-change="sortChange"
+      :row-class-name="tableRowClassName"
+      ref="select" >
+
+        <el-table-column label="序号"  align="center" width="65" :formatter="handleIndex"  >
+        </el-table-column>
+        <el-table-column header-align="center" prop="name"  label="组织名称" width="130">
+          <template scope="scope">
+            <span v-if="objType != 'Users' || scope.row.id!=0 ">
+              <a :href="getUrl(scope.row.id)">{{ scope.row.name }}</a>
+            </span>
+            <span v-else>{{ scope.row.name }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column sortable="custom"  align="center" prop="all_num" label="时间段客户数" width="150">
+        </el-table-column>
+        <el-table-column sortable="custom"  align="center" prop="a" label="A.准客户" width="130">
+        </el-table-column>
+        <el-table-column  sortable="custom" align="center" prop="b" label="B.意向客户" width="130">
+        </el-table-column>
+        <el-table-column  sortable="custom" align="center" prop="c" label="C.一般客户" width="130">
+        </el-table-column>
+        <el-table-column  sortable="custom" align="center" prop="d" label="D.未有意向客户" width="160">
+        </el-table-column>
+        <el-table-column  sortable="custom" align="center" prop="f" label="F.黑名单(同行)" width="160">
+        </el-table-column>
+        <el-table-column  sortable="custom" align="center" prop="n" label="N.无效客户" width="130">
+        </el-table-column>
+        <el-table-column sortable="custom" align="center" prop="v" label="V.成交客户" width="130">
+        </el-table-column>
+        <el-table-column  sortable="custom" align="center" prop="vx" label="VX.审核未通过">
+        </el-table-column>
+        <el-table-column  sortable="custom" align="center" prop="vt" label="VT.有意见并投诉">
+        </el-table-column>
+      </el-table>
+    </el-col>
+  </el-row>
+
+  <!-- toolbar -->
+  <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
+
+    <el-col :span="12" :offset="12">
+      <div class="grid-content bg-purple-light pull-right">
+
+        <!-- page -->
+        <include file="Common:_pagination" />
+        <!-- / page -->
+        
+      </div>
+    </el-col>
+
+  </el-row>
+  </div>
+
+
+
+</div>
+</div>
+</block>
+<block name="scripts">
+<script src="__PUBLIC__/js/calculate.js"></script>
+<script>
+  window.defaultOption.setDatas({
+    searchGroup:{:json_encode($searchGroup)},
+    sortMap:{
+      descending:'desc',
+      ascending:'asc'
+    },
+    objType:"{$objType}",
+    Alldeps:{:json_encode($Alldeps)}
+  }).setForm('search',{
+      //dist:'{$dist}',
+      id:"<?php echo I('get.id', 0)?>",
+      objType:"{$objType}",
+      range:'day',
+      start:'',
+      end:'',
+      department_id:''
+      // object:'user',
+      // realname:'',
+      // group:'user_id',
+  }).setVueHook('mounted', function(){
+    this.searchForm.start = showWeekFirstDay();
+    this.searchForm.end   = showWeekLastDay();
+    this.searchForm.range = "lastWeek";
+    this.loadDatalist();
+  }).setMethod('dateChange', function(v){
+    this.searchForm.dist = v;
+  }).setMethod("searchReset2", function(){
+    this.searchForm = Oassign({}, this._search) ;
+    this.dataLoad = true;
+    this.loadDatalist();
+  }).setMethod('refresh',function(){
+    window.location.reload();
+  }).setMethod('beforeList', function(data){
+      var h = {
+        
+        name:"汇总",
+        a:0,
+        all_num:0,
+        b:0,
+        c:0,
+        conflict_from:0,
+        conflict_to:0,
+        create_num:0,
+        d:0,
+        f:0,
+        n:0,
+        pulls_num:0,
+        today_v:0,
+        v:0,
+        vt:0,
+        vx:0,
+        id:0
+      };
+      data.forEach(function(currentValue){
+        for (var x in h) {
+          if (x != 'name') {
+            h[x] += parseInt(currentValue[x]);
+          }
+        }
+      });
+      data.push(h);
+      return data;
+  }).setMethod('sortChange', function(info){
+      if (info) {
+        this.searchForm.sort_field = info.prop;
+        this.searchForm.sort_order = this.sortMap[info.order];
+      } else {
+        delete this.searchForm.sort_field;
+        delete this.searchForm.sort_order;
+      }
+      this.dataReload();
+  }).setMethod('tableRowClassName', function(row, index){
+     if (index == this.dataList.length -1) {
+      return 'last'
+     }
+  }).setMethod('resetBack', function(){
+      window.location.href="{:U('index')}";
+  }).setMethod('getUrl', function(v){
+      var start = this.searchForm.start;
+      var end = this.searchForm.end;
+      return "{:U('index')}" + "?objType=" + this.objType + "&id=" + v + "&start=" + start + "&end=" + end;
+  }).setMethod('setField', function(v){
+      if (v=='week') {
+        this.searchForm.start = showWeekFirstDay();
+        this.searchForm.end   = showWeekLastDay();
+
+      } else if(v=='month'){
+        this.searchForm.start = showMonthFirstDay();
+        this.searchForm.end   = showMonthLastDay();
+      } else if(v=='lastMonth'){
+        this.searchForm.start = showLastMonthFirstDay();
+        this.searchForm.end   = showLastMonthLastDay(); 
+      } else if(v=='lastWeek'){
+        this.searchForm.start = showLastWeekFirstDay();
+        this.searchForm.end   = showLastWeekLastDay(); 
+      }
+      this.searchForm.range = v;
+      this.loadDatalist();
+  }).setMethod('startDateChange', function(v){
+      this.searchForm.start = v;
+  }).setMethod('endDateChange', function(v){
+      this.searchForm.end = v;
+  });
+</script>
+</block>
