@@ -75,8 +75,8 @@
 					highlight-current-row
 					v-loading="dataLoad"
 					element-loading-text="{:L('DATA_LOGIN')}"
-          @selection-change="handleSelectionChange" @cell-click="showRemark"
-          >
+                    @selection-change="handleSelectionChange" 
+                    @cell-click="showRemark">
 
 					    <el-table-column type="selection"  align="center" width="50" >
 					    </el-table-column>
@@ -393,8 +393,11 @@
     	this.depTypeName = this.typeList[v];
 
     }).setMethod('showRemark',function(row, column, cell, event){
-    	this.remarkContent = row.remark;
-    	this.remarkContentDialog = true;
+        if (column.property=='remark') {
+            this.remarkContent = row.remark;
+            this.remarkContentDialog = true;
+        }
+    	
     });
 </script>
 

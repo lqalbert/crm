@@ -388,6 +388,8 @@
     content:'',
   }, true).setMethod('getType', function(type, field){
       return this[field][type];
+  }).setMethod('getStep',function(step,field){
+      return this[field][step];
   }).setMethod('getPdt',function(pdt, field){
     var pdtName;
     this[field].forEach(function(value,index){

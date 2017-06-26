@@ -24,8 +24,8 @@ class CommonFindDetailController extends CommonController{
           $arr[$key]['user']=$v['user'];
       }
     	$arr[$key]['name']=I('post.name');
-      $arr[$key]['track_type'] = $arr[$key]['track_type'] == null ?:D('CustomerLog')->getType((int)$arr[$key]['track_type']);
-      $arr[$key]['step'] = $arr[$key]['step'] == null ?:D('CustomerLog')->getType((int)$arr[$key]['step']);
+      $arr[$key]['track_type'] = $arr[$key]['track_type'] == null ? :D('CustomerLog')->getType((int)$arr[$key]['track_type']);
+      $arr[$key]['step'] = $arr[$key]['step'] == null ? :D('CustomerLog')->getSteps((int)$arr[$key]['step']);
     }
 		if (IS_AJAX) {
 			$this->ajaxReturn($arr);
@@ -88,7 +88,7 @@ class CommonFindDetailController extends CommonController{
       }
       $arr[$key]['name']=I('post.name');
       $arr[$key]['track_type'] = $arr[$key]['track_type'] == null ?:D('CustomerLog')->getType((int)$arr[$key]['track_type']);
-      $arr[$key]['step'] = $arr[$key]['step'] == null ?:D('CustomerLog')->getType((int)$arr[$key]['step']);
+      $arr[$key]['step'] = $arr[$key]['step'] == null ?:D('CustomerLog')->getSteps((int)$arr[$key]['step']);
     }
     if (IS_AJAX) {
       $this->ajaxReturn($arr);
