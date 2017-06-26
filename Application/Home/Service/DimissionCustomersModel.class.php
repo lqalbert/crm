@@ -68,7 +68,7 @@ class DimissionCustomersModel extends \Think\Model{
     }
 
 
-    public function getList($page, $size = 15){
+    public function getList($page, $size = 10){
         $count = count($this->dimissionsId);
         if ($count != 0) {
 
