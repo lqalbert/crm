@@ -12,30 +12,25 @@
     <el-row>
       <el-col :span="24">
         <el-form :inline="true" ref="searchForm" :model="searchForm">
-	        <el-form-item prop="dist">
-	          <el-date-picker  v-model="searchForm.dist" placeholder="请选择日期"  @change="dateChange">
+	        <el-form-item prop="date">
+	          <el-date-picker clearable size="small"  v-model="searchForm.dist" placeholder="请选择日期"  @change="dateChange">
 	          </el-date-picker>
 	        </el-form-item>
 
-          <el-form-item prop="department" style="width:170px">
-            <el-select v-model="searchForm.department" placeholder="请选择部门单位">
-              <el-option label="中资北方" value="中资北方"></el-option>
-              <el-option label="成都部" value="成都部"></el-option>
-              <el-option label="中资南方" value="中资南方"></el-option>
-              <el-option label="财富三区（二）" value="财富三区（二）"></el-option>
-            </el-select>
+          <el-form-item prop="department_id" style="width:170px">
+              <el-select v-model="searchForm.department_id" size="small" clearable @change="departmentChange" width="50" placeholder="部门">
+                  <el-option v-for="item in departments" :key="item.id" :label="item.name" :value="item.id"></el-option>
+              </el-select>
           </el-form-item>
 
-            <el-form-item prop="group" style="width:170px">
-                <el-select v-model="searchForm.group" placeholder="请选择部门单位">
-                    <el-option label="一中队" value="一中队"></el-option>
-                    <el-option label="四分队" value="四分队"></el-option>
-                    <el-option label="五大队" value="五大队"></el-option>
-                    <el-option label="六小队" value="六小队"></el-option>
+            <el-form-item prop="group_id" style="width:170px">
+                <el-select v-model="searchForm.group_id" size="small" clearable width="50" placeholder="团队小组">
+                    <el-option v-for="item in groups" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                </el-select>
             </el-form-item>
 
 	        <el-form-item prop="name" style="width:170px">
-	          <el-input v-model="searchForm.name" placeholder="员工姓名关键字"></el-input>
+	          <el-input v-model="searchForm.realname" placeholder="员工姓名关键字"></el-input>
 	        </el-form-item>
 
 	        <el-form-item prop="field" v-show="false">
@@ -63,29 +58,41 @@
 
           <el-table-column  label="序号"  align="center" width="65" :formatter="handleIndex"></el-table-column>
 
-            <el-table-column prop="department" label="部门" align="center" header-align="center"></el-table-column>
+            <el-table-column prop="department_name" label="部门" align="center" header-align="center"></el-table-column>
 
-            <el-table-column prop="group" label="团队" align="center" header-align="center"></el-table-column>
+            <el-table-column prop="group_name" label="团队" align="center" header-align="center"></el-table-column>
           
-          <el-table-column prop="name" label="员工/单位" header-align="center"></el-table-column>
+          <el-table-column prop="realname" label="员工" header-align="center"></el-table-column>
 
           <el-table-column prop="date" label="日期" align="center"></el-table-column>
 
-          <el-table-column prop="tel" label="电话跟踪" align="center"></el-table-column>
+          <el-table-column prop="phone_track" label="电话跟踪" align="center"></el-table-column>
 
-          <el-table-column prop="qq" label="QQ跟踪" align="center"></el-table-column>
+            <el-table-column prop="door_track" label="上门服务" align="center"></el-table-column>
 
-          <el-table-column prop="wechat" label="微信跟踪" align="center"></el-table-column>
+          <el-table-column prop="qq_track" label="QQ跟踪" align="center"></el-table-column>
 
-          <el-table-column prop="track_num" label="总跟踪次数" align="center"></el-table-column>
+            <el-table-column prop="email_track" label="email跟踪" align="center"></el-table-column>
 
-          <el-table-column prop="conflict" label="预查冲突" align="center"></el-table-column>
+          <el-table-column prop="weixin_track" label="微信跟踪" align="center"></el-table-column>
 
-          <el-table-column prop="summary" label="总结指导建议" align="center"></el-table-column>
+            <el-table-column prop="v_summary" label="成交总结" align="center"></el-table-column>
 
-          <el-table-column prop="lock_track" label="锁定自跟" align="center"></el-table-column>
+            <el-table-column prop="teach_track" label="讲师指导" align="center"></el-table-column>
 
-          <el-table-column prop="advice" label="用户投诉建议" align="center"></el-table-column>
+            <el-table-column prop="captain_track" label="主管建议" align="center"></el-table-column>
+
+            <el-table-column prop="sell_track" label="售前回访" align="center"></el-table-column>
+
+            <el-table-column prop="risk_track" label="风控建议" align="center"></el-table-column>
+
+            <el-table-column prop="retroaction_track" label="反馈投诉" align="center"></el-table-column>
+
+            <el-table-column prop="other_track" label="其他方式" align="center"></el-table-column>
+
+          <el-table-column prop="sum_track" label="总跟踪次数" align="center"></el-table-column>
+
+          <el-table-column prop="self_track" label="锁定自跟" align="center"></el-table-column>
         </el-table>
       </el-col>
     </el-row>
@@ -107,29 +114,14 @@
 <block name="scripts">
 <script>
   window.defaultOption.setDatas({
-		dataList:[
-      {department:"地球",group:"美洲",name:'美国-唐纳德·特朗普',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
-      {department:"地球",group:"美洲",name:'美国-贝拉克·奥巴马',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
-      {department:"地球",group:"美洲",name:'美国-乔治·布什',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
-      {department:"地球",group:"美洲",name:'美国-比尔·克林顿',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
-      {department:"地球",group:"美洲",name:'美国-罗纳德·里根',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
-      {department:"地球",group:"美洲",name:'美国-吉米·卡特',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
-      {department:"地球",group:"美洲",name:'美国-杰拉尔德·福特',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
-      {department:"地球",group:"美洲",name:'美国-理查德·尼克松',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
-      {department:"地球",group:"美洲",name:'美国-林登·约翰逊',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
-      {department:"地球",group:"美洲",name:'美国-约翰·肯尼迪',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
-      {department:"地球",group:"美洲",name:'美国-艾森豪威尔',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
-      {department:"地球",group:"美洲",name:'美国-哈里·S 杜鲁门',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
-      {department:"地球",group:"美洲",name:'美国-赫伯特·胡佛',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
-      {department:"地球",group:"美洲",name:'美国-西奥多·罗斯福',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
-      {department:"地球",group:"美洲",name:'美国-西奥多·罗斯福',date:'2017-04-19',tel:'88',qq:'88',wechat:'88',track_num:'888',conflict:'88',summary:'88',lock_track:'88',advice:'88'},
-		]
+      departments:{:json_encode($departments['list'])},
+  groups:{:json_encode($departments['group'])}
   }).setForm('search',{
-    dist:'',
-    name:'',
-    field:'',
-    department:'',
-      group:''
+      department_id:'',
+      group_id:'',
+      realname:'',
+      field:'',
+      dist:''
   }).setMethod('refresh',function(){
   	window.location.reload();
   }).setMethod('searchReset2',function(){
@@ -138,6 +130,12 @@
     this.loadDatalist();
   }).setMethod('dateChange',function(v){
     this.searchForm.dist = v;
-  });
+  }).setMethod('departmentChange',function () {
+      var vmThis=this
+      vmThis.$http.get('{:U("getAllGroups")}',{params:{department_id:vmThis.searchForm.department_id}}).then(function (response) {
+          vmThis.groups=response.body
+          vmThis.searchForm.group_id=''
+      })
+  })
 </script>
 </block>
