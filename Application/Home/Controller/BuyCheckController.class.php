@@ -36,7 +36,7 @@ class BuyCheckController extends CommonController{
                 ->join('user_info as  ui on customers_buy.user_id = ui.user_id')
                 ->join('department_basic as db on ui.department_id = db.id', 'left')
                 ->field('customers_buy.id,customers_buy.user_id,customers_buy.cus_id,customers_buy.risk_state,customers_buy.callback_state,product_id,product_name,product_money,product_t,customers_buy.type,ui.realname,db.name as department_name, cb.name as cb_name')
-                ->order('customers_buy.id desc');
+                ->order('FIELD('.$this->getRoleState().', 0,1,-1) ');
     }
 
 
