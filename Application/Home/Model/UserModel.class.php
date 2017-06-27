@@ -25,6 +25,7 @@ class UserModel extends  Model{
         return $this->m->join('user_info on rbac_user.id = user_info.user_id')
              ->where(array('department_id'=>$depart_id, 'rbac_user.status'=>array('EQ', RbacUserModel::DELETE_SATUS)))
              ->field('id,account,realname')
+             ->order('dimission_at desc')
              ->select();
     }
 

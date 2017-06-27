@@ -5,6 +5,24 @@
 <block name="body">
     <div id="app" class="container">
         <div class="wrapp" v-show="show" style="display: none">
+            <el-row>
+              <el-col :span="24">
+                <el-form :inline="true">
+                  <el-form-item style="width:100px">
+                    <el-select v-model="searchForm.user_id" size="small" placeholder="员工">
+                      <el-option v-for="user in dUsers" :value="user.id" :label="user.realname"></el-option>
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item>
+                    <el-button size="small" @click="loadDatalist">确定</el-button>
+                  </el-form-item>
+                  <el-form-item>
+                    <el-checkbox v-model="searchForm.all" @change="allChange">全选(选择所有的客户)</el-checkbox>
+                  </el-form-item>
+                </el-form>
+                
+              </el-col>
+            </el-row>
             <!-- datatables  -->
             <el-row>
                 <el-col :span="24">
@@ -15,7 +33,7 @@
                   element-loading-text="{:L('DATA_LOGIN')}"
                    @selection-change="handleSelectionChange"
                   >
-                    <el-table-column width="50" align="center" type="selection"></el-table-column>
+                    <el-table-column width="50" align="center" type="selection" :checked="true"></el-table-column>
 
                     <el-table-column label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  ></el-table-column>
                     <el-table-column  prop="name"  label="客户姓名" width="110"></el-table-column>
@@ -74,10 +92,15 @@
 
     <script>
         page.resetUserFormUrl="{:U('update')}";
+        page.getAllUrl="{:U('getAllList')}";
         window.defaultOption.setDatas({
           salesmans:{:json_encode($users)},
           isShow:false,
+          dUsers:{:json_encode($dUsers)},
           multipleSelection: []
+        }).setForm('search',{
+          user_id:"",
+          all:false
         }).setForm('resetUser',{
             salesman_id:"",
             cus_id:[]
@@ -94,6 +117,23 @@
           }
         }).setMethod('handleSelectionChange', function(v){
           this.multipleSelection = v;
+        }).setMethod('allChange', function(e){
+           if (this.searchForm.all === true) {
+              var vmThis = this;
+              var params = {p:0};
+              for (var x in this.searchForm ){
+                if (this.searchForm[x]!="") {
+                  params[x] = this.searchForm[x];
+                }
+              }
+              params.size = 99999;
+              this.$http.get(page.listUrl, {params:params}).then(function(response){
+                this.multipleSelection = response.body.list;
+                console.log(this.multipleSelection);
+              }, function(response) {
+                
+              })
+           }
         })
     </script>
 </block>
