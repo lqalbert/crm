@@ -40,10 +40,8 @@ class CustomerContactModel extends Model {
             $this->weixin = $data['weixin'];
         }
 
-        if ($isPhone) {
-            if (empty($this->phone) && !empty($data['phone'])) {
+        if ( ($this->phone !=  $data['phone']) && !empty($data['phone'])) {
             $this->phone = $data['phone'];
-        }
         }
 
 
@@ -51,7 +49,6 @@ class CustomerContactModel extends Model {
 
         $this->qq_nickname != $data['qq_nickname'] && $this->qq_nickname=$data['qq_nickname'];
 
-        
 
         return $this->save();
 
