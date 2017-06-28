@@ -13,13 +13,13 @@
                       </el-form-item>
                       
                       <el-form-item prop="name" >
-                        <el-input   placeholder="请输入单位名"  v-model="searchForm.name">
+                        <el-input size="small" placeholder="请输入单位名"  v-model="searchForm.name">
                         </el-input>
                       </el-form-item>
                       <el-form-item>
-                        <el-button type="primary" icon="search" @click="loadDatalist" >查询</el-button> 
+                        <el-button type="primary" size="small" icon="search" @click="loadDatalist" >查询</el-button>
                         <el-tooltip content="清空搜索框并刷新表格数据" placement="right">
-                         <el-button icon="close" @click="searchReset">重置</el-button>
+                         <el-button icon="close" size="small" @click="searchReset">重置</el-button>
                         </el-tooltip>
                         <!-- <el-button  @click="openDialog('advancedSearch')" icon="search">高级查询</el-button>  -->
                       </el-form-item>
