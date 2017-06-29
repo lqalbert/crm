@@ -95,6 +95,14 @@ class CustomersGather {
 
     }
 
+    private function getDepartmentTodayUsersAll($department_id){
+        $d = new UserCustomerStatisticsDepartmentModel($department_id);
+        $n = new CustomersCountToday($d);
+
+        return $n->index($this->today);
+
+    }
+
 
     // $list 是历史纪录
     // $list2 是当天的纪录
@@ -249,6 +257,38 @@ class CustomersGather {
                                                 
                                                 ->where(array('date'=> array(array('EGT',$this->start),array('ELT',$this->end))))
                                                 ->group('statistics_usercustomers.user_id')
+                                                ->select();
+        $list  = $this->mergeList($list2, $toDaylist);
+        return $this->reSort($list);
+    }
+
+    public function getDepartmentAllUsers($department_id){
+
+        $toDaylist = array();   
+        if ($this->end >=  $this->today) {
+            $groups = D('Group')->getAllGoups($department_id, 'id,name');
+            $groupsMap = arr_to_map($groups, 'id');
+           /* $departments = D('Department')->getSalesDepartments('id,name');
+            // $groups = D('Group')->getAllGoups(array_column($departments,'id'), 'id, name, department_id');
+            $departmentsMap = arr_to_map($departments, 'id');
+            $toDaylist = $this->getTodayUsersAll();*/
+             $toDaylist = $this->getDepartmentTodayUsersAll();            
+            foreach ($toDaylist as $key => $value) {
+                $toDaylist[$key]['g_name'] = $groupsMap[$value['group_id']]['name'];
+            }
+        } 
+
+
+        $list2 = M('statistics_usercustomers')->field($this->getSqlFields().",statistics_usercustomers.group_id as id , group_name as name, statistics_usercustomers.department_id, department_name, ui.realname")
+                                              ->join('group_basic as gb on statistics_usercustomers.group_id = gb.id ', 'left')
+                                              ->join('user_info as ui on gb.user_id = ui.user_id', 'left')
+                                                ->where(
+                                                    array(
+                                                        'date'=> array(array('EGT',$this->start),array('ELT',$this->end)),
+                                                        'department_id' =>$department_id
+                                                        )
+                                                    )
+                                                ->group('statistics_usercustomers.group_id')
                                                 ->select();
         $list  = $this->mergeList($list2, $toDaylist);
         return $this->reSort($list);
