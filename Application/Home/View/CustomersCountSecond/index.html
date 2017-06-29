@@ -33,6 +33,7 @@
           <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:10px;">
             <el-button  size="small" type="danger" @click="resetBack" >刷新</el-button>
           </el-tooltip>
+          <el-button size="small" @click="back" v-if="objType!='{$topObjType}'">返回</el-button>
 
         </el-form-item>
         <!-- <el-form-item>
@@ -61,7 +62,7 @@
             </el-table-column>
             <el-table-column  align="center" prop="name"  label="名称"   width="150">
               <template scope="scope">
-                <span v-if="objType != 'Users' || scope.row.id!=0 ">
+                <span v-if="isLink(scope.row.id)">
                   <a :href="getUrl(scope.row.id)">{{ scope.row.name }}</a>
                 </span>
                 <span v-else>{{ scope.row.name }}</span>
@@ -206,6 +207,10 @@
   }).setMethod('setField', function(v){
       this.searchForm.range = v;
       this.loadDatalist();
-  });
+  }).setMethod('back', function(){
+    window.history.go(-1);
+  }).setMethod('isLink', function(id){
+    return id!=0 && this.objType!='Users';
+  });;
 </script>
 </block>

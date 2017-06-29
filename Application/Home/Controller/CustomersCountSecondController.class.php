@@ -13,6 +13,16 @@ class CustomersCountSecondController extends CommonController {
     protected $pageSize = 30;
     protected $d = null;
 
+    private $map = array(
+                     'gold'=>'Departments',  //总经办
+                     'Departments'=>'Groups',  //总经办
+
+
+                     'departmentMaster'=> 'Groups',
+                     'Groups' => 'Users',
+                     'captain'  => 'Users'
+                    );
+
     private function getService(){
         if ($this->d == null) {
             $this->d =  new CustomersCount;
@@ -20,19 +30,20 @@ class CustomersCountSecondController extends CommonController {
         return $this->d;
     }
 
-
+    private function getTopObjType(){
+        $roleEname =  $this->getRoleEname() ;
+        $map = $this->map;
+        
+        if (isset($map[$roleEname])) {
+            return $map[$roleEname];
+        } else {
+            return 'Groups';
+        }
+    }
 
     private function getObjType(){
         $roleEname =  I('get.objType', $this->getRoleEname()) ;
-        $map = array(
-                     'gold'=>'Departments',  //总经办
-                     'Departments'=>'Groups',  //总经办
-
-
-                     'departmentMaster'=> 'Groups',
-                     'Groups' => 'Users',
-                     // 'Users'  => 'Users'
-                    );
+        $map = $this->map;
         if (isset($map[$roleEname])) {
             return $map[$roleEname];
         } else {
@@ -43,7 +54,10 @@ class CustomersCountSecondController extends CommonController {
 
     public function index(){
 
+
+
         $this->assign('objType', $this->getObjType());
+        $this->assign('topObjType', $this->getTopObjType());
         $this->assign('dist', I('get.dist',Date('Y-m-d', time())));
 
         $this->display();
@@ -141,5 +155,10 @@ class CustomersCountSecondController extends CommonController {
 
     private function getUsers($group_id){
         return $this->getService()->getUsers($group_id);
+    }
+
+
+    private function setBackUrl(){
+
     }
 }
