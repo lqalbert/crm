@@ -178,26 +178,7 @@
       }
       
       this.loadDatalist();
-    }).setMethod('beforeList', function(data){
-        var h = {
-          name:"汇总",
-          conflict_from:0,
-          conflict_to:0,
-          create_num:0,
-          pulls_num:0,
-          today_v:0,
-          id:0
-        };
-        data.forEach(function(currentValue){
-          for (var x in h) {
-            if (x != 'name' && x !='id') {
-              h[x] += parseInt(currentValue[x]);
-            }
-          }
-        });
-        data.push(h);
-     return data;
-  }).setVueHook('mounted', function(){
+    }).setVueHook('mounted', function(){
     this.show = true;
     if (!this.readySearch()) {
       this.loadDatalist();

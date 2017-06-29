@@ -7,6 +7,7 @@ use Home\Model\GroupCustomerStatisticsModel;
 use Home\Model\GroupCustomerStatisticsAllModel;
 use Home\Model\UserCustomerStatisticsModel;
 use Home\Model\UserCustomerStatisticsAllModel;
+use Home\Model\UserCustomerStatisticsDepartmentModel;
 use Common\Lib\GetWeek;
 use Common\Lib\GetMonth;
 
@@ -268,28 +269,31 @@ class CustomersGather {
         if ($this->end >=  $this->today) {
             $groups = D('Group')->getAllGoups($department_id, 'id,name');
             $groupsMap = arr_to_map($groups, 'id');
-           /* $departments = D('Department')->getSalesDepartments('id,name');
-            // $groups = D('Group')->getAllGoups(array_column($departments,'id'), 'id, name, department_id');
-            $departmentsMap = arr_to_map($departments, 'id');
-            $toDaylist = $this->getTodayUsersAll();*/
-             $toDaylist = $this->getDepartmentTodayUsersAll();            
+            
+            
+            $toDaylist = $this->getDepartmentTodayUsersAll($department_id);            
             foreach ($toDaylist as $key => $value) {
+                
                 $toDaylist[$key]['g_name'] = $groupsMap[$value['group_id']]['name'];
             }
         } 
+        
 
 
-        $list2 = M('statistics_usercustomers')->field($this->getSqlFields().",statistics_usercustomers.group_id as id , group_name as name, statistics_usercustomers.department_id, department_name, ui.realname")
+
+
+        $list2 = M('statistics_usercustomers')->field($this->getSqlFields().",statistics_usercustomers.user_id as id , gb.name as g_name,  ui.realname as name")
                                               ->join('group_basic as gb on statistics_usercustomers.group_id = gb.id ', 'left')
                                               ->join('user_info as ui on gb.user_id = ui.user_id', 'left')
                                                 ->where(
                                                     array(
                                                         'date'=> array(array('EGT',$this->start),array('ELT',$this->end)),
-                                                        'department_id' =>$department_id
+                                                        'statistics_usercustomers.department_id' =>$department_id
                                                         )
                                                     )
-                                                ->group('statistics_usercustomers.group_id')
+                                                ->group('statistics_usercustomers.user_id')
                                                 ->select();
+        
         $list  = $this->mergeList($list2, $toDaylist);
         return $this->reSort($list);
     }

@@ -54,6 +54,13 @@ class CustomersCountToday {
             }
 
 
+            if (isset($value['group_id'])) {
+                $tmp_row['group_id'] = $value['group_id'];
+            }
+
+            
+
+
             foreach ($fields as $v2) {
 
                 $tmp_row[strtolower($v2)] = call_user_func(array($this->entity, 'get'.parse_name($v2, 1)), $value['id']);

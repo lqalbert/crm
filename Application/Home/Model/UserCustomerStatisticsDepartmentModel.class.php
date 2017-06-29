@@ -16,6 +16,7 @@ class UserCustomerStatisticsDepartmentModel extends CustomerCountModel {
 
 
     public function __construct($department_id){
+
         $this->department_id = $department_id;
     }
 
@@ -30,6 +31,7 @@ class UserCustomerStatisticsDepartmentModel extends CustomerCountModel {
         foreach ($re as  $value) {
             $this->typeCount[$value['type'].$value['user_id']] = $value['c'];
         }*/
+
 
     }
 
@@ -105,6 +107,7 @@ class UserCustomerStatisticsDepartmentModel extends CustomerCountModel {
         $sql = "select count(id) as c  , ui.user_id, group_id from customers_basic as cb inner join user_info as ui on cb.user_id = ui.user_id where cb.created_at > '".$this->date['start']."' and cb.created_at <'".$this->date['end']."' and department_id=".$this->department_id." group by ui.user_id   ";
 
         $re = M()->query($sql);
+
         foreach ($re as  $value) {
             $this->createCount[$value['user_id']] = $value['c'];
         }
@@ -120,15 +123,16 @@ class UserCustomerStatisticsDepartmentModel extends CustomerCountModel {
     * 自锁客户 总数
     */
     public function setOwnCount(){
-        $sql = "select count(id) as c  , ui.user_id , group_id from customers_basic as cb inner join user_info as ui on cb.user_id = ui.user_id where and department_id=".$this->department_id."   group by ui.user_id   ";
+        $sql = "select count(id) as c  , ui.user_id , group_id from customers_basic as cb inner join user_info as ui on cb.user_id = ui.user_id where 1 and department_id=".$this->department_id."   group by ui.user_id   ";
         $re = M()->query($sql);
+
         foreach ($re as  $value) {
             $this->ownCount[$value['user_id']] = $value['c'];
         }
     }
 
     public function getTargets(){
-        return D('User')->getHasCustomerEmployee('id,realname as name, department_id');
+        return D('User')->getDepartmentEmployee($this->department_id,  'id,realname as name, group_id');
 
     }
 
