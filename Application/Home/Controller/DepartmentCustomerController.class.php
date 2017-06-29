@@ -346,8 +346,10 @@ class DepartmentCustomerController extends CommonController {
         $this->M->startTrans();
         if ($this->M->create($_POST, Model::MODEL_UPDATE) && ($this->M->save() !== false) )  {
             $D_cc  = D('CustomerContact');
-            $D_cc->where(array('is_main'=>1, 'cus_id'=>$_POST['id']))->find();
-            $re = $D_cc->edit($D_cc->getMainPost());
+            $olddate = $D_cc->where(array('is_main'=>1, 'cus_id'=>$_POST['id']))->find();
+            // $D_cc->find($olddate['id']);
+            $re = $D_cc->edit($D_cc->getMainPost(), true);
+            
             if ($re === false) {
                 $this->M->rollback();
                 $this->error($D_cc->getError());

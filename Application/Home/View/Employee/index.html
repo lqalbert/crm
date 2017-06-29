@@ -28,7 +28,15 @@
 				<el-col :span="24">
 					<el-form :inline="true"  ref="searchForm" :model="searchForm">
 
-						
+						<el-form-item prop="type" style="width: 140px">
+							<el-select v-model="searchForm.type" size="small" clearable placeholder="查询类型">
+								<el-option v-for="item in types" :label="item.name" :value="item.value"></el-option>
+							</el-select>
+						</el-form-item>
+
+						<el-form-item prop="typeValue">
+							<el-input v-model="searchForm.typeValue" size="small" placeholder="请输入查询数据"></el-input>
+						</el-form-item>
 
 						<el-form-item prop="department_id" style="width: 120px">
 							<el-select v-model="searchForm.department_id" size="small" clearable @change="departmentChange" width="50" placeholder="部门">
@@ -43,15 +51,7 @@
 						</el-form-item>
 
 
-						<el-form-item prop="type" style="width: 140px">
-							<el-select v-model="searchForm.type" size="small" clearable placeholder="查询类型">
-								<el-option v-for="item in types" :label="item.name" :value="item.value"></el-option>
-							</el-select>
-						</el-form-item>
-
-						<el-form-item prop="typeValue">
-							<el-input v-model="searchForm.typeValue" size="small" placeholder="请输入查询数据"></el-input>
-						</el-form-item>
+						
 					  <!--<el-form-item prop="name">
 					   <el-input v-model="searchForm.name"  placeholder="请输入员工账号" >
 					   </el-input>

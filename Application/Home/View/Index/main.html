@@ -129,7 +129,7 @@
 					<span>客户统计(每日) 试用数据</span>
 				</div>
 				<div>
-					<el-table border :data="data3" style="width:100%">
+					<el-table border :data="data2" style="width:100%">
 						<el-table-column prop="date" label="日期"></el-table-column>
 						<el-table-column prop="all_num"   label="累计客户总数"></el-table-column>
 						<el-table-column prop="create_c"   label="当日自锁数"></el-table-column>
@@ -243,13 +243,13 @@
 		this.$http.get(page.getData2).then(function(response){
 			this.data2  = response.body;
 		}, function(response){
-			this.$message.error("业绩报表");
+			this.$message.error("量化报表");
 		});
 
 		this.$http.get(page.getData3).then(function(response){
 			this.data3  = response.body;
 		}, function(response){
-			this.$message.error("业绩报表");
+			this.$message.error("客户统计");
 		});
 		// setLocation()
 		
@@ -328,7 +328,8 @@
 					xg:'4',
 					xq:'1',
 				}
-		]
+		],
+	data2:[]
 	}).setMethod('getType', function(type, field){
        return this[field][type];
     }).setMethod('showContent',function(row,event,column){

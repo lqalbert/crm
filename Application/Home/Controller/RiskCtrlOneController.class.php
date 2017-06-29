@@ -86,6 +86,10 @@ class RiskCtrlOneController extends CommonController{
 	    $count = $list==null ? '0' :$count;
     }
 	  $result = array('list'=>$list, 'count'=>$count);
+      foreach ($result['list'] as $k=>$v){
+          $result['list'][$k]['qq_nickname']=mb_substr($v['qq_nickname'],0,12);
+          $result['list'][$k]['weixin_nickname']=mb_substr($v['weixin_nickname'],0,12);
+      }
     $this->ajaxReturn($result);
   }
 

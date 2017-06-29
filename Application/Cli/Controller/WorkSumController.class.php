@@ -22,6 +22,7 @@ class WorkSumController extends \Think\Controller {
         'captain_track' ,
         'sell_track' , 
         'risk_track',  
+        'manager_track', //经理建议
         'retroaction_track' ,
         'other_track'    
     );
@@ -35,7 +36,7 @@ class WorkSumController extends \Think\Controller {
 
         $this->date = $date;
         $this->startDate = $this->date. " 00:00:00";
-        $this->endDate   = Date('Y-m-d', strtotime($date) + 86400);
+        $this->endDate   = Date('Y-m-d H:i:s', strtotime($date) + 86400);
         $this->setDateRe();
         $this->setAllUser();
     }
@@ -43,6 +44,7 @@ class WorkSumController extends \Think\Controller {
     private function setDateRe(){
         $sql="SELECT count(id) as c, user_id, track_type FROM  `customers_log` where created_at >= '".$this->startDate."' and created_at <'".$this->endDate."' and track_type is not null  group by user_id,track_type ";
         $allData = M()->query($sql);
+        
         $allDataGroup = arr_group($allData, 'user_id');
         $re = array();
         foreach ($allDataGroup as $key => $value) {
@@ -82,8 +84,7 @@ class WorkSumController extends \Think\Controller {
         $alluser= M()->query("select ui.user_id,realname,gb.name as group_name, gb.id as group_id ,db.name as department_name, db.id as department_id from rbac_user inner join user_info as ui on rbac_user.id = ui.user_id  left join group_basic as gb on ui.group_id=gb.id left join department_basic as db on ui.department_id=db.id where rbac_user.status>=0 and ui.group_id<>0 and ui.department_id<>0 and role_id in (".
             $roleM->getIdByEname(RoleModel::CAPTAIN).",". 
             $roleM->getIdByEname(RoleModel::STAFF) .",".
-            $roleM->getIdByEname(RoleModel::DEPARTMENTMASTER).") limit 100");
-        
+            $roleM->getIdByEname(RoleModel::DEPARTMENTMASTER).") ");   
         $this->insert_data = array();
         foreach ($alluser as $value) {
             $tmp_row = array(
@@ -103,6 +104,7 @@ class WorkSumController extends \Think\Controller {
                 $tmp_row['self_track'] = $this->getSelf($value['user_id']);
             } 
 
+            
             // $content = array();
 
             /*foreach ($this->types as $k=>$v2) {
@@ -126,7 +128,7 @@ class WorkSumController extends \Think\Controller {
     }
 
     private function lastSave(){
-        $re = M('statistics_quantization')->addAll($this->insert_data);
+        $re = M('statistics_quantization2')->addAll($this->insert_data);
         echo $re;
         echo "\n";
         $this->insert_data  =array();

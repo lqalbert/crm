@@ -200,6 +200,10 @@ class CustomerController extends CommonController {
         }
         $list = $this->M->page(I('get.p',0). ','. $this->pageSize)->select();
         //echo $this->M->getLastSql();
+        foreach($list as $k=>$v){
+            $list[$k]['qq_nickname']=mb_substr($v['qq_nickname'],0,12);
+            $list[$k]['weixin_nickname']=mb_substr($v['weixin_nickname'],0,12);
+        }
 
         $result = array('list'=>$list, 'count'=>$count);
         
@@ -208,7 +212,7 @@ class CustomerController extends CommonController {
 
 
 
-    /** 
+    /**
     * 三参 要必填一个
     */
     private function uniquCheck(){

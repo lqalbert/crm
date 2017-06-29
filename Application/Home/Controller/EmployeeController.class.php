@@ -44,7 +44,23 @@ class EmployeeController extends CommonController {
 		$this->display();
 	}
 
-	public function setQeuryCondition() {
+	public function getList()
+    {
+        $result=$this->_getList();
+        foreach ($result['list'] as $k=>$v){
+            $result['list'][$k]['qq_nickname']=mb_substr($v['qq_nickname'],0,12);
+            $result['list'][$k]['weixin_nickname']=mb_substr($v['weixin_nickname'],0,12);
+        }
+        if (IS_AJAX) {
+            $this->ajaxReturn($result);
+            // $this->ajaxReturn($this->M->getLastSql());
+        }  else {
+
+            return $result;
+        }
+    }
+
+    public function setQeuryCondition() {
 
 		// $this->M->relation(true)->field('password',true)->where(array('no_authorized'=>0));
 		$this->M->join('user_info ON rbac_user.id = user_info.user_id')

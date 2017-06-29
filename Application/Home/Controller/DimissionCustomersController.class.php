@@ -12,7 +12,7 @@ class DimissionCustomersController extends CommonController {
 
     private $department_id = "";
 
-    protected $pageSize = 15;
+    protected $pageSize = 10;
     
     public function _initialize(){
         parent::_initialize();
@@ -24,6 +24,7 @@ class DimissionCustomersController extends CommonController {
     public function index(){
 
         $this->assign('users', $this->getGeneralEmployee());
+        $this->assign('dUsers', $this->getDUser());
 
         $this->display();
     }
@@ -31,8 +32,17 @@ class DimissionCustomersController extends CommonController {
 
 
     public function getList(){
+        if (isset($_GET['user_id'])) {
+           $this->model->addcriterion(array('salesman_id'=>I('get.user_id')));
+        }
+        if (isset($_GET['size'])) {
+            $this->pageSize = I('get.size');
+        }
+        
         $this->ajaxReturn($this->model->getList(I('get.p',0), $this->pageSize));
     }
+
+    
 
 
     public function update(){
@@ -53,5 +63,13 @@ class DimissionCustomersController extends CommonController {
     //存储层
     private function getGeneralEmployee(){
         return D('User')->getGeneralEmployee($this->department_id);
+    }
+
+
+    
+
+    private function getDUser(){
+        $re =  D('User')->getDepartmentDimissionEmployee($this->department_id);
+        return $re ? $re : array();
     }
 }
