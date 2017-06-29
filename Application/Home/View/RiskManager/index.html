@@ -136,7 +136,7 @@
 
                         <el-table-column label="序号"  align="center" width="65" :formatter="handleIndex"  >
                         </el-table-column>
-                        <el-table-column label="类型" >
+                        <el-table-column label="类型" align="center" width="100">
                           <template scope="scope">
                               <el-tag v-if="scope.row.type==0" type="primary">购买</el-tag>
                               <el-tag v-else type="primary">续费</el-tag>
@@ -145,7 +145,7 @@
                         <el-table-column   label="客户姓名" prop="cb_name" header-align="center">
                         </el-table-column>
 
-                        <el-table-column label="跟踪员工"  >
+                        <el-table-column label="跟踪员工" header-align="center" width="150">
                             <template scope="scope">
                                 {{ scope.row.department_name }} {{ scope.row.realname}}
                             </template>

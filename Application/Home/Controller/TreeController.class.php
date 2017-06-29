@@ -64,7 +64,12 @@ class TreeController extends CommonController{
 
 /*----------------------------------下面为优化后的部分---------------------------------------------------*/ 
   //所有部门
-	public function getAlldep($fields="id,name"){
+	public function getAlldep($id=0,$fields="id,name"){
+    if (is_numeric($id) && $id!=0) {
+        D('Department')->where(array('id'=>$id));
+    } else if(is_array($id)){
+        D('Department')->where(array('id'=>array('IN', $id)));
+    }
   	return  D('Department')->cache(true,180)->where(array('type'=>DepartmentModel::SALES_DEPARTMENT, 'status'=> array('NEQ', -1)))
   	      ->field($fields)->select();
 	}

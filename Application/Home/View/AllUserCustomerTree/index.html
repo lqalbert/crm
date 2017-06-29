@@ -116,9 +116,9 @@
       @row-click="trackLog" @row-dblclick="userInfo" ref="select" 
       @sort-change="sortChange">
 
-        <el-table-column type="selection"  width="50" ></el-table-column>
+        <!-- <el-table-column type="selection"  width="50" ></el-table-column> -->
 
-        <el-table-column   label="{:L('INDEX')}"   :formatter="handleIndex" width="65"  ></el-table-column>
+        <el-table-column label="{:L('INDEX')}" :formatter="handleIndex" width="65" align="center"></el-table-column>
 
         <el-table-column prop="name" header-align="center" label="客户姓名" width="140" ></el-table-column>
 

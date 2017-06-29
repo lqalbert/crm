@@ -1,0 +1,517 @@
+<extend name="Common:base"/>
+<block name="head">
+  <style>
+    .el-table__body tr.current-row>td{
+      background: rgba(157, 195, 232, 0.7);
+    }
+    .el-tabs__header{
+      border-top:2px solid #ea4b4b;
+      border-bottom: 1px solid #c51f1f;
+    }
+    .el-dialog .el-tabs__header{
+      border-top:none;
+    }
+    .el-tabs--border-card .el-tabs__item{
+      border-left: none;
+    }
+    .el-tabs--border-card .el-tabs__item.is-active {
+      background-color: #fff;
+      border-right-color: #d3dce6;
+      background: #544b8f;
+      color: #fff;
+    }
+    .el-tabs--border-card .el-tabs__header {
+      background-color: #fff;
+      margin: 0;
+    }
+    .container > .wrapp > .el-row {
+      margin-bottom: 6px;
+    }
+    .el-tabs--border-card .el-tabs__content{
+      padding:0 9px 5px 9px;
+    }
+    .el-card, .el-menu--horizontal .el-submenu>.el-menu, .el-tabs--border-card{
+      box-shadow: none;
+    }
+    .el-tabs--border-card{
+      border: none;
+    }
+    .el-table__body tr.current-row>td{
+      background: rgba(157, 195, 232, 0.7);
+    }
+    .el-tabs__item{
+        font-family: Microsoft YaHei;
+        color:#0d0f10;
+        font-size: 14px;
+    }
+    .el-form-item__content{
+      font-size: 16px;
+    }
+    .el-dropdown-menu {
+      overflow-y: auto;
+      max-height: 400px;
+    }
+  </style>
+</block>
+<block name="body">
+  <div id="app" class="container">
+    <div class="wrapp" v-show="show" style="display:none;">
+      <el-row>
+        <el-alert
+          title="此界面默认显示上周部门的统计结果,点击某一行页面下方会显示相应的统计柱状曲线图"
+          type="info"
+          show-icon>
+        </el-alert>
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-form :inline="true" ref="searchForm" :model="searchForm">
+            <el-form-item prop="start">
+              <el-date-picker size="small" v-model="searchForm.start" 
+                placeholder="请选择起日期" 
+                @change="startDateChange"
+                :picker-options="setPicker">
+              </el-date-picker>
+            </el-form-item>
+            <el-form-item prop="end">
+              <el-date-picker 
+                v-model="searchForm.end" 
+                placeholder="请选择止日期" 
+                @change="endDateChange"
+                size="small" :picker-options="setPicker"
+                >
+              </el-date-picker>
+            </el-form-item>
+            <el-form-item>
+              <el-button size="small" @click="setField('lastWeek')">上周</el-button>
+              <el-button size="small" @click="setField('lastMonth')">上月</el-button>
+              <el-button size="small" @click="setField('week')">本周</el-button>
+              <el-button size="small" @click="setField('month')">本月</el-button>
+            </el-form-item>
+
+            <el-form-item>
+              <el-select size="small" style="width:120px;" v-model="searchForm.type" placeholder="查询类型" @change="allTypeChange">
+                <el-option v-for="item in searchGroup" :label="item.key" :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            
+            <el-form-item prop="department_id">
+              <el-tooltip content="选择某个部门后点击查询或者继续选择下属小组再查询" placement="bottom-start">
+                <el-select size="small" style="width:120px;" clearable filterable   v-model="searchForm.department_id" @change="depChange" placeholder="请选择部门">
+                  <el-option v-for="dep in deps" :value="dep.id" :label="dep.name"></el-option>
+                </el-select>
+              </el-tooltip>
+            </el-form-item>
+
+            <el-form-item prop="group_id">
+              <el-tooltip content="必须先选择部门方可选择团组后点击查询或者继续选择下属队员再查询" placement="bottom-start">
+                <el-select size="small" style="width:120px;" :disabled="ctrlSelect" clearable filterable  v-model="searchForm.group_id" @change="groupChange" placeholder="请选择小组">
+                  <el-option v-for="group in groups" :value="group.id" :label="group.name"></el-option>
+                </el-select>
+              </el-tooltip>
+            </el-form-item>
+
+            <el-form-item>
+              <el-tooltip content="填写或者选择好筛选条件后点击此按钮" placement="bottom-start">
+                <el-button type="info" size="small" icon="search" @click="search2">查询</el-button>
+              </el-tooltip> 
+              <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start">
+                <el-button size="small" @click="resetBack" style="margin-left:10px;">重置</el-button>
+              </el-tooltip>
+            </el-form-item>
+            <el-form-item>
+              <el-tooltip content="点击刷新当前页面" placement="right">
+                <el-button @click="refresh" size="small" type="danger">刷新</el-button>
+              </el-tooltip>
+            </el-form-item>
+          </el-form>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-table 
+          :data="dataList" 
+          border highlight-current-row
+          v-loading="dataLoad" 
+          element-loading-text="{:L('DATA_LOGIN')}"
+          @sort-change="sortChange" @row-click="showCharts">
+            <el-table-column label="序号"  align="center" width="65" :formatter="handleIndex"  >
+            </el-table-column>
+
+            <el-table-column  prop="name" header-align="center" label="名称" width="150">
+            </el-table-column>
+
+            <el-table-column v-if="searchForm.type=='group'" header-align="center" prop="realname" label="主管" width="150">
+            </el-table-column>
+
+            <el-table-column v-if="searchForm.type!='department'"  prop="department_name" 
+                header-align="center" label="部门"   width="150">
+            </el-table-column>
+
+            <el-table-column sortable="custom"  align="center" prop="create_num" label="自锁数"  >
+            </el-table-column>
+
+            <el-table-column sortable="custom"  align="center" prop="today_v" label="成交数"  >
+            </el-table-column>
+
+            <el-table-column sortable="custom"  align="center" prop="conflict_to" label="冲突"  >
+            </el-table-column>
+
+            <el-table-column sortable="custom"  align="center" prop="conflict_from" label="被冲突"  >
+            </el-table-column>
+
+            <!-- <el-table-column sortable="custom"  align="center" prop="pulls_num" label="索取"  >
+            </el-table-column> -->
+          </el-table>
+        </el-col>
+      </el-row>
+      <el-row type="type" justify="start" align="middle" class="row-bg">
+        <el-col :offse="12">
+          <div class="grid-content bg-purple-light pull-right">
+            <!-- page -->
+            <include file="Common:_pagination" />
+            <!-- / page -->
+          </div>
+        </el-col>
+      </el-row>
+      <el-row>
+				<div id="echarts" style="height: 400px;margin-top:20px;">
+					
+				</div>
+      </el-row>
+    </div>
+  </div>
+</block>
+<block name="scripts">
+
+<script src="__PUBLIC__/js/calculate.js"></script>
+<script src="__PUBLIC__/js/echarts.min.js"></script>
+<script>
+  window.defaultOption.hooks.delAll('mounted');
+
+  window.defaultOption.setDatas({
+      setPicker:{
+        disabledDate(time) {
+          return time.getTime() > Date.now() - 8.64e7;
+          //console.log(time);
+        }
+      },
+      ctrlSelect:false,
+      ctrl:false,
+      searchGroup:{:json_encode($searchGroup)},
+      sortMap:{
+        descending:'desc',
+        ascending:'asc'
+      },
+      detailTable:[],
+      detailParams:{},
+      detailLoad:false,
+      deps:[],
+      groups:[],
+      users:[],
+      allTypeName:"选择统计类型",
+      depName:"请选择部门",
+      groupName:"请选择小组",
+      userName:"请选择队员",
+      oldDepValue:'',
+      oldGroupValue:'',
+      oldUserValue:''
+  }).setForm('search',{
+      start:"{$start}",
+      end:"{$end}",
+      type:"department",
+      department_id:"{$initSearch.department}",
+      group_id:"{$initSearch.group}",
+      user_id:"",
+  }).setMethod('startDateChange', function(v){
+      this.searchForm.start = v;
+  }).setMethod('endDateChange', function(v){
+      this.searchForm.end = v;
+  }).setMethod('setField', function(v){
+
+      if (v=='week') {
+        this.searchForm.start = showWeekFirstDay();
+        this.searchForm.end   = showWeekLastDay();
+
+      } else if(v=='month'){
+        this.searchForm.start = showMonthFirstDay();
+        this.searchForm.end   = showMonthLastDay();
+      } else if(v=='lastMonth'){
+        this.searchForm.start = showLastMonthFirstDay();
+        this.searchForm.end   = showLastMonthLastDay(); 
+      } else if(v=='lastWeek'){
+        this.searchForm.start = showLastWeekFirstDay();
+        this.searchForm.end   = showLastWeekLastDay(); 
+      }
+
+      this.dataLoad = true;
+      this.loadDatalist();
+      this.detailReset();
+  }).setVueHook('mounted', function(){
+
+    this.searchForm.start = showLastWeekFirstDay();
+    this.searchForm.end   = showLastWeekLastDay(); 
+    
+    this.show = true;
+    if (!this.readySearch()) {
+      this.loadDatalist();
+    }
+    
+    var vmThis = this;
+    var depId = "{$initSearch.department}";
+
+    //部门
+    this.$http.get("{:U('getDeps')}", {params:{status:1,depId:depId}}).then(function(response){
+      var deps = [];
+      response.body.forEach(function(currentValue,index){
+        //console.log(currentValue);
+        deps.push({id: currentValue.id, name: currentValue.name});
+      })
+      vmThis.$set(vmThis, 'deps', deps);
+    });
+ 
+    if(depId != ""){
+      this.depChange(depId);
+    }
+
+
+
+  }).setMethod('search2', function(){
+    if (this.readySearch()) {
+      this.$message({
+        message:"请选择止日期",
+        type:"error",
+        showClose: true
+      })
+    } else {
+      this.dataLoad = true;
+      this.currentPage = 1;
+      this.loadDatalist();
+      this.detailReset();
+    }                               
+  }).setMethod('readySearch', function(){
+      return this.searchForm.start.length ==0 || this.searchForm.end.length==0;
+  }).setMethod('resetBack', function(){
+		// this.$refs.searchForm.resetFields();
+		// this.searchForm.type = "";
+		// this.dataLoad = true;
+		// this.loadDatalist();
+    window.location.href="{:U('index')}";
+  }).setMethod('sortChange', function(info){
+      if (info) {
+        this.searchForm.sort_field = info.prop;
+        this.searchForm.sort_order = this.sortMap[info.order];
+      } else {
+        delete this.searchForm.sort_field;
+        delete this.searchForm.sort_order;
+      }
+      this.dataReload();
+      this.detailReset();
+  }).setMethod('isLink', function(id){
+    return id!=0 && this.objType!='Users';
+  }).setMethod('detailReset', function(){
+    this.detailTable = [];
+  }).setMethod('detailSortChange', function(info){
+     if (info) {
+        this.detailParams.sort_field = info.prop;
+        this.detailParams.sort_order = this.sortMap[info.order];
+      } else {
+        delete this.detailParams.sort_field;
+        delete this.detailParams.sort_order;
+      }
+
+      this.loadDetailTable();
+  }).setMethod('loadDetailTable', function(){
+      this.detailLoad = true;
+      this.$http.get("{:U('SortCustomersCount/getList')}", {params:this.detailParams}).then(function(response){
+        this.detailTable = response.body.list;
+        this.detailLoad = false;
+        if (this.detailTable.length==0) {
+          this.$message("没有数据");
+        }
+      }, function(response){
+        this.detailLoad = false;
+        this.$message.error("出错了，请联系开发");
+      })
+  }).setMethod('depChange',function(v){
+    if(v != this.oldDepValue){
+      this.searchForm.group_id = "";
+      this.searchForm.user_id = ""; 
+    }
+    this.searchForm.department_id = v;
+    var vmThis = this;
+    //小组
+    this.$http.get("{:U('getGroups')}", {params:{department_id:v} }).then(function(response){
+      var groups = [];
+      response.body.forEach(function(currentValue,index){
+        groups.push({id: currentValue.id, name: currentValue.name});
+      })
+      vmThis.$set(vmThis, 'groups', groups);
+    });
+    this.oldDepValue = v;
+  }).setMethod('groupChange',function(v){
+    if(v != this.oldGroupValue){
+      this.searchForm.user_id = ""; 
+    }
+    this.searchForm.group_id = v;
+    var d = this.searchForm.department_id;
+    var vmThis = this;
+    //员工
+    this.$http.get("{:U('getUsers')}", {params:{group_id:v,department_id:d} }).then(function(response){
+      var users = [];
+      response.body.forEach(function(currentValue,index){
+        users.push({id: currentValue.id, name: currentValue.realname});
+      })
+      vmThis.$set(vmThis, 'users', users);
+    });
+    this.oldGroupValue = v;
+  }).setMethod('userChange',function(v){
+    this.searchForm.user_id = v;
+  }).setMethod('allTypeChange',function(v){
+    this.ctrlSelect = v=="department" ? true : false;
+  }).setMethod('showCharts',function(row, event, column){
+    var id = row.id;
+    var type = this.searchForm.type;
+    var start = this.searchForm.start;
+    var end = this.searchForm.end ;
+    var name = row.name;
+
+		var myChart = echarts.init(document.getElementById('echarts'));
+		var colors = ['#5793f3', '#27727B', '#675bba','#C1232B','#B5C334','#FCCE10','#E87C25','#27727B'];
+
+		var option = {
+		    color: colors,
+			  title: {
+			    text: start+'至'+end+name+'统计情况',
+			    x:'center'
+			  },
+		    tooltip: {
+		      trigger: 'axis',
+		      axisPointer: {
+		        type: 'shadow'
+		      }
+		    },
+		    grid: {
+		    	left: '3%',
+		    	right: '4%',
+		    	bottom: '3%',
+		    	containLabel: true
+		    },
+		    toolbox: {
+		      feature: {
+		        dataView: {show: true, readOnly: false},
+		        restore: {show: true},
+		        saveAsImage: {show: true}
+		      }
+		    },
+		    legend: {
+		      data:['自锁数','成交数','冲突','被冲突'],
+		      align: 'right',
+		    	right: 10,
+		    },
+		    xAxis: {
+	        type: 'category',
+	        axisTick: {
+	            alignWithLabel: true
+	        },
+	        data: []
+		    },
+		    yAxis: [{
+		            type: 'value',
+		            name: '被冲突',
+		            position: 'right',
+		            axisLine: {
+		                lineStyle: {
+		                    color: colors[3]
+		                }
+		            },
+		            axisLabel: {
+		                formatter: '{value} 个'
+		            }
+		        },
+		        {
+		            type: 'value',
+		            name: '冲突',
+		            position: 'right',
+		            offset: 60,
+		            axisLine: {
+		                lineStyle: {
+		                    color: colors[2]
+		                }
+		            },
+		            axisLabel: {
+		                formatter: '{value} 个'
+		            }
+		        },
+		        {
+		            type: 'value',
+		            name: '成交数',
+		            position: 'right',
+		            offset: 120,
+		            axisLine: {
+		                lineStyle: {
+		                    color: colors[1]
+		                }
+		            },
+		            axisLabel: {
+		                formatter: '{value} 个'
+		            }
+		        },
+		        {
+		            type: 'value',
+		            name: '自锁数',
+		            position: 'left',
+		            axisLine: {
+		                lineStyle: {
+		                    color: colors[0]
+		                }
+		            },
+		            axisLabel: {
+		                formatter: '{value} 个'
+		            }
+		        }
+		    ],
+		    series: []
+		};
+
+    window.onresize = myChart.resize;
+
+
+    this.$http.get("{:U('echarts')}",{params:{id:id,start:start,end:end,name:name,type:type}}).then(function(response){
+			option.xAxis.data = response.body.date;
+			option.series = response.body.series;
+			myChart.setOption(option);
+			console.log(response.body);
+    }, function(response){
+    	this.$message.error("出错了，请联系开发");
+    })
+    
+   // myChart.setOption(option);
+
+
+  }).setMethod('sbsbb',function(v){
+    alert(v);
+  });
+
+
+
+
+
+
+
+
+
+
+  function titleCase(str) {
+    var array = str.toLowerCase().split(" ");
+    for (var i = 0; i < array.length; i++){
+      array[i] = array[i][0].toUpperCase() + array[i].substring(1, array[i].length);
+    }
+    var string = array.join(" ");
+    return string;
+  }
+
+
+</script>
+</block>

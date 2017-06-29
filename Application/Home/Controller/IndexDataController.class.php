@@ -33,6 +33,7 @@ class IndexDataController extends \Think\Controller{
     public function setOption(){
         if ($this->date) {
             $dateRe = $this->getDateString();
+            //va_dump($dateRe);die;
             $where = $this->getCondition();
 
             $sql = "select sum(today_v) as v , sum(create_num) as c  from statistics_usercustomers where $where and  `date` in (".implode(',', $dateRe).") group by `date` order by `date` desc";
@@ -42,8 +43,9 @@ class IndexDataController extends \Think\Controller{
             $dd=array(
                 'date'=>$this->date ,
                 'series'=>array(
-                    array('name'=>'自锁数','type'=>'bar','data'=>$c),
-                    // array('name'=>'成交数','type'=>'bar','data'=>$v),
+                    array('name'=>'自锁数','type'=>'bar',"barWidth"=> '30%','data'=>$c),
+                    array('name'=>'自锁数','type'=>'line',"smooth"=>  true,'data'=>$c),
+                    //array('name'=>'成交数','type'=>'bar',"barWidth"=> '20%','data'=>$v),
                  )
             );
         } else {
@@ -51,7 +53,7 @@ class IndexDataController extends \Think\Controller{
                 'date'=>$this->date ,
                 'series'=>array(
                     array('name'=>'自锁数','type'=>'bar','data'=>array(0)),
-                    // array('name'=>'成交数','type'=>'bar','data'=>array(0)),
+                    array('name'=>'成交数','type'=>'bar','data'=>array(0)),
                  )
             );
         }
