@@ -5,6 +5,7 @@ class EmployeeCountController  extends CommonController{
 
     protected $table="";
     protected $pageSize = 30;
+    private $allData = array();
 
 
     public function index(){
@@ -49,15 +50,16 @@ class EmployeeCountController  extends CommonController{
     *  减去 在 stDate 之前离职的
     */
     private function setAll(){
-        $sql = "select count(user_id) as c, department_id from rbac_user inner join user_info on rbac_user.id = user_info.user_id where rbac_user.created_at < '" .$this->enDate."'  group by  user_info.department_id";
-        $re = M()->query($sql);
-        $this->allData = arr_to_map($re, 'department_id', 'c');  
+        $sql = "select count(user_id) as c, department_id from rbac_user inner join user_info on rbac_user.id = user_info.user_id where rbac_user.created_at < '" .$this->enDate."' and department_id<>0  group by  user_info.department_id";
+        $re = M()->query($sql);        
+        $this->allData = arr_to_map($re, 'department_id', 'c');
 
         $sql = "select count(user_id) as c, department_id from rbac_user inner join user_info on rbac_user.id = user_info.user_id where user_info.dimission_at < '" .$this->stDate."'  group by  user_info.department_id";
         $re2 = M()->query($sql);
+
         foreach ($re2 as $key => $value) {
             if (isset($this->allData[$value['department_id']])) {
-                $this->allData[$value['department_id']] = $this->allData[$value['department_id']] - $value['c'];
+                $this->allData[$value['department_id']] =  $this->allData[$value['department_id']] -   $value['c'];
             }
         }
     }
