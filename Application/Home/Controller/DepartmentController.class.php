@@ -17,7 +17,7 @@ class DepartmentController extends CommonController {
 		$this->assign("zoneList", M('department_zone')->getField('id,name'));
 		$this->assign("divisions", D('DepartmentDivision')->where(array('status'=>array('egt', 0)))->field('id,name')->select());
 
-		 $ename = $this->getRoleEname();
+		$ename = $this->getRoleEname();
 
     	$this->assign('viewDecorator', $this->M->decoratorView($ename));
 		$this->assign('departments',$this->M->getAllDepartments('id,name'));

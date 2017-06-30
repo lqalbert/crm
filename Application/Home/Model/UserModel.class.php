@@ -76,7 +76,7 @@ class UserModel extends  Model{
         if ($roleId) {
             M('user_info')->where(array('role_id'=>$roleId));
         }
-        return M('user_info')->select();
+        return M('user_info')->join('rbac_user on user_info.user_id=rbac_user.id')->where(array('status'=>array('GT', RbacUserModel::DELETE_SATUS) ))->select();
 
     }
     //分配的

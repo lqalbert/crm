@@ -382,7 +382,7 @@
         this.multipleSelection = val;
     }).setMethod('tagClose', function(arg){
         var i = this.dehrs.indexOf(arg);
-        this.hr.splice(i,1);
+        this.hr.splice(i+1,1);
         this.$http.post(page.delhrUrl, {user_id:arg.user_id}).then(function(response){
             // this.$message.succe
         }, function(response){
