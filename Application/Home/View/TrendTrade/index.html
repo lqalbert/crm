@@ -220,7 +220,7 @@
   }).setForm('search',{
       start:"{$start}",
       end:"{$end}",
-      type:"department",
+      type:"",
       department_id:"{$initSearch.department}",
       group_id:"{$initSearch.group}",
       user_id:"",
@@ -252,6 +252,7 @@
 
     this.searchForm.start = showLastWeekFirstDay();
     this.searchForm.end   = showLastWeekLastDay(); 
+    this.searchForm.type   = 'department';  
     
     this.show = true;
     if (!this.readySearch()) {

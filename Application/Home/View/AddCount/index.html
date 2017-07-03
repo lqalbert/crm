@@ -246,7 +246,7 @@
   }).setForm('search',{
       start:"{$start}",
       end:"{$end}",
-      type:"department",
+      type:"",
       department_id:"",
       group_id:"",
       user_id:"",
@@ -284,6 +284,10 @@
       // this.detailReset();
     }
 
+    this.searchForm.start = showLastWeekFirstDay();
+    this.searchForm.end   = showLastWeekLastDay(); 
+    this.searchForm.type   = 'department'; 
+
     var vmThis = this;
     //部门
     this.$http.get("{:U('getDeps')}", {params:{status:1} }).then(function(response){
@@ -294,8 +298,10 @@
       })
       vmThis.$set(vmThis, 'deps', deps);
     });
-
-
+    
+    this.ctrl = true;
+    this.dataLoad = true;
+    this.loadDatalist();
 
 
   }).setMethod('search2', function(){

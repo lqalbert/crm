@@ -97,7 +97,7 @@ class AddCountController extends CommonController{
 	* 基于人的录入统计
 	*/
 	private function getUserCount(){
-		$this->users = arr_to_map($this->d->getAllUsers(),'id');
+		$this->users = arr_to_map($this->d->getAllUsers(),'user_id');
 	}
 
   private function setReturnArr($arr){

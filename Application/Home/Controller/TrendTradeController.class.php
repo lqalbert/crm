@@ -110,7 +110,7 @@ class TrendTradeController extends CommonController{
 	* 基于人的录入统计
 	*/
 	private function getUserCount(){
-		$this->users = arr_to_map($this->d->getAllUsers(),'id');
+		$this->users = arr_to_map($this->d->getAllUsers(),'user_id');
 	}
 
   private function setReturnArr($arr){
@@ -141,6 +141,7 @@ class TrendTradeController extends CommonController{
   public function getUsers($department_id,$group_id){
   	$treeOb = $this->treeOb();
   	$arr = $treeOb->getGroupEmployee($department_id,$group_id, 'id,realname');
+    echo M()->getLastSql();die();
   	$this->ajaxReturn($arr);
   }
 

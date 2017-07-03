@@ -15,14 +15,20 @@ class TreeController extends CommonController{
   }
 
   //获取所有小组
-  public function getAllGoups($id=0, $field=null){
+  public function getAllGoups($department_id=0,$id=0,$field='id,name'){
 	  D('Group')->cache(true)->where(array('status'=>1));
 
-	  if (is_numeric($id) && $id!=0) {
-	      D('Group')->cache(true)->where(array('department_id'=>$id));
-	  } else if(is_array($id)){
-	      D('Group')->cache(true)->where(array('department_id'=>array('IN', $id)));
+	  if (is_numeric($department_id) && $department_id!=0) {
+	      D('Group')->cache(true)->where(array('department_id'=>$department_id));
+	  } else if(is_array($department_id)){
+	      D('Group')->cache(true)->where(array('department_id'=>array('IN', $department_id)));
 	  }
+
+    if (is_numeric($id) && $id!=0) {
+        D('Group')->cache(true)->where(array('id'=>$id));
+    } else if(is_array($id)){
+        D('Group')->cache(true)->where(array('id'=>array('IN', $id)));
+    }
 
 	  if (!empty($field)) {
 	      D('Group')->cache(true)->field($field);
