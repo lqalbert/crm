@@ -8,6 +8,9 @@
 	    background: #3fc3e2;
 	    color: #ffffff;
 	}
+	#one .el-card__body{
+		padding:22px;
+	}
   </style>
 </block>
 <block name="body">
@@ -21,7 +24,7 @@
 			  <div slot="header" class="clearfix">
 			    <span>个人信息</span>
 			  </div>
-			  <div id="two" style="min-width:410px;display: table-cell;vertical-align:middle;">
+			  <div id="two" style="min-width:410px;display: table-cell;vertical-align:middle;padding:10px;">
 			  	<php>
 					$userInfo = session('account')['userInfo'];
 					$arr=M('user_info')->where(array('user_id'=>$userInfo['user_id']))->find(); 
@@ -31,7 +34,7 @@
 				</php>
 			  	<img src="__ROOT__{$arr['head']}" class="image" width="100%" height="100%" style="width:200px;height:200px;border-radius:100%; vertical-align:middle;">
 				
-			  	<div id="th" style="float:right;width:200px;border-left:1px solid #e2e2e2;line-height:200%">
+			  	<div id="th" style="float:right;width:200px;border-left:1px solid #e2e2e2;line-height:180%">
 			  		&nbsp;&nbsp;&nbsp;<span>姓名：{$arr['realname']}</span><br>
 			  		&nbsp;&nbsp;&nbsp;<span>I  D：{$arr['user_id']}</span><br>
 			  		&nbsp;&nbsp;&nbsp;<span>职位类型：{$arr['role_name']}</span><br>
@@ -48,7 +51,7 @@
 				<div slot="header" class="clearfix">
 					系统公告
 				</div>
-				<div style="margin:-20px;">
+				<div>
 					<el-table :data="dataList" v-loading="dataLoad"  border  
 					stripe element-loading-text="{:L('DATA_LOGIN')}" @row-click="showContent" ref="select">
 				      <el-table-column prop="type" label="公告类型"  align="center">
@@ -59,7 +62,7 @@
 				      <el-table-column prop="title" label="公告标题" align="center"></el-table-column>
 				      <!-- <el-table-column prop="start" label="开始日期" align="center"></el-table-column> -->
 				    </el-table>
-				    <el-col :span="24">
+				    <el-col :span="24" style="padding:3px;">
 					     <div class="grid-content bg-purple-light pull-right" style="padding:2px;">
 					       <!-- page -->
 					       <include file="Common:_pagination" />
@@ -159,11 +162,11 @@
 	window.defaultOption.setVueHook('mounted', function(){
 		
 		var myChart = echarts.init(document.getElementById('echarts'));
-		var colors = ['#5793f3', '#d14a61', '#675bba'];
+		var colors = ['#d14a61','#61a0a8','#675bba','#5793f3', '#d14a61'];
 		var option = {
 			    color: colors,
           title: {
-	          text: '最近7天',
+	          text: '最近7天自锁数',
 	          x:'center'
 	        },
 	        tooltip: {
@@ -192,10 +195,15 @@
 	    		},
 	    		yAxis: [{
 	        	type: 'value',
-	        	name: '数量',
+	        	name: '自锁数/个',
 	        	axisLabel: {
 	            formatter: '{value}'
-	        	}
+	        	},
+            axisLine: {
+              lineStyle: {
+                color: colors[0]
+              }
+            },
 	   		  }],
 	        series: [{
 	       	  name: '自锁数',
@@ -216,7 +224,7 @@
         window.onresize = myChart.resize;
 
 
-        /*var w=document.body.scrollWidth;
+        var w=document.body.scrollWidth;
       	if(w<1400){
       		var two=document.getElementById('two');
       		var th=document.getElementById('th');
@@ -224,7 +232,7 @@
             th.style.lineHeight='150%';
             th.style.marginRight="30px";
             th.style.textAlign='left';
-      	}*/
+      	}
     this.$http.get(page.getEchartsOption).then(function(response){
 			option.xAxis.data = response.body.date;
 			option.series = response.body.series;
@@ -329,13 +337,13 @@
 					xq:'1',
 				}
 		],
-	data2:[]
+	  data2:[]
 	}).setMethod('getType', function(type, field){
-       return this[field][type];
-    }).setMethod('showContent',function(row,event,column){
-       this.contentDialog = true;
-       this.noticeInfo = row;
-    });
+    return this[field][type];
+  }).setMethod('showContent',function(row,event,column){
+		this.contentDialog = true;
+		this.noticeInfo = row;
+  });
 	</script>
 
 </block>

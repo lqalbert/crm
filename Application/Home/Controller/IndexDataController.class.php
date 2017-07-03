@@ -96,7 +96,7 @@ class IndexDataController extends \Think\Controller{
         $this->setDate();
         $dateRe = $this->getDateString();
         $where = $this->getCondition();
-        $sql = "select sum(today_v) as v ,`date` from statistics_usercustomers where $where and  `date` in (".implode(',', $dateRe).") group by `date` order by `date` desc";
+        $sql = "select sum(today_v) as v ,`date` from statistics_usercustomers where $where and  `date` in (".implode(',', $dateRe).") group by `date` order by `date` desc limit 0,7";
         $re = M()->query($sql);
         
         $this->ajaxReturn($re);
@@ -106,7 +106,7 @@ class IndexDataController extends \Think\Controller{
         $this->setDate();
         $dateRe = $this->getDateString();
         $where = $this->getCondition();
-        $sql = "select sum(phone_track) as phone_c, sum(self_track) as self_c, sum(qq_track) as  qq_c ,`date` from statistics_quantization where  $where  and `date` in (".implode(',', $dateRe).") group by `date` order by `date` desc";
+        $sql = "select sum(phone_track) as phone_c, sum(self_track) as self_c, sum(qq_track) as  qq_c ,`date` from statistics_quantization where  $where  and `date` in (".implode(',', $dateRe).") group by `date` order by `date` desc limit 0,7";
         $re = M()->query($sql);
         
         $this->ajaxReturn($re);
@@ -116,7 +116,7 @@ class IndexDataController extends \Think\Controller{
         $this->setDate();
         $dateRe = $this->getDateString();
         $where = $this->getCondition();
-        $sql = "select sum(all_num) as all_num , sum(create_num) as create_c ,sum(today_v) as today_v ,`date` from statistics_usercustomers where $where and  `date` in (".implode(',', $dateRe).") group by `date` order by `date` desc";
+        $sql = "select sum(all_num) as all_num , sum(create_num) as create_c ,sum(today_v) as today_v ,`date` from statistics_usercustomers where $where and  `date` in (".implode(',', $dateRe).") group by `date` order by `date` desc limit 0,7";
         $re = M()->query($sql);
         
         $this->ajaxReturn($re);

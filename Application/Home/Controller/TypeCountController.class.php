@@ -9,134 +9,150 @@ use Common\Lib\User;
 */
 class TypeCountController extends CommonController {
 
-    protected $table = "";
-    protected $pageSize = 13;
-    protected $d = null;
+  protected $table = "";
+  protected $pageSize = 15;
+  protected $d = null;
+  protected $where = null;
 
-    private function getService(){
-        if ($this->d == null) {
-            $this->d =  new CustomersTypeCount;
+  private function getService(){
+    if ($this->d == null) {
+        $this->d =  new CustomersTypeCount;
+    }
+    return $this->d;
+  }
+
+
+  protected function treeOb(){
+    $treeOb = new TreeController;
+    return $treeOb;
+  }
+
+
+  protected function getSearchGroup(){
+    $searchGroup = array(
+        array('value'=>'user','key'=>"查询队员" ),
+        array('value'=>'group','key'=>"查询团组" ),
+        array('value'=>'department','key'=>'查询部门')
+    );
+
+    return $searchGroup;
+  }
+
+  public function index(){
+    $this->assign('Alldeps',$this->getDeps($status));
+    $this->assign('searchGroup',$this->getSearchGroup());
+    $this->display();
+  }
+
+  public function getList(){
+    //$this->setServiceQuery();
+    $this->setTime();
+    $list = $this->setQeuryCondition();
+    $result = $this->setReturnArr($list);
+    //echo M()->getLastSql();die();
+    //$result = array('list'=>$list, 'count'=>count($list));
+    $this->ajaxReturn($result);
+  }
+
+  private function setServiceQuery(){
+    $sort_field = I('get.sort_field', 'id');
+    $sort_order = I('get.sort_order', 'asc');
+
+    $sort_field = empty($sort_field) ? 'id' :$sort_field;
+
+    $this->getService()
+         ->setDate(I('get.start'),I('get.end'))
+         ->setOrder($sort_field." ".$sort_order)
+         ->setRange(I('get.range'));
+  }
+
+  protected function setTime(){
+    $start = I('get.start')." 00:00:00";
+    $end = I('get.end')." 23:59:59";
+    if($start && $end){
+      $this->where = "and cb.created_at>='$start' and cb.created_at<='$end'";
+    }
+  }
+
+  public function setQeuryCondition(){
+    switch (I('get.type')) {
+      case 'user':
+           $result = $this->setReturnArr($this->users); //基于个人为条件查询
+        break;
+      case 'group':
+          $result = $this->setReturnArr($this->groups); //基于团组为条件查询
+        break;
+      case 'department':
+          $result = $this->setDepTypeCount();//基于部门为条件查询
+         break;
+      default:
+         $result = $this->setDepTypeCount(); //基于部门为条件查询
+        break;
+    }
+
+    return $result;
+  }
+
+
+  protected function setDepTypeCount(){
+    $sql = "select count(cb.id) as c , `type` , department_id from customers_basic as cb 
+    inner join user_info as ui on cb.salesman_id= ui.user_id where cb.status=1 and ui.department_id<>0 ".$this->where ."group by cb.type, ui.department_id";
+    $re = M()->query($sql);
+    $depArr = $this->getDeps($status);
+    $arr = array();
+    $customerType = array("A","B","C","D","F","N","V","VX","VT");
+    foreach ($re as $k => $v) {
+      $arr[$v['type'].$v['department_id']] = $v['c'];
+    }
+    
+    foreach ($depArr as $k => $v) {
+      foreach ($customerType as $key => $value) {
+        if(isset($arr[$value.$v['id']])){
+          $depArr[$k][$value]=$arr[$value.$v['id']];
+          $depArr[$k]['time_num']+=$arr[$value.$v['id']];
+
+        }else{
+          $depArr[$k][$value]=0;
+          $depArr[$k]['time_num']+=$arr[$value.$v['id']];
         }
-        return $this->d;
+      }
     }
+    //va_dump($depArr);die();
+  
+    return $depArr;
+
+  }
+
+  private function splitList($list){
+    $page = I('get.p',0);
+    $re = array_chunk($list, $this->pageSize);
+    return $re[$page-1];
+  }
+
+  private function setReturnArr($arr){
+    return array('list'=>$this->splitList($arr), 'count'=>count($arr));
+  }
+  //获取所有部门下拉
+  protected function getDeps($status){
+    $treeOb = $this->treeOb();
+    $arr = $treeOb->getAlldep();
+    return $arr;
+  }
 
 
+  //获取所选属部门的小组
+  public function getGroups($department_id){
+    $treeOb = $this->treeOb();
+    $arr = $treeOb->getAllGoups($department_id, 'id,name');
+    $this->ajaxReturn($arr);
+  }
 
-    private function getObjType(){
-        $roleEname =  I('get.objType', $this->getRoleEname()) ;
-        $map = array(
-                     'gold'=>'Departments',  //总经办
-                     'Departments'=>'Groups',  //总经办
-                     'departmentMaster'=> 'Groups',
-                     'Groups' => 'Users',
-                     // 'Users'  => 'Users'
-                    );
-        if (isset($map[$roleEname])) {
-            return $map[$roleEname];
-        } else {
-            return 'Groups';
-        }
-    }
-
-    protected function treeOb(){
-        $treeOb = new TreeController;
-        return $treeOb;
-    }
-
-    //获取所有部门下拉
-    public function getDeps($status){
-        $treeOb = $this->treeOb();
-        $arr = $treeOb->getAlldep();
-        return $arr;
-    }
-
-    public function index(){
-        $this->assign('Alldeps',$this->getDeps($status));
-        $this->assign('objType', $this->getObjType());
-        $this->assign('dist', I('get.dist',Date('Y-m-d', time())));
-        $this->display();
-    }
-
-    public function getList(){
-        $this->setServiceQuery();
-        $list = $this->setQeuryCondition();
-        //echo M()->getLastSql();die();
-        $result = array('list'=>$list, 'count'=>count($list));
-        $this->ajaxReturn($result);
-    }
-
-    private function setServiceQuery(){
-        $sort_field = I('get.sort_field', 'id');
-        $sort_order = I('get.sort_order', 'asc');
-
-        $sort_field = empty($sort_field) ? 'id' :$sort_field;
-
-        $this->getService()
-             ->setDate(I('get.start'),I('get.end'))
-             ->setOrder($sort_field." ".$sort_order)
-             ->setRange(I('get.range'));
-    }
-
-
-    public function setQeuryCondition(){
-        return $this->setCondition();
-    }
-
-    private function setCondition(){
-        $this->roleEname = $this->getRoleEname();
-        $funcName = $this->roleEname."Condition";
-        
-        if (method_exists($this, $funcName)) {
-            return call_user_func(array($this, $funcName));
-        }
-        return array();
-        
-    }
-
-
-    private function goldCondition(){
-        $objType =  I('get.objType');
-        $id = I('get.id', 0);
-        
-        if ($id==0) {
-            return $this->getDepartments();
-        } else {
-            
-            return call_user_func(array($this, "get".$objType),  $id);
-        }
-        
-    }
-
-    private function departmentMasterCondition(){
-
-        $objType =  I('get.objType');
-        $id = I('get.id', 0);
-        
-        if ($id==0) {
-            return $this->getGroups(session('account')['userInfo']['department_id']);
-        } else {
-     
-            return call_user_func(array($this, "get".$objType),  $id);
-        }
-    }
-
-
-    private function getDepartments(){
-        return $this->getService()->getDepartment();
-    }
-
-    private function captainCondition(){
-        return $this->getUsers(session('account')['userInfo']['group_id']);
-    }
-
-    private function getGroups($department_id){
-        return $this->getService()->getGroups($department_id);
-    }
-
-    private function getUsers($group_id){
-        return $this->getService()->getUsers($group_id);
-    }
-
+  //获取所选小组下的员工
+  public function getUsers($department_id,$group_id){
+    $treeOb = $this->treeOb();
+    $arr = $treeOb->getGroupEmployee($department_id,$group_id, 'id,realname');
+    $this->ajaxReturn($arr);
+  }
 
 
 

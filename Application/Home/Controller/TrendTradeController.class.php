@@ -233,10 +233,10 @@ class TrendTradeController extends CommonController{
         $dd=array(
             'date'=>$this->date,
             'series'=>array(
-                // array('name'=>'自锁数','type'=>'bar',"yAxisIndex"=> 3,'data'=>$c),
-                // array('name'=>'成交数','type'=>'bar',"yAxisIndex"=> 1,'data'=>$v),
-                // array('name'=>'冲突','type'=>'bar',"yAxisIndex"=> 1,'data'=>$ct),
-                // array('name'=>'被冲突','type'=>'bar',"yAxisIndex"=> 0,'data'=>$cf),
+                array('name'=>'自锁数','type'=>'bar',"yAxisIndex"=> 3,'data'=>$c),
+                array('name'=>'成交数','type'=>'bar',"yAxisIndex"=> 1,'data'=>$v),
+                array('name'=>'冲突','type'=>'bar',"yAxisIndex"=> 1,'data'=>$ct),
+                array('name'=>'被冲突','type'=>'bar',"yAxisIndex"=> 0,'data'=>$cf),
                 array('name'=>'自锁数曲线','type'=>'line',"yAxisIndex"=> 3,"smooth"=>  true,'data'=>$c),
                 array('name'=>'成交数曲线','type'=>'line',"yAxisIndex"=> 2,"smooth"=>  true,'data'=>$v),
                 array('name'=>'冲突曲线','type'=>'line',"yAxisIndex"=> 1,"smooth"=>  true,'data'=>$ct),
