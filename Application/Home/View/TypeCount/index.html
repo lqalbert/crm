@@ -51,7 +51,7 @@
 
         <el-form-item prop="department_id">
           <el-tooltip content="选择某个部门后点击查询" placement="bottom-start">
-            <el-select size="small" style="width:120px;" clearable filterable v-model="searchForm.department_id" placeholder="请选择部门" @change="depChange">
+            <el-select size="small" style="width:120px;" :clearable="depClearable" filterable v-model="searchForm.department_id" placeholder="请选择部门" @change="depChange">
               <el-option v-for="dep in Alldeps" :value="dep.id" :label="dep.name"></el-option>
             </el-select>
           </el-tooltip>
@@ -136,8 +136,6 @@
   </el-row>
   </div>
 
-
-
 </div>
 </div>
 </block>
@@ -154,32 +152,42 @@
     Alldeps:{:json_encode($Alldeps)},
     searchGroup:{:json_encode($searchGroup)},
     ctrlSelect:false,
+    depClearable:true,
     oldDepValue:'',
     oldGroupValue:'',
   }).setForm('search',{
       type:'',
       start:'',
       end:'',
-      department_id:'',
+      department_id:"{$initDep}",
       group_id:'',
   }).setVueHook('mounted', function(){
     this.searchForm.start = showLastWeekFirstDay();
     this.searchForm.end   = showLastWeekLastDay(); 
     this.searchForm.type   = 'department'; 
+
+    if(this.Alldeps.length <=1 ){
+      this.depClearable = false;
+    }
+
+    if(this.searchForm.department_id != ""){
+      this.depChange(this.searchForm.department_id);
+    }
+
     this.loadDatalist();
   }).setMethod('dateChange', function(v){
     this.searchForm.dist = v;
   }).setMethod('refresh',function(){
     window.location.reload();
   }).setMethod('sortChange', function(info){
-      if (info) {
-        this.searchForm.sort_field = info.prop;
-        this.searchForm.sort_order = this.sortMap[info.order];
-      } else {
-        delete this.searchForm.sort_field;
-        delete this.searchForm.sort_order;
-      }
-      this.dataReload();
+    if (info) {
+      this.searchForm.sort_field = info.prop;
+      this.searchForm.sort_order = this.sortMap[info.order];
+    } else {
+      delete this.searchForm.sort_field;
+      delete this.searchForm.sort_order;
+    }
+    this.dataReload();
   }).setMethod('resetBack', function(){
       window.location.href="{:U('index')}";
   }).setMethod('getUrl', function(v){

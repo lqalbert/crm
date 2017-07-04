@@ -98,7 +98,7 @@
             
             <el-form-item prop="department_id">
               <el-tooltip content="选择某个部门后点击查询或者继续选择下属小组再查询" placement="bottom-start">
-                <el-select size="small" style="width:120px;" clearable filterable   v-model="searchForm.department_id" @change="depChange" placeholder="请选择部门">
+                <el-select size="small" style="width:120px;" :clearable="depClearable" filterable   v-model="searchForm.department_id" @change="depChange" placeholder="请选择部门">
                   <el-option v-for="dep in deps" :value="dep.id" :label="dep.name"></el-option>
                 </el-select>
               </el-tooltip>
@@ -198,6 +198,7 @@
         }
       },
       ctrlSelect:false,
+      depClearable:true,
       ctrl:false,
       searchGroup:{:json_encode($searchGroup)},
       sortMap:{
@@ -249,6 +250,10 @@
       this.loadDatalist();
       this.detailReset();
   }).setVueHook('mounted', function(){
+
+    if(this.searchForm.department_id != ""){
+      this.depClearable = false;
+    }
 
     this.searchForm.start = showLastWeekFirstDay();
     this.searchForm.end   = showLastWeekLastDay(); 

@@ -4,6 +4,7 @@ namespace Home\Controller;
 use Home\Service\CustomersTypeCount;
 use Common\Lib\User;
 use Home\Model\RbacUserModel;
+use Home\Model\RoleModel;
 /**
 * 要考虑 一页显示所有数据
 */
@@ -14,6 +15,7 @@ class TypeCountController extends CommonController {
   protected $d = null;
   protected $where = null;   
   protected $customerType = array("A","B","C","D","F","N","V","VX","VT");
+  protected $initDep = "";
 
   private function getService(){
     if ($this->d == null) {
@@ -28,6 +30,16 @@ class TypeCountController extends CommonController {
     return $treeOb;
   }
 
+  protected function depSelect(){
+    $ename = $this->getRoleEname();
+    if ($ename == RoleModel::GOLD) {
+      $department_id = "";
+    }elseif($ename == RoleModel::DEPARTMENTMASTER){
+      $department_id = session('account')['userInfo']['department_id']; 
+      $this->initDep = $department_id;
+    }
+    return $this->getDeps($department_id);
+  }
 
   protected function getSearchGroup(){
     $searchGroup = array(
@@ -39,9 +51,11 @@ class TypeCountController extends CommonController {
     return $searchGroup;
   }
 
+
   public function index(){
-    $this->assign('Alldeps',$this->getDeps());
+    $this->assign('Alldeps',$this->depSelect());
     $this->assign('searchGroup',$this->getSearchGroup());
+    $this->assign('initDep',$this->initDep);
     $this->display();
   }
 
