@@ -26,12 +26,12 @@
 			  </div>
 			  <div id="two" style="min-width:410px;display: table-cell;vertical-align:middle;padding:10px;">
 			  	<php>
-					$userInfo = session('account')['userInfo'];
-					$arr=M('user_info')->where(array('user_id'=>$userInfo['user_id']))->find(); 
-					$arr['g_name']=M('group_basic')->where(array('id'=>$arr['group_id']))->getField('name');
-					$arr['d_name']=M('department_basic')->where(array('id'=>$arr['department_id']))->getField('name');
-					$arr['role_name']=M('rbac_role')->where(array('id'=>$arr['role_id']))->getField('name');
-				</php>
+						$userInfo = session('account')['userInfo'];
+						$arr=M('user_info')->where(array('user_id'=>$userInfo['user_id']))->find(); 
+						$arr['g_name']=M('group_basic')->where(array('id'=>$arr['group_id']))->getField('name');
+						$arr['d_name']=M('department_basic')->where(array('id'=>$arr['department_id']))->getField('name');
+						$arr['role_name']=M('rbac_role')->where(array('id'=>$arr['role_id']))->getField('name');
+				  </php>
 			  	<img src="__ROOT__{$arr['head']}" class="image" width="100%" height="100%" style="width:200px;height:200px;border-radius:100%; vertical-align:middle;">
 				
 			  	<div id="th" style="float:right;width:200px;border-left:1px solid #e2e2e2;line-height:180%">
@@ -95,11 +95,11 @@
 				</div>
 				<div>
 					<el-table :data="sysReport" border style="width: 100%">
-				    <el-table-column prop="date"  label="日期" width="180"></el-table-column>
-						<el-table-column prop="v"   label="总业绩"></el-table-column>
-						<el-table-column prop="v"   label="成交客户数"></el-table-column>
-						<el-table-column prop="xfc"   label="续费客户数（暂无）"></el-table-column>
-						<el-table-column prop="xfy"   label="续费业绩（暂无）"></el-table-column>
+				    <el-table-column prop="date"  label="日期" width="180" align="center"></el-table-column>
+						<el-table-column prop="v"   label="总业绩" align="center"></el-table-column>
+						<el-table-column prop="v"   label="成交客户数" align="center"></el-table-column>
+						<el-table-column prop="xfc"   label="续费客户数（暂无）" align="center"></el-table-column>
+						<el-table-column prop="xfy"   label="续费业绩（暂无）" align="center"></el-table-column>
 						<!-- <el-table-column prop="sjc"   label="升级客户数（升级/合作）"></el-table-column>
 						<el-table-column prop="sjy"   label="升级业绩（升级/合作）"></el-table-column> -->
 				    </el-table>
@@ -116,12 +116,12 @@
 				</div>
 				<div>
 					<el-table border :data="data3" style="width:100%">
-						<el-table-column prop="date" label="日期"></el-table-column>
-						<el-table-column prop="phone_c"   label="电话跟踪"></el-table-column>
-						<el-table-column prop="self_c"   label="锁定自跟"></el-table-column>
+						<el-table-column prop="date" label="日期" align="center"></el-table-column>
+						<el-table-column prop="phone_c"   label="电话跟踪" align="center"></el-table-column>
+						<el-table-column prop="self_c"   label="锁定自跟" align="center"></el-table-column>
 						<!-- <el-table-column prop="tj"   label="转入"></el-table-column>
 						<el-table-column prop="xg"   label="转出"></el-table-column> -->
-						<el-table-column prop="qq_c"   label="QQ跟踪"></el-table-column>
+						<el-table-column prop="qq_c"   label="QQ跟踪" align="center"></el-table-column>
 					</el-table>
 				</div>
 			</el-card>
@@ -133,10 +133,10 @@
 				</div>
 				<div>
 					<el-table border :data="data2" style="width:100%">
-						<el-table-column prop="date" label="日期"></el-table-column>
-						<el-table-column prop="all_num"   label="累计客户总数"></el-table-column>
-						<el-table-column prop="create_c"   label="当日自锁数"></el-table-column>
-						<el-table-column prop="today_v"   label="当日成交数"></el-table-column>
+						<el-table-column prop="date" label="日期" align="center"></el-table-column>
+						<el-table-column prop="all_num"   label="累计客户总数" align="center"></el-table-column>
+						<el-table-column prop="create_c"   label="当日自锁数" align="center"></el-table-column>
+						<el-table-column prop="today_v"   label="当日成交数" align="center"></el-table-column>
 						<!-- <el-table-column prop="xg"   label="修改"></el-table-column> 
 						<el-table-column prop="xq"   label="索取"></el-table-column> -->
 					</el-table> 

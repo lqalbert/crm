@@ -53,9 +53,6 @@ class CustomersCountSecondController extends CommonController {
 
 
     public function index(){
-
-
-
         $this->assign('objType', $this->getObjType());
         $this->assign('topObjType', $this->getTopObjType());
         $this->assign('dist', I('get.dist',Date('Y-m-d', time())));
