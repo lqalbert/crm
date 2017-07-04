@@ -284,7 +284,7 @@ class CustomersGather {
 
         $list2 = M('statistics_usercustomers')->field($this->getSqlFields().",statistics_usercustomers.user_id as id , gb.name as g_name,  ui.realname as name")
                                               ->join('group_basic as gb on statistics_usercustomers.group_id = gb.id ', 'left')
-                                              ->join('user_info as ui on gb.user_id = ui.user_id', 'left')
+                                              ->join('user_info as ui on statistics_usercustomers.user_id = ui.user_id', 'left')
                                                 ->where(
                                                     array(
                                                         'date'=> array(array('EGT',$this->start),array('ELT',$this->end)),
@@ -293,7 +293,7 @@ class CustomersGather {
                                                     )
                                                 ->group('statistics_usercustomers.user_id')
                                                 ->select();
-        
+        // var_dump(M('statistics_usercustomers')->getlastsql());
         $list  = $this->mergeList($list2, $toDaylist);
         return $this->reSort($list);
     }

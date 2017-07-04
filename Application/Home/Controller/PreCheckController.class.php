@@ -42,7 +42,7 @@ class PreCheckController extends CommonController {
         $queryAgu = array('qq', 'phone', 'weixin');
         $cus_ids = array();
         foreach ($queryAgu as $value) {
-            $arg = I('get.'.$value);
+            $arg = trim(I('get.'.$value));
             if (!empty($arg)) {
                 $re = M('customers_contacts')->where(array($value=>$arg))->getField('cus_id', true);
                 if ($re) {

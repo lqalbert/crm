@@ -97,13 +97,15 @@
           salesmans:{:json_encode($users)},
           isShow:false,
           dUsers:{:json_encode($dUsers)},
-          multipleSelection: []
+          multipleSelection: [],
+          groups:{:json_encode($groups)}
         }).setForm('search',{
           user_id:"",
           all:false
         }).setForm('resetUser',{
             salesman_id:"",
-            cus_id:[]
+            cus_id:[],
+            group_id:""
         }, true).setMethod('beforeReset', function(){
           if (this.multipleSelection.length > 0) {
             this.resetUserForm.cus_id = [];
@@ -134,6 +136,18 @@
                 
               })
            }
+        }).setComputed("getGroupUser", function(){
+          var vmThis = this;
+          return this.salesmans.filter(function(value){
+            
+             if (value.group_id==vmThis.resetUserForm.group_id) {
+              return true;
+             } else {
+              return false;
+             }
+          })
+        }).setMethod('resetSaleman', function(){
+          this.resetUserForm.salesman_id = "";
         })
     </script>
 </block>
