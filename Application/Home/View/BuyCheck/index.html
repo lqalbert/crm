@@ -50,23 +50,22 @@
 <block name="body">
     <div id="app" class="container">
         <div class="wrapp" v-show="show" style="display: none">
-            <!-- seach form 
+            <!-- seach form  -->
             <el-row>
                 <el-col :span="12">
                     <el-form :inline="true"  ref="searchForm" :model="searchForm">
-                      <el-form-item style="display: none;" prop="id">
-                        <el-input  v-model="searchForm.id">
-                       </el-input>
-                      </el-form-item>
-                      
-                      <el-form-item prop="name" >
-                        <el-input   placeholder="请输入单位名"  v-model="searchForm.name">
+                      <el-form-item prop="status" >
+                        <el-select v-model="searchForm.status" size="small" clearable>
+                          <el-option value="0" label="待审核"></el-option>
+                          <el-option value="1" label="通过"></el-option>
+                          <el-option value="2" label="不通过"></el-option>
+                        </el-select>
                         </el-input>
                       </el-form-item>
                       <el-form-item>
-                        <el-button type="primary" icon="search" @click="loadDatalist" >查询</el-button> 
+                        <el-button  size="small" type="primary" icon="search" @click="loadDatalist" >查询</el-button> 
                         <el-tooltip content="清空搜索框并刷新表格数据" placement="right">
-                         <el-button  @click="searchReset">重置</el-button>
+                         <el-button size="small"  @click="searchReset">重置</el-button>
                         </el-tooltip>
                         
                       </el-form-item>
@@ -75,7 +74,7 @@
                 <el-col :span="12">
                 </el-col>   
             </el-row>
-             / search form -->
+             <!-- search form -->
 
             <!-- datatables  -->
             <el-row>
@@ -226,10 +225,7 @@
        
         //status:0,
     }).setForm('search', {
-        name:"",
-        id:"0",
-        sortFiled:"id",
-        sortWay:"asc" // desc
+      status:""
     }).setForm('hr',{
         id:null,
         user_ids:[]

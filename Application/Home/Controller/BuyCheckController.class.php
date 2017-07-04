@@ -41,6 +41,8 @@ class BuyCheckController extends CommonController{
     public function setQeuryCondition(){
         $this->setRoleCondition();
 
+
+
         $this->M->join('customers_basic as cb on customers_buy.cus_id = cb.id')
                 ->join('user_info as  ui on customers_buy.user_id = ui.user_id')
                 ->join('department_basic as db on ui.department_id = db.id', 'left')
@@ -61,10 +63,16 @@ class BuyCheckController extends CommonController{
 
     private function riskOneCondition(){
         $this->M->where(array('risk_id'=>session('uid')));
+        if (isset($_GET['status']) && $_GET['status'] != "" ) {
+            $this->M->where(array('risk_state'=>I('get.status')));
+        }
     }
 
     private function callBackCondition(){
         $this->M->where(array('callback_id'=>session('uid')));
+        if (isset($_GET['status']) && $_GET['status'] != "" ) {
+            $this->M->where(array('callback_state'=>I('get.status')));
+        }
     }
 
     public function check(){
