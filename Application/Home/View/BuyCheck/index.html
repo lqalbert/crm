@@ -116,9 +116,7 @@
                         label="审核状态" 
                         align="center" 
                         prop="{$state_text}" 
-                        width="140"
-                        :filters="[{text:'待审核', value:'0'},{text:'未通过', value:'-1'},{text:'通过', value:'1'}]"
-                        :filter-method="filterTag">
+                        width="140">
                             <template scope="scope">
                                 <el-tag v-if="scope.row.{$state_text}==-1">未通过</el-tag>
                                 <el-tag v-else-if="scope.row.{$state_text}==1">通过</el-tag>

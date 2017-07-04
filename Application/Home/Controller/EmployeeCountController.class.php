@@ -56,12 +56,14 @@ class EmployeeCountController  extends CommonController{
 
         $sql = "select count(user_id) as c, department_id from rbac_user inner join user_info on rbac_user.id = user_info.user_id where user_info.dimission_at < '" .$this->stDate."'  group by  user_info.department_id";
         $re2 = M()->query($sql);
+       
 
         foreach ($re2 as $key => $value) {
             if (isset($this->allData[$value['department_id']])) {
                 $this->allData[$value['department_id']] =  $this->allData[$value['department_id']] -   $value['c'];
             }
         }
+       
     }
 
 
