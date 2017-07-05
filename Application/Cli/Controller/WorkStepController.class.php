@@ -3,7 +3,7 @@ namespace Cli\Controller;
 use Home\Model\RoleModel;
 use Home\Model\DepartmentModel;
 
-class WorkSumController extends \Think\Controller {
+class WorkStepController extends \Think\Controller {
 
     private $startDate = '';
     private $endDate = '';
@@ -11,28 +11,23 @@ class WorkSumController extends \Think\Controller {
     private $allData = array();
     private $insert_data =array();
 
+    
     private $fieldMap = array(
-        'phone_track',  
-        'door_track', 
-        'qq_track' ,   
-        'email_track', 
-        'weixin_track' ,
-        'v_summary' ,  
-        'teach_track' ,
-        'captain_track' ,
-        'sell_track' , 
-        'risk_track',  
-        'manager_track', //经理建议
-        'retroaction_track' ,
-        'other_track'    
+        'step_0',  
+        'step_1', 
+        'step_2',   
+        'step_3', 
+        'step_4',
+        'step_5',  
+        'step_6',
+        'step_7',
+        'step_8'  
     );
 
-    /* `sum_track`   
-        `self_track`  */
 
 
-    public function index($date='2017-05-16'){
-        $this->types = D('Home/CustomerLog')->getType();
+    public function index($date='2017-06-16'){
+        $this->types = D('Home/CustomerLog')->getSteps();
 
         $this->date = $date;
         $this->startDate = $this->date. " 00:00:00";
@@ -42,13 +37,13 @@ class WorkSumController extends \Think\Controller {
     }
 
     private function setDateRe(){
-        $sql="SELECT count(id) as c, user_id, track_type FROM  `customers_log` where created_at >= '".$this->startDate."' and created_at <'".$this->endDate."' and track_type is not null  group by user_id,track_type ";
+        $sql="SELECT count(id) as c, user_id, step FROM  `customers_log` where created_at >= '".$this->startDate."' and created_at <'".$this->endDate."' and step is not null  group by user_id,step ";
         $allData = M()->query($sql);
         
         $allDataGroup = arr_group($allData, 'user_id');
         $re = array();
         foreach ($allDataGroup as $key => $value) {
-            $tmp = arr_to_map($value, 'track_type', 'c');
+            $tmp = arr_to_map($value, 'step', 'c');
             $re[$key] = $tmp;
         }
         $this->allData = $re;
@@ -62,19 +57,6 @@ class WorkSumController extends \Think\Controller {
             return 0;
         }
     }
-
-    private function getSelf($user_id){
-        $sql = "select id from customers_basic where user_id=salesman_id and user_id=".$user_id;
-        $sql = "select count(id) as c from customers_log where cus_id in (". $sql .") and created_at >= '".$this->startDate."' and created_at <'".$this->endDate."'";
-        $re = M()->query($sql);
-        if ($re) {
-            return $re[0]['c'];
-        } else {
-            return 0;
-        }
-
-    }
-
 
 
     private function setAllUser(){
@@ -96,19 +78,11 @@ class WorkSumController extends \Think\Controller {
                 'date'=>$this->date);
 
             if (isset($this->allData[$value['user_id']])) {
-                foreach ($this->fieldMap as $key => $value) {
-                    if (isset($this->allData[$value['user_id']][$key])) {
-                        $tmp_row[$value] = $this->allData[$value['user_id']][$key];
-                    } else {
-                        $tmp_row[$value] = 0;
-                    }
+                if (isset($this->allData[$value['user_id']][$key])) {
+                    $tmp_row[$value] = $this->allData[$value['user_id']][$key];
+                } else {
+                    $tmp_row[$value] = 0;
                 }
-                /*foreach ($this->allData[$value['user_id']] as $k=>$c) {
-                    $tmp_row[$this->fieldMap[$k]] = $c;
-                } */
-
-                $tmp_row['sum_track'] = $this->getSum($value['user_id']);
-                $tmp_row['self_track'] = $this->getSelf($value['user_id']);
             } 
 
             
@@ -135,28 +109,9 @@ class WorkSumController extends \Think\Controller {
     }
 
     private function lastSave(){
-        $re = M('statistics_quantization2')->addAll($this->insert_data);
+        $re = M('statistics_step')->addAll($this->insert_data);
         echo $re;
         echo "\n";
         $this->insert_data  =array();
     }
-
-
 }
-
-/*  
-    `phone_track` mediumint not null default '0' comment '电话跟踪', 0 
-    `door_track`  mediumint not null default '0' comment '上门服务',1
-    `qq_track`    mediumint not null default '0' comment 'QQ跟踪', 2
-    `email_track` mediumint not null default '0' comment 'email跟踪', 3
-    `weixin_track` mediumint not null default '0' comment '微信跟踪', 4
-    `v_summary`   mediumint not null default '0' comment '成交总结', 5
-    `teach_track` mediumint not null default '0' comment '讲师指导', 6
-    `captain_track` mediumint not null default '0' comment '主管建议', 7
-    `sell_track`  mediumint not null default '0' comment '售前回访', 8
-    `risk_track`  mediumint not null default '0' comment '风控建议', 9
-    `retroaction_track` mediumint not null default '0' comment '反馈投诉', 10
-    `other_track` mediumint not null default '0' comment '其它方式', 11
-    `sum_track`   mediumint not null default '0' comment '总数', 12
-    `self_track`  mediumint not null default '0' comment '锁定自跟', 13 
-*/

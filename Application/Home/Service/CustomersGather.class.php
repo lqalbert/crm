@@ -271,7 +271,8 @@ class CustomersGather {
             $groupsMap = arr_to_map($groups, 'id');
             
             
-            $toDaylist = $this->getDepartmentTodayUsersAll($department_id);            
+            $toDaylist = $this->getDepartmentTodayUsersAll($department_id);        
+            
             foreach ($toDaylist as $key => $value) {
                 
                 $toDaylist[$key]['g_name'] = $groupsMap[$value['group_id']]['name'];

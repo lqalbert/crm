@@ -12,37 +12,77 @@
     <el-row>
       <el-col :span="24">
         <el-form :inline="true" ref="searchForm" :model="searchForm">
-	        <el-form-item prop="dist">
-	          <el-date-picker  v-model="searchForm.dist" placeholder="请选择日期"  @change="dateChange">
-	          </el-date-picker>
-	        </el-form-item>
+          <el-form-item prop="distMin" style="width: 130px">
+            <el-date-picker 
+              clearable 
+              size="small"  
+              v-model="searchForm.distMin" 
+              :picker-options="pickerOption1" 
+              placeholder="请选择起日期"  
+              @change="dateChange">
+            </el-date-picker>
+          </el-form-item>
+            <el-form-item prop="distMax" style="width: 130px">
+                <el-date-picker 
+                  clearable 
+                  size="small"  
+                  v-model="searchForm.distMax" 
+                  :picker-options="pickerOption1" 
+                  placeholder="请选择止日期"  
+                  @change="dateChanges">
+                </el-date-picker>
+            </el-form-item>
 
-          <el-form-item prop="department" style="width:170px">
-            <el-select v-model="searchForm.department" placeholder="请选择部门单位">
-              <el-option label="中资北方" value="中资北方"></el-option>
-              <el-option label="成都部" value="成都部"></el-option>
-              <el-option label="中资南方" value="中资南方"></el-option>
-              <el-option label="财富三区（二）" value="财富三区（二）"></el-option>
-            </el-select>
+          <el-form-item prop="department_id" style="width:120px">
+              <el-select 
+                v-model="searchForm.department_id" 
+                size="small" 
+                clearable 
+                @change="departmentChange" 
+                width="50" 
+                placeholder="部门">
+                  <el-option v-for="item in departments" :key="item.id" :label="item.name" :value="item.id"></el-option>
+              </el-select>
           </el-form-item>
 
-	        <el-form-item prop="name" style="width:170px">
-	          <el-input v-model="searchForm.name" placeholder="员工姓名关键字"></el-input>
-	        </el-form-item>
+            <el-form-item prop="group_id" style="width:120px">
+                <el-select 
+                  v-model="searchForm.group_id"  
+                  size="small" 
+                  clearable 
+                  width="50" 
+                  placeholder="团队小组"
+                  @change="groupChange">
+                    <el-option v-for="item in groups" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                </el-select>
+            </el-form-item>
 
-	        <el-form-item prop="field" v-show="false">
-	          <input type="hidden" size="small" v-model="searchForm.field"/>
-	        </el-form-item>
+          <el-form-item prop="user_id" style="width:120px">
+            <el-select v-model="searchForm.user_id" size="small" clearable width="50" placeholder="员工">
+                <el-option v-for="item in users" :key="item.id" :label="item.realname" :value="item.user_id"></el-option>
+            </el-select>
+            
+          </el-form-item>
 
-	        <el-form-item>
-	          <el-button type="info" size="small" icon="search"  @click="loadDatalist" >查询</el-button> 
-	          <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
-	            <el-button  size="small" @click="searchReset2"  >重置</el-button>
-	          </el-tooltip>
-	          <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:10px;">
-	            <el-button  size="small" type="danger" @click="refresh" >刷新</el-button>
-	          </el-tooltip>
-	        </el-form-item>
+          <el-form-item prop="field" v-show="false">
+            <input type="hidden" size="small" v-model="searchForm.field"/>
+          </el-form-item>
+            <el-form-item>
+                <el-button size="small" @click="setField('lastWeek')">上周</el-button>
+                <el-button size="small" @click="setField('lastMonth')">上月</el-button>
+                <el-button size="small" @click="setField('week')">本周</el-button>
+                <el-button size="small" @click="setField('month')">本月</el-button>
+            </el-form-item>
+
+          <el-form-item>
+            <el-button type="info" size="small" icon="search"  @click="search2" >查询</el-button>
+            <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
+              <el-button  size="small" @click="searchReset"  >重置</el-button>
+            </el-tooltip>
+            <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:10px;">
+              <el-button  size="small" type="danger" @click="refresh" >刷新</el-button>
+            </el-tooltip>
+          </el-form-item>
 
         </el-form>
       </el-col>
@@ -55,11 +95,13 @@
 
           <el-table-column  label="序号"  align="center" width="65" :formatter="handleIndex"></el-table-column>
           
-          <el-table-column prop="name" label="员工/单位" width="175" header-align="center"></el-table-column>
+          <el-table-column prop="realname" label="员工" width="100" ></el-table-column>
+          <el-table-column prop="group_name" label="小组" width="100" ></el-table-column>
+          <el-table-column prop="department_name" label="部门" width="100" ></el-table-column>
 
           <el-table-column prop="date" label="日期" width="150" align="center"></el-table-column>
 
-          <el-table-column prop="sum" label="总客户数" width="100" align="center"></el-table-column>
+          <!-- <el-table-column prop="sum" label="总客户数" width="100" align="center"></el-table-column>
 
           <el-table-column prop="all_self" label="总锁定客户" width="115" align="center"></el-table-column>
 
@@ -71,29 +113,25 @@
 
           <el-table-column prop="lock_track" label="自锁跟踪客户" width="130" align="center"></el-table-column>
 
-          <el-table-column prop="conflict" label="冲突次数" width="100" align="center"></el-table-column>
+          <el-table-column prop="conflict" label="冲突次数" width="100" align="center"></el-table-column> -->
 
-          <el-table-column prop="one" label="1.首次沟通" width="120" align="center"></el-table-column>
+          <el-table-column prop="step_0" label="1.首次沟通" width="120" align="center"></el-table-column>
 
-          <el-table-column prop="two" label="2.早盘" width="100" align="center"></el-table-column>
+          <el-table-column prop="step_1" label="2.早盘" width="100" align="center"></el-table-column>
 
-          <el-table-column prop="three" label="3.基本信息" width="120" align="center"></el-table-column>
+          <el-table-column prop="step_2" label="3.基本信息" width="120" align="center"></el-table-column>
 
-          <el-table-column prop="four" label="4.沟通介入" width="120" align="center"></el-table-column>
+          <el-table-column prop="step_3" label="4.沟通介入" width="120" align="center"></el-table-column>
 
-          <el-table-column prop="five" label="5.远程讲解" width="120" align="center"></el-table-column>
+          <el-table-column prop="step_4" label="5.远程讲解" width="120" align="center"></el-table-column>
 
-          <el-table-column prop="six" label="6.现场邀约" width="120" align="center"></el-table-column>
+          <el-table-column prop="step_5" label="8.提升" width="100" align="center"></el-table-column>
 
-          <el-table-column prop="seven" label="7.来过现场" width="120" align="center"></el-table-column>
+          <el-table-column prop="step_6" label="9.洽谈" width="100" align="center"></el-table-column>
 
-          <el-table-column prop="eight" label="8.提升" width="100" align="center"></el-table-column>
+          <el-table-column prop="step_7" label="10.其他" width="100" align="center"></el-table-column>
 
-          <el-table-column prop="nine" label="9.洽谈" width="100" align="center"></el-table-column>
-
-          <el-table-column prop="ten" label="10.其他" width="100" align="center"></el-table-column>
-
-          <el-table-column prop="eleven" label="11.售前确认" width="120" align="center"></el-table-column>
+          <el-table-column prop="step_8" label="11.售前确认" width="120" align="center"></el-table-column>
         </el-table>
       </el-col>
     </el-row>
@@ -113,31 +151,24 @@
 </div>
 </block>
 <block name="scripts">
+<script src="__PUBLIC__/js/calculate.js"></script>
 <script>
   window.defaultOption.setDatas({
-		dataList:[
-      {name:'英国-温斯顿·丘吉尔',date:'2017-04-19',sum:'888',all_self:'777',give:'88',get:'88',get_track:'88%',lock_track:'555',conflict:'88',one:'88',two:'88',three:'88',four:'88',five:'88',six:'88',seven:'88',eight:'88',nine:'88',ten:'88',eleven:'88'},
-      {name:'英国-温斯顿·丘吉尔',date:'2017-04-19',sum:'888',all_self:'777',give:'88',get:'88',get_track:'88%',lock_track:'555',conflict:'88',one:'88',two:'88',three:'88',four:'88',five:'88',six:'88',seven:'88',eight:'88',nine:'88',ten:'88',eleven:'88'},
-      {name:'英国-温斯顿·丘吉尔',date:'2017-04-19',sum:'888',all_self:'777',give:'88',get:'88',get_track:'88%',lock_track:'555',conflict:'88',one:'88',two:'88',three:'88',four:'88',five:'88',six:'88',seven:'88',eight:'88',nine:'88',ten:'88',eleven:'88'},
-      {name:'英国-温斯顿·丘吉尔',date:'2017-04-19',sum:'888',all_self:'777',give:'88',get:'88',get_track:'88%',lock_track:'555',conflict:'88',one:'88',two:'88',three:'88',four:'88',five:'88',six:'88',seven:'88',eight:'88',nine:'88',ten:'88',eleven:'88'},
-      {name:'英国-温斯顿·丘吉尔',date:'2017-04-19',sum:'888',all_self:'777',give:'88',get:'88',get_track:'88%',lock_track:'555',conflict:'88',one:'88',two:'88',three:'88',four:'88',five:'88',six:'88',seven:'88',eight:'88',nine:'88',ten:'88',eleven:'88'},
-      {name:'英国-温斯顿·丘吉尔',date:'2017-04-19',sum:'888',all_self:'777',give:'88',get:'88',get_track:'88%',lock_track:'555',conflict:'88',one:'88',two:'88',three:'88',four:'88',five:'88',six:'88',seven:'88',eight:'88',nine:'88',ten:'88',eleven:'88'},
-      {name:'英国-温斯顿·丘吉尔',date:'2017-04-19',sum:'888',all_self:'777',give:'88',get:'88',get_track:'88%',lock_track:'555',conflict:'88',one:'88',two:'88',three:'88',four:'88',five:'88',six:'88',seven:'88',eight:'88',nine:'88',ten:'88',eleven:'88'},
-      {name:'英国-温斯顿·丘吉尔',date:'2017-04-19',sum:'888',all_self:'777',give:'88',get:'88',get_track:'88%',lock_track:'555',conflict:'88',one:'88',two:'88',three:'88',four:'88',five:'88',six:'88',seven:'88',eight:'88',nine:'88',ten:'88',eleven:'88'},
-      {name:'英国-温斯顿·丘吉尔',date:'2017-04-19',sum:'888',all_self:'777',give:'88',get:'88',get_track:'88%',lock_track:'555',conflict:'88',one:'88',two:'88',three:'88',four:'88',five:'88',six:'88',seven:'88',eight:'88',nine:'88',ten:'88',eleven:'88'},
-      {name:'英国-温斯顿·丘吉尔',date:'2017-04-19',sum:'888',all_self:'777',give:'88',get:'88',get_track:'88%',lock_track:'555',conflict:'88',one:'88',two:'88',three:'88',four:'88',five:'88',six:'88',seven:'88',eight:'88',nine:'88',ten:'88',eleven:'88'},
-      {name:'英国-温斯顿·丘吉尔',date:'2017-04-19',sum:'888',all_self:'777',give:'88',get:'88',get_track:'88%',lock_track:'555',conflict:'88',one:'88',two:'88',three:'88',four:'88',five:'88',six:'88',seven:'88',eight:'88',nine:'88',ten:'88',eleven:'88'},
-      {name:'英国-温斯顿·丘吉尔',date:'2017-04-19',sum:'888',all_self:'777',give:'88',get:'88',get_track:'88%',lock_track:'555',conflict:'88',one:'88',two:'88',three:'88',four:'88',five:'88',six:'88',seven:'88',eight:'88',nine:'88',ten:'88',eleven:'88'},
-      {name:'英国-温斯顿·丘吉尔',date:'2017-04-19',sum:'888',all_self:'777',give:'88',get:'88',get_track:'88%',lock_track:'555',conflict:'88',one:'88',two:'88',three:'88',four:'88',five:'88',six:'88',seven:'88',eight:'88',nine:'88',ten:'88',eleven:'88'},
-      {name:'英国-温斯顿·丘吉尔',date:'2017-04-19',sum:'888',all_self:'777',give:'88',get:'88',get_track:'88%',lock_track:'555',conflict:'88',one:'88',two:'88',three:'88',four:'88',five:'88',six:'88',seven:'88',eight:'88',nine:'88',ten:'88',eleven:'88'},
-      {name:'英国-温斯顿·丘吉尔',date:'2017-04-19',sum:'888',all_self:'777',give:'88',get:'88',get_track:'88%',lock_track:'555',conflict:'88',one:'88',two:'88',three:'88',four:'88',five:'88',six:'88',seven:'88',eight:'88',nine:'88',ten:'88',eleven:'88'}
+    pickerOption1:{
+      disabledDate: (time) => {
+              return time.getTime() >= Date.now();
 
-		]
+      }},
+      departments:{:json_encode($departments)},
+      groups:[],
+      users:[],
+		
   }).setForm('search',{
-    dist:'',
-    name:'',
-    field:'',
-    department:''
+    distMin:"",
+    distMax:"",
+    department_id:"",
+    group_id:"",
+    user_id:""
   }).setMethod('refresh',function(){
   	window.location.reload();
   }).setMethod('searchReset2',function(){
@@ -145,7 +176,50 @@
     this.dataLoad = true;
     this.loadDatalist();
   }).setMethod('dateChange',function(v){
-    this.searchForm.dist = v;
-  });
+    this.searchForm.distMin = v;
+    this.distMin=v
+  }).setMethod('dateChanges',function(v){
+      this.searchForm.distMax = v;
+  }).setMethod('departmentChange',function (v) {
+      var vmThis=this
+      vmThis.$http.get('{:U("getAllGroups")}',{params:{department_id:v}}).then(function (response) {
+          vmThis.groups=response.body
+          vmThis.searchForm.group_id=''
+      })
+  }).setMethod('groupChange',function (v) {
+      var vmThis=this
+      vmThis.$http.get('{:U("getAllUser")}',{params:{group_id:v}}).then(function (response) {
+          vmThis.users=response.body
+          vmThis.searchForm.user_id=''
+      })
+  }).setMethod('search2', function(){
+      if (this.readySearch()) {
+          this.$message({
+              message:"请选择起或止日期",
+              type:"error",
+              showClose: true
+          })
+      } else {
+          this.loadDatalist();
+      }
+  }).setMethod('setField', function(v){
+      if (v=='week') {
+          this.searchForm.distMin = showWeekFirstDay();
+          this.searchForm.distMax   = showWeekLastDay();
+      } else if(v=='month'){
+          this.searchForm.distMin = showMonthFirstDay();
+          this.searchForm.distMax   = showMonthLastDay();
+      }else if(v=='lastMonth'){
+          this.searchForm.distMin = showLastMonthFirstDay();
+          this.searchForm.distMax   = showLastMonthLastDay();
+      } else if(v=='lastWeek'){
+          this.searchForm.distMin = showLastWeekFirstDay();
+          this.searchForm.distMax   = showLastWeekLastDay();
+      }
+
+      // this.loadDatalist();
+  }).setMethod('readySearch', function(){
+      return this.searchForm.distMin.length ==0 || this.searchForm.distMax.length==0;
+  })
 </script>
 </block>
