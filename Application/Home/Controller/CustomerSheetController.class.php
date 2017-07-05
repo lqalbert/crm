@@ -30,7 +30,11 @@ class CustomerSheetController extends CommonController{
   }
 
   private function departmentMasterDepartments(){
-    return D("Department")->getTheDepartments( session('account')['userInfo']['department_id'] );
+    return D("Department")->getTheDepartments( $this->getDepartment_id() );
+  }
+
+  private function getDepartment_id(){
+    return session('account')['userInfo']['department_id'];
   }
 
   public function getAllGroups(){
@@ -56,6 +60,8 @@ class CustomerSheetController extends CommonController{
       }
       if (isset($_GET['department_id'])) {
           $this->M->where(array('department_id'=>I('get.department_id')));
+      } else if($this->getRoleEname() == RoleModel::DEPARTMENTMASTER){
+        $this->M->where(array('department_id'=>$this->getDepartment_id()));
       }
       if (isset($_GET['group_id'])) {
           $this->M->where(array('group_id'=>I('get.group_id')));
