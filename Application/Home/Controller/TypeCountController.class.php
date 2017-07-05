@@ -192,6 +192,7 @@ class TypeCountController extends CommonController {
   protected function commonSetTypeArr($resArr,$re,$type){
     $arr = array();
     foreach ($re as $k => $v) {
+      
       switch ($type) {
         case 'department':
           $arr[$v['type'].$v['department_id']] = $v['c'];
