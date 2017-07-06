@@ -79,6 +79,7 @@
                   placeholder="请选择止日期" 
                   @change="endDateChange"
                   size="small"
+                  :picker-options="pickerOptions0"
                   >
                 </el-date-picker>
             </el-form-item>
@@ -242,7 +243,12 @@
       userName:"请选择队员",
       oldDepValue:'',
       oldGroupValue:'',
-      oldUserValue:''
+      oldUserValue:'',
+      pickerOptions0: {
+          disabledDate(time) {
+            return time.getTime() >= Date.now() - 8.64e7;
+          }
+        },
   }).setForm('search',{
       start:"{$start}",
       end:"{$end}",
