@@ -149,12 +149,13 @@ class CustomersGather {
             $toDaylist = array();
         }
 
+       
+
         $list  = M('statistics_usercustomers')->field($this->getSqlFields().", department_id as id, department_name as name")
                                                             ->where(array('date'=> array(array('EGT',$this->start),array('ELT',$this->end))))
                                                             ->group('department_id')
                                                             // ->order($this->order)
                                                             ->select();    
-
                                                                                     
         $list  = $this->mergeList($list, $toDaylist);
 
