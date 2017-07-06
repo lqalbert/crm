@@ -95,21 +95,23 @@ class WorkSumController extends \Think\Controller {
                 'department_name' =>$value['department_name'],
                 'date'=>$this->date);
 
+
             if (isset($this->allData[$value['user_id']])) {
-                foreach ($this->fieldMap as $key => $value) {
+                foreach ($this->fieldMap as $key => $val) {
                     if (isset($this->allData[$value['user_id']][$key])) {
-                        $tmp_row[$value] = $this->allData[$value['user_id']][$key];
+                        $tmp_row[$val] = $this->allData[$value['user_id']][$key];
                     } else {
-                        $tmp_row[$value] = 0;
+                        $tmp_row[$val] = 0;
                     }
                 }
-                /*foreach ($this->allData[$value['user_id']] as $k=>$c) {
-                    $tmp_row[$this->fieldMap[$k]] = $c;
-                } */
+            } else {
+                foreach ($this->fieldMap as  $val) {
+                    $tmp_row[$val] = 0;
+                }
+            }
 
-                $tmp_row['sum_track'] = $this->getSum($value['user_id']);
-                $tmp_row['self_track'] = $this->getSelf($value['user_id']);
-            } 
+            $tmp_row['sum_track'] = $this->getSum($value['user_id']);
+            $tmp_row['self_track'] = $this->getSelf($value['user_id']);
 
             
             // $content = array();
@@ -135,7 +137,7 @@ class WorkSumController extends \Think\Controller {
     }
 
     private function lastSave(){
-        $re = M('statistics_quantization2')->addAll($this->insert_data);
+        $re = M('statistics_quantization')->addAll($this->insert_data);
         echo $re;
         echo "\n";
         $this->insert_data  =array();
@@ -143,20 +145,3 @@ class WorkSumController extends \Think\Controller {
 
 
 }
-
-/*  
-    `phone_track` mediumint not null default '0' comment '电话跟踪', 0 
-    `door_track`  mediumint not null default '0' comment '上门服务',1
-    `qq_track`    mediumint not null default '0' comment 'QQ跟踪', 2
-    `email_track` mediumint not null default '0' comment 'email跟踪', 3
-    `weixin_track` mediumint not null default '0' comment '微信跟踪', 4
-    `v_summary`   mediumint not null default '0' comment '成交总结', 5
-    `teach_track` mediumint not null default '0' comment '讲师指导', 6
-    `captain_track` mediumint not null default '0' comment '主管建议', 7
-    `sell_track`  mediumint not null default '0' comment '售前回访', 8
-    `risk_track`  mediumint not null default '0' comment '风控建议', 9
-    `retroaction_track` mediumint not null default '0' comment '反馈投诉', 10
-    `other_track` mediumint not null default '0' comment '其它方式', 11
-    `sum_track`   mediumint not null default '0' comment '总数', 12
-    `self_track`  mediumint not null default '0' comment '锁定自跟', 13 
-*/

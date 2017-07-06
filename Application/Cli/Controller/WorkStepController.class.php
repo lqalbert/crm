@@ -46,6 +46,7 @@ class WorkStepController extends \Think\Controller {
             $tmp = arr_to_map($value, 'step', 'c');
             $re[$key] = $tmp;
         }
+
         $this->allData = $re;
     }
 
@@ -78,20 +79,24 @@ class WorkStepController extends \Think\Controller {
                 'date'=>$this->date);
 
             if (isset($this->allData[$value['user_id']])) {
-                if (isset($this->allData[$value['user_id']][$key])) {
-                    $tmp_row[$value] = $this->allData[$value['user_id']][$key];
-                } else {
-                    $tmp_row[$value] = 0;
+                foreach ($this->fieldMap as $key => $val) {
+
+                    if (isset($this->allData[$value['user_id']][$key])) {
+
+                        $tmp_row[$val] = $this->allData[$value['user_id']][$key];
+                    } else {
+                        $tmp_row[$val] = 0;
+                    }
                 }
-            } 
+            } else {
+                foreach ($this->fieldMap as  $val) {
+                    $tmp_row[$val] = 0;
+                }
+            }
+
 
             
-            // $content = array();
-
-            /*foreach ($this->types as $k=>$v2) {
-                var_dump($v2);
-            }*/
-            // $tmp_row['content'] = json_encode($content);
+            
 
             $this->insert_data[] = $tmp_row;
 

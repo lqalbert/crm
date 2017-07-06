@@ -56,15 +56,15 @@ class CustomerSheetController extends CommonController{
   public function setQeuryCondition()
   {
       if(isset($_GET['user_id'])){
-          $this->M->where(array('user_id'=>I('get.user_id')));
+          $this->M->where(array('statistics_step.user_id'=>I('get.user_id')));
       }
       if (isset($_GET['department_id'])) {
-          $this->M->where(array('department_id'=>I('get.department_id')));
+          $this->M->where(array('statistics_step.department_id'=>I('get.department_id')));
       } else if($this->getRoleEname() == RoleModel::DEPARTMENTMASTER){
-        $this->M->where(array('department_id'=>$this->getDepartment_id()));
+        $this->M->where(array('statistics_step.department_id'=>0));
       }
       if (isset($_GET['group_id'])) {
-          $this->M->where(array('group_id'=>I('get.group_id')));
+          $this->M->where(array('statistics_step.group_id'=>I('get.group_id')));
       }
       if(isset($_GET['distMin'])&& isset($_GET['distMax'])){
           $this->M->where(array('date'=>array(array('EGT', I('get.distMin')), array("ELT", I('get.distMax')))));
@@ -73,21 +73,5 @@ class CustomerSheetController extends CommonController{
       $this->M->join('user_info on statistics_step.user_id = user_info.user_id')
               ->field("statistics_step.*,user_info.realname");
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	
 }
