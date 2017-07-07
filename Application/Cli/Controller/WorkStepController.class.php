@@ -94,10 +94,6 @@ class WorkStepController extends \Think\Controller {
                 }
             }
 
-
-            
-            
-
             $this->insert_data[] = $tmp_row;
 
             $this->save();

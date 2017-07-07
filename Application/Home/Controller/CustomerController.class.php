@@ -379,6 +379,8 @@ class CustomerController extends CommonController {
            $re=$this->M->where(array('id'=>I('post.cus_id')))->save();
            if($re === false){
            	 $this->error(L('ADD_ERROR').$this->M->getError());
+           }else{
+            $this->success($this->M->getlastsql());
            }
     	}
     }

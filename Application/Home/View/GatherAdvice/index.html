@@ -7,7 +7,7 @@
         <el-col :span="12">
           <el-form :inline="true" ref="searchForm" :model="searchForm">
             <el-form-item prop="name">
-             <el-input placeholder="请输入建议关键字" v-model="searchForm.name"></el-input>
+             <el-input placeholder="输入标题关键字" v-model="searchForm.name"></el-input>
             </el-form-item>
             <el-form-item>
              <el-button type="primary" icon="search" @click="loadDatalist">查询</el-button>

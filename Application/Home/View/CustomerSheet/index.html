@@ -155,7 +155,7 @@
 <script>
   window.defaultOption.setDatas({
     pickerOption1:{
-      disabledDate: (time) => {
+      disabledDate: function(time){
               return time.getTime() >= Date.now();
 
       }},

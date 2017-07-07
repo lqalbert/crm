@@ -5,10 +5,10 @@ class IndexController extends Controller {
 
     const DAY_SECONDS = 86400;
     private $runList = array(
-        // 'CustomerCount/index',
-        // 'GroupCount/index',
-        // 'WorkSum/index',
-        'SaleAchievement/index'
+        'CustomerCount/index',
+        'GroupCount/index',
+        'WorkSum/index',
+        'WorkStep/index'
     );
 
     private function setDate(){

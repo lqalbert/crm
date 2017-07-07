@@ -149,8 +149,9 @@
   window.defaultOption.setDatas({
       departments:{:json_encode($departments['list'])},
   groups:{:json_encode($departments['group'])},
-  distMin:'',pickerOption1:{
-      disabledDate: (time) => {
+  distMin:'',
+  pickerOption1:{
+      disabledDate: function(time){
               return time.getTime() > Date.now();
 
       }

@@ -92,8 +92,7 @@ class WorkSumController extends \Think\Controller {
                 'group_name'=>$value['group_name'],
                 'department_id'=>$value['department_id'],
                 'department_name' =>$value['department_name'],
-                'date'=>$this->date
-            );
+                'date'=>$this->date);
 
 
             if (isset($this->allData[$value['user_id']])) {
@@ -114,19 +113,12 @@ class WorkSumController extends \Think\Controller {
             $tmp_row['self_track'] = $this->getSelf($value['user_id']);
 
             
-            // $content = array();
-
-            /*foreach ($this->types as $k=>$v2) {
-                var_dump($v2);
-            }*/
-            // $tmp_row['content'] = json_encode($content);
+            
 
             $this->insert_data[] = $tmp_row;
 
             $this->save();
         }
-
-
         if (count($this->insert_data)>0) {
             $this->lastSave();
         } 

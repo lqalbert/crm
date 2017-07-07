@@ -191,7 +191,7 @@
 
   window.defaultOption.setDatas({
       setPicker:{
-        disabledDate(time) {
+        disabledDate:function(time) {
           return time.getTime() > Date.now() - 8.64e7;
           //console.log(time);
         }
