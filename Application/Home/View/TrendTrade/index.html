@@ -58,7 +58,7 @@
     <div class="wrapp" v-show="show" style="display:none;">
       <el-row>
         <el-alert
-          title="此界面默认显示上周部门的统计结果,点击某一行页面下方会显示相应的统计柱状曲线图"
+          title="此界面默认显示上周部门的统计结果,今日还未结束故只能统计到昨天及以前日期的数据,点击某一行页面下方会显示相应的统计柱状曲线图！！！"
           type="info"
           show-icon>
         </el-alert>
@@ -70,7 +70,7 @@
               <el-date-picker size="small" v-model="searchForm.start" 
                 placeholder="请选择起日期" 
                 @change="startDateChange"
-                :picker-options="setPicker">
+                :picker-options="setPicker" :clearable="false">
               </el-date-picker>
             </el-form-item>
             <el-form-item prop="end">
@@ -78,8 +78,7 @@
                 v-model="searchForm.end" 
                 placeholder="请选择止日期" 
                 @change="endDateChange"
-                size="small" :picker-options="setPicker"
-                >
+                size="small" :picker-options="setPicker" :clearable="false">
               </el-date-picker>
             </el-form-item>
             <el-form-item>
@@ -377,7 +376,7 @@
   }).setMethod('allTypeChange',function(v){
     this.ctrlSelect = v=="department" ? true : false;
   }).setMethod('showCharts',function(row, event, column){
-    var id = row.id;
+    var id = this.searchForm.type == "user" ? row.user_id : row.id ;
     var type = this.searchForm.type;
     var start = this.searchForm.start;
     var end = this.searchForm.end ;

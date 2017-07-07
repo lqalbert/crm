@@ -33,14 +33,14 @@
       <el-col :span="24">
         <el-form :inline="true" ref="searchForm" :model="searchForm" label-width="100px">
           <el-form-item label="选择时间范围" prop="start">  
-				    <el-date-picker v-model="searchForm.dist" type="daterange" style="width:230px;" placeholder="选择日期范围" :picker-options="pickerOptions2">
+				    <el-date-picker v-model="searchForm.dist" type="daterange" style="width:230px;" placeholder="选择日期范围" :picker-options="pickerOptions" @change="DateChange" :clearable="false">
 				    </el-date-picker>
           </el-form-item>
 
-				  <el-form-item label="业绩类型" label-width="70px">
+				  <el-form-item label="排名类型" label-width="70px">
 				    <el-radio-group v-model="searchForm.type">
-				      <el-radio :label="1">成交客户</el-radio>
-				      <el-radio :label="2">录入客户</el-radio>
+				      <el-radio :label="order_num">开单客户数</el-radio>
+				      <el-radio :label="create_num">录入客户数</el-radio>
 				    </el-radio-group>
 				  </el-form-item>
 
@@ -49,12 +49,12 @@
 	        </el-form-item>
 
 	        <el-form-item label-width="5px">
-	          <el-button type="info" size="small" icon="search"  @click="loadDatalist" >查询</el-button> 
+	          <el-button type="info" size="small" icon="search"  @click="loadDatalist">查询</el-button> 
 	          <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
-	            <el-button  size="small" @click="searchReset2"  >重置</el-button>
+	            <el-button  size="small" @click="searchReset2">重置</el-button>
 	          </el-tooltip>
-	          <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:10px;">
-	            <el-button  size="small" type="danger" @click="refresh" >刷新</el-button>
+	          <el-tooltip content="点击刷新当前页面" placement="right" style="margin-left:10px;">
+	            <el-button  size="small" type="danger" @click="refresh">刷新</el-button>
 	          </el-tooltip>
 	        </el-form-item>
 
@@ -68,8 +68,8 @@
 				    <el-alert :closable="false" title="部门/单位排名" type="error"></el-alert>
 				  </div>
 				  <div class="text item">
-				    <el-table :data="tableData" highlight-current-row empty-text="暂无数据,请录入客户！" :show-header="false">
-				      <el-table-column prop="name" label="姓名"></el-table-column>
+				    <el-table :data="tableDataDep" highlight-current-row empty-text="暂无数据,请录入客户！" :show-header="false">
+				      <el-table-column prop="name" label="名称"></el-table-column>
 				      <el-table-column label="序号"  align="center" type="index" width="65"></el-table-column>
 				    </el-table>
 				  </div>
@@ -81,8 +81,8 @@
 				    <el-alert :closable="false" title="团队/小组排名" type="info"></el-alert>
 				  </div>
 				  <div class="text item">
-				    <el-table :data="tableDataOne" highlight-current-row empty-text="暂无数据,请录入客户！" :show-header="false">
-				      <el-table-column prop="name" label="姓名"></el-table-column>
+				    <el-table :data="tableDataGroup" highlight-current-row empty-text="暂无数据,请录入客户！" :show-header="false">
+				      <el-table-column prop="name" label="名称"></el-table-column>
 				      <el-table-column label="序号"  align="center" type="index" width="65"></el-table-column>
 				    </el-table>
 				  </div>
@@ -94,17 +94,23 @@
 				    <el-alert :closable="false" title="个人排名" type="warning"></el-alert>
 				  </div>
 				  <div class="text item">
-				    <el-table :data="tableDataTwo" highlight-current-row empty-text="暂无数据,请录入客户！" :show-header="false">
-				      <el-table-column prop="name" label="姓名"></el-table-column>
+				    <el-table :data="tableDataUser" highlight-current-row empty-text="暂无数据,请录入客户！" :show-header="false">
+				      <el-table-column prop="name" label="名称"></el-table-column>
 				      <el-table-column label="序号"  align="center" type="index" width="65"></el-table-column>
 				    </el-table>
 				  </div>
 				</el-card>
       </el-col>
     </el-row>
-    <el-row type="flex" justify="space-between" align="middle" class="row-bg">
+    <el-row type="flex" justify="space-between" align="middle" class="row-bg" v-show="false">
       <el-col :span="12" :offset="12">
+	      <div class="grid-content bg-purple-light pull-right">
 
+	        <!-- page -->
+	        <include file="Common:_pagination" />
+	        <!-- / page -->
+	        
+	      </div>
       </el-col>
     </el-row>
 
@@ -112,89 +118,81 @@
 </div>
 </block>
 <block name="scripts">
+<script src="__PUBLIC__/js/calculate.js"></script>
 <script>
   window.defaultOption.setDatas({
-    tableData: [
-	    {name: '天龙七部 - 成都'}, 
-	    {name: '天龙八部 - 成都'}, 
-	    {name: '天龙九部 - 成都'}, 
-	    {name: '天龙十部 - 成都'},
-	    {name: '天龙十一部 - 成都'},
-	    {name: '天龙十二部 - 成都'},
-	    {name: '天龙十三部 - 成都'},
-	    {name: '天龙十四部 - 成都'},
-	    {name: '天龙十五部 - 成都'},
-	    {name: '天龙十六部 - 成都'}
-    ],
-    tableDataOne: [
-	    {name: '烈火组 - 成都'}, 
-	    {name: '东风组 - 成都'}, 
-	    {name: '大力神组 - 成都'}, 
-	    {name: '银河组 - 成都'},
-	    {name: '萨德组 - 成都'},
-	    {name: '萨姆组 - 成都'},
-	    {name: '金刚石组 - 成都'},
-	    {name: '日炙组 - 成都'},
-	    {name: '秋月组 - 成都'},
-	    {name: '爱宕组 - 成都'}
-    ],
-    tableDataTwo: [
-	    {name: '安倍晋三 - 日本'}, 
-	    {name: '野田佳彦 - 日本'}, 
-	    {name: '菅直人 - 日本'}, 
-	    {name: '鸠山由纪夫 - 日本'},
-	    {name: '麻生太郎 - 日本'},
-	    {name: '福田康夫 - 日本'},
-	    {name: '小泉纯一郎 - 日本'},
-	    {name: '森喜朗 - 日本'},
-	    {name: '小渊惠三 - 日本'},
-	    {name: '村山富市 - 日本'}
-    ],
-    pickerOptions2: {
+  	order_num:'order_num',
+  	create_num:'create_num',
+    tableDataDep: [],
+    tableDataGroup: [],
+    tableDataUser: [],
+    pickerOptions: {
       shortcuts: [{
-        text: '最近一周',
+        text: '上一周',
         onClick(picker) {
-          const end = new Date();
-          const start = new Date();
-          start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+          var start = showLastWeekFirstDay();
+          var end = showLastWeekLastDay();
           picker.$emit('pick', [start, end]);
         }
       }, {
-        text: '最近一个月',
+        text: '上个月',
         onClick(picker) {
-          const end = new Date();
-          const start = new Date();
-          start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+          var start = showLastMonthFirstDay();
+          var end = showLastMonthLastDay();
           picker.$emit('pick', [start, end]);
         }
       }, {
-        text: '最近三个月',
+        text: '本周',
         onClick(picker) {
-          const end = new Date();
-          const start = new Date();
-          start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+          var start = showWeekFirstDay();
+          var end = showWeekLastDay();
           picker.$emit('pick', [start, end]);
         }
-      }]
+      }, {
+        text: '本月',
+        onClick(picker) {
+          var start = showMonthFirstDay();
+          var end = showMonthLastDay();
+          picker.$emit('pick', [start, end]);
+        }
+      }],
+      disabledDate(time) {
+        return time.getTime() > Date.now() - 8.64e7;
+      }
     },
   }).setForm('search',{
-  	dist:'',
-    start:'',
-    end:'',
-    name:'',
-    field:'',
-    type:1,
-    department:''
-  }).setMethod('refresh',function(){
-  	window.location.reload();
+  	dist:[showLastWeekFirstDay(), showLastWeekLastDay()],
+    start:showLastWeekFirstDay(),
+    end:showLastWeekLastDay(),
+    type:'order_num',
   }).setMethod('searchReset2',function(){
-    this.searchForm = Oassign({}, this._search) ;
-    this.dataLoad = true;
-    this.loadDatalist();
-  }).setMethod('startDateChange', function(v){
-    this.searchForm.start = v;
-  }).setMethod('endDateChange', function(v){
-    this.searchForm.end = v;
+  	window.location.href="{:U('index')}";
+  }).setMethod('DateChange',function(v){
+  	var dateArr = v.split(" - ");
+  	this.searchForm.start = dateArr[0];
+  	this.searchForm.end = dateArr[1];
+  }).setMethod('loadDatalist',function(){
+
+		var vmThis = this;
+		var params = {p:this.currentPage};
+		for (var x in this.searchForm ){
+			if (this.searchForm[x]!="") {
+				params[x] = this.searchForm[x];
+			}
+		}
+		vmThis.$set(vmThis, 'dataLoad', true);
+		this.$http.get(page.listUrl, {params:params}).then(function(response){
+			 vmThis.tableDataDep = response.body.dep;
+			 vmThis.tableDataGroup = response.body.group;
+			 vmThis.tableDataUser = response.body.user;
+		}, function(response) {
+			vmThis.$message({
+			  message: '获取数据失败：'+ response.body.info,
+			  type: 'error'
+			});
+		}).finally(function(){
+			vmThis.$set(vmThis, 'dataLoad', false);
+		})
   });
 </script>
 </block>

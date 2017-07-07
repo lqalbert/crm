@@ -80,10 +80,12 @@ class TypeCountController extends CommonController {
   }
 
   protected function setTime(){
-    $start = I('get.start')." 00:00:00";
-    $end = I('get.end')." 23:59:59";
+    $start = I('get.start');
+    $end = I('get.end');
+    $startDate = I('get.start')." 00:00:00";
+    $endDate  = Date('Y-m-d H:i:s', strtotime($end) + 86400);
     if($start && $end){
-      $this->where = "and cb.created_at>='$start' and cb.created_at<='$end'";
+      $this->where = " and cb.created_at>='$startDate' and cb.created_at<'$endDate'";
     }
   }
 

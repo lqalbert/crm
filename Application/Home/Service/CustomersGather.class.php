@@ -220,9 +220,9 @@ class CustomersGather {
             foreach ($toDaylist as $key => $value) {
                 $toDaylist[$key]['department_name'] = $departmentsMap[$value['department_id']]['name'];
             }
-            /*foreach ($departments as $value) {
-                $toDaylist = array_merge($toDaylist, $this->wrapDepartment($value['id'], $value['name'], $this->getTodayGroups($value['id'])));
-            }*/
+            // foreach ($departments as $value) {
+            //     $toDaylist = array_merge($toDaylist, $this->wrapDepartment($value['id'], $value['name'], $this->getTodayGroups($value['id'])));
+            // }
         } 
 
 
@@ -232,6 +232,7 @@ class CustomersGather {
                                                 ->where(array('date'=> array(array('EGT',$this->start),array('ELT',$this->end))))
                                                 ->group('statistics_usercustomers.group_id')
                                                 ->select();
+                                       
         $list  = $this->mergeList($list2, $toDaylist);
         return $this->reSort($list);
     }

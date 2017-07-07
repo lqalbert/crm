@@ -77,12 +77,22 @@ class TrendTradeController extends CommonController{
 	}
 
 	private function setServiceQuery(){
-        $sort_field = I('get.sort_field', 'id');
-        $sort_order = I('get.sort_order', 'asc');
-        $sort_field = empty($sort_field) ? 'id' :$sort_field;
-        $this->d
-             ->setDate(I('get.start'), I('get.end'))
-             ->setOrder($sort_field." ".$sort_order);
+    $sort_field = I('get.sort_field', 'id');
+    $sort_order = I('get.sort_order', 'asc');
+    $start = I('get.start');
+    $end = I('get.end');
+    $today = Date('Y-m-d');
+    $sort_field = empty($sort_field) ? 'id' :$sort_field;
+    
+
+    if($end >=  $today){
+      $end = date('Y-m-d',strtotime("-1 day"));
+    }
+
+
+    $this->d
+         ->setDate($start, $end)
+         ->setOrder($sort_field." ".$sort_order);
   }
 
   private function splitList($list){
@@ -166,7 +176,6 @@ class TrendTradeController extends CommonController{
           $arr[] = $this->users[$v];
         }
       }
-      
       $result = array('list'=>$this->splitList($arr), 'count'=>count($arr));
     }elseif ($type=="group" && isset($_GET['department_id']) && !isset($_GET['group_id'])) {
       foreach ($this->groups as $k => $v) {
@@ -211,7 +220,7 @@ class TrendTradeController extends CommonController{
         $dateRe = $this->getDateString();
         $where = $this->getCondition($id,$type);
 
-        $sql = "select sum(today_v) as v , sum(create_num) as c,sum(conflict_from) as cf, sum(conflict_to) as ct,date  from statistics_usercustomers where $where and  `date` in (".implode(',', $dateRe).") group by `date`";
+        $sql = "select sum(today_v) as v , sum(create_num) as c,sum(conflict_from) as cf, sum(conflict_to) as ct,date  from statistics_usercustomers where $where  `date` in (".implode(',', $dateRe).") group by `date`";
         $re = M()->query($sql);
         
         $dates = array_column($re, 'date');
@@ -269,13 +278,13 @@ class TrendTradeController extends CommonController{
   	$where = '';
   	switch ($type) {
   		case 'department':
-  			$where = "department_id=$id";
+  			$where = "department_id=$id and ";
   			break;
   		case 'group':
-  			$where = "group_id=$id";
+  			$where = "group_id=$id and ";
   			break;
   		case 'user':
-  			$where = "user_id=$id";
+  			$where = "user_id=$id and ";
   			break;
   		default:
   			# code...

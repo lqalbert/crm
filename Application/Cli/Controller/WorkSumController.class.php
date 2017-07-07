@@ -44,7 +44,6 @@ class WorkSumController extends \Think\Controller {
     private function setDateRe(){
         $sql="SELECT count(id) as c, user_id, track_type FROM  `customers_log` where created_at >= '".$this->startDate."' and created_at <'".$this->endDate."' and track_type is not null  group by user_id,track_type ";
         $allData = M()->query($sql);
-        
         $allDataGroup = arr_group($allData, 'user_id');
         $re = array();
         foreach ($allDataGroup as $key => $value) {
@@ -93,7 +92,8 @@ class WorkSumController extends \Think\Controller {
                 'group_name'=>$value['group_name'],
                 'department_id'=>$value['department_id'],
                 'department_name' =>$value['department_name'],
-                'date'=>$this->date);
+                'date'=>$this->date
+            );
 
             if (isset($this->allData[$value['user_id']])) {
                 foreach ($this->allData[$value['user_id']] as $k=>$c) {
@@ -116,6 +116,8 @@ class WorkSumController extends \Think\Controller {
 
             $this->save();
         }
+
+
         if (count($this->insert_data)>0) {
             $this->lastSave();
         } 
