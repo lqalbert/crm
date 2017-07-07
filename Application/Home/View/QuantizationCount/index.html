@@ -15,19 +15,36 @@
     <el-row>
       <el-col :span="24">
         <el-form :inline="true" ref="searchForm" :model="searchForm">
-	        <el-form-item prop="date1" style="width: 130px">
-	          <el-date-picker clearable size="small"  v-model="searchForm.distMin" :picker-options="pickerOption1" placeholder="请选择起日期"  @change="dateChange">
+	        <el-form-item prop="distMin" style="width: 130px">
+	          <el-date-picker 
+              clearable 
+              size="small"  
+              v-model="searchForm.distMin" 
+              :picker-options="pickerOption1" 
+              placeholder="请选择起日期"  
+              @change="dateChange">
 	          </el-date-picker>
 	        </el-form-item>
-          <el-form-item prop="date2" style="width: 130px">
-            <el-date-picker clearable size="small"  v-model="searchForm.distMax" placeholder="请选择止日期"  @change="dateChanges">
-            </el-date-picker>
+          <el-form-item prop="distMax" style="width: 130px">
+              <el-date-picker 
+                clearable 
+                size="small"  
+                v-model="searchForm.distMax" 
+                placeholder="请选择止日期"  
+                @change="dateChanges">
+              </el-date-picker>
           </el-form-item>
 
           <el-form-item prop="department_id" style="width:120px">
-            <el-select v-model="searchForm.department_id" size="small" clearable @change="departmentChange" width="50" placeholder="部门">
-              <el-option v-for="item in departments" :key="item.id" :label="item.name" :value="item.id"></el-option>
-            </el-select>
+              <el-select 
+                v-model="searchForm.department_id" 
+                size="small" 
+                clearable 
+                @change="departmentChange" 
+                width="50" 
+                placeholder="部门">
+                  <el-option v-for="item in departments" :key="item.id" :label="item.name" :value="item.id"></el-option>
+              </el-select>
           </el-form-item>
 
           <el-form-item prop="group_id" style="width:120px">
@@ -36,7 +53,7 @@
             </el-select>
           </el-form-item>
 
-	        <el-form-item prop="name" style="width:120px">
+	        <el-form-item prop="realname" style="width:120px">
 	          <el-input v-model="searchForm.realname" size="small" placeholder="员工姓名"></el-input>
 	        </el-form-item>
 
@@ -53,7 +70,7 @@
 	        <el-form-item>
 	          <el-button type="info" size="small" icon="search"  @click="search2" >查询</el-button>
 	          <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
-	            <el-button  size="small" @click="searchReset2"  >重置</el-button>
+	            <el-button  size="small" @click="searchReset"  >重置</el-button>
 	          </el-tooltip>
 	          <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:10px;">
 	            <el-button  size="small" type="danger" @click="refresh" >刷新</el-button>

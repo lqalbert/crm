@@ -25,6 +25,7 @@ class DimissionCustomersController extends CommonController {
 
         $this->assign('users', $this->getGeneralEmployee());
         $this->assign('dUsers', $this->getDUser());
+        $this->assign('groups', $this->getGroups());
 
         $this->display();
     }
@@ -70,6 +71,11 @@ class DimissionCustomersController extends CommonController {
 
     private function getDUser(){
         $re =  D('User')->getDepartmentDimissionEmployee($this->department_id);
+        return $re ? $re : array();
+    }
+
+    private function getGroups(){
+        $re =  D('Group')->getAllGoups($this->department_id, 'id,name');
         return $re ? $re : array();
     }
 }

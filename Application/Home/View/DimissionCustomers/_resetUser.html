@@ -4,9 +4,15 @@
   <el-row>
 
     <el-col :span="12">
+      <el-form-item label="小组" prop="type">
+        <el-select  v-model="resetUserForm.group_id" @change="resetSaleman">
+          <el-option  v-for='group in groups' :label="group.name"  :value="group.id" >
+          </el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="备选员工" prop="type">
         <el-select  v-model="resetUserForm.salesman_id" >
-          <el-option  v-for='item in salesmans' :label="item.realname"  :value="item.id">
+          <el-option  v-for='item in getGroupUser' :label="item.realname"  :value="item.id">
           </el-option>
         </el-select>
       </el-form-item>

@@ -80,7 +80,7 @@
 					<span>业绩走势 试用数据</span>
 				</div>
 				<div>
-					<div id="echarts" style="height: 200px;">
+					<div id="echarts" style="min-height: 200px; ">
 						
 					</div>
 				</div>
@@ -160,7 +160,7 @@
 	page.getData2 = "{:U('IndexData/getData2')}";
 	page.getData3 = "{:U('IndexData/getData3')}";
 	window.defaultOption.setVueHook('mounted', function(){
-		
+		var edom = document.getElementById('echarts');
 		var myChart = echarts.init(document.getElementById('echarts'));
 		var colors = ['#d14a61','#61a0a8','#675bba','#5793f3', '#d14a61'];
 		var option = {
@@ -188,7 +188,7 @@
 	    		},
 	   		  xAxis: {
 	        	type: 'category',
-	        	data: ['2017-01-01', '2017-01-02', '2017-01-03', '2017-01-04', '2017-01-05'],
+	        	data: [],
 	        	axisTick: {
               alignWithLabel: true
             }
@@ -208,15 +208,17 @@
 	        series: [{
 	       	  name: '自锁数',
 	       	  type: 'bar',
-	        	data: [20, 12, 31, 34, 31]
+	        	data: []
 	   		  }, {
 	          name: '成交数',
 	          type: 'bar',
-	          data: [10, 20, 5, 9, 3]
+	          data: []
 	    		}]
 	      }
-		
+	      // myChart.showLoading();
+		  myChart.setOption(option);
 
+		  edom.style.width="auto";
 		// console.log('mounted charts');
 		
 	        
@@ -234,10 +236,13 @@
             th.style.textAlign='left';
       	}
     this.$http.get(page.getEchartsOption).then(function(response){
-			option.xAxis.data = response.body.date;
-			option.series = response.body.series;
+			// option.xAxis.data = response.body.date;
+			// option.series = response.body.series;
 			// console.log(response.body);
-			myChart.setOption(option);
+			myChart.setOption({
+				xAxis:{data:response.body.date},
+				series:response.body.series
+			});
 		}, function(response){
 			this.$message.error("图表数据出错了");
 		});

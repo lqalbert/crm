@@ -43,7 +43,10 @@ class QuantizationCountController extends CommonController{
       }
       if (isset($_GET['department_id'])) {
           $this->M->where(array('statistics_quantization.department_id'=>$_GET['department_id']));
+      } else if($this->getRoleEname() == RoleModel::DEPARTMENTMASTER){
+        $this->M->where(array('statistics_quantization.department_id'=>0));
       }
+
       if (isset($_GET['group_id'])) {
           $this->M->where(array('statistics_quantization.group_id'=>$_GET['group_id']));
       }

@@ -28,9 +28,20 @@ class BuyCheckController extends CommonController{
         $this->display();
     }
 
+    protected function _getList(){
+        $this->setQeuryCondition();
+        $count = (int)$this->M->count();
+        $this->setQeuryCondition();
+        $list = $this->M->page(I('get.p',0). ','. $this->pageSize)->select();
+        $result = array('list'=>$list, 'count'=>$count);
+        return $result;
+    }
+
 
     public function setQeuryCondition(){
         $this->setRoleCondition();
+
+
 
         $this->M->join('customers_basic as cb on customers_buy.cus_id = cb.id')
                 ->join('user_info as  ui on customers_buy.user_id = ui.user_id')
@@ -52,10 +63,16 @@ class BuyCheckController extends CommonController{
 
     private function riskOneCondition(){
         $this->M->where(array('risk_id'=>session('uid')));
+        if (isset($_GET['status']) && $_GET['status'] != "" ) {
+            $this->M->where(array('risk_state'=>I('get.status')));
+        }
     }
 
     private function callBackCondition(){
         $this->M->where(array('callback_id'=>session('uid')));
+        if (isset($_GET['status']) && $_GET['status'] != "" ) {
+            $this->M->where(array('callback_state'=>I('get.status')));
+        }
     }
 
     public function check(){

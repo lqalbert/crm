@@ -50,7 +50,7 @@ class GeneralServiceController extends CommonController{
 		$this->setQeuryCondition();
         $count = $this->M->count();
         $this->setQeuryCondition();
-        $list =  $this->M->join('left join user_info as ui on customers_basic.user_id=ui.user_id')
+        $list =  $this->M->join('left join user_info as ui on customers_basic.salesman_id=ui.user_id')
                          ->join('left join user_info as usi on customers_basic.gen_id = usi.user_id')
                          ->field('ui.realname,usi.realname as gen_name,customers_basic.*,cc.*')
                          ->order("customers_basic.id desc")
