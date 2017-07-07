@@ -145,6 +145,7 @@ class CustomerModel extends Model {
     		array('name','require', '姓名必须！'), 
 
     );
+    
 
     protected $_auto = array(
         array('plan', 'transfer', 1, 'callback'),
