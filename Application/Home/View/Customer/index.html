@@ -955,8 +955,8 @@
 
 
   }).setMethod('handleSelectionChange', function(val){
-    //this.multipleSelection = val;
-    this.multipleSelection = [];
+    this.multipleSelection = val;
+    /*this.multipleSelection = [];
     if(val.length >= 2){
        if(val.length == this.dataList.length){
          this.multipleSelection = val;
@@ -965,7 +965,7 @@
        }
     } else {
       this.multipleSelection = val;
-    }
+    }*/
   }).setMethod('commonSelect',function(x){
     var form = x;
     var vmThis = this;
