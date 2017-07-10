@@ -83,11 +83,16 @@ class CallBackController extends CommonController{
 	    $list =null;
       $count='0';
 	  }else{
-	    $list = M('customers_basic as cb')->join("customers_contacts as cc on cb.id = cc.cus_id and cc.is_main = 1 ")
-          ->join('left join user_info as ui on cb.salesman_id=ui.user_id')->field('ui.realname,cb.*,cc.*')
-          ->where(array('cb.id'=>array('IN',$cusList)))->order("cb.id desc")->limit($this->getOffset().','.$this->pageSize)->select();
+	    $count = M('customers_basic as cb')->count();
+      $this->setQeuryCondition();
+      $list = M('customers_basic as cb')
+              
+              // ->where(array('cb.id'=>array('IN',$cusList)))
+              ->field('ui.realname,cb.*,cc.*')
+              ->order("cb.id desc")
+              ->limit($this->getOffset().','.$this->pageSize)
+              ->select();
         // var_dump(M('customers_basic as cb')->getlastsql());
-	    $count = $list==null ? '0' :$count;
     }
     //echo M('customers_basic as cb')->getLastSql();
 	  $result = array('list'=>$list, 'count'=>$count);
@@ -107,7 +112,9 @@ class CallBackController extends CommonController{
 		/*$operator_id=session('account')['userInfo']['user_id'];
     $this->M->where(array('call_back'=>'1','operator_id'=>$operator_id));*/
 
-    M('customers_basic as cb')->where(array('cb.id'=>array('in', $this->getMycust())));
+    M('customers_basic as cb')->where(array('cb.id'=>array('in', $this->getMycust())))
+    ->join("customers_contacts as cc on cb.id = cc.cus_id and cc.is_main = 1 ")
+              ->join('left join user_info as ui on cb.salesman_id=ui.user_id');
 
     if (I('get.name')) {
         M('customers_basic as cb')->where(array("cb.name"=> array('like', I('get.name')."%")));
@@ -117,7 +124,9 @@ class CallBackController extends CommonController{
     	  $val=I('get.contact');
     	  M('customers_basic as cb')->where(array('cc.qq|cc.phone|cc.weixin'=>array('LIKE',$val."%")));
     }
-	  $cusList=M('software_account')->getField('cus_id',true);
+
+
+	  /*$cusList=M('software_account')->getField('cus_id',true);
 	  $operatorList=M('software_account')->getField('open_id',true);
     switch (I('get.field')) {
     	case 'already':
@@ -138,7 +147,7 @@ class CallBackController extends CommonController{
     	default:
     	   $this->M->where(array('call_back'=>'1','operator_id'=>$operator_id));
     		break;
-    }
+    }*/
 
 	}
 
