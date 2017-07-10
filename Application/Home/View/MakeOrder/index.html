@@ -218,7 +218,7 @@
         this.$http.get(page.getBuyDetailUrl, {params: param}).then(function(response){
             var body = response.body;
             this.orderForm.customer_name = body.name;
-            this.orderForm.user_id = body.sale.user_id;
+            this.orderForm.user_id = body.user.user_id;
             this.orderForm.user_name = body.user.name +' '+ body.user.realname;
             this.orderForm.sale_name = body.sale.name +' '+ body.sale.realname;
             this.bphone = body.phones;

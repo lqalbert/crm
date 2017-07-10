@@ -36,26 +36,25 @@ class AddCountController extends CommonController{
     
 		$this->d = new CustomersGather;
 		$this->setServiceQuery();
-
+    $this->getDepartmentCount();
+    $this->getGroupCount();
+    $this->getUserCount();
     
     if(isset($_GET['department_id']) || isset($_GET['group_id'])){
     	$result = $this->getSelectCtrl();
+
 	  }else{
       switch (I('get.type')) {
         case 'user':
-             $this->getUserCount();
              $result = $this->setReturnArr($this->users); //基于个人为条件查询
           break;
         case 'group':
-            $this->getGroupCount();
             $result = $this->setReturnArr($this->groups); //基于团组为条件查询
           break;
         case 'department':
-            $this->getDepartmentCount();
             $result = $this->setReturnArr($this->deps);
            break;
         default:
-           $this->getDepartmentCount();
            $result = $this->setReturnArr($this->deps); //基于部门为条件查询
           break;
       }
@@ -98,7 +97,7 @@ class AddCountController extends CommonController{
 	* 基于人的录入统计
 	*/
 	private function getUserCount(){
-		$this->users = arr_to_map($this->d->getAllUsers(),'user_id');
+		$this->users = arr_to_map($this->d->getAllUsers(),'id');
 	}
 
   private function setReturnArr($arr){
