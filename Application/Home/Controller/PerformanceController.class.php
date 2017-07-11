@@ -195,6 +195,7 @@ class PerformanceController extends CommonController {
   		p.name as production,co.customer_name as cus_name,ui.realname as create_name,co.user_name,co.sale_name")
   	->join("left join products as p on p.id=co.product_id")
   	->join("left join user_info as ui on ui.user_id=co.creater_id")->select();
+    
   	foreach ($re as $k => $v) {
   		if($v['salesman_id'] != $v['user_id']){
   			$re[$k]['info'] = "跟踪员工:".$v['sale_name']." 锁定员工:".$v['user_name'];

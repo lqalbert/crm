@@ -8,7 +8,8 @@ class IndexController extends Controller {
         'CustomerCount/index',
         'GroupCount/index',
         'WorkSum/index',
-        'WorkStep/index'
+        'WorkStep/index',
+        'SaleAchievement/index'
     );
 
     private function setDate(){

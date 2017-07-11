@@ -33,7 +33,6 @@ class AddCountController extends CommonController{
 	 * 
 	 **/
 	public function getList(){
-    
 		$this->d = new CustomersGather;
 		$this->setServiceQuery();
     $this->getDepartmentCount();
@@ -42,6 +41,7 @@ class AddCountController extends CommonController{
     
     if(isset($_GET['department_id']) || isset($_GET['group_id'])){
     	$result = $this->getSelectCtrl();
+
 	  }else{
       switch (I('get.type')) {
         case 'user':
@@ -81,7 +81,6 @@ class AddCountController extends CommonController{
 	* 基于部门的录入统计
 	*/
 	private function getDepartmentCount(){
- 
     $this->deps = arr_to_map($this->d->getDepartment(),'id');
 	}
 
@@ -144,10 +143,9 @@ class AddCountController extends CommonController{
       }
       $result = array('list'=>$this->splitList($arr), 'count'=>count($arr));
     }elseif ($type=="user" && isset($_GET['department_id']) && isset($_GET['group_id'])) {
-      $res = M('user_info')->where(array('department'=>$department_id,'group_id'=>$group_id))->getField('user_id',true);
+      $res = M('user_info')->where(array('department'=>$department_id,'group_id'=>$group_id))->getField('user_id',true);;
       foreach ($res as $k => $v) {
         if(array_key_exists($v,$this->users)){
-
           $arr[] = $this->users[$v];
         }
       }

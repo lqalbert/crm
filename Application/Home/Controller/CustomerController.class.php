@@ -375,7 +375,7 @@ class CustomerController extends CommonController {
     */
     public function addPlanLogs(){
        $this->authCheck(I('post.cus_id'));
-    	if($this->M->create() && I('post.cus_id')){
+    	if($this->M->auto(false)->create() && I('post.cus_id')){
            $re=$this->M->where(array('id'=>I('post.cus_id')))->save();
            if($re === false){
            	 $this->error(L('ADD_ERROR').$this->M->getError());
