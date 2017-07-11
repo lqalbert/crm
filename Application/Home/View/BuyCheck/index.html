@@ -60,7 +60,7 @@
                           <el-option value="1" label="通过"></el-option>
                           <el-option value="-1" label="未通过"></el-option>
                         </el-select>
-                        </el-input>
+                       
                       </el-form-item>
                       <el-form-item>
                         <el-button  size="small" type="primary" icon="search" @click="loadDatalist" >查询</el-button> 
@@ -175,9 +175,9 @@
         <include file="Customer::_traceContent" />
 
         <!-- 投诉内容 -->
-    <include file="Customer::_complainContent" />
+        <include file="Customer::_complainContent" />
 
-
+  
         </div>
 
 
@@ -187,7 +187,7 @@
 <script>
 
     
-   page.getCustomerInfoUrl = "{:U('CommonFindDetail/getCustomerInfo')}"
+   page.getCustomerInfoUrl = "{:U('CommonFindDetail/getCustomerInfo')}";
    page.setCheckUrl = "{:U('check')}";
 
     window.defaultOption.setDatas({
@@ -261,9 +261,6 @@
       this.checkForm.ids.push(this.multipleSelection[i].id);
     }
     this.multipleSelection = [];
-
-
-
   }).setMethod('handleSelectionChange',function(val){
     this.multipleSelection = val;
   }).setMethod('viewtraceContents',function(row,event){
@@ -293,7 +290,7 @@
     },function(response){
       this.$message.error("查询出错啦");
     });
-  }).setMethod('filterTag', function(value, row){
+   }).setMethod('filterTag', function(value, row){
      return row.{$state_text} === value;
    }).setMethod('checkStatus', function(row, index){
       return row.{$state_text} == 0;
