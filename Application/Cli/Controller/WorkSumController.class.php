@@ -64,7 +64,7 @@ class WorkSumController extends \Think\Controller {
 
     private function getSelf($user_id){
         $sql = "select id from customers_basic where user_id=salesman_id and user_id=".$user_id;
-        $sql = "select count(id) as c from customers_log where cus_id in (". $sql .") and created_at >= '".$this->startDate."' and created_at <'".$this->endDate."'";
+        $sql = "select count(id) as c from customers_log where cus_id in (". $sql .") and user_id=$user_id and  created_at >= '".$this->startDate."' and created_at <'".$this->endDate."'";
         $re = M()->query($sql);
         if ($re) {
             return $re[0]['c'];

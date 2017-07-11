@@ -22,7 +22,7 @@ class QuantizationCountController extends CommonController{
               $ar=D('Group')->getAllGoups(session('account')['userInfo']['department_id'],'id,name');
               $departments=array('list'=>$arr,'account'=>$arr,'group'=>$ar);
           }else{
-              $departments=array('list'=>D('Department')->getAllDepartments('id,name'),'account'=>'','group'=>'');
+              $departments=array('list'=>D('Department')->getSalesDepartments('id,name'),'account'=>'','group'=>'');
           }
       }else{
           //部门经理权限
