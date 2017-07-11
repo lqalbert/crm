@@ -175,8 +175,6 @@ class CustomersGather {
                                                 ->where(array('date'=> array(array('EGT',$this->start),array('ELT',$this->end))))
                                                 ->group('group_id')
                                                 ->select();
-
-
         $list  = $this->mergeList($list2, $toDaylist);
         return $this->reSort($list);
     }
@@ -241,7 +239,6 @@ class CustomersGather {
 
 
     public function getAllUsers(){
-
         $toDaylist = array();   
         if ($this->end >=  $this->today) {
             $departments = D('Department')->getSalesDepartments('id,name');
@@ -296,7 +293,6 @@ class CustomersGather {
                                                     )
                                                 ->group('statistics_usercustomers.user_id')
                                                 ->select();
-        // var_dump(M('statistics_usercustomers')->getlastsql());
         $list  = $this->mergeList($list2, $toDaylist);
         return $this->reSort($list);
     }

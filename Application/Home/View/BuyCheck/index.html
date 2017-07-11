@@ -286,6 +286,8 @@
     });
 
     row.condition = 'service';
+    row.name = row.cb_name;
+    delete row.cb_name;
     this.$http.post("{:U('CommonFindDetail/complainInfo')}",row).then(function(response){
       this.tableDataTwo = response.body;
     },function(response){
