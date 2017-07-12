@@ -30,6 +30,7 @@
                 clearable 
                 size="small"  
                 v-model="searchForm.distMax" 
+                :picker-options="pickerOption1" 
                 placeholder="请选择止日期"  
                 @change="dateChanges">
               </el-date-picker>
