@@ -245,7 +245,7 @@
       oldGroupValue:'',
       oldUserValue:'',
       pickerOptions0: {
-          disabledDate(time) {
+          disabledDate:function(time) {
             return time.getTime() >= Date.now() - 8.64e7;
           }
         },
