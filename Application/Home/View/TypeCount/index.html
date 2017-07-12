@@ -50,7 +50,7 @@
         </el-form-item>
 
         <el-form-item prop="department_id">
-          <el-tooltip content="选择某个部门后点击查询" placement="bottom-start">
+          <el-tooltip content="选择某个部门后点击查询或者继续选择下属小组再查询" placement="bottom-start">
             <el-select size="small" style="width:120px;" :clearable="depClearable" filterable v-model="searchForm.department_id" placeholder="请选择部门" @change="depChange">
               <el-option v-for="dep in Alldeps" :value="dep.id" :label="dep.name"></el-option>
             </el-select>
@@ -58,7 +58,7 @@
         </el-form-item>
 
         <el-form-item prop="group_id">
-          <el-tooltip content="必须先选择部门方可选择团组后点击查询" placement="bottom-start">
+          <el-tooltip content="必须先选择部门方可选择团组后点击查询或者继续选择下属队员再查询" placement="bottom-start">
             <el-select size="small" style="width:120px;" :disabled="ctrlSelect" clearable filterable  v-model="searchForm.group_id" @change="groupChange" placeholder="请选择小组">
               <el-option v-for="group in groups" :value="group.id" :label="group.name"></el-option>
             </el-select>

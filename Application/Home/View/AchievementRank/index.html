@@ -129,34 +129,34 @@
     pickerOptions: {
       shortcuts: [{
         text: '上一周',
-        onClick(picker) {
+        onClick:function(picker) {
           var start = showLastWeekFirstDay();
           var end = showLastWeekLastDay();
           picker.$emit('pick', [start, end]);
         }
       }, {
         text: '上个月',
-        onClick(picker) {
+        onClick:function(picker) {
           var start = showLastMonthFirstDay();
           var end = showLastMonthLastDay();
           picker.$emit('pick', [start, end]);
         }
       }, {
         text: '本周',
-        onClick(picker) {
+        onClick:function(picker) {
           var start = showWeekFirstDay();
           var end = showWeekLastDay();
           picker.$emit('pick', [start, end]);
         }
       }, {
         text: '本月',
-        onClick(picker) {
+        onClick:function(picker) {
           var start = showMonthFirstDay();
           var end = showMonthLastDay();
           picker.$emit('pick', [start, end]);
         }
       }],
-      disabledDate(time) {
+      disabledDate:function(time) {
         return time.getTime() > Date.now() - 8.64e7;
       }
     },

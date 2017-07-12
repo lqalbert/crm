@@ -11,9 +11,9 @@ class AddCountController extends CommonController{
 
  	protected function getSearchGroup(){
  		$searchGroup = array(
-    	array('value'=>'user','key'=>"查询队员" ),
-      array('value'=>'group','key'=>"查询团组" ),
-      array('value'=>'department','key'=>'查询部门')
+    	array('value'=>'user','key'=>"按队员查询" ),
+      array('value'=>'group','key'=>"按团组查询" ),
+      array('value'=>'department','key'=>'按部门查询')
  		);
 
  		return $searchGroup;

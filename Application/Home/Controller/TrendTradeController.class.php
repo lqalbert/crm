@@ -9,9 +9,9 @@ class TrendTradeController extends CommonController{
 
  	protected function getSearchGroup(){
  		$searchGroup = array(
-    	array('value'=>'user','key'=>"查询队员" ),
-      array('value'=>'group','key'=>"查询团组" ),
-      array('value'=>'department','key'=>'查询部门')
+    	array('value'=>'user','key'=>"按队员查询" ),
+      array('value'=>'group','key'=>"按团组查询" ),
+      array('value'=>'department','key'=>'按部门查询')
  		);
 
  		return $searchGroup;
@@ -244,14 +244,14 @@ class TrendTradeController extends CommonController{
             'date'=>$this->date,
             'series'=>array(
                 array('name'=>'自锁数','type'=>'bar',"yAxisIndex"=> 3,'data'=>$c),
-                array('name'=>'成交数','type'=>'bar',"yAxisIndex"=> 1,'data'=>$v),
+                array('name'=>'成交数','type'=>'bar',"yAxisIndex"=> 2,'data'=>$v),
                 array('name'=>'冲突','type'=>'bar',"yAxisIndex"=> 1,'data'=>$ct),
                 array('name'=>'被冲突','type'=>'bar',"yAxisIndex"=> 0,'data'=>$cf),
                 array('name'=>'自锁数曲线','type'=>'line',"yAxisIndex"=> 3,"smooth"=>  true,'data'=>$c),
                 array('name'=>'成交数曲线','type'=>'line',"yAxisIndex"=> 2,"smooth"=>  true,'data'=>$v),
                 array('name'=>'冲突曲线','type'=>'line',"yAxisIndex"=> 1,"smooth"=>  true,'data'=>$ct),
                 array('name'=>'被冲突曲线','type'=>'line',"yAxisIndex"=> 0,"smooth"=>  true,'data'=>$cf),
-                //array('name'=>'成交数','type'=>'bar',"barWidth"=> '20%','data'=>$v),
+               //array('name'=>'成交数','type'=>'bar',"barWidth"=> '20%','data'=>$v),
              )
         );
         
