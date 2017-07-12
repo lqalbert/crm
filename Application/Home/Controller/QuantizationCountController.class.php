@@ -38,8 +38,8 @@ class QuantizationCountController extends CommonController{
   {
       $this->M->join('user_info ON user_info.user_id=statistics_quantization.user_id')
           ->field('user_info.realname,statistics_quantization.*');
-      if(I('get.realname')){
-          $this->M->where(array('realname'=>array('like',I('get.realname')."%")));
+      if(isset($_GET['user_id'])){
+          $this->M->where(array('statistics_quantization.user_id'=>I('get.user_id')));
       }
       if (isset($_GET['department_id'])) {
           $this->M->where(array('statistics_quantization.department_id'=>$_GET['department_id']));
@@ -64,22 +64,32 @@ class QuantizationCountController extends CommonController{
     /**
      *获取所选部门所包含小组
      */
-    public function getAllGroups(){
-        if(isset($_GET['department_id'])){
-            $arr=D('Group')->getAllGoups($_GET['department_id'],'id,name');
-            $this->ajaxReturn($arr);
-        }
-    }
+  public function getAllGroups(){
+      if(isset($_GET['department_id'])){
+          $arr=D('Group')->getAllGoups($_GET['department_id'],'id,name');
+          $this->ajaxReturn($arr);
+      }
+  }
 
 
-    public function getAllUser(){
-      $group_id = I("get.group_id");
-      $users = $this->M->join('user_info on statistics_quantization.user_id = user_info.user_id')
-              ->where(array('statistics_quantization.group_id'=>$group_id))
-              ->field('user_info.user_id,user_info.realname')
-              ->select();
-      $this->ajaxReturn($users);
+   public function getAllUser(){
+    $group_id = I("get.group_id");
+    $distMin  = I("get.distMin", null);
+    $distMax  = I("get.distMax", null);
+
+    $this->M->where(array("group_id"=>$group_id));
+    if ($distMin && $distMax) {
+      $this->M->where(array('date'=>array(array('EGT', $distMin), array("ELT", $distMax))));
     }
+    $user_ids =  array_keys(array_flip($this->M->getField('user_id', true))) ;
+
+    if ($user_ids) {
+      $users = M('user_info')->field("user_id, realname")->where(array("user_id"=>array("IN", $user_ids)))->select();
+    } else {
+      $users = array();
+    }
+    $this->ajaxReturn($users);
+  }
 
 }
 
