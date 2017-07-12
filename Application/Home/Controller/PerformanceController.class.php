@@ -8,6 +8,7 @@ class PerformanceController extends CommonController {
 	protected $pageSize = 13;
   protected $dateWhere = null; 
   protected $initDep = "";
+  protected $orderWhere = null;
 
   protected function treeOb(){
     $treeOb = new TreeController;
@@ -46,6 +47,7 @@ class PerformanceController extends CommonController {
 
   public function getList(){
     $this->setTime();
+    $this->setOrderBy();    
     $list = $this->setQeuryCondition();
     $result = $this->setReturnArr($list);
     $this->ajaxReturn($result);
@@ -61,6 +63,13 @@ class PerformanceController extends CommonController {
     if($start && $end){
       $this->dateWhere = "where date>='$start' and date<='$end' ";
     }
+  }
+
+  protected function setOrderBy(){
+    $sort_field = I('get.sort_field', 'order_num');
+    $sort_order = I('get.sort_order', 'desc');
+    $sort_field = empty($sort_field) ? 'order_num' :$sort_field;
+    $this->orderWhere = " order by $sort_field $sort_order";
   }
 
   public function setQeuryCondition(){
@@ -91,7 +100,7 @@ class PerformanceController extends CommonController {
     }
 
     $sql = "select department_id as id, department_name as name, sum(order_num) as order_num,sum(sale_amount) as sale_amount 
-     from statistics_sale_achievement ".$this->dateWhere." $depWhere group by department_id";
+     from statistics_sale_achievement ".$this->dateWhere." $depWhere group by department_id ".$this->orderWhere;
     $re = M()->cache(true,180)->query($sql);
     return $re;
   }
@@ -110,7 +119,7 @@ class PerformanceController extends CommonController {
     }
 
     $sql = "select group_id as id,department_id,department_name,concat(department_name,'-',group_name) as name, sum(order_num) as order_num,sum(sale_amount) as sale_amount 
-     from statistics_sale_achievement ".$this->dateWhere." $depWhere $groupWhere group by group_id";
+     from statistics_sale_achievement ".$this->dateWhere." $depWhere $groupWhere group by group_id ".$this->orderWhere;
     $re = M()->cache(true,180)->query($sql);
     return $re;
   }
@@ -131,7 +140,7 @@ class PerformanceController extends CommonController {
     $sql = "select saa.user_id as id,saa.department_id,saa.group_id,saa.department_name, saa.group_name ,
     concat(concat(saa.department_name,'-',saa.group_name),'-',ui.realname) as name,
     sum(saa.order_num) as order_num,sum(saa.sale_amount) as sale_amount from statistics_sale_achievement as saa 
-    left join user_info as ui on ui.user_id=saa.user_id ".$this->dateWhere." $depWhere $groupWhere group by saa.user_id";
+    left join user_info as ui on ui.user_id=saa.user_id ".$this->dateWhere." $depWhere $groupWhere group by saa.user_id ".$this->orderWhere;
     $re = M()->cache(true,180)->query($sql);
     return $re;
 

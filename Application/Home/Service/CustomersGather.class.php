@@ -32,13 +32,10 @@ class CustomersGather {
 
     public function setOrder($order){
         $this->order = $order;
-
         $fields  = explode(' ', $this->order);
         $this->field = $fields[0];
         $sortMap = array('asc'=>SORT_ASC, 'desc'=>SORT_DESC );
         $this->sort = $sortMap[$fields[1]];
-        
-
         return $this;
     }
 

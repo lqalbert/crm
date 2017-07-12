@@ -44,7 +44,7 @@ class IndexDataController extends \Think\Controller{
                 'date'=>$this->date ,
                 'series'=>array(
                     array('name'=>'自锁数','type'=>'bar',"barWidth"=> '30%','data'=>$c),
-                    array('name'=>'自锁数','type'=>'line',"smooth"=>  true,'data'=>$c),
+                    //array('name'=>'自锁数曲线','type'=>'line',"smooth"=>  true,'data'=>$c),
                     //array('name'=>'成交数','type'=>'bar',"barWidth"=> '20%','data'=>$v),
                  )
             );
