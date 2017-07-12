@@ -156,7 +156,7 @@
   window.defaultOption.setDatas({
     pickerOption1:{
       disabledDate: function(time){
-              return time.getTime() >= Date.now();
+            return time.getTime() > Date.now()-86400000;
 
       }},
       departments:{:json_encode($departments)},
@@ -187,8 +187,16 @@
           vmThis.searchForm.group_id=''
       })
   }).setMethod('groupChange',function (v) {
-      var vmThis=this
-      vmThis.$http.get('{:U("getAllUser")}',{params:{group_id:v}}).then(function (response) {
+      var vmThis=this;
+      var param = {group_id:v};
+      if (this.searchForm.distMin) {
+        param.distMin = this.searchForm.distMin
+      }
+
+      if (this.searchForm.distMax) {
+        param.distMax = this.searchForm.distMax
+      }
+      vmThis.$http.get('{:U("getAllUser")}',{params:param}).then(function (response) {
           vmThis.users=response.body
           vmThis.searchForm.user_id=''
       })

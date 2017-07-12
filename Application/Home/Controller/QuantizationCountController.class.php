@@ -37,7 +37,7 @@ class QuantizationCountController extends CommonController{
   public function setQeuryCondition()
   {
       $this->M->join('user_info ON user_info.user_id=statistics_quantization.user_id')
-          ->field('user_info.*,statistics_quantization.*');
+          ->field('user_info.realname,statistics_quantization.*');
       if(I('get.realname')){
           $this->M->where(array('realname'=>array('like',I('get.realname')."%")));
       }
@@ -51,9 +51,14 @@ class QuantizationCountController extends CommonController{
           $this->M->where(array('statistics_quantization.group_id'=>$_GET['group_id']));
       }
       if(isset($_GET['distMin'])&& isset($_GET['distMax'])){
-          // $this->M->where(array('statistics_quantization.date'=>array('between',array($_GET['distMin'],$_GET['distMax']))));
-
-          $this->M->where(array('statistics_quantization.date'=>array(array('EGT', I("get.distMin"), array('ELT', I('get.distMax')." 23:59:59")))));
+          $this->M->where(
+            array('statistics_quantization.date'=>
+              array(
+                array('EGT', I("get.distMin")), 
+                array('ELT', I('get.distMax'))
+                )
+              )
+            );
       }
   }
     /**
@@ -64,6 +69,16 @@ class QuantizationCountController extends CommonController{
             $arr=D('Group')->getAllGoups($_GET['department_id'],'id,name');
             $this->ajaxReturn($arr);
         }
+    }
+
+
+    public function getAllUser(){
+      $group_id = I("get.group_id");
+      $users = $this->M->join('user_info on statistics_quantization.user_id = user_info.user_id')
+              ->where(array('statistics_quantization.group_id'=>$group_id))
+              ->field('user_info.user_id,user_info.realname')
+              ->select();
+      $this->ajaxReturn($users);
     }
 
 }
