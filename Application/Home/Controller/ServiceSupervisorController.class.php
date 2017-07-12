@@ -57,7 +57,7 @@ class ServiceSupervisorController extends CommonController{
     $this->setQeuryCondition();
     $count = $this->M->count();
     $this->setQeuryCondition();
-  	$list = $this->M->join('left join user_info as ui on customers_basic.user_id=ui.user_id')
+  	$list = $this->M->join('left join user_info as ui on customers_basic.salesman_id=ui.user_id')
                    ->join('left join user_info as usi on customers_basic.semaster_id = usi.user_id')
                    ->field('ui.realname,usi.realname as semaster_name,customers_basic.*,cc.*')
                    ->order("customers_basic.id desc")
@@ -96,7 +96,8 @@ class ServiceSupervisorController extends CommonController{
 
     $roleEname = $this->getRoleEname();
     $map = $this->getRoleState();
-    if(in_array($roleEname,$map)){
+    // if(in_array($roleEname,$map)){
+    if($roleEname != RoleModel::SUP_SERVICE){
       $this->M->where(array('customers_basic.semaster_id'=>array('GT',0)));
     }else{
       $this->M->where(array('customers_basic.semaster_id'=>session('uid')));

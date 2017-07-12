@@ -70,7 +70,7 @@ class GeneralServiceController extends CommonController{
         
         $roleEname = $this->getRoleEname();
         $map = $this->getRoleState();
-        if(in_array($roleEname,$map)){
+        if($roleEname != RoleModel::GEN_SERVICE){
           $this->M->where(array('customers_basic.gen_id'=>array('GT',0)));
         }else{
           $this->M->where(array('customers_basic.gen_id'=>session('uid')));

@@ -30,6 +30,7 @@
                 clearable 
                 size="small"  
                 v-model="searchForm.distMax" 
+                :picker-options="pickerOption1" 
                 placeholder="请选择止日期"  
                 @change="dateChanges">
               </el-date-picker>
@@ -48,13 +49,15 @@
           </el-form-item>
 
           <el-form-item prop="group_id" style="width:120px">
-            <el-select v-model="searchForm.group_id" size="small" clearable width="50" placeholder="团队小组">
+            <el-select v-model="searchForm.group_id" @change="groupChange" size="small" clearable width="50" placeholder="团队小组">
                 <el-option v-for="item in groups" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
 
 	        <el-form-item prop="realname" style="width:120px">
-	          <el-input v-model="searchForm.realname" size="small" placeholder="员工姓名"></el-input>
+	          <el-select v-model="searchForm.user_id" size="small" clearable width="50" placeholder="员工">
+                <el-option v-for="item in users" :key="item.id" :label="item.realname" :value="item.user_id"></el-option>
+            </el-select>
 	        </el-form-item>
 
 	        <el-form-item prop="field" v-show="false">
@@ -148,18 +151,18 @@
 <script>
   window.defaultOption.setDatas({
       departments:{:json_encode($departments['list'])},
-  groups:{:json_encode($departments['group'])},
-  distMin:'',
-  pickerOption1:{
-      disabledDate: function(time){
-              return time.getTime() > Date.now();
-
-      }
-  }
+      groups:{:json_encode($departments['group'])},
+      distMin:'',
+      pickerOption1:{
+          disabledDate: function(time){
+              return time.getTime() > Date.now()-86400000;
+          }
+      },
+      users:[]
   }).setForm('search',{
       department_id:'',
       group_id:'',
-      realname:'',
+      user_id:'',
       field:'',
       distMin:'',
       distMax:''
@@ -208,6 +211,20 @@
       }
   }).setMethod('readySearch', function(){
       return this.searchForm.distMin.length ==0 || this.searchForm.distMax.length==0;
-  })
+  }).setMethod('groupChange',function (v) {
+      var vmThis=this;
+      var param = {group_id:v};
+      if (this.searchForm.distMin) {
+        param.distMin = this.searchForm.distMin
+      }
+
+      if (this.searchForm.distMax) {
+        param.distMax = this.searchForm.distMax
+      }
+      vmThis.$http.get('{:U("getAllUser")}',{params:param}).then(function (response) {
+          vmThis.users=response.body
+          vmThis.searchForm.user_id=''
+      })
+  });
 </script>
 </block>

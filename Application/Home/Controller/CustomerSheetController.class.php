@@ -45,10 +45,20 @@ class CustomerSheetController extends CommonController{
 
   public function getAllUser(){
     $group_id = I("get.group_id");
-    $users = $this->M->join('user_info on statistics_step.user_id = user_info.user_id')
-            ->where(array('statistics_step.group_id'=>$group_id))
-            ->field('user_info.user_id,user_info.realname')
-            ->select();
+    $distMin  = I("get.distMin", null);
+    $distMax  = I("get.distMax", null);
+
+    $this->M->where(array("group_id"=>$group_id));
+    if ($distMin && $distMax) {
+      $this->M->where(array('date'=>array(array('EGT', $distMin), array("ELT", $distMax))));
+    }
+    $user_ids =  array_keys(array_flip($this->M->getField('user_id', true))) ;
+
+    if ($user_ids) {
+      $users = M('user_info')->field("user_id, realname")->where(array("user_id"=>array("IN", $user_ids)))->select();
+    } else {
+      $users = array();
+    }
     $this->ajaxReturn($users);
   }
 
