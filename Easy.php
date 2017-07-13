@@ -20,14 +20,12 @@ define('APP_DEBUG',True);
 // 定义应用目录
 define('APP_PATH','./Application/');
 
-define('BIND_MODULE','Easy');
+define('BIND_MODULE','Api');
 
 //  自定义常量
 
-define('CRM_SUPER_ADMIN', 1);
+// define('CRM_SUPER_ADMIN', 1);
 
-var_dump(time());
-die();
 
 // die(md5('111111'));
 
