@@ -97,6 +97,32 @@ function arr_group($arr, $thekey){
 
 
 /**
+* 根据数组中的某个键值大小进行排序，仅支持二维数组
+* 
+* @param array $array 排序数组
+* @param string $key 键值
+* @param string $asc 默认正序
+* @return array 排序后数组
+*/
+function arraySortByKey(array $array, $key, $asc = 'asc'){
+    $result = array();
+    // 整理出准备排序的数组
+    foreach ( $array as $k => &$v ) {
+        $values[$k] = isset($v[$key]) ? $v[$key] : '';
+    }
+    unset($v);
+    // 对需要排序键值进行排序
+    $asc == 'asc'  ? asort($values) : arsort($values);
+    // 重新排列原有数组
+    foreach ( $values as $k => $v ) {
+        $result[$k] = $array[$k];
+    }
+
+    return $result;
+}
+
+
+/**
  * 格式化输出数组
  * @var arr 目标数组
  * @return 竖向排列数组

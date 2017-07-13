@@ -16,6 +16,8 @@ class TypeCountController extends CommonController {
   protected $where = null;   
   protected $customerType = array("A","B","C","D","F","N","V","VX","VT");
   protected $initDep = "";
+  protected $orderKey = null;
+  protected $orderWay = null;
 
   private function getService(){
     if ($this->d == null) {
@@ -61,22 +63,19 @@ class TypeCountController extends CommonController {
 
   public function getList(){
     $this->setTime();
+    $this->setOrderBy();
     $list = $this->setQeuryCondition();
     $result = $this->setReturnArr($list);
     //$result = array('list'=>$list, 'count'=>count($list));
     $this->ajaxReturn($result);
   }
 
-  private function setServiceQuery(){
-    $sort_field = I('get.sort_field', 'id');
-    $sort_order = I('get.sort_order', 'asc');
-
-    $sort_field = empty($sort_field) ? 'id' :$sort_field;
-
-    $this->getService()
-         ->setDate(I('get.start'),I('get.end'))
-         ->setOrder($sort_field." ".$sort_order)
-         ->setRange(I('get.range'));
+  protected function setOrderBy(){
+    $sort_field = I('get.sort_field', 'time_num');
+    $sort_order = I('get.sort_order', 'desc');
+    $sort_field = empty($sort_field) ? 'time_num' :$sort_field;
+    $this->orderKey = $sort_field;
+    $this->orderWay = $sort_order;
   }
 
   protected function setTime(){
@@ -120,10 +119,12 @@ class TypeCountController extends CommonController {
     $re = $this->getDepTypeArr($where);
     $depArr = $this->getDeps($department_id);
     $depArr = $this->commonSetTypeArr($depArr,$re,$type);
-  
+    $depArr = arraySortByKey($depArr, $this->orderKey, $this->orderWay);
     return $depArr;
 
   }
+
+
 
   protected function setGroupTypeCount($type){
 
@@ -142,6 +143,7 @@ class TypeCountController extends CommonController {
     $re = $this->getGroupTypeArr($depWhere,$groupWhere);
     $groupArr = $this->treeOb()->getAllGoups($department_id,$group_id);
     $groupArr = $this->commonSetTypeArr($groupArr,$re,$type);
+    $groupArr = arraySortByKey($groupArr, $this->orderKey, $this->orderWay);
     return $groupArr;
 
   }
@@ -162,14 +164,15 @@ class TypeCountController extends CommonController {
     $re = $this->getUserTypeArr($depWhere,$groupWhere);
     $userArr = $this->getAllUser($department_id,$group_id);
     $userArr = $this->commonSetTypeArr($userArr,$re,$type);
-
+    $userArr = arraySortByKey($userArr, $this->orderKey, $this->orderWay);
     return $userArr;
   }
 
   protected function getDepTypeArr($where){
     $sql = "select count(cb.id) as c , `type` , department_id from customers_basic as cb 
-    inner join user_info as ui on cb.salesman_id= ui.user_id where cb.status=1 and ui.department_id<>0 ".$this->where ." $where group by cb.type, ui.department_id";
+    inner join user_info as ui on cb.salesman_id= ui.user_id where cb.status=1 and ui.department_id<>0 ".$this->where ." $where group by cb.type, ui.department_id order by c desc";
     $re = M()->query($sql); 
+    //echo M()->getLastSql();die;
     return $re;
 
   }
@@ -190,7 +193,7 @@ class TypeCountController extends CommonController {
 
   }
 
-  //公共处理类型方法
+  //公共处理类型方法 $depArr,$re
   protected function commonSetTypeArr($resArr,$re,$type){
     $arr = array();
     foreach ($re as $k => $v) {
