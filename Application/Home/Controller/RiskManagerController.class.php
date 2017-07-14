@@ -29,19 +29,19 @@ class RiskManagerController extends CommonController{
     $searchName=I('get.name',null);
     switch (I('get.queryType',null)) {
       case 'cus_name':
-        $cus_id = M('customers_basic')->where(array('name'=>$searchName))->getField('id',true);
+        $cus_id = M('customers_basic')->where(array('name'=>array('like', $searchName."%")))->getField('id',true);
         $this->M->where(array('customers_buy.cus_id'=>array('IN',$cus_id)));
         break;
       case 'user_name':
-        $user_id = M('user_info')->where(array('realname'=>$searchName))->getField('user_id');
+        $user_id = M('user_info')->where(array('realname'=>array('like', $searchName."%")))->getField('user_id');
         $this->M->where(array('customers_buy.user_id'=>$user_id));
         break;
       case 'risk_name':
-        $risk_id = M('user_info')->where(array('realname'=>$searchName))->getField('user_id');
+        $risk_id = M('user_info')->where(array('realname'=>array('like', $searchName."%")))->getField('user_id');
         $this->M->where(array('customers_buy.risk_id'=>$risk_id));
         break;
       case 'callback_name':
-        $callback_id = M('user_info')->where(array('realname'=>$searchName))->getField('user_id');
+        $callback_id = M('user_info')->where(array('realname'=>array('like', $searchName."%")))->getField('user_id');
         $this->M->where(array('customers_buy.callback_id'=>$callback_id));
         break;
       default:

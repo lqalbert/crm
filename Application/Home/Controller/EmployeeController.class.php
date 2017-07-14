@@ -372,9 +372,9 @@ class EmployeeController extends CommonController {
 	*获取所选部门所包含小组
      */
 	public function getAllGroups(){
-	    if(isset($_GET['department_id'])){
-	        $arr=D('Group')->getAllGoups($_GET['department_id'],'id,name');
-	        $this->ajaxReturn($arr);
-        }
+		$id =I('get.department_id',-1);
+		empty($id) && $id = -1;
+	    $arr=D('Group')->getAllGoups($id,'id,name');
+        $this->ajaxReturn($arr);
     }
 }
