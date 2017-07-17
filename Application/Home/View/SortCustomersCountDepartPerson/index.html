@@ -211,6 +211,11 @@
         delete this.searchForm.sort_order;
       }
       this.dataReload();
+  }).setVueHook('mounted', function(){
+    this.searchForm.start = showWeekFirstDay();
+    this.searchForm.end   = showWeekLastDay();
+    this.dataLoad = true;
+    this.search2();
   })
 
 

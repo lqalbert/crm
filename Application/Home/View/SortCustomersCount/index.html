@@ -238,7 +238,12 @@
       this.dataReload();
   }).setMethod('isLink', function(id){
     return id!=0 && this.objType!='Users';
-  });
+  }).setVueHook('mounted', function(){
+    this.searchForm.start = showWeekFirstDay();
+    this.searchForm.end   = showWeekLastDay();
+    this.dataLoad = true;
+    this.search2();
+  })
 
 
 

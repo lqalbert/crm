@@ -49,7 +49,7 @@ function QQValidata(rule, value, callback){
 }
 
 function WxValidata(rule, value, callback){
-    var reg = /^[-_a-zA-Z0-9]{6,20}$/;
+    var reg = /^[a-zA-Z0-9]{6,20}$/;
     if (null == value) {
       return callback();
     }
