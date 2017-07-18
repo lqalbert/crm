@@ -12,8 +12,7 @@
           v-model="addPlanForm.plan"
           type="datetime"
           placeholder="选择日期时间"
-          :editable="false"
-          >
+          :editable="false" :picker-options="setPicker">
         </el-date-picker>
       </el-form-item>
     </el-col>

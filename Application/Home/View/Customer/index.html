@@ -595,6 +595,11 @@
 
 
   window.defaultOption.setDatas({
+    setPicker:{
+      disabledDate:function(time) {
+        return time.getTime() < Date.now() - 8.64e7;
+      }
+    },
     buyHistory:[],
     flag:false,
     realInfo:false,
