@@ -69,13 +69,12 @@
                         </el-table-column>
                         <el-table-column label="商品" header-align="center" prop="product_name" >
                         </el-table-column>
-                        <el-table-column label="操作" header-align="center" >
+                        <el-table-column label="操作" width="280" header-align="center" >
                             <template scope="scope">
                                 <el-button size="small" type="info" @click="checkCustomer(scope.row.cus_id)">查看客户</el-button>
+                                <el-button size="small" type="primary" @click="openDialog('oneStep')">开单2</el-button>
                                 <span v-for="button in scope.row.buttons">
-                                    <el-button v-show="button=='order'" style="margin-left:8px;" size="small" type="primary" @click="setOrders(scope.row)">开单</el-button>
-                                    <el-button v-show="button=='distribute'" size="small" type="primary" @click="setDistrute(scope.row)">分配</el-button>
-                                    <el-button v-show="button=='account'" size="small" type="primary" @click="setAccount(scope.row)">账号</el-button>
+                                    <el-button v-show="button=='order'" style="margin-left:8px;" size="small" type="primary" @click="setOrders(scope.row)">开单</el-button><el-button v-show="button=='distribute'" size="small" type="primary" @click="setDistrute(scope.row)">分配</el-button><el-button v-show="button=='account'" size="small" type="primary" @click="setAccount(scope.row)">账号</el-button>
                                 </span>
                                 <el-button size="small" type="info" v-show="scope.row.status == 1" @click="orderInfo(scope.row)">订单详情</el-button>
                             </template>
@@ -113,9 +112,13 @@
         <div v-show="show" style="display: none">
             
         <include file="_order" />
+        <include file="_oneStep" />
         <include file="_distribute" />
         <include file="_account" />
         <include file="_orderInfo" />
+        
+
+
         <include file="BuyCheck::_customerInfo" />
 
         </div>
@@ -198,6 +201,8 @@
         id_card:"",
         address:"",
         contacts:[]
+    },true).setForm('oneStep',{
+        'asf':""
     },true).setMethod('handleSelectionChange', function(val){
         this.multipleSelection = val;
     }).setMethod('setOrders', function(row){

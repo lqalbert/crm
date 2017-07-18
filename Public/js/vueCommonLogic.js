@@ -203,6 +203,12 @@ function setCommonLogic(opt){
 		window.location.reload();
 	})
 
+	opt.setMethod('deleteArrAllItem',function(v){
+		while(this[v].length > 0){
+	      this[v].shift();
+	    }
+	})
+
 
 }
 
