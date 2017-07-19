@@ -35,7 +35,9 @@ function setCommonLogic(opt){
 		pageSize: page.pageSize,
 
 		dialogLabelWidth:"140px",
-		page:page
+		page:page,
+
+		currentRow:null
 
 	});
 
@@ -208,6 +210,19 @@ function setCommonLogic(opt){
 	      this[v].shift();
 	    }
 	})
+
+	opt.setMethod('handleCurrentChange', function(row){
+		this.currentRow = row;
+	})
+
+	opt.setMethod('handleCurrentChange2', function(row){
+		this.handleCurrentChange(row);
+		if (this.multipleSelection) {
+			this.multipleSelection.push(row);
+		}
+	})
+
+
 
 
 }
