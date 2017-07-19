@@ -70,7 +70,7 @@
               <el-date-picker size="small" v-model="searchForm.start" 
                 placeholder="请选择起日期" 
                 @change="startDateChange"
-                :picker-options="setPicker" :clearable="false">
+                :picker-options="setPicker"  clearable>
               </el-date-picker>
             </el-form-item>
             <el-form-item prop="end">
@@ -78,7 +78,7 @@
                 v-model="searchForm.end" 
                 placeholder="请选择止日期" 
                 @change="endDateChange"
-                size="small" :picker-options="setPicker" :clearable="false">
+                size="small" :picker-options="setPicker"  clearable>
               </el-date-picker>
             </el-form-item>
             <el-form-item>

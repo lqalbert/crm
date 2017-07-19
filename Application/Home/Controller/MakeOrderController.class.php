@@ -4,6 +4,7 @@ namespace Home\Controller;
 class MakeOrderController extends CommonController {
     protected $pageSize = 15;
     protected $table  = 'CustomerBuy';
+    private $error = "";
 
     private $dCondition = array(
             'customers_buy.risk_state' => 1,
@@ -179,8 +180,110 @@ class MakeOrderController extends CommonController {
 
     }
 
+    private function _addOrder(){
+        $rules = array(
+             array('buy_id','','该用户已开单',0,'unique')
+        );
+        $data = M('customers_order')->validate($rules)->create($_POST['order']);
+        if (!$data) {
+            $this->error = M('customers_order')->getError();
+            return false;
+        }
+
+        $buyRow = $this->M->find($data['buy_id']);
+
+        $saveRe = $this->M->where(array('id'=>$data['buy_id']))
+                                    ->data(array('status'=>1, 'todo_list'=>$this->delToList( $buyRow['todo_list'], 'order') ))
+                                    ->save();
+        if ($saveRe === false) {
+            $this->error = M('customers_buy')->getError();
+            return false;
+        }
+        
+        $data['creater_id'] = session('uid');
+        $re = M('customers_order')->data($data)->add();
+        if ($re) {
+            return true;
+        } else {
+            $this->error = M('customers_order')->getError();
+            return false; 
+        }
+    }
+
+    public function _addAccount(){
+        $_POST['open_id'] = session('uid');
+        $_POST['user_id'] = I('post.account.user_id');
+        $data = M('software_account')->create($_POST['account']);
+        if (!$data) {
+            // $this->error(M('software_account')->getError());
+            $this->error = M('software_account')->getError();
+            return false;
+        } else {
+            
+            $buyRow = $this->M->find(I("post.account.buy_id"));
+            $data['pdt_id'] = $buyRow['product_id'];
+            $re = M('software_account')->data($data)->add();
+
+            $saveRe = $this->M->where(array('id'=>$buyRow['id']))
+                                    ->data(array('todo_list'=>$this->delToList( $buyRow['todo_list'], 'account') ))
+                                    ->save();
+            if ($re) {
+                // $this->success('操作成功');
+                return true;
+            } else {
+                // $this->error(M('software_account')->getError());
+                $this->error = M('software_account')->getError();
+                return false;
+            }
+        }
+    }
 
 
+
+    public function setOneStep(){
+        $m  = M();
+        $m->startTrans();
+        $orderRe = $this->_addOrder();
+        if (!$orderRe) {
+            $m->rollback();
+            $this->error($this->error);
+        }
+        $accountRe = $this->_addAccount();
+        if (!$accountRe) {
+            $m->rollback();
+            $this->error($this->error);
+        }
+        $disRe = $this->_setDis();
+        if (!$disRe) {
+            $m->rollback();
+            $this->error($this->error);
+        }
+        
+        $m->commit();
+        $this->success("操作成功");
+    }
+
+    //获取已分配的
+    public function getDisId(){
+        $cus_id = I("get.cus_id");
+        $semaster_id = D("Customer")->where(array("id"=>$cus_id))->getField('semaster_id');
+        if ($semaster_id) {
+            $this->ajaxReturn(array("id"=>$semaster_id));
+        } else {
+            $this->error('');
+        }
+    }
+
+    //获取已有的账号
+    public function getAccount(){
+        $cus_id = I("get.cus_id");
+        $account = M('software_account')->where(array('cus_id'=>$cus_id))->find();
+        if ($account) {
+            $this->ajaxReturn(array("account_id"=>$account['account_id']));
+        } else {
+            $this->error();
+        }
+    }
 
 
 

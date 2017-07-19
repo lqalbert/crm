@@ -25,14 +25,14 @@
         <el-form-item prop="start">
           <el-date-picker size="small" v-model="searchForm.start" 
             placeholder="请选择起日期" 
-            @change="startDateChange" :clearable="false">
+            @change="startDateChange" clearable>
           </el-date-picker>
         </el-form-item>
         <el-form-item prop="end">
           <el-date-picker size="small" 
             v-model="searchForm.end" 
             placeholder="请选择止日期" 
-            @change="endDateChange" :clearable="false">
+            @change="endDateChange" clearable>
           </el-date-picker>
         </el-form-item>
         <el-form-item>
