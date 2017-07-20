@@ -66,8 +66,13 @@ class AddCountController extends CommonController{
         $sort_field = I('get.sort_field', 'id');
         $sort_order = I('get.sort_order', 'asc');
         $sort_field = empty($sort_field) ? 'id' :$sort_field;
+        $today = Date("Y-m-d");
+        $end = I('get.end');
+        if ($end > $today) {
+          $end = $today;
+        }
         $this->d
-             ->setDate(I('get.start'), I('get.end'))
+             ->setDate(I('get.start'), $end)
              ->setOrder($sort_field." ".$sort_order);
   }
 

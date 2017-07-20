@@ -119,7 +119,7 @@ function setCommonLogic(opt){
 		this.loadDatalist();
 
 		delete this.searchForm.sort_field;
-    delete this.searchForm.sort_order;
+    	delete this.searchForm.sort_order;
 		// window.location.reload();
 
 	})
