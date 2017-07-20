@@ -89,7 +89,6 @@
       <el-row>
         <el-col :span="24">
           <el-table :data="dataList" border v-loading="dataLoad" 
-              
               @current-change="handleSelectionChange"
               @sort-change="sortChange"
               @row-click="trackLog"
@@ -97,8 +96,6 @@
               empty-text="暂无数据,销售妹子正在努力中！"
               highlight-current-row ref="select">
 
-		  	    <el-table-column width="50" align="center" type="selection"></el-table-column>
-            
 		  	    <el-table-column label="{:L('INDEX')}" type="index" width="65"  ></el-table-column>
 
 		  	    <el-table-column  header-align="center" prop="name" label="客户姓名"></el-table-column>

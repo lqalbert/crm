@@ -33,9 +33,6 @@
     .el-tabs--border-card{
       border: none;
     }
-    .el-table__body tr.current-row>td{
-      background: rgba(157, 195, 232, 0.7);
-    }
     .el-tabs__item{
     	font-family: Microsoft YaHei;
     	color:#0d0f10;
@@ -83,14 +80,12 @@
       <el-row>
         <el-col :span="24">
           <el-table border v-loading="dataLoad" :data="dataList"
-              @selection-change="handleSelectionChange"
+              @current-change="handleSelectionChange"
               @row-click="trackLog" @sort-change="sortChange"
               element-loading-text="{:L('DATA_LOGIN')}"
               empty-text="暂无数据,销售妹子正在努力中！"
               highlight-current-row ref="select">
-            <el-table-column width="50" align="center" type="selection"></el-table-column>
-            
-		  	    <el-table-column label="{:L('INDEX')}" type="index" width="65"  ></el-table-column>
+		  	    <el-table-column label="{:L('INDEX')}" type="index" width="65" ></el-table-column>
 
             <el-table-column v-if="roleTypeVal == 1 || roleTypeVal == 2" prop="gen_name" label="普通客服" align="center" width="150">
             </el-table-column>
@@ -420,7 +415,8 @@
     this.complainContentFormDialog = true;
     this.complainContentForm.content = row.content;
   }).setMethod('handleSelectionChange', function(val){
-      this.multipleSelection = val;
+      this.deleteArrAllItem('multipleSelection');
+      this.multipleSelection.push(val);
   }).setMethod('sortChange', function(sortObject){
     
     var sortMap = {
@@ -472,7 +468,7 @@
       this.$message.error('请选择其中一位客户');
       return false;
     } else {
-      var  row = this.multipleSelection.pop();
+      var  row = this.multipleSelection[0];
       this[FormName.getForm('addTrack')].name = row.name;
       this[FormName.getForm('addTrack')].cus_id = row.cus_id;
       this[FormName.getForm('addTrack')].to_type = row.type;
@@ -487,7 +483,7 @@
       this.$message.error('请先选择一位客户');
       return false;
     } else {
-      var  row = this.multipleSelection.pop();
+      var  row = this.multipleSelection[0];
       this[FormName.getForm(x)].name = row.name;
       this[FormName.getForm(x)].cus_id = row.cus_id;
       this.complainForm.type = row.type;

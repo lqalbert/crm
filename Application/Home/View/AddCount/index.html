@@ -70,7 +70,6 @@
                 <el-date-picker size="small" v-model="searchForm.start" 
                   placeholder="请选择起日期" 
                   @change="startDateChange"
-                  :picker-options="pickerOptions0"
                   >
                 </el-date-picker>
             </el-form-item>
@@ -249,7 +248,7 @@
           disabledDate:function(time) {
             return time.getTime() >= Date.now();
           }
-     },
+        },
   }).setForm('search',{
       start:"{$start}",
       end:"{$end}",
