@@ -41,9 +41,7 @@
     .el-tabs--border-card{
       border: none;
     }
-    .el-table__body tr.current-row>td{
-      background: rgba(157, 195, 232, 0.7);
-    }
+    
     .on{
       opacity:0.5;
     }
@@ -187,12 +185,13 @@
       element-loading-text="{:L('DATA_LOGIN')}"
       highlight-current-row
       empty-text="暂无数据,请录入客户！"
-      @selection-change="handleSelectionChange"
+
+      @current-change="handleSelectionChange"
       @row-click="trackLog"  ref="select" 
       @row-dblclick="userInfo"
       @sort-change="sortChange">
 
-  	    <el-table-column width="50" align="center" type="selection"></el-table-column>
+  	    
 
   	    <el-table-column label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  ></el-table-column>
   	    <el-table-column  prop="name"  label="客户姓名" width="150" ></el-table-column>
@@ -359,10 +358,10 @@
               <el-table-column prop="user" label="操作员工" header-align="center">
               </el-table-column>
 
-              <el-table-column prop="type" label="客户类型(当前)" align="center">
+              <el-table-column prop="type" label="客户类型(当前)" header-align="center">
               </el-table-column>
 
-              <el-table-column prop="name" label="客户姓名" align="center">
+              <el-table-column prop="name" label="客户姓名" header-align="center">
               </el-table-column>
               
               <el-table-column label="投诉内容" header-align="center">
@@ -960,7 +959,8 @@
 
 
   }).setMethod('handleSelectionChange', function(val){
-    this.multipleSelection = val;
+    this.deleteArrAllItem('multipleSelection');
+        this.multipleSelection.push(val) ;
     /*this.multipleSelection = [];
     if(val.length >= 2){
        if(val.length == this.dataList.length){

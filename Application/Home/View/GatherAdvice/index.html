@@ -163,6 +163,7 @@
 
     this.$http.post(page.deleteUrl, {ids: ids}).then(function(response){
       this.$message.success(response.body.info);
+      this.loadDatalist();
     }, function(response){
       this.$message.error(response.body.info);
     })

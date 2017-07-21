@@ -1,9 +1,9 @@
 <extend name="Common:base" />
 <block name="head">
   <style>
-    .el-table__body tr.current-row>td{
+    /* .el-table__body tr.current-row>td{
       background: rgba(157, 195, 232, 0.7);
-    }
+    } */
   </style> 
 </block>
 <block name="body">
@@ -51,9 +51,8 @@
 					v-loading="dataLoad"  
 					element-loading-text="拼命加载中"
           @row-dblclick="choseRow"
-          @selection-change="handleSelectionChange">
-					    <el-table-column type="selection"  align="center" width="50" >
-					    </el-table-column>
+          @row-click="handleSelectionChange">
+					    
 					    <el-table-column type="index" :formatter="handleIndex" width="65" align="center" label="序号" >
 					    </el-table-column>
 					    <el-table-column label="部门" align="left" prop="db_name">
@@ -345,7 +344,8 @@
         });
       });
   }).setMethod('handleSelectionChange', function(val){
-    this.multipleSelection = val;
+        this.deleteArrAllItem('multipleSelection');
+        this.multipleSelection.push(val) ;
   }).setMethod('commonSelect',function(x){
     var form = x;
     var vmThis = this;

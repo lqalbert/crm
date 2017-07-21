@@ -1,0 +1,69 @@
+<el-dialog title="分配"  v-model="oneStepFormDialog" >
+<el-form :model="oneStepForm"  :rules="rules"  ref="oneStepForm" :label-position="'top'" >
+    <el-form-item label="商品名称" prop="name">
+        <el-input  auto-complete="off" v-model="oneStepForm.order.name" :disabled="true"></el-input>
+    </el-form-item>
+
+    <el-form-item label="销售金额" prop="sale_money">
+        <el-input  auto-complete="off" v-model="oneStepForm.order.sale_money" ></el-input>
+    </el-form-item>
+
+    <el-form-item label="应收金额" prop="receivable">
+        <el-input  auto-complete="off" v-model="oneStepForm.order.receivable" ></el-input>
+    </el-form-item>
+
+    <el-form-item label="实收金额" prop="paid_in">
+        <el-input  auto-complete="off" v-model="oneStepForm.order.paid_in" ></el-input>
+    </el-form-item>
+
+    <el-form-item label="客户姓名" >
+        <el-input  auto-complete="off" v-model="oneStepForm.order.customer_name" ></el-input>
+    </el-form-item>
+
+    <el-form-item label="客户手机" >
+        <el-select v-model="oneStepForm.order.phone" >
+            <el-option 
+            v-for="phone in bphone" 
+            :label="phone.phone" 
+            :value="phone.phone" ></el-option>
+        </el-select>
+    </el-form-item>
+
+    <el-form-item label="锁定人员" >
+        <el-input  auto-complete="off" v-model="oneStepForm.order.user_name" :disabled="true"></el-input>
+    </el-form-item>
+
+    <el-form-item label="跟踪人员" >
+        <el-input  auto-complete="off" v-model="oneStepForm.order.sale_name" :disabled="true"></el-input>
+    </el-form-item>
+
+    <el-form-item label="账号" prop="account_id">
+        <el-input placeholder="请输入账号" v-model="oneStepForm.account_id"></el-input>
+    </el-form-item>
+    <el-form-item label="说明">
+        <el-input
+          type="textarea"
+          :rows="2"
+          placeholder="请输入内容"
+          v-model="oneStepForm.account.mark">
+        </el-input>
+    </el-form-item>
+
+    <el-form-item label="客服主管" prop="semaster_id">
+        <el-select v-model="oneStepForm.semaster_id" :disabled="onestepse">
+            <el-option v-for="ser in seMaster" :value="ser.id" :label="ser.realname"></el-option>
+        </el-select>
+    </el-form-item>
+
+</el-form>
+<div slot="footer" class="dialog-footer">
+    <el-button @click="closeDialog('oneStep')">取 消</el-button>
+    <el-button type="primary" v-show="!oneStepFormSubmitStatus" @click="oneStepFormSubmit(page.setOneStepUrl, 'oneStep')" >确 定</el-button>
+    <el-button type="primary" v-show="oneStepFormSubmitStatus" :loading="true" >修改中</el-button>
+</div>
+</el-dialog>
+
+<!--     `open_id` INT(10) UNSIGNED NOT NULL COMMENT '账号开设人员id',
+`account_id` VARCHAR(20) NOT NULL COMMENT '软件账号id',
+`pdt_id` TINYINT(3) UNSIGNED NOT NULL COMMENT '产品id',
+`mark` VARCHAR(50) NOT NULL COMMENT '说明', -->

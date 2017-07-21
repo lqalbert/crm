@@ -33,9 +33,7 @@
     .el-tabs--border-card{
       border: none;
     }
-    .el-table__body tr.current-row>td{
-      background: rgba(157, 195, 232, 0.7);
-    }
+    
     .el-tabs__item{
     	font-family: Microsoft YaHei;
     	color:#0d0f10;
@@ -89,7 +87,10 @@
 		  </el-row>
       <el-row>
         <el-col :span="24">
-          <el-table border v-loading="dataLoad" :data="dataList"
+          <el-table 
+            border 
+            v-loading="dataLoad" 
+            :data="dataList"
               @selection-change="handleSelectionChange"
               @row-click="trackLog" @sort-change="sortChange"
               element-loading-text="{:L('DATA_LOGIN')}"
@@ -278,10 +279,10 @@
                 <el-table-column prop="user" label="操作员工" header-align="center">
                 </el-table-column>
 
-                <el-table-column prop="type" label="客户类型(当前)" align="center">
+                <el-table-column prop="type" label="客户类型(当前)" header-align="center">
                 </el-table-column>
 
-                <el-table-column prop="name" label="客户姓名" align="center" >
+                <el-table-column prop="name" label="客户姓名" header-align="center" >
                 </el-table-column>
                 
                 <el-table-column label="投诉内容" header-align="center">

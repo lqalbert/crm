@@ -69,9 +69,10 @@
                         </el-table-column>
                         <el-table-column label="商品" header-align="center" prop="product_name" >
                         </el-table-column>
-                        <el-table-column label="操作" header-align="center" >
+                        <el-table-column label="操作" width="280" header-align="center" >
                             <template scope="scope">
                                 <el-button size="small" type="info" @click="checkCustomer(scope.row.cus_id)">查看客户</el-button>
+                                <el-button size="small" type="primary" @click="openOneStep(scope.row)">开单2</el-button>
                                 <span v-for="button in scope.row.buttons">
                                     <el-button v-show="button=='order'" style="margin-left:8px;" size="small" type="primary" @click="setOrders(scope.row)">开单</el-button>
                                     <el-button v-show="button=='distribute'" size="small" type="primary" @click="setDistrute(scope.row)">分配</el-button>
@@ -113,9 +114,13 @@
         <div v-show="show" style="display: none">
             
         <include file="_order" />
+        <include file="_oneStep" />
         <include file="_distribute" />
         <include file="_account" />
         <include file="_orderInfo" />
+        
+
+
         <include file="BuyCheck::_customerInfo" />
 
         </div>
@@ -132,6 +137,7 @@
     page.setAccountUrl = "{:U('setAccount')}";
     page.getOrderInfoUrl = "{:U('getOrderInfo')}";
     page.getCustomerInfoUrl = "{:U('CommonFindDetail/getCustomerInfo')}"
+    page.setOneStepUrl = "{:U('setOneStep')}";
 
     window.defaultOption.setDatas({
         bphone:[],
@@ -160,6 +166,16 @@
             sale_name:"",
             creater:"",
             created_at:"",
+        },
+        onestepse:false,
+        rules:{
+            account_id:[
+                { required: true, message: '请输入', trigger: 'blur', type: 'string' },
+            ],
+            semaster_id:[
+                { required: true, message: '请选择', trigger: 'blur', type: 'string' },
+            ]
+            
         }
     }).setForm('add', {
        
@@ -198,6 +214,38 @@
         id_card:"",
         address:"",
         contacts:[]
+    },true).setForm('oneStep',{
+         account_id:"",
+         semaster_id:null,
+        'order':{
+            buy_id:null,
+            product_id:null,
+            sale_money:"0.00", //销售金额
+            receivable:"0.00", //应收金额
+            paid_in:"0.00", //实收金额
+            cus_id: 0, //客户id
+            user_id: 0, //锁定人员
+            salesman_id: 0, //跟踪人员
+            customer_name: "", //客户姓名
+            phone: "", //客户手机
+            name:"", //商品名称
+            user_name:"",//锁定人员
+            sale_name:"" //跟踪人员
+        },
+        'account':{
+             account_id:null,
+             pdt_id:"",
+             mark:"",
+             cus_id:"",
+             buy_id:"",
+             user_id:'',
+         },
+         'distribute':{
+            semaster_id:null,
+            cus_id:null,
+            buy_id:null
+         },
+         
     },true).setMethod('handleSelectionChange', function(val){
         this.multipleSelection = val;
     }).setMethod('setOrders', function(row){
@@ -289,11 +337,64 @@
        this.$http.get(page.getOrderInfoUrl, {params:{buy_id:buy_id}}).then(function(response){
           this.initObject(this.orderInfoDetail, response.body);
           this.orderInfoDetail.product_name = row.product_name;
-          console.log(this.orderInfoDetail);
+          // console.log(this.orderInfoDetail);
           this.OrderInfoDialog = true;
        }, function(response){
           this.$message.error("出错了");
        });
-    });
+    }).setMethod('openOneStep', function(row){
+        this.onestepse = false;
+        this.oneStepForm.account_id="";
+        this.oneStepForm.semaster_id="";
+        this.oneStepForm.account.account_id = this.oneStepForm.account_id;
+        this.oneStepForm.distribute.semaster_id = this.oneStepForm.semaster_id;
+        this.setOneStepOrder(row);
+        this.setOneStepDis(row);
+        this.setOneStepAccount(row);
+
+        this.openDialog('oneStep');
+    }).setMethod('setOneStepOrder',function(row){
+        this.oneStepForm.order.name   = row.product_name;
+        this.oneStepForm.order.sale_money = row.product_money;
+        this.oneStepForm.order.cus_id = row.cus_id;
+        this.oneStepForm.order.salesman_id = row.user_id;
+        this.oneStepForm.order.buy_id = row.id;
+        this.oneStepForm.order.product_id = row.product_id;
+        var param = {cus_id:row.cus_id};
+        this.$http.get(page.getBuyDetailUrl, {params: param}).then(function(response){
+            var body = response.body;
+            this.oneStepForm.order.customer_name = body.name;
+            this.oneStepForm.order.user_id = body.user.user_id;
+            this.oneStepForm.order.user_name = body.user.name +' '+ body.user.realname;
+            this.oneStepForm.order.sale_name = body.sale.name +' '+ body.sale.realname;
+            this.bphone = body.phones;
+        }, function(response){
+            this.$message.error("出错了");
+        });
+    }).setMethod('setOneStepDis', function(row){
+        this.oneStepForm.distribute.cus_id = row.cus_id;
+        this.oneStepForm.distribute.buy_id     = row.id;
+        this.oneStepForm.distribute.semaster_id  = "";
+        //获取已分配的
+        this.$http.get('{:U("getDisId")}', {params: row.cus_id}).then(function(response){
+            this.oneStepForm.distribute.semaster_id = response.body.id;
+            this.onestepse=true;
+        }, function(response){
+            // this.$message.error("出错了");
+        });
+    }).setMethod('setOneStepAccount', function(row){
+        this.oneStepForm.account.cus_id = row.cus_id;
+        this.oneStepForm.account.user_id = row.user_id;
+        this.oneStepForm.account.pdt_id = row.product_id;
+        this.oneStepForm.account.buy_id = row.id
+        this.oneStepForm.account.account_id = null;
+        this.oneStepForm.account.mark = null;
+        //获取已有的账号
+        this.$http.get('{:U("getAccount")}', {params: row.cus_id}).then(function(response){
+            this.oneStepForm.account.account_id = response.body.account_id;
+        }, function(response){
+            // this.$message.error("出错了");
+        });
+    })
 </script>
 </block>

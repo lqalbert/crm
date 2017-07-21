@@ -35,7 +35,9 @@ function setCommonLogic(opt){
 		pageSize: page.pageSize,
 
 		dialogLabelWidth:"140px",
-		page:page
+		page:page,
+
+		currentRow:null
 
 	});
 
@@ -117,7 +119,7 @@ function setCommonLogic(opt){
 		this.loadDatalist();
 
 		delete this.searchForm.sort_field;
-    delete this.searchForm.sort_order;
+    	delete this.searchForm.sort_order;
 		// window.location.reload();
 
 	})
@@ -202,6 +204,25 @@ function setCommonLogic(opt){
 	opt.setMethod('refresh', function(){
 		window.location.reload();
 	})
+
+	opt.setMethod('deleteArrAllItem',function(v){
+		while(this[v].length > 0){
+	      this[v].shift();
+	    }
+	})
+
+	opt.setMethod('handleCurrentChange', function(row){
+		this.currentRow = row;
+	})
+
+	opt.setMethod('handleCurrentChange2', function(row){
+		this.handleCurrentChange(row);
+		if (this.multipleSelection) {
+			this.multipleSelection.push(row);
+		}
+	})
+
+
 
 
 }

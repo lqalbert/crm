@@ -257,10 +257,10 @@
       return;
     }
     for (var i = this.multipleSelection.length - 1; i >= 0; i--) {
-      
       this.checkForm.ids.push(this.multipleSelection[i].id);
     }
-    this.multipleSelection = [];
+    this.deleteArrAllItem('multipleSelection');
+   
   }).setMethod('handleSelectionChange',function(val){
     this.multipleSelection = val;
   }).setMethod('viewtraceContents',function(row,event){

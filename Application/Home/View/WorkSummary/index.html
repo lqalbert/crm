@@ -21,10 +21,18 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-table :data="dataList" v-loading="dataLoad" border stripe element-loading-text="{:L('DATA_LOGIN')}"
-          @row-click="showContent"
-           @selection-change="handleSelectionChange" ref="select">
-            <el-table-column type="selection" align="center" width="50"></el-table-column>
+          <el-table 
+          :data="dataList" 
+          v-loading="dataLoad" 
+          border 
+          stripe 
+          element-loading-text="{:L('DATA_LOGIN')}"
+          highlight-current-row
+          @row-dblclick="showContent"
+          
+          @current-change="handleSelectionChange"
+          ref="select">
+            
             <el-table-column label="序号" align="center" :formatter="handleIndex" width="65"></el-table-column>
             <el-table-column label="总结标题" prop="title"  ></el-table-column>
             <el-table-column label="总结内容" prop="content" >
@@ -116,10 +124,12 @@
       return this[field][type];
   }).setMethod('handleSelectionChange',function(val){
     //this.contentDialog = false;
-    this.multipleSelection = val;
+    this.deleteArrAllItem('multipleSelection');
+    this.multipleSelection.push(val) ;
   }).setMethod('commonSelect',function(x){
     var form = x;
     var vmThis = this;
+
     if (this.multipleSelection.length ==0 ||  this.multipleSelection.length>1) {
       this.closeDialog(form);
       this.$message.error('请先选择一条总结');

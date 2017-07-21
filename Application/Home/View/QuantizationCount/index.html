@@ -32,7 +32,8 @@
                 v-model="searchForm.distMax" 
                 :picker-options="pickerOption1" 
                 placeholder="请选择止日期"  
-                @change="dateChanges">
+                @change="dateChanges"
+                clearable>
               </el-date-picker>
           </el-form-item>
 
@@ -43,7 +44,8 @@
                 clearable 
                 @change="departmentChange" 
                 width="50" 
-                placeholder="部门">
+                placeholder="部门"
+                clearable>
                   <el-option v-for="item in departments" :key="item.id" :label="item.name" :value="item.id"></el-option>
               </el-select>
           </el-form-item>
