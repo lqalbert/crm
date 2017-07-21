@@ -64,6 +64,7 @@
                 <el-date-picker size="small" v-model="searchForm.start" 
                   placeholder="请选择起日期" 
                   @change="startDateChange"
+                  :picker-options="pickerOptions0"
                   >
                 </el-date-picker>
             </el-form-item>
@@ -73,6 +74,7 @@
                   placeholder="请选择止日期" 
                   @change="endDateChange"
                   size="small"
+                  :picker-options="pickerOptions0"
                   >
                 </el-date-picker>
             </el-form-item>
@@ -154,6 +156,11 @@
       sortMap:{
         descending:'desc',
         ascending:'asc'
+      },
+      pickerOptions0: {
+          disabledDate:function(time) {
+            return time.getTime() >= Date.now();
+          }
       },
     }).setForm('search',{
       start:'{$start}',
