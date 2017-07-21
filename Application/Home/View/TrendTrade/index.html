@@ -36,9 +36,7 @@
     .el-tabs--border-card{
       border: none;
     }
-    .el-table__body tr.current-row>td{
-      background: rgba(157, 195, 232, 0.7);
-    }
+    
     .el-tabs__item{
         font-family: Microsoft YaHei;
         color:#0d0f10;
@@ -424,58 +422,14 @@
 		    },
 		    yAxis: [{
 		            type: 'value',
-		            name: '被冲突',
-		            position: 'right',
-		            axisLine: {
-		                lineStyle: {
-		                    color: colors[3]
-		                }
-		            },
-		            axisLabel: {
-		                formatter: '{value} 个'
-		            }
-		        },
-		        {
-		            type: 'value',
-		            name: '冲突',
-		            position: 'right',
-		            offset: 60,
-		            axisLine: {
-		                lineStyle: {
-		                    color: colors[2]
-		                }
-		            },
-		            axisLabel: {
-		                formatter: '{value} 个'
-		            }
-		        },
-		        {
-		            type: 'value',
-		            name: '成交数',
-		            position: 'right',
-		            offset: 120,
-		            axisLine: {
-		                lineStyle: {
-		                    color: colors[1]
-		                }
-		            },
-		            axisLabel: {
-		                formatter: '{value} 个'
-		            }
-		        },
-		        {
-		            type: 'value',
-		            name: '自锁数',
+		            name: '',
 		            position: 'left',
-		            axisLine: {
-		                lineStyle: {
-		                    color: colors[0]
-		                }
-		            },
+		            
 		            axisLabel: {
 		                formatter: '{value} 个'
 		            }
 		        }
+		        
 		    ],
 		    series: []
 		};

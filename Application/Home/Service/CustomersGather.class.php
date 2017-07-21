@@ -207,7 +207,7 @@ class CustomersGather {
     }
 
     public function getAllGroups(){
-        $toDaylist = array();   
+        /*$toDaylist = array();   
         if ($this->end >=  $this->today) {
 
             $toDaylist = $this->getTodayGroupsAll();
@@ -219,7 +219,7 @@ class CustomersGather {
             // foreach ($departments as $value) {
             //     $toDaylist = array_merge($toDaylist, $this->wrapDepartment($value['id'], $value['name'], $this->getTodayGroups($value['id'])));
             // }
-        } 
+        } */
 
 
         $list2 = M('statistics_usercustomers')->field($this->getSqlFields().",statistics_usercustomers.group_id as id , group_name as name, statistics_usercustomers.department_id, department_name, ui.realname")
@@ -229,7 +229,8 @@ class CustomersGather {
                                                 ->group('statistics_usercustomers.group_id')
                                                 ->select();
                                        
-        $list  = $this->mergeList($list2, $toDaylist);
+        // $list  = $this->mergeList($list2, $toDaylist);
+        $list  = $list2;
         return $this->reSort($list);
     }
 

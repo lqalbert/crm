@@ -24,11 +24,14 @@ class QuantizationCountController extends CommonController{
           }else{
               $departments=array('list'=>D('Department')->getSalesDepartments('id,name'),'account'=>'','group'=>'');
           }
+          $this->assign('department_id', "");
       }else{
           //部门经理权限
           //部门所属团队小组
           $ar=D('Group')->getAllGoups(session('account')['userInfo']['department_id'],'id,name');
           $departments=array('list'=>$arr,'account'=>$arr,'group'=>$ar);
+          
+          $this->assign('department_id', session('account')['userInfo']['department_id']);
       }
       $this->assign('departments',$departments);
       $this->display();

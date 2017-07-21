@@ -160,6 +160,7 @@ class TrendTradeController extends CommonController{
     $department_id = I('get.department_id');
     $group_id = I('get.group_id');
     $type = I('get.type');
+    $arr = array();
 
     if($type=="user" && isset($_GET['department_id']) && !isset($_GET['group_id'])){
       foreach ($this->users as $k => $v) {
@@ -188,7 +189,10 @@ class TrendTradeController extends CommonController{
       $arr[] = $this->groups[$group_id];
       $result = array('list'=>$arr, 'count'=>count($arr));
     }elseif ($type=="department" && isset($_GET['department_id']) && !isset($_GET['group_id'])) {
-      $arr[] = $this->deps[$department_id];
+      if ($this->deps[$department_id]) {
+        $arr[] = $this->deps[$department_id];
+      } 
+      
       $result = array('list'=>$arr, 'count'=>count($arr));
     }
 
@@ -243,14 +247,14 @@ class TrendTradeController extends CommonController{
         $dd=array(
             'date'=>$this->date,
             'series'=>array(
-                array('name'=>'自锁数','type'=>'bar',"yAxisIndex"=> 3,'data'=>$c),
-                array('name'=>'成交数','type'=>'bar',"yAxisIndex"=> 2,'data'=>$v),
-                array('name'=>'冲突','type'=>'bar',"yAxisIndex"=> 1,'data'=>$ct),
-                array('name'=>'被冲突','type'=>'bar',"yAxisIndex"=> 0,'data'=>$cf),
-                array('name'=>'自锁数曲线','type'=>'line',"yAxisIndex"=> 3,"smooth"=>  true,'data'=>$c),
-                array('name'=>'成交数曲线','type'=>'line',"yAxisIndex"=> 2,"smooth"=>  true,'data'=>$v),
-                array('name'=>'冲突曲线','type'=>'line',"yAxisIndex"=> 1,"smooth"=>  true,'data'=>$ct),
-                array('name'=>'被冲突曲线','type'=>'line',"yAxisIndex"=> 0,"smooth"=>  true,'data'=>$cf),
+                array('name'=>'自锁数','type'=>'line','data'=>$c),
+                array('name'=>'成交数','type'=>'line','data'=>$v),
+                array('name'=>'冲突','type'=>'line','data'=>$ct),
+                array('name'=>'被冲突','type'=>'line','data'=>$cf),
+                array('name'=>'自锁数曲线','type'=>'line',"smooth"=>  true,'data'=>$c),
+                array('name'=>'成交数曲线','type'=>'line',"smooth"=>  true,'data'=>$v),
+                array('name'=>'冲突曲线','type'=>'line',"smooth"=>  true,'data'=>$ct),
+                array('name'=>'被冲突曲线','type'=>'line',"smooth"=>  true,'data'=>$cf),
                //array('name'=>'成交数','type'=>'bar',"barWidth"=> '20%','data'=>$v),
              )
         );
@@ -314,27 +318,4 @@ class TrendTradeController extends CommonController{
     $this->date = $date;
     //va_dump($this->date);die();
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

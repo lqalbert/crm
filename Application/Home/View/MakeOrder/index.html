@@ -344,10 +344,12 @@
        });
     }).setMethod('openOneStep', function(row){
         this.onestepse = false;
-        this.oneStepForm.account_id="";
-        this.oneStepForm.semaster_id="";
-        this.oneStepForm.account.account_id = this.oneStepForm.account_id;
-        this.oneStepForm.distribute.semaster_id = this.oneStepForm.semaster_id;
+        this.oneStepForm.account_id= "";
+        this.oneStepForm.semaster_id= "";
+
+        // this.oneStepForm.account.account_id = this.oneStepForm.account_id;
+        // this.oneStepForm.distribute.semaster_id = this.oneStepForm.semaster_id;
+
         this.setOneStepOrder(row);
         this.setOneStepDis(row);
         this.setOneStepAccount(row);
@@ -383,6 +385,7 @@
             // this.$message.error("出错了");
         });
     }).setMethod('setOneStepAccount', function(row){
+        console.log(row);
         this.oneStepForm.account.cus_id = row.cus_id;
         this.oneStepForm.account.user_id = row.user_id;
         this.oneStepForm.account.pdt_id = row.product_id;
@@ -395,6 +398,11 @@
         }, function(response){
             // this.$message.error("出错了");
         });
+    }).setMethod('oneStepup', function(){
+        this.oneStepForm.account.account_id = this.oneStepForm.account_id;
+        this.oneStepForm.distribute.semaster_id = this.oneStepForm.semaster_id;
+
+        this.oneStepFormSubmit(page.setOneStepUrl, 'oneStep');
     })
 </script>
 </block>

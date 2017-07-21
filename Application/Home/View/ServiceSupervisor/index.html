@@ -550,7 +550,7 @@
       this.$message.error('请选择其中一位客户');
       return false;
     } else {
-      var  row = this.multipleSelection.pop();
+      var  row = this.multipleSelection[0];
       this[FormName.getForm('addTrack')].name = row.name;
       this[FormName.getForm('addTrack')].cus_id = row.cus_id;
       this[FormName.getForm('addTrack')].to_type = row.type;
@@ -565,7 +565,7 @@
       this.$message.error('请先选择一位客户');
       return false;
     } else {
-      var  row = this.multipleSelection.pop();
+      var  row = this.multipleSelection[0];
       this[FormName.getForm(x)].name = row.name;
       this[FormName.getForm(x)].cus_id = row.cus_id;
       this.complainForm.type = row.type;

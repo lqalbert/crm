@@ -177,6 +177,11 @@
     this.searchForm.distMin = v;
     this.distMin=v
   }).setMethod('dateChanges',function(v){
+      if ( v < this.searchForm.distMin) {
+        this.$message.error("止时间不能小于起时间");
+        this.searchForm.distMax = null;
+        return;
+      }
       this.searchForm.distMax = v;
   }).setMethod('departmentChange',function (v) {
       var vmThis=this

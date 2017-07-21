@@ -58,7 +58,7 @@
 </el-form>
 <div slot="footer" class="dialog-footer">
     <el-button @click="closeDialog('oneStep')">取 消</el-button>
-    <el-button type="primary" v-show="!oneStepFormSubmitStatus" @click="oneStepFormSubmit(page.setOneStepUrl, 'oneStep')" >确 定</el-button>
+    <el-button type="primary" v-show="!oneStepFormSubmitStatus" @click="oneStepup" >确 定</el-button>
     <el-button type="primary" v-show="oneStepFormSubmitStatus" :loading="true" >修改中</el-button>
 </div>
 </el-dialog>

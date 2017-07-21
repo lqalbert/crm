@@ -354,7 +354,7 @@
       this.$message.error('请先选择一个小组');
       return false;
     } else {
-      var  row = this.multipleSelection.pop();
+      var  row = this.multipleSelection[0];
       this.row = row;
       return row;
     }

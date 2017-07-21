@@ -135,7 +135,7 @@
       this.$message.error('请先选择一条总结');
       return false;
     } else {
-      var  row = this.multipleSelection.pop();
+      var  row = this.multipleSelection[0];
       this[FormName.getForm(x)].su_user = row.su_user;
       this[FormName.getForm(x)].id   = row.id;
       this.row=row;
@@ -144,10 +144,8 @@
   }).setMethod('beforeReply', function(){
     this.commonSelect('reply');
   }).setMethod('showContent',function(row,event,column){
-    if (column.label) {
-      this.contentDialog = true;
-      this.showContentDetail = row;
-    }; 
+    this.contentDialog = true;
+    this.showContentDetail = row;
   });
 </script>
 </block>

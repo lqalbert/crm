@@ -210,18 +210,20 @@ class MakeOrderController extends CommonController {
         }
     }
 
-    public function _addAccount(){
+    private function _addAccount(){
         $_POST['open_id'] = session('uid');
         $_POST['user_id'] = I('post.account.user_id');
+
         $data = M('software_account')->create($_POST['account']);
+
         if (!$data) {
             // $this->error(M('software_account')->getError());
             $this->error = M('software_account')->getError();
             return false;
         } else {
             
-            $buyRow = $this->M->find(I("post.account.buy_id"));
-            $data['pdt_id'] = $buyRow['product_id'];
+            // $buyRow = $this->M->find(I("post.account.buy_id"));
+            // $data['pdt_id'] = $buyRow['product_id'];
             $re = M('software_account')->data($data)->add();
 
             $saveRe = $this->M->where(array('id'=>$buyRow['id']))
@@ -235,6 +237,28 @@ class MakeOrderController extends CommonController {
                 $this->error = M('software_account')->getError();
                 return false;
             }
+        }
+    }
+
+    private function _setDis(){
+        $id = I('post.distribute.cus_id');
+        $semaster_id = I('post.distribute.semaster_id');
+
+        $data = array('semaster_id'=>$semaster_id);
+        $re   = D("Customer")->where(array('id'=>$id))->data($data)->save();
+
+        $buyRow = $this->M->find(I("post.distribute.buy_id"));
+
+        $saveRe = $this->M->where(array('id'=>$buyRow['id']))
+                                    ->data(array('todo_list'=>$this->delToList( $buyRow['todo_list'], 'distribute') ))
+                                    ->save();
+        
+
+        if ($saveRe !== false) {
+            return true;
+        } else {
+            $this->error=D("Customer")->getError();
+            return false;
         }
     }
 

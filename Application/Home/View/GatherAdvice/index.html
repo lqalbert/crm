@@ -138,7 +138,7 @@
       this.$message.error('只能选择一条建议');
       return false;
     } else {
-      var  row = this.multipleSelection.pop();
+      var  row = this.multipleSelection[0];
       this[FormName.getForm(x)].name = row.name;
       this[FormName.getForm(x)].id   = row.id;
       this.row=row;
@@ -169,10 +169,8 @@
     })
 
   }).setMethod('showContent',function(row,event,column){
-    if (column.label) {
-      this.contentDialog = true;
+    this.contentDialog = true;
       this.showContentDetail = row;
-    }; 
   });
 </script>
 </block>
