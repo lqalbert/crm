@@ -17,7 +17,12 @@
     <el-col :span="24">
       <el-form :inline="true" ref="searchForm" :model="searchForm">
         <el-form-item prop="dist">
-          <el-date-picker size="small" v-model="searchForm.dist" placeholder="请选择日期"  @change="dateChange">
+          <el-date-picker 
+          size="small" 
+          v-model="searchForm.dist" 
+          placeholder="请选择日期"  
+          @change="dateChange"
+          :picker-options="pickerOptions0">
           </el-date-picker>
         </el-form-item>
          
@@ -136,7 +141,12 @@
       descending:'desc',
       ascending:'asc'
     },
-    objType:"{$objType}"
+    objType:"{$objType}",
+    pickerOptions0: {
+      disabledDate:function(time) {
+        return time.getTime() >= Date.now();
+      }
+    },
   }).setForm('search',{
       dist:'{$dist}',
       id:"<?php echo I('get.id', 0)?>",

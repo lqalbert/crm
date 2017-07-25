@@ -67,7 +67,7 @@
             </el-form-item>
 
 		        <el-form-item>
-		          <el-button @click="loadDatalist" type="info" size="small" icon="search">查询</el-button> 
+		          <el-button @click="search" type="info" size="small" icon="search">查询</el-button> 
 		          
 <!-- 		          <el-tooltip content="录入高级查询条件"  style="margin-left:10px;">
 		            <el-button @click="openDialog('advancedQuery')" size="small" type="primary">{:L('ADVANCED_QUERY')}</el-button>
@@ -386,7 +386,7 @@
   }).setForm('search',{
     name:'',
     contact:'',
-    field: '',
+    field:'',
     gen:'0',
   }).setForm('advancedQuery',{
     start:'',
@@ -589,6 +589,9 @@
     },function(response){
       vmThis.$message.error("操作出错啦");
     });
+  }).setMethod("search", function(){
+    this.dataLoad = true;
+    this.loadDatalist();
   });
 </script>
 </block>

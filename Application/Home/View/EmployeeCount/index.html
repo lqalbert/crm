@@ -13,7 +13,8 @@
                               v-model="searchForm.start"
                               type="date"
                               placeholder="选择日期"
-                              @change="startValue">
+                              @change="startValue"
+                              :picker-options="pickerOptions0">
                             </el-date-picker>
                         </el-form-item>
                         <el-form-item prop="end" style="width: 160px" >
@@ -21,7 +22,8 @@
                               v-model="searchForm.end"
                               type="date"
                               placeholder="选择日期"
-                              @change="endValue">
+                              @change="endValue"
+                              :picker-options="pickerOptions0">
                             </el-date-picker>
                         </el-form-item>
                         <el-form-item prop="department_id"  style="width: 120px">
@@ -66,7 +68,12 @@
     <script>
         page.searchUrl="{:U('search')}";
         window.defaultOption.setDatas({
-            departments:{:json_encode($departments)}
+            departments:{:json_encode($departments)},
+            pickerOptions0: {
+              disabledDate:function(time) {
+                return time.getTime() >= Date.now();
+              }
+            },
 
         }).setForm('search',{
             start:'',

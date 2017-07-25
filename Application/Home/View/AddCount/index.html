@@ -67,9 +67,12 @@
         <el-col :span="24">
           <el-form :inline="true" ref="searchForm" :model="searchForm">
             <el-form-item prop="start">
-                <el-date-picker size="small" v-model="searchForm.start" 
+                <el-date-picker size="small" 
+                  v-model="searchForm.start" 
                   placeholder="请选择起日期" 
                   @change="startDateChange"
+                  :clearable="dateclear"
+                  :picker-options="pickerOptions0"
                   >
                 </el-date-picker>
             </el-form-item>
@@ -79,6 +82,7 @@
                   placeholder="请选择止日期" 
                   @change="endDateChange"
                   size="small"
+                  :clearable="dateclear"
                   :picker-options="pickerOptions0"
                   >
                 </el-date-picker>
@@ -224,6 +228,7 @@
   window.defaultOption.hooks.delAll('mounted');
 
   window.defaultOption.setDatas({
+      dateclear:false,
       ctrlSelect:false,
       ctrl:false,
       searchGroup:{:json_encode($searchGroup)},
@@ -326,7 +331,8 @@
       this.detailReset();
     }
   }).setMethod('readySearch', function(){
-      return this.searchForm.start.length ==0 || this.searchForm.end.length==0;
+    
+      return !this.searchForm.start || this.searchForm.start.length ==0 || !this.searchForm.end || this.searchForm.end.length==0;
   }).setMethod('resetBack', function(){
       window.location.href="{:U('index')}";
   }).setMethod('sortChange', function(info){

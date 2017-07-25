@@ -26,11 +26,14 @@ class CustomerSheetController extends CommonController{
   }
 
   private function goldDepartments(){
+    $this->assign("depart_id", "");
     return D("Department")->getSalesDepartments();
   }
 
   private function departmentMasterDepartments(){
-    return D("Department")->getTheDepartments( $this->getDepartment_id() );
+    $depart_id = $this->getDepartment_id();
+    $this->assign("depart_id", $depart_id);
+    return D("Department")->getTheDepartments( $depart_id );
   }
 
   private function getDepartment_id(){

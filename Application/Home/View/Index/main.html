@@ -32,7 +32,7 @@
 						$arr['d_name']=M('department_basic')->where(array('id'=>$arr['department_id']))->getField('name');
 						$arr['role_name']=M('rbac_role')->where(array('id'=>$arr['role_id']))->getField('name');
 				  </php>
-			  	<img src="__ROOT__{$arr['head']}" class="image" width="100%" height="100%" style="width:200px;height:200px;border-radius:100%; vertical-align:middle;">
+			  	<img src="__ROOT__{$arr['head']}" class="image"  style="width:200px;height:200px;border-radius:100%; vertical-align:middle;">
 				
 			  	<div id="th" style="float:right;width:200px;border-left:1px solid #e2e2e2;line-height:180%">
 			  		&nbsp;&nbsp;&nbsp;<span>姓名：{$arr['realname']}</span><br>
