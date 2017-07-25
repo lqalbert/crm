@@ -72,7 +72,7 @@
                         <el-table-column label="操作" width="280" header-align="center" >
                             <template scope="scope">
                                 <el-button size="small" type="info" @click="checkCustomer(scope.row.cus_id)">查看客户</el-button>
-                                <el-button size="small" type="primary" @click="openOneStep(scope.row)">开单</el-button>
+                                <el-button v-show="scope.row.buttons.length==3" size="small" type="primary" @click="openOneStep(scope.row)">开单</el-button>
                                 <!-- <span v-for="button in scope.row.buttons">
                                     <el-button v-show="button=='order'" style="margin-left:8px;" size="small" type="primary" @click="setOrders(scope.row)">开单</el-button>
                                     <el-button v-show="button=='distribute'" size="small" type="primary" @click="setDistrute(scope.row)">分配</el-button>
