@@ -22,8 +22,10 @@
               v-model="searchForm.distMin" 
               :picker-options="pickerOption1" 
               placeholder="请选择起日期"  
-              @change="dateChange">
+              @change="dateChange"
+              :clearable="cleardate">
 	          </el-date-picker>
+            <!-- clearable false 故意这样处理的 -->
 	        </el-form-item>
           <el-form-item prop="distMax" style="width: 130px">
               <el-date-picker 
@@ -33,8 +35,9 @@
                 :picker-options="pickerOption1" 
                 placeholder="请选择止日期"  
                 @change="dateChanges"
-                clearable>
+                :clearable="cleardate">
               </el-date-picker>
+              <!-- clearable false 故意这样处理的 -->
           </el-form-item>
 
           <el-form-item prop="department_id" style="width:120px">
@@ -104,7 +107,7 @@
 
           <el-table-column prop="door_track" width="100" label="上门服务" align="center"></el-table-column>
 
-          <el-table-column prop="qq_track" width="100" label="QQ跟踪" align="center"></el-table-column>
+          <el-table-column prop="qq_track" width="100" label="QQ联系" align="center"></el-table-column>
 
           <el-table-column prop="email_track" width="120" label="email跟踪" align="center"></el-table-column>
 
@@ -159,7 +162,8 @@
               return time.getTime() > Date.now()-86400000;
           }
       },
-      users:[]
+      users:[],
+      cleardate:false
   }).setForm('search',{
       department_id:'{$department_id}',
       group_id:'',
@@ -179,11 +183,14 @@
   }).setMethod('dateChanges',function(v){
       this.searchForm.distMax = v;
   }).setMethod('departmentChange',function () {
-      var vmThis=this
-      vmThis.$http.get('{:U("getAllGroups")}',{params:{department_id:vmThis.searchForm.department_id}}).then(function (response) {
-          vmThis.groups=response.body
-          vmThis.searchForm.group_id=''
-      })
+      var vmThis=this;
+      if (this.searchForm.department_id.length>0) {
+        vmThis.$http.get('{:U("getAllGroups")}',{params:{department_id:vmThis.searchForm.department_id}}).then(function (response) {
+            vmThis.groups=response.body
+            vmThis.searchForm.group_id=''
+        })
+      }
+      
   }).setMethod('setField', function(v){
       if (v=='week') {
           this.searchForm.distMin = showWeekFirstDay();
@@ -215,6 +222,12 @@
   }).setMethod('groupChange',function (v) {
       var vmThis=this;
       var param = {group_id:v};
+
+      if (v.length==0) {
+        this.deleteArrAllItem('users');
+        return ;
+      }
+
       if (this.searchForm.distMin) {
         param.distMin = this.searchForm.distMin
       }

@@ -192,6 +192,12 @@
   }).setMethod('groupChange',function (v) {
       var vmThis=this;
       var param = {group_id:v};
+
+      if (v.length==0) {
+        this.deleteArrAllItem('users');
+        return ;
+      }
+      
       if (this.searchForm.distMin) {
         param.distMin = this.searchForm.distMin
       }

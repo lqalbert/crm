@@ -89,7 +89,7 @@ class QuantizationCountController extends CommonController{
     if ($user_ids) {
       $users = M('user_info')->field("user_id, realname")->where(array("user_id"=>array("IN", $user_ids)))->select();
     } else {
-      $users = array();
+      $users = D('User')->getGroupEmployee($group_id, 'user_id,realname');
     }
     $this->ajaxReturn($users);
   }
