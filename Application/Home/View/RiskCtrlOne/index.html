@@ -528,7 +528,9 @@ window.defaultOption.setDatas({
       return row;
     }
   }).setMethod('beforeAddComplain', function(){
+
     this.commonSelect('complain');
+    
   }).setMethod('beforeCheck', function(){
     if (this.multipleSelection.length == 0) {
       this.$message.error("请至少选择一个客户");

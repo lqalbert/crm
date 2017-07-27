@@ -45,7 +45,7 @@ class TrendTradeController extends CommonController{
     $this->M->where(array(
         'date'=>array(
           array('egt',I("get.start")), 
-          array('elt', I("get.end")))))->field(" sum(today_v) as v, sum(create_num) as c, `date`")
+          array('elt', I("get.end")))))->field(" sum(today_v) as v, sum(create_num) as c,sum(conflict_to) as ct , sum(conflict_from) as cf ,`date`")
         ->group('`date`');
 
     $group_id = I("get.group_id", null);
@@ -74,6 +74,8 @@ class TrendTradeController extends CommonController{
           array_splice($re, $key, 0, array(array(
             'v'    =>0,
             'c'    =>0,
+            'cf'   =>0,
+            'ct'   =>0,
             'data' =>$value
           )));
         }
@@ -81,13 +83,15 @@ class TrendTradeController extends CommonController{
 
       $v = array_column($re, 'v');
       $c = array_column($re, 'c');
-     /* $cf = array_column($re, 'cf');
-      $ct = array_column($re, 'ct');*/
+      $cf = array_column($re, 'cf');
+      $ct = array_column($re, 'ct');
       $dd=array(
           'date'=>$this->date,
           'series'=>array(
               array('name'=>'自锁数','type'=>'line','yAxisIndex'=>0,'data'=>$c),
-              array('name'=>'成交数','type'=>'line','yAxisIndex'=>1, 'data'=>$v)
+              array('name'=>'成交数','type'=>'line','yAxisIndex'=>1, 'data'=>$v),
+              array('name'=>'冲突数','type'=>'line','yAxisIndex'=>1, 'data'=>$ct),
+              array('name'=>'被冲突数','type'=>'line','yAxisIndex'=>1, 'data'=>$cf)
            )
       );
     } else {
