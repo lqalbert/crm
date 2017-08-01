@@ -4,6 +4,7 @@ namespace Home\Controller;
 use Home\Model\RoleModel;
 use Home\Service\CustomersGather;
 use Common\Lib\User;
+
 class TrendTradeController extends CommonController{
 	protected $pageSize = 15;
   protected $table = "statistics_usercustomers";
@@ -49,20 +50,28 @@ class TrendTradeController extends CommonController{
         ->group('`date`');
 
     $group_id = I("get.group_id", null);
-   
-    if ($group_id !== "") {
-      if ($group_id!=0) {
-        $this->M->where(array('group_id'=> $group_id));
-      }
+    $user_id  = I("get.user_id", null);
+    if ($user_id!== "") {
+      $this->M->where(array('user_id'=> $user_id));
     } else {
-      //如果department_id ==0 或 小于 0 则返回所有的
-      $department_id = I("get.department_id", null);
-      if ($department_id!== "") {
-        if ($department_id != 0) {
-          $this->M->where(array('department_id'=> $department_id));
-        } 
+      if ($group_id !== "") {
+        if ($group_id!=0) {
+          $this->M->where(array('group_id'=> $group_id));
+        }
+      } else {
+        //如果department_id ==0 或 小于 0 则返回所有的
+        $department_id = I("get.department_id", null);
+        if ($department_id!== "") {
+          if ($department_id != 0) {
+            $this->M->where(array('department_id'=> $department_id));
+          } 
+        }
       }
     }
+
+
+   
+    
     $re = $this->M->select();
     // var_dump($this->M->getLastSql());
     $row = $re[0];
@@ -89,10 +98,21 @@ class TrendTradeController extends CommonController{
           'date'=>$this->date,
           'series'=>array(
               array('name'=>'自锁数','type'=>'line','yAxisIndex'=>0,'data'=>$c),
-              array('name'=>'成交数','type'=>'line','yAxisIndex'=>1, 'data'=>$v),
-              array('name'=>'冲突数','type'=>'line','yAxisIndex'=>1, 'data'=>$ct),
-              array('name'=>'被冲突数','type'=>'line','yAxisIndex'=>1, 'data'=>$cf)
+              // array('name'=>'成交数','type'=>'line','yAxisIndex'=>0, 'data'=>$v),
+              array('name'=>'冲突数','type'=>'line','yAxisIndex'=>0, 'data'=>$ct),
+              array('name'=>'被冲突数','type'=>'line','yAxisIndex'=>0, 'data'=>$cf)
            )
+      );
+
+      $dd2 = array(
+          'date'=>$this->date,
+          'series'=>array(
+              array('name'=>'成交数','type'=>'line', 'data'=>$v),
+              
+           )
+      );
+      $result = array(
+        $dd, $dd2
       );
     } else {
       
@@ -100,8 +120,13 @@ class TrendTradeController extends CommonController{
             'date'=>$this->date ,
             'series'=>array()
         );
+      $dd2 = $dd;
+
+      $result = array(
+        $dd, $dd2
+      );
     }
-    $this->ajaxReturn($dd);
+    $this->ajaxReturn($result);
 
   }
 

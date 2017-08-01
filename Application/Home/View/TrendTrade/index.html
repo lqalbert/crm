@@ -49,6 +49,11 @@
       overflow-y: auto;
       max-height: 400px;
     }
+    .echarts{
+      height: 400px; 
+      width:700px;  
+      margin-top:20px;
+    }
   </style>
 </block>
 <block name="body">
@@ -147,9 +152,8 @@
         </el-col>
       </el-row>
       <el-row>
-				<div id="echarts" style="height: 400px; width:500px;  margin-top:20px;">
-					
-				</div>
+				<div id="echarts"  class="echarts"></div>
+        <div id="echarts2" class="echarts"></div>
       </el-row>
     </div>
   </div>
@@ -262,11 +266,13 @@
       })
     } else {
       var edom = document.getElementById('echarts');
+      var edom2 = document.getElementById('echarts2');
       var myChart = echarts.init(edom);
+      var myChartv = echarts.init(document.getElementById('echarts2'));
      var option = {
         // color: colors,
         title: {
-          text: this.searchForm.start+'至'+this.searchForm.end+'统计情况',
+          text: this.searchForm.start+'至'+this.searchForm.end+'录入统计情况',
           x:'center'
         },
         tooltip: {
@@ -289,7 +295,7 @@
           }
         },
         legend: {
-          data:['自锁数','成交数','冲突数','被冲突数'],
+          data:['自锁数','冲突数','被冲突数'],
           align: 'right',
           right: 10,
         },
@@ -308,28 +314,83 @@
                 axisLabel: {
                     formatter: '{value} 个'
                 }
-            },
-            {
+            }
+        ],
+        series: []
+    };
+
+    // window.onresize = myChart.resize;
+    var noptions = {
+        // color: colors,
+        title: {
+          text: this.searchForm.start+'至'+this.searchForm.end+'成交统计情况',
+          x:'center'
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow'
+          }
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        toolbox: {
+          feature: {
+            dataView: {show: true, readOnly: false},
+            restore: {show: true},
+            saveAsImage: {show: true}
+          }
+        },
+        legend: {
+          data:['成交数'],
+          align: 'right',
+          right: 10,
+        },
+        xAxis: {
+          type: 'category',
+          axisTick: {
+              alignWithLabel: true
+          },
+          data: []
+        },
+        yAxis: [{
                 type: 'value',
                 name: '',
-                position: 'right',
+                position: 'left',
                 
                 axisLabel: {
                     formatter: '{value} 个'
                 }
             }
-            
         ],
         series: []
     };
 
-    window.onresize = myChart.resize;
+
+    window.onresize = function(){
+      myChart.resize();
+      myChartv.resize();
+    };
     this.$http.get("{:U('getList')}",{params:this.searchForm}).then(function(response){
-      option.xAxis.data = response.body.date;
-      option.series = response.body.series;
-      myChart.setOption(option);
-      edom.style.width="auto";
       // console.log(response.body);
+
+      option.xAxis.data = response.body[0].date;
+      option.series = response.body[0].series;
+      myChart.setOption(option);
+
+      noptions.xAxis.data = response.body[1].date;
+      noptions.series = response.body[1].series;
+      myChartv.setOption(noptions);
+
+      edom.style.width="auto";
+      edom2.style.width="auto";
+      myChart.resize();
+      myChartv.resize();
+      // window.resize();
     }, function(response){
       this.$message.error("出错了，请联系开发");
     })
@@ -418,74 +479,23 @@
   }).setMethod('allTypeChange',function(v){
     this.ctrlSelect = v=="department" ? true : false;
   }).setMethod('showCharts',function(row, event, column){
-    var id = this.searchForm.type == "user" ? row.user_id : row.id ;
-    var type = this.searchForm.type;
-    var start = this.searchForm.start;
-    var end = this.searchForm.end ;
-    var name = row.name;
-
-		var myChart = echarts.init(document.getElementById('echarts'));
-		var colors = ['#5793f3', '#27727B', '#675bba','#C1232B','#B5C334','#FCCE10','#E87C25','#27727B'];
-
-		var option = {
-		    color: colors,
-			  title: {
-			    text: start+'至'+end+name+'统计情况',
-			    x:'center'
-			  },
-		    tooltip: {
-		      trigger: 'axis',
-		      axisPointer: {
-		        type: 'shadow'
-		      }
-		    },
-		    grid: {
-		    	left: '3%',
-		    	right: '4%',
-		    	bottom: '3%',
-		    	containLabel: true
-		    },
-		    toolbox: {
-		      feature: {
-		        dataView: {show: true, readOnly: false},
-		        restore: {show: true},
-		        saveAsImage: {show: true}
-		      }
-		    },
-		    legend: {
-		      data:['自锁数','成交数','冲突','被冲突'],
-		      align: 'right',
-		    	right: 10,
-		    },
-		    xAxis: {
-	        type: 'category',
-	        axisTick: {
-	            alignWithLabel: true
-	        },
-	        data: []
-		    },
-		    yAxis: [{
-		            type: 'value',
-		            name: '',
-		            position: 'left',
-		            
-		            axisLabel: {
-		                formatter: '{value} 个'
-		            }
-		        }
-		        
-		    ],
-		    series: []
-		};
-
-    window.onresize = myChart.resize;
-
+    
 
     this.$http.get("{:U('echarts')}",{params:{id:id,start:start,end:end,name:name,type:type}}).then(function(response){
-			option.xAxis.data = response.body.date;
-			option.series = response.body.series;
-			myChart.setOption(option);
-			console.log(response.body);
+
+      // console.log(response.body);
+
+			// option.xAxis.data = response.body[0].date;
+			// option.series = response.body[0].series;
+			// myChart.setOption(option);
+
+   //    noptions.xAxis.data = response.body[1].date;
+   //    noptions.series = response.body[1].series;
+   //    myChartv.setOption(noptions);
+
+
+			// console.log(response.body);
+      // myChart.resize();
     }, function(response){
     	this.$message.error("出错了，请联系开发");
     })
