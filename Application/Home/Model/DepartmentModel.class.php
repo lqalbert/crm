@@ -23,6 +23,7 @@ class DepartmentModel extends Model {
     //风控部
     const RISK_DEPARTMENT  = 2 ;
     const HR_DEPARTMENT    = 3;
+    const SPREAD_DEPARTMENT = 4;
 
 	protected $tableName = 'department_basic';
 
@@ -35,7 +36,8 @@ class DepartmentModel extends Model {
 		0=>'销售部',
         1=>'客服部',
         2=>'风控部',
-        3=>'人事部'
+        3=>'人事部',
+        4=>'推广部'
 	);
 
 
