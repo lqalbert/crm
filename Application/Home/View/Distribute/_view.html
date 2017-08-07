@@ -1,55 +1,149 @@
 <extend name="Common:base" />
-<block name="head"></block>
+<block name="head">
+    <style>
+        .el-input-number input {
+            background-image: url("/Public/images/percent.jpg");
+            background-repeat: no-repeat;
+            background-position: left center;
+        }
+        .hidden{
+            display: none;
+        }
+        .el-input-number{
+            overflow: visible;
+        }
+    </style>
+</block>
 <block name="body">
     <div id="app" class="container">
         <div class="wrapp" v-show="show" style="display:none">
             <el-form ref="editForm"  :model="editForm" >
                 <el-form-item label="分配方式" prop="title">
-                    <el-radio class="radio" v-model="editForm.type" label="1">手动</el-radio>
+                    <el-radio class="radio" v-model="editForm.type" label="1" >手动</el-radio>
                     <el-radio class="radio" v-model="editForm.type" label="2">自动</el-radio>
                 </el-form-item>
+                <el-form-item>
+                    <el-alert
+                    title="所有的比例相加应为100%"
+                    type="info"
+                    show-icon>
+                  </el-alert>
+                </el-form-item>
+                
                 <el-form-item  
                     v-for="(item, index) in editForm.percent"
-                    :label="item.department"
-                    :key="item.id"
+                    
+                    :key="item.key"
                     :prop="'percent.' + index + '.value'">
-                    <el-input-number v-model="item.value"   :step="10">
+                    <p>
+                        <el-select v-model="item.id" @change="selectChange">
+                            <el-option
+                              v-for="option in optionList"
+                              :label="option.name"
+                              :value="option.id">
+                            </el-option>
+                        </el-select>
+                    </p>
+                    
+                  
+                    <el-input-number v-model="item.value"   :step="10" :max="100">
                     </el-input-number>
+                    <el-button @click.prevent="remove(item)">删除</el-button>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" v-show="!submitStatus" >确 定</el-button>
+                    <el-button type="primary" v-show="!submitStatus" @click="editSubmit">确 定</el-button>
+                    <el-button @click="addItem">添加一项</el-button>   
                     <el-button type="primary" v-show="submitStatus" :loading="true" >添加中</el-button>
                 </el-form-item>
                  
             </el-form>
+        </div>
+        <div class="hidden">
+            <!-- page -->
+            <include file="Common:_pagination" />
+            <!-- / page -->
         </div>
     </div>
 
 </block>
 <block name="scripts">
 <script>
+
   
   window.defaultOption.setDatas({
     types:{:json_encode($types)},
+    optionList:{:json_encode($optionList)},
     submitStatus:false,
-    text:{
-      
-    },
-    distribute:[
-        {department:"销售一部", id:1, value: 10},
-        {department:"销售二部", id:2, value: 10},
-        {department:"销售三部", id:3, value: 10},
-    ]
-    
   }).setForm('edit',{
     id:0,
     limina:1,
-    type:1,
-    percent:[
-        {department:"销售一部",id:1, value:10},
-        {department:"销售二部",id:2, value:10},
-        {department:"销售三部",id:3, value:10},
-    ]
-  });
+    type:"1",
+    percent:{$percent}
+  }).setMethod("editSubmit", function(){
+     var form = this.editForm;
+     if ( !this.checkAuto() && !this.checkPercent()) {
+        return ;
+     }
+     form.limina = this.calculateLimina();
+     this.submitStatus != this.submitStatus;
+     this.$http.post(page.editFormUrl, form).then(function(response){
+        this.submitStatus != this.submitStatus;
+        this.$message.success("保存成功")
+     }, function(response){
+        this.submitStatus != this.submitStatus;
+        this.$message.error("操作失败");
+     });
+  }).setMethod("checkPercent", function(){
+    var list = this.editForm.percent;
+    var total = 0;
+    var vmThis = this;
+    var zore = false;
+    list.forEach(function(current){
+        if (current.value==0) {
+            zore = true;
+        }
+        total += current.value;
+    },);
+    if (zore) {
+        this.$message.error("比率不能为0");
+        return false;
+    }
+    if (total !=100) {
+        this.$message.error("比例相加应为100%");
+        return false;
+    } 
+    return true;
+  }).setMethod('calculateLimina', function(){
+    var list = this.editForm.percent;
+    var d = list.every(function(current){
+        var y = current.value % 10;
+        return y==0;
+    });
+    return d ? 10 : 100;
+  }).setMethod('checkAuto', function(){
+     return this.editForm.type == 1 ;
+  }).setMethod("addItem", function(){
+    this.editForm.percent.push({
+          value: 0,
+          id: "",
+          key: Date.now()
+        });
+  }).setMethod("remove", function(item){
+    var index = this.editForm.percent.indexOf(item)
+    if (index !== -1) {
+      this.editForm.percent.splice(index, 1)
+    }
+  }).setMethod("selectChange", function(v){
+    var list = this.editForm.percent;
+    var total = 0;
+    list.forEach(function(c){
+        if (c.id == v) {
+            total++;
+        }
+    })
+    if (total >=2 ) {
+        this.$message.error("只能选择一次");
+    }
+  })
 </script>
 </block>

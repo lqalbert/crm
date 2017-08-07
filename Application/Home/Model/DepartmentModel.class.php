@@ -107,8 +107,8 @@ class DepartmentModel extends Model {
     *
     * @return []
     */
-    public function getSalesDepartments($fields="id,name"){
-        return $this->where(array('type'=>self::SALES_DEPARTMENT, 'status'=> array('NEQ', -1)))->field($fields)->select();
+    public function getSalesDepartments($fields="id,name", $status=-1){
+        return $this->where(array('type'=>self::SALES_DEPARTMENT, 'status'=> array('NEQ', $status)))->field($fields)->select();
     }
 
     /**
