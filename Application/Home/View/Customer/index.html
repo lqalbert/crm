@@ -960,17 +960,7 @@
 
   }).setMethod('handleSelectionChange', function(val){
     this.deleteArrAllItem('multipleSelection');
-        this.multipleSelection.push(val) ;
-    /*this.multipleSelection = [];
-    if(val.length >= 2){
-       if(val.length == this.dataList.length){
-         this.multipleSelection = val;
-       }else{
-         this.multipleSelection.push(val.shift());
-       }
-    } else {
-      this.multipleSelection = val;
-    }*/
+    this.multipleSelection.push(val) ;
   }).setMethod('commonSelect',function(x){
     var form = x;
     var vmThis = this;
@@ -979,7 +969,7 @@
       this.$message.error('请先选择一位客户');
       return false;
     } else {
-      var  row = this.multipleSelection.pop();
+      var  row = this.multipleSelection[0];
       this[FormName.getForm(x)].name = row.name;
       this[FormName.getForm(x)].cus_id = row.id;
       this.complainForm.type = row.type;
