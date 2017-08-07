@@ -1,0 +1,55 @@
+<extend name="Common:base" />
+<block name="head"></block>
+<block name="body">
+    <div id="app" class="container">
+        <div class="wrapp" v-show="show" style="display:none">
+            <el-form ref="editForm"  :model="editForm" >
+                <el-form-item label="分配方式" prop="title">
+                    <el-radio class="radio" v-model="editForm.type" label="1">手动</el-radio>
+                    <el-radio class="radio" v-model="editForm.type" label="2">自动</el-radio>
+                </el-form-item>
+                <el-form-item  
+                    v-for="(item, index) in editForm.percent"
+                    :label="item.department"
+                    :key="item.id"
+                    :prop="'percent.' + index + '.value'">
+                    <el-input-number v-model="item.value"   :step="10">
+                    </el-input-number>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" v-show="!submitStatus" >确 定</el-button>
+                    <el-button type="primary" v-show="submitStatus" :loading="true" >添加中</el-button>
+                </el-form-item>
+                 
+            </el-form>
+        </div>
+    </div>
+
+</block>
+<block name="scripts">
+<script>
+  
+  window.defaultOption.setDatas({
+    types:{:json_encode($types)},
+    submitStatus:false,
+    text:{
+      
+    },
+    distribute:[
+        {department:"销售一部", id:1, value: 10},
+        {department:"销售二部", id:2, value: 10},
+        {department:"销售三部", id:3, value: 10},
+    ]
+    
+  }).setForm('edit',{
+    id:0,
+    limina:1,
+    type:1,
+    percent:[
+        {department:"销售一部",id:1, value:10},
+        {department:"销售二部",id:2, value:10},
+        {department:"销售三部",id:3, value:10},
+    ]
+  });
+</script>
+</block>
