@@ -20,6 +20,9 @@ class RoleModel extends Model {
 	const DIVISIONMASTER ='divisionMaster';
 	const DATASTAFF = 'dataStaff';
 	const HR_MASTER='hrMaster';
+	const SP_MASTER = 'spreadMaster';
+	const SP_CAPTAIN = 'spreadCaptain';
+	const SP_STAFF = 'spreadStaff';
 
 	protected $tableName = 'rbac_role';
 
@@ -39,7 +42,10 @@ class RoleModel extends Model {
 		'humanResource', //人事专员
 		'divisionMaster',  //区域经理
 		'hrMaster', //人事经理
-		'dataStaff' , //材料专员
+		'dataStaff' , //材料专员 ,
+		'spreadMaster', // 推广部经理
+		'spreadCaptain', //推广部主管
+		'spreadStaff', //推广部员工
 	);
 
 	public function getEnames(){
@@ -55,12 +61,14 @@ class RoleModel extends Model {
 	* 0 => 1
 	* 1 => 9,
 	* 2 => 10,
+	* 3 => 13 hrMaster,
+	* 4 => 
 	* @param int
 	* @return String
 	*/
 	public function getEnameByType($type){
 		$map = array(
-			1,9,10,13
+			1,9,10,13,15
 		);
 		return $this->enames[$map[$type]];
 	}

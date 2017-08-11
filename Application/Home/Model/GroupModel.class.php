@@ -27,7 +27,7 @@ class GroupModel extends Model {
             $this->field($field);
         }
 
-        $this->where(array('status'=>array('NEQ', self::DELETE_STATUS)));
+        // $this->where(array('status'=>array('NEQ', self::DELETE_STATUS)));
         
         return $this->select();
     }
@@ -36,6 +36,13 @@ class GroupModel extends Model {
         $users = M('user_info')->where(array('group_id'=>array('in', $ids)))->getField('user_id', true);
         D('RbacUser')->delete($users);
         return $this->where(array('id'=>array('in', $ids )))->save(array('status'=>-1, 'user_id'=>null));
+    }
+
+    protected  function _after_insert($data,$options){
+        $row = M("department_basic")->find($data['department_id']);
+        if ($row['type'] == DepartmentModel::SALES_DEPARTMENT) {
+            D('Distribute')->setOne(DistributeModel::GROUP, $data['id']);
+        }
     }
 
 }

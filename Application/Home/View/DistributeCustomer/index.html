@@ -1,0 +1,1137 @@
+<extend name="Common:base" />
+<block name="head">
+  <style>
+    .superaddition{
+      height:44px;
+      width:400px;
+      position: relative;
+      top : 12px;
+      z-index: 50;
+      left:90px;
+    }
+    .el-tabs__header{
+      border-top:2px solid #ea4b4b;
+      border-bottom: 1px solid #c51f1f;
+    }
+    .el-dialog .el-tabs__header{
+      border-top:none;
+    }
+    .el-tabs--border-card .el-tabs__item{
+      border-left: none;
+    }
+    .el-tabs--border-card .el-tabs__item.is-active {
+      background-color: #fff;
+      border-right-color: #d3dce6;
+      background: #544b8f;
+      color: #fff;
+    }
+    .el-tabs--border-card .el-tabs__header {
+      background-color: #fff;
+      margin: 0;
+    }
+    .container > .wrapp > .a > .el-row {
+      margin-bottom: 6px;
+    }
+    .el-tabs--border-card .el-tabs__content{
+      padding:0 9px 5px 9px;
+    }
+    .el-card, .el-menu--horizontal .el-submenu>.el-menu, .el-tabs--border-card{
+      box-shadow: none;
+    }
+    .el-tabs--border-card{
+      border: none;
+    }
+    
+    .on{
+      opacity:0.5;
+    }
+    .el-tabs__item{
+      font-family: Microsoft YaHei;
+      color:#0d0f10;
+      font-size: 14px;
+    }
+  </style>
+</block>
+<block name="body">
+  
+
+<div id="app" class="container">
+
+<div class="wrapp" id="appx" v-show="show" style="display: none;">
+  <!-- <div class="a" style="border:1px solid red;"> -->
+  <div class="a" id="app3">
+    <el-row>
+    <el-col :span="24">
+        <el-form :inline="true" ref="searchForm" :model="searchForm">
+          <el-form-item prop="name" style="width:170px">
+            <el-input v-model="searchForm.name" size="small" placeholder="客户姓名"></el-input>
+          </el-form-item>
+
+        <el-form-item prop="contact" style="width:170px">
+          <el-input v-model="searchForm.contact" size="small" placeholder="手机|qq|微信号"></el-input>
+        </el-form-item>
+        
+
+        <el-form-item prop="field" v-show="false">
+          <input type="hidden" size="small" v-model="searchForm.field">
+        </el-form-item>
+
+        <el-form-item>
+          <el-button type="info" size="small" icon="search" @click="loadDatalist">查询</el-button> 
+          
+          
+          <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
+            <el-button  size="small" @click="searchReset2">重置</el-button>
+          </el-tooltip>
+
+
+          <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:10px;">
+            <el-button @click="refresh" size="small" type="danger" >刷新</el-button>
+          </el-tooltip>
+
+          </el-form-item>
+        </el-form>
+      </el-col>
+  </el-row>
+  <!-- max-height="500" -->
+
+  <el-row>
+    <el-col :span="24">
+        <el-table 
+      :data="dataList" 
+      border  
+      id="he"
+      v-loading="dataLoad" 
+      element-loading-text="{:L('DATA_LOGIN')}"
+      highlight-current-row
+      empty-text="暂无数据,请录入客户！"
+      ref="select" 
+      @current-change="handleSelectionChange"
+     
+      @sort-change="sortChange">
+
+      
+        <el-table-column label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  ></el-table-column>
+        <el-table-column  prop="name"  label="客户姓名" width="150" ></el-table-column>
+        <el-table-column   prop="type" label="客户类型" sortable='customer' width="150" header-align="center">
+          <template scope="scope">
+            {{ getType(scope.row.type, 'customerType') }}
+          </template>
+        </el-table-column>
+        <el-table-column  prop="lock_name" label="锁定员工" sortable='customer' width="150" >
+        </el-table-column>
+
+        <el-table-column  prop="realname" label="跟踪员工" sortable='customer' width="150" >
+        </el-table-column>
+
+        
+
+        <el-table-column   prop="qq" label="QQ号"  width="170" header-align="center">
+          <template scope="scope">
+            {{ scope.row.qq }}
+            <a v-if="scope.row.qq" :href="getTenct(scope.row.qq)">
+              <img width="25"  src="__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg" alt="">
+            </a>
+          </template>
+        </el-table-column>
+        <el-table-column  prop="qq_nickname" label="QQ昵称"  width="170" header-align="center"></el-table-column>
+          <el-table-column prop="phone" label="手机" align="center" width="130"></el-table-column>
+        <el-table-column  header-align="center" prop="weixin" label="微信号" header-align="center" width="170">
+          <template scope="scope">
+            {{ scope.row.weixin }}
+          </template>
+        </el-table-column>
+
+        <el-table-column  header-align="center" prop="weixin_nickname" label="微信昵称" header-align="center" width="170">
+          <template scope="scope">
+            {{ scope.row.weixin_nickname }}
+          </template>
+        </el-table-column>
+
+        <el-table-column  header-align="center"  label="地区" width="135">
+          <template scope="scope">
+            {{ scope.row.province_name+"-"+scope.row.city_name }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="sex"  label="性别" width="80"  header-align="center">
+          <template scope="scope">
+            {{ getType(scope.row.sex, 'sexType') }}
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-col>
+  </el-row>
+
+  <!-- toolbar -->
+  <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
+
+    <el-col :span="12"> 
+      <el-row style="margin-bottom:6px">
+        <el-col :span="24">
+          <el-tooltip content="录入新的客户" placement="bottom-start" style="margin-left:0px;">
+              <el-button  @click="openDialog('add')" size="small" type="primary">添加客户</el-button>
+          </el-tooltip>
+          <el-tooltip content="编辑客户资料" placement="bottom-start" style="margin-left:10px;">
+              <el-button  @click="beforeOpenEdit" size="small" type="primary">修改客户</el-button>
+          </el-tooltip>
+        </el-col>
+      </el-row>
+      
+    </el-col>
+    <el-col :span="12">
+      <div class="grid-content bg-purple-light pull-right">
+
+        <!-- page -->
+        <include file="Common:_pagination" />
+        <!-- / page -->
+        
+      </div>
+    </el-col>
+
+  </el-row>
+  </div>
+
+  <div id="app2" class="b" style="margin:5px -10px 5px;">
+    <el-row >
+     <el-col :span="24">
+        <el-tabs  type="border-card">
+          <el-tab-pane label="跟踪记录">
+            <el-table 
+            :data="tableData"  
+            empty-text="请点击客户显示跟踪信息" 
+            border 
+            style="width: 100%"  
+            @row-dblclick="viewtraceContents">
+              <el-table-column prop="user" label="操作员工" header-align="center">
+              </el-table-column>
+
+              <el-table-column prop="type" label="客户类型(当前)" header-align="center">
+              </el-table-column>
+
+              <el-table-column prop="name" label="客户姓名" header-align="center">
+              </el-table-column>
+              
+              <el-table-column label="内容" header-align="center">
+                <template scope="scope">
+                  {{scope.row.content | handleString}}
+                </template>
+              </el-table-column>
+
+              <el-table-column prop="created_at" label="跟踪时间" width="180" align="center">
+              </el-table-column>
+
+              <el-table-column prop="track_text" label="跟踪类型" header-align="center">
+              </el-table-column>
+
+            </el-table>
+          </el-tab-pane>
+
+          
+     </el-col>
+    </el-row>
+  </div>
+
+</div>
+
+<div class="dialogWrapper" v-show="show" style="display: none">
+
+  <!-- 录入客户 -->
+  <include file="Customer::_add" />
+  <!-- / 录入客户 -->
+  <!-- 跟踪内容 -->
+  <include file="_traceContent" />
+  <!-- /跟踪内容 -->
+  <!-- 投诉内容 -->
+  <include file="_complainContent" />
+  <!-- /投诉内容 -->
+  <!-- 录入高级查询条件 -->
+  <include file="_advancedQuery" />
+  <!-- 客户预查 -->
+  <include file="_preCheck" />
+  <!-- 索取统计 -->
+  <include file="_exactsCon" />
+  <!-- 编辑 -->
+  <include file="Customer::_edit" />
+  <!-- 显示客户一般资料 -->
+  <include file="_userInfo"/>
+  <!-- 录入跟踪  -->
+  <include file="_track" />
+  <!-- / 录入跟踪 -->
+  <!-- 录入计划 -->
+  <include file="_plan"/>
+  <!-- /录入计划 -->
+  
+  <!-- 录入提醒 -->
+  <include file="_remind"/>
+  <!-- /录入提醒 -->
+  <!-- 录入自选 -->
+  <include file="_choice"/>
+  <!-- /录入自选 -->
+  <!-- 客户全部资料 -->
+  <include file="_detail"/>
+  <!-- /客户全部资料 -->
+  <!-- 客户资料导入 -->
+  <include file="_importd" />
+  <!-- /客户资料导入 -->
+  <!-- V类客户资料 -->
+  <include file="_realInfo" />
+  <!-- /V类客户资料 -->
+  <!-- 录入投诉 -->
+  <include file="_complain" />
+  <!-- 录入投诉 -->
+
+  <!-- 购买 -->
+  <include file="_buy" />
+  <!-- /购买 -->
+
+  <!-- 续费 -->
+  <include file="_renewal" />
+  <!-- /续费 -->
+
+
+</div>
+
+</div>
+</block>
+<block name="scripts">
+<script src="__PUBLIC__/js/contactValidate.js"></script>
+<script>
+  
+  page.addRealInfoUrl = "{:U('realInfo')}";
+ 
+  page.getBuyHistory = "{:U('history')}";
+  page.addRenewalFormUrl = "{:U('renewal')}";
+  // page.getrenewalHistoryUrl = "{:U('renewalHistory')}";
+
+  var checkIdNum=function(rule,value,callback){
+    var number=/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+    if(value==='' || value===null){
+      callback();
+    }else if(!number.test(value)){
+      callback('身份证号格式错误');
+    }else{
+      callback();
+    }
+  }
+
+  var  editCheckPhone = function(rule,value,callback){
+    if (window.defaultVm.editOld.phone2 != value) {
+      phoneValidata(rule,value,callback);
+    } else {
+      callback();
+    }
+  }
+
+  var  editCheckQq = function(rule,value,callback){
+    if (window.defaultVm.editOld.qq != value) {
+      QQValidata(rule,value,callback);
+    } else {
+      callback();
+    }
+  }
+
+  var  editCheckQq2 = function(rule,value,callback){
+    if (window.defaultVm.editOld.qq2 != value) {
+      QQValidata(rule,value,callback);
+    } else {
+      callback();
+    }
+  }
+
+  var  editCheckWeixin = function(rule,value,callback){
+
+    if (window.defaultVm.editOld.weixin != value) {
+      WxValidata(rule,value,callback);
+    } else {
+      callback();
+    }
+  }
+
+  var  editCheckWeixin2 = function(rule,value,callback){
+    if (window.defaultVm.editOld.weixin2 != value) {
+      WxValidata(rule,value,callback);
+    } else {
+      callback();
+    }
+  }
+
+
+  
+
+  var CustomerRule = {
+      name:[
+        { required: true, message: '请输入客户姓名', trigger: 'blur' },
+      ],
+      phone:[
+        { required: true, message: '请输入客户手机', trigger: 'blur' },
+        { validator: phoneValidata , trigger: 'blur' },
+      ],
+      phone2:[
+        { validator: phoneValidata, trigger: 'blur' }
+      ],
+      qq:[
+        { pattern:/^\d+$/, message: 'QQ号必须为数字'},
+        { validator: QQValidata, trigger:'blur' },
+      ],
+      qq2:[
+        { pattern:/^\d+$/, message: 'QQ号必须为数字'},
+        { validator: QQValidata, trigger:'blur' },
+      ],
+      weixin:[
+          { min: 6, max: 20, trigger:'blur', message:"长度为6-20个字符" },
+          { validator: WxValidata, trigger:'blur' },
+      ],
+      weixin2:[
+          {min: 6, max: 20, trigger:'blur', message:"长度为6-20个字符" },
+          { validator: WxValidata, trigger:'blur' },
+      ],
+
+      type:[
+        { required:true, message:'请选择客户类型',trigger:'change'},
+      ],
+      money:[
+        { required:true, message:'请选择客户资料量',trigger:'change'},
+      ],
+      source:[
+        { required:true, message:'请选择客户来源', trigger:'change'},
+      ]
+    };
+
+  var CustomerEditRule = {
+      name:[
+        { required: true, message: '请输入客户姓名', trigger: 'blur' },
+      ],
+      phone:[
+        { required: true, message: '请输入客户手机', trigger: 'blur' },
+        { validator: phoneValidata , trigger: 'blur' },
+      ],
+      phone2:[
+        { validator: editCheckPhone, trigger: 'blur' }
+      ],
+      qq:[
+        { pattern:/^\d+$/, message: 'QQ号必须为数字'},
+        { validator: editCheckQq, trigger:'blur' },
+      ],
+      qq2:[
+        { pattern:/^\d+$/, message: 'QQ号必须为数字'},
+        { validator: editCheckQq2, trigger:'blur' },
+      ],
+      weixin:[
+          { min: 6, max: 20, trigger:'blur', message:"长度为6-20个字符" },
+          { validator: editCheckWeixin, trigger:'blur' },
+      ],
+      weixin2:[
+          {min: 6, max: 20, trigger:'blur', message:"长度为6-20个字符" },
+          { validator: editCheckWeixin2, trigger:'blur' },
+      ],
+
+      type:[
+        { required:true, message:'请选择客户类型',trigger:'change'},
+      ],
+      money:[
+        { required:true, message:'请选择客户资料量',trigger:'change'},
+      ],
+      source:[
+        { required:true, message:'请选择客户来源', trigger:'change'},
+      ]
+    };
+
+
+
+  window.defaultOption.setDatas({
+    setPicker:{
+      disabledDate:function(time) {
+        return time.getTime() < Date.now() - 8.64e7;
+      }
+    },
+    buyHistory:[],
+    flag:false,
+    realInfo:false,
+    gridData:[],
+    ddprops:'name',
+    dialogVisible:false,
+    sb:[],
+    tableData: [{'name':'',
+                 'created_at':'',
+                 'type':'',
+                 'track_type':'',
+                 'content':'',
+                 'user':''     
+    }],
+    
+    customerType:{:json_encode($customerType)},
+    sexType:{:json_encode($sexType)},
+    Quality:{:json_encode($Quality)},
+    Year:{:json_encode($Year)},
+    Income:{:json_encode($Income)},
+    Sty:{:json_encode($Sty)},
+    Money:{:json_encode($Money)},
+    Energy:{:json_encode($Energy)},
+    Problem:{:json_encode($Problem)},
+    Mode:{:json_encode($Mode)},
+    Attitude:{:json_encode($Attitude)},
+    Profession:{:json_encode($Profession)},
+    Intention:{:json_encode($Intention)},
+    Source:{:json_encode($Source)},
+    Proportion:{:json_encode($Proportion)},
+    Remind:{:json_encode($Remind)},
+    products:{:json_encode($Products)},
+    provinces:[],
+    cities:[],
+    // deps:[],//
+    reUsers:[],//
+    multipleSelection: [],
+    alertDesc:"",
+    logType:{:json_encode($logType)},
+    steps:{:json_encode($steps)},
+    searchGroup:{:json_encode($searchGroup)},
+    memberList:[],
+    curCheckedItem:{},
+    addRules:CustomerRule,
+    editRules:CustomerEditRule,
+    editOld:{},
+    qq_disabled:false,
+    weixin_disabled:false,
+    phone2_disabled:false,
+    qq2_disabled:false,
+    weixin2_disabled:false,
+
+    realInfoRules:{
+      identity:[
+         { required: true, message: '请输入身份证号', trigger: 'blur' },
+         { validator: checkIdNum, trigger:'blur' },
+      ],
+      type:[{ required: true, message: '请选择产品类型', trigger: 'blur' },],
+      expense:[
+        { required: true, message: '请输入产品金额', trigger: 'blur',type: 'number' },
+      ],
+      cycle:[{ required: true, message: '请选择服务周期', trigger: 'blur' },],
+      address:[{ required: true, message: '请输入通讯地址', trigger: 'blur' },],
+    },
+
+    buyRules:{
+      name:[
+        { required: true, message:"请输入客户姓名",trigger:'blur'}
+      ],
+      id_card:[
+        { required: true, message:"请输入身份证号", trigger:'blur'},
+        { validator: checkIdNum, trigger:'blur' },
+      ],
+      address:[
+        {required: true, message:'请输入详细地址',trigger:'blur'}
+      ],
+      product_money:[
+        { required: true,pattern:/^(([1-9]\d{0,9})|0)(\.\d{1,2})?$/,  message: '请产品价格为数字', trigger:'change'}
+      ],
+      product_index:[
+        {type:"number", required: true, message:"请选择产品",trigger:'change'}
+      ],
+      buy_time:[
+        { type: 'date',required: true, message:"请选择购买时间", trigger:'change'}
+      ] 
+
+    },
+    stepActive:0,
+    // renewalHistory:[]
+  }).setForm('search', {
+    name:'',
+    contact:'',
+    field: '',
+    group:'{$uid}',
+    ctrl:'search',
+  }).setForm('add',{
+    name:"",
+    type:"C",
+    phone:'',
+    phone2:"",
+    qq:'',
+    qq2:"",
+    qq_nickname:"",
+    qq_nickname2:"",
+    sex:0,
+    weixin:null,
+    weixin_nickname:"",
+    area_province:null,
+    area_city:null,
+    quality:'',
+    year:'',
+    re_income:'',
+    style:'',
+    money:'',
+    energy:'',
+    problem:'',
+    mode:'',
+    attitude:'',
+    profession:'',
+    intention:'',
+    source:'',
+    remark:"",
+  }).setForm('advancedQuery',{
+    start:'',
+    end:'',
+    type:'',
+    group:'',
+    ctrl:'advance',
+    name:"",
+    phone:"",
+    track_start:"",
+    track_end:"",
+  },true).setForm('traceContent',{
+    content:'',
+  },true).setForm('complainContent',{
+    content:'',
+  },true).setForm('exactsCon',{
+    reply:'',
+  },true).setForm('preCheck',{
+    reply:'',
+  },true).setForm('edit',{
+    id:"",
+    name:"",
+    type:"",
+    phone:"",
+    phone2:"",
+    qq:"",
+    qq2:"",
+    qq_nickname:"",
+    qq_nickname2:"",
+    sex:0,
+    weixin:"",
+    weixin_nickname:"",
+    weixin2:"",
+    weixin_nickname2:"",
+    area_province:null,
+    area_city:null,
+    quality:'',
+    year:'',
+    re_income:'',
+    style:'',
+    money:'',
+    energy:'',
+    problem:'',
+    mode:'',
+    attitude:'',
+    profession:'',
+    intention:'',
+    source:'',
+    remark:"",
+  },true).setForm('addTrack',{
+    cus_id:"",
+    next_datetime:'',
+    track_type:'',
+    to_type:"",
+    content:'',
+    name:"",
+    step:"",
+    track_type:'',
+  },true).setForm('addPlan',{
+     cus_id:'',
+     name:'',
+     plan:'',
+  },true).setForm('addTransfer',{
+     cus_id:'',
+     name:'',
+     rec_dep:'',
+     rec_user:'',
+     proportion:'',
+  },true).setForm('addRemind',{
+     cus_id:'',
+     name:'',
+     remind:'',
+     remark:'',
+  },true).setForm('addChoice',{
+     cus_id:'',
+     name:'',
+     remark:'',
+     choose:1,
+     type:'',
+  },true).setForm('showDetail',{
+    id:"",
+    name:"",
+    type:"",
+    phone:"",
+    phone2:"",
+    qq:"",
+    qq2:"",
+    qq_nickname:"",
+    qq_nickname2:"",
+    sex:0,
+    weixin:"",
+    weixin_nickname:"",
+    area_province:null,
+    area_city:null,
+    quality:'',
+    year:'',
+    re_income:'',
+    style:'',
+    money:'',
+    energy:'',
+    problem:'',
+    mode:'',
+    attitude:'',
+    profession:'',
+    intention:'',
+    source:'',
+    remark:"",
+  },true).setForm('importc',{
+    c:0,
+    t:0
+  },true).setForm('realInfo',{
+    identity:'',
+    pdt_id:'',
+    expense:'',
+    cycle:'',
+    address:'',
+    cus_id:'',
+    fm:'',
+  },true).setForm('complain',{
+    cus_id:'',
+    type:'',
+    name:'',
+    content:'',
+  }, true).setForm('buy',{
+    id:null,
+    id_card:"",
+    address:"",
+    product_id:null,
+    product_index:null,
+    product_name:"",
+    product_money:"",
+    product_t:"",
+    name:"",
+    buy_time:"",
+  },true).setForm('renewal',{
+    product_id:null,
+    product_index:null,
+    product_name:"",
+    product_money:"",
+    product_t:"",
+    cus_id:"",
+    buy_time:"",
+    address:""
+  },true).setMethod('getType', function(type, field){
+      return this[field][type];
+  }).setMethod('searchCustomer', function(){
+    var vmThis = this;
+    vmThis.$http.get(page.searchUrl, {params:{name:this.searchForm.name}}).then(function(response){
+      vmThis.$set(vmThis, 'dataList', response.body.list);
+      if (vmThis.dataList.length==0) {
+        vmThis.$alert('该客户还未锁定', '消息', {
+          confirmButtonText: '确定',
+        });
+      }
+    }, function(response){
+      vmThis.$message.error('错了哦，这是一条错误消息');
+    })
+  }).setMethod('beforeList', function(data){
+        
+        data.forEach(function(currentValue){
+          //将string类型转换为number和为0的变为空
+          currentValue.quality = currentValue.quality == 0?"":currentValue.quality;      
+          currentValue.year = currentValue.year == 0?"":currentValue.year;      
+          currentValue.re_income = currentValue.re_income == 0?"":currentValue.re_income;      
+          currentValue.style = currentValue.style == 0?"":currentValue.style;      
+          currentValue.money = currentValue.money == 0?"":currentValue.money;      
+          currentValue.energy = currentValue.energy == 0?"":currentValue.energy;      
+          currentValue.problem = currentValue.problem == 0?"":currentValue.problem;      
+          currentValue.mode = currentValue.mode == 0?"":currentValue.mode;      
+          currentValue.attitude = currentValue.attitude == 0?"":currentValue.attitude;      
+          currentValue.profession = currentValue.profession == 0?"":currentValue.profession;      
+          currentValue.intention = currentValue.intention == 0?"":currentValue.intention;      
+          currentValue.source = currentValue.source == 0?"":currentValue.source; 
+
+
+       })
+     return data;
+  }).setMethod('provinceChange', function(v){
+    var vmThis = this;
+    this.$http.get('{:U("Area/getAreasByPid")}', {params:{pid:v} }).then(function(response){
+      var cities = [];
+       response.body.forEach(function(currentValue,index){
+        cities.push({id: currentValue.id, name: currentValue.name});
+       })
+       vmThis.$set(vmThis, 'cities', cities);
+    });
+  }).setMethod('depChange',function(v){
+     //console.log(v);
+     var vmThis=this;
+     this.$http.get('{:U("getRecUser")}', {params:{p_name:v}}).then(function(response){
+       var reUsers = [];
+       response.body.forEach(function(currentValue,index){
+         reUsers.push({value:currentValue.value,name:currentValue.value});
+       })
+       vmThis.$set(vmThis,'reUsers',reUsers);
+     });
+  }).setMethod('beforeOpenEdit', function(){
+      var form='edit';
+
+      if (this.multipleSelection.length ==0 ) {
+          this.closeDialog(form);
+          this.$message.error('请先选择一个员工');
+      } else if(this.multipleSelection.length > 1){
+          this.closeDialog(form);
+          this.$message.error('只能选择一个员工');
+      }else {
+          var row = this.multipleSelection[0];
+          this.handleEdit(this.dataList.indexOf(row) , row);
+      }
+  }).setMethod('beforeEdit',function(){
+    if (!this.$refs['editselect']) {
+      this.provinceChange(this.editForm.area_province);
+    }
+
+    //配置一禁用的问题
+    //手机号 QQ WEIXIN 修改之后就不能再改了。
+    //手机1肯定是禁
+    // qq和weixin跟据有没有值来确定
+    var disableArr = [
+    'qq',
+    'weixin',
+    'phone2',
+    'qq2',
+    'weixin2'
+    ];
+    for (var i=0, len= disableArr.length; i<len; i++) {
+      // console.log(disableArr[i], !!this.editForm[disableArr[i]]);
+      this.editOld[disableArr[i]] = this.editForm[disableArr[i]];
+      this[disableArr[i] +"_disabled"] = !!this.editForm[disableArr[i]] ?  true : false ;
+    }
+
+
+  }).setMethod('handleSelectionChange', function(val){
+    this.deleteArrAllItem('multipleSelection');
+        this.multipleSelection.push(val) ;
+    /*this.multipleSelection = [];
+    if(val.length >= 2){
+       if(val.length == this.dataList.length){
+         this.multipleSelection = val;
+       }else{
+         this.multipleSelection.push(val.shift());
+       }
+    } else {
+      this.multipleSelection = val;
+    }*/
+  }).setMethod('commonSelect',function(x){
+    var form = x;
+    var vmThis = this;
+    if (this.multipleSelection.length ==0 ||  this.multipleSelection.length>1) {
+      this.closeDialog(form);
+      this.$message.error('请先选择一位客户');
+      return false;
+    } else {
+      var  row = this.multipleSelection.pop();
+      this[FormName.getForm(x)].name = row.name;
+      this[FormName.getForm(x)].cus_id = row.id;
+      this.complainForm.type = row.type;
+      this.complainForm.to_id = row.salesman_id;
+      this.realInfoForm.cus_id = row.id;
+      this.row=row;
+      return row;
+    }
+  }).setMethod('beforeAddTrack', function(){
+    this.commonSelect('addTrack');
+  }).setMethod('beforeAddComplain', function(){
+    this.commonSelect('complain');
+  }).setMethod('beforeAddPlan',function(){
+    this.commonSelect('addPlan');
+    this.dialogLabelWidth = "140px";
+  }).setMethod('beforeAddTransfer',function(){
+    this.commonSelect('addTransfer');  
+  }).setMethod('beforeAddRemind',function(){      
+    this.commonSelect('addRemind'); 
+  }).setMethod('beforeAddChoice',function(){
+    //this.commonSelect('addChoice');
+    var re = this.commonSelect('addChoice');
+    if(re !== false){
+      this.addChoiceForm.type = this.customerType[re.type];
+      this.addChoiceForm.choose = parseInt(re.important);
+    }   
+  }).setMethod('beforeShowDetail',function(){
+    if(this.commonSelect('showDetail') !== false){
+      this.showDetailForm = this.row; 
+    }
+    //this.commonSelect('showDetail');
+  }).setAdvancedSearch().setVueHook('mounted', function(){
+    var vmThis = this;
+    //省份、城市
+    this.$http.get('{:U("Area/getAreasByPid")}', {params:{pid:1} }).then(function(response){
+      var provinces = [];
+      response.body.forEach(function(currentValue,index){
+        //console.log(currentValue);
+        provinces.push({id: currentValue.id, name: currentValue.name});
+      })
+      /*console.log(vmThis.provinces);*/
+      vmThis.$set(vmThis, 'provinces', provinces);
+      /*console.log(vmThis.provinces);*/
+    });
+
+    //接收单位、员工
+    /*this.$http.get('{:U("getRecDep")}',{params:{id:0}}).then(
+      function(response){
+      var deps=[];
+      response.body.forEach(function(currentValue,index){
+        deps.push({value:currentValue.value,name:currentValue.dep_name});
+      })
+      vmThis.$set(vmThis,'deps',deps);
+      
+    });*/
+   // console.log(this.products);
+    this.dialogLabelWidth = "100px";
+  }).setMethod('trackLog',function(row,event,column){
+      // this.$refs.select.toggleRowSelection(row);
+      this.$http.post("{:U('trackInfo')}",row).then(function(response){
+        this.tableData = response.body;
+      },function(response){
+        console.log("操作失败");
+      });
+
+      this.$http.post("{:U('CommonFindDetail/complainInfo')}",row).then(function(response){
+        this.tableDataOne = response.body;
+      },function(response){
+        console.log("操作失败");
+      });
+
+  }).setMethod('userInfo',function(row,event){
+      var index = this.dataList.indexOf(row);
+      this.realInfoForm.cus_id = row.id;
+      this.$http.get('{:U("findRealInfo")}', {params:{cus_id:row.id} }).then(function(response){
+         this.realInfoForm.identity = response.body.identity;
+         this.realInfoForm.pdt_id = response.body.pdt_id;
+         this.realInfoForm.expense = response.body.expense;
+         this.realInfoForm.cycle = response.body.cycle;
+         this.realInfoForm.address = response.body.address;
+      });
+
+      this.handleEdit(index, row);
+  }).setMethod('setField', function(v,id){
+      this.flag=id;
+      this[FormName.getFormName('search')].field = v;
+      this[FormName.getFormName('search')].group = "{:session('uid')}";
+      this.dataLoad = true;
+      this.loadDatalist();
+  }).setMethod('beforeImportc', function(){
+      var vmThis = this;
+      this.$http.get('{:U("checkCucstomers")}').then(function(response){
+        vmThis.importcForm.c = response.body.c;
+        vmThis.importcForm.t = response.body.t;
+      }, function(response){
+        vmThis.$message.error("出错了");
+      })
+  }).setMethod('importMyc', function(){
+     var vmThis = this;
+     this.$http.get('{:U("importMyc")}').then(function(response){
+        // vmThis.$message('由我创建的客户导入：'+ response.body.c +"条,"+ "转让给我的客户："+response.body.t+"条");
+         vmThis.searchReset();
+        /*vmThis.importcForm.c = response.body.c;
+        vmThis.importcForm.t = response.body.t;*/
+      }, function(response){
+        vmThis.$message.error("出错了");
+      })
+  }).setMethod('refresh',function(){
+    window.location.reload();
+  }).setMethod('advancedQueryReset',function(){
+
+    console.log(this.$refs.advancedQueryForm);
+
+     this.$refs.advancedQueryForm.resetFields();
+    //this.closeDialog('advancedQuery');
+    //this.advancedQueryForm = Oassign({}, this._search)
+  }).setMethod('advanceSearch',function(){
+
+       for (var x  in  this.advancedQueryForm) {
+         if (this.advancedQueryForm[x] instanceof  Date) {
+          this.advancedQueryForm[x] = this.advancedQueryForm[x].toLocaleDateString();
+         }
+       }
+      // this.searchForm = Oassign({}, this.searchForm, this.advancedQueryForm);
+      this.searchForm = Oassign({},  this.advancedQueryForm);
+      this.loadDatalist();
+      this.closeDialog('advancedQuery');
+
+  }).setComputed('isTypeV', function(){
+    return this.editForm.type == 'V';
+  }).setMethod('sortChange', function(sortObject){
+    //console.log(sortObject);
+    //console.log(this.searchForm);
+    var sortMap = {
+      ascending: 'asc',
+      descending: 'desc'
+    }
+
+    if (sortObject.column === null) {
+      delete this.searchForm.sort_field;
+      delete this.searchForm.sort_order;
+    } else {
+      this.searchForm.sort_field = sortObject.prop;
+      this.searchForm.sort_order = sortMap[sortObject.order];
+    }
+
+
+    this.dataLoad = true;
+    this.loadDatalist();
+
+    
+  }).setMethod("searchReset2", function(){
+    // console.log("clear");
+
+    this.searchForm = Oassign({}, this._search) ;
+    this.dataLoad = true;
+    this.loadDatalist();
+    // window.location.reload();
+
+  }).setVueHook('created', function(){
+      this._search = Oassign({}, this.searchForm) ; //this.searchForm;
+  }).setMethod('editSubmit',function(url, form){
+    FormName.type = form;
+    var  formName    =  FormName.getFormName();  //form+"Form"; 
+    if(this[formName].type=='V'){
+       this.realInfoFormDialog=true;
+       this.realInfoForm.fm = 'edit'; 
+    }else{ 
+       this.editFormSubmit(url, form);
+    }   
+  }).setMethod('addRealInfo',function(url){
+      var  vmThis   = this;
+      this.realInfoFormSubmitStatus = true;
+      this.$http.post(url,this.realInfoForm).then(function (response) {
+        vmThis.$message({
+              message: '操作成功',
+              type: 'success'
+            });
+        setTimeout(function(){
+          vmThis.realInfoFormDialog = false;
+          vmThis.realInfoFormSubmitStatus = false;
+          vmThis.$refs.realInfoForm.resetFields(); 
+          if(vmThis.realInfoForm.fm=='edit'){
+             vmThis.editFormSubmit(page.editFormUrl, 'edit');
+          }else if(vmThis.realInfoForm.fm=='add'){
+             vmThis.addFormSubmit(page.addFormUrl, 'add'); 
+          }else{
+             vmThis.addTrackFormSubmit(page.addTrackFormUrl, 'addTrack'); 
+          } 
+        }, 2000);  
+      }, function(response){  
+          vmThis.$message({
+            message: '操作失败：'+response.body.info,
+            type: 'error'
+          });
+          setTimeout(function(){
+            vmThis.realInfoFormSubmitStatus = false;
+          },2000);
+      });
+  }).setMethod('addSubmit',function(url, form){
+    FormName.type = form;
+    var  formName    =  FormName.getFormName(); 
+    if(this[formName].type=='V'){
+       this.realInfoFormDialog=true;
+       this.realInfoForm.fm = 'add'; 
+    }else{ 
+       this.addFormSubmit(url, form);
+    } 
+  }).setMethod('addTrackSubmit',function(url,form){
+    FormName.type = form;
+    var  formName    =  FormName.getFormName(); 
+    if(this[formName].to_type=='V'){
+       this.realInfoFormDialog=true;
+       this.realInfoForm.fm = 'addTrack'; 
+    }else{ 
+       this.addTrackFormSubmit(url, form);
+    } 
+  }).setMethod('viewtraceContents',function(row,event){
+    // var index = this.tableData.indexOf(row);
+    this.traceContentFormDialog = true;
+    this.traceContentForm.content = row.content;
+  }).setMethod('viewComplainContents',function(row,event){
+    this.complainContentFormDialog = true;
+    this.complainContentForm.content = row.content;
+  }).setMethod('pdtChange',function(v){
+    var vmThis = this;
+    this.$http.get('{:U("Products/getProduct")}', {params:{id:v} }).then(function(response){
+      vmThis.realInfoForm.expense=response.body.price;
+      vmThis.realInfoForm.cycle=response.body.service_cycle;
+    });
+  }).setMethod('complainSubmit',function(url){
+    var  vmThis   = this;
+    this.complainFormSubmitStatus = true;
+    this.$http.post(url,this.complainForm).then(function(response){
+      vmThis.$message({message: '操作成功',type: 'success'});
+      setTimeout(function(){
+        vmThis.complainFormDialog = false;
+        vmThis.complainFormSubmitStatus = false;
+        vmThis.$refs.complainForm.resetFields(); 
+        vmThis.refresh();
+      }, 2000);  
+    },function(response){
+      vmThis.$message.error("操作出错啦");
+    });
+  }).setMethod('next', function(){
+    var  vmThis   = this;
+    delete vmThis.buyRules.product_index;
+    delete vmThis.buyRules.buy_time;
+    this.$refs.buyForm.validate(function(valid){
+      if (valid) {
+        if (vmThis.stepActive++ > 1) vmThis.stepActive = 0;
+        vmThis.buyRules.product_index = [{ type:"number",required: true, message:"请选择产品",trigger:'change',}];
+        vmThis.buyRules.buy_time = [{ type: 'date',required: true, message:"请选择够买时间", trigger:'change'}];
+        vmThis.buyRules.product_money = [{ required: true,pattern:/^(([1-9]\d{0,9})|0)(\.\d{1,2})?$/,  message: '请产品价格为数字', trigger:'change'}];
+      } else {
+        return false;
+      }
+    });
+  }).setMethod('beforeBuy', function(){
+    this.stepActive = 0;
+  }).setMethod('prv', function(){
+    if (this.stepActive-- < 0) this.stepActive = 0;
+  }).setMethod('buySelectChange', function(val){
+    if (val!= undefined ) {
+      var row = this.products[val];
+      this.buyForm.product_id = row.id;
+      this.buyForm.product_name = row.name;
+      this.buyForm.product_money = row.price;
+      this.buyForm.product_t = row.service_cycle;
+    }
+  }).setMethod('buy', function(row){
+    
+    this.buyForm.id = row.id;
+    this.buyForm.id_card = row.id_card;
+    this.buyForm.address = row.address;
+    this.buyForm.name = row.name;
+    this.openDialog('buy')
+  }).setMethod('setBuyTime',function(v){
+    this.buyForm.buy_time = v;
+  }).setMethod('getServiceTime',function(v){
+    return v != "" ? v+'个月' : '请先选择产品!';
+  }).setMethod('steCondition',function(){
+   // console.log(this.$refs.buyForm);
+    // this.$refs.buyForm.validate(function(valid){
+    //   if (valid) {
+    //     alert('submit!');
+    //   } else {
+    //     alert('error submit!!');
+    //     return false;
+    //   }
+    // });
+  }).setMethod('openRenewal', function(row){
+    this.renewalForm.cus_id = row.id;
+    this.renewalForm.address = row.address;
+    // console.log(row);
+    // page.getBuyHistory
+    this.$http.get(page.getBuyHistory, {params:{cus_id:row.id} }).then(function(response){
+      // console.log(response);
+      this.buyHistory = response.body;
+    },function(response){
+
+    });
+    this.openDialog('renewal')
+  }).setMethod('renewalSelectChange', function(val){
+    if (val!= undefined ) {
+      var row = this.products[val];
+      this.renewalForm.product_id = row.id;
+      this.renewalForm.product_name = row.name;
+      this.renewalForm.product_money = row.price;
+      this.renewalForm.product_t = row.service_cycle;
+    }
+  });
+</script>
+
+
+</block>

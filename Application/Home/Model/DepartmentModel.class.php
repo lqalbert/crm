@@ -112,6 +112,16 @@ class DepartmentModel extends Model {
     }
 
     /**
+    * 获得销售部门
+    * @param int|array
+    *
+    * @return []
+    */
+    public function getGoodSalesDepartments($fields="id,name"){
+        return $this->where(array('type'=>self::SALES_DEPARTMENT, 'status'=> 1))->field($fields)->select();
+    }
+
+    /**
     * 跟据不同的权限  index.html 显示不同的内容
     * 列表的操作列
     * 添加按钮
@@ -204,7 +214,14 @@ BUTTON;
                 //人事部
                 $re = D("Role")->where(array('status'=>1))->select();
                 break;
-            
+            case 4:
+                $re = D("Role")->where(array('ename'=>array(
+                        array('eq', RoleModel::SP_MASTER),
+                        array('eq', RoleModel::SP_CAPTAIN),
+                        array('eq', RoleModel::SP_STAFF),
+                        'or'
+                    )))->select();
+                break;
             default:
                 //销售部
                 $re = D("Role")->where(array('ename'=>array(
@@ -216,7 +233,11 @@ BUTTON;
     }
 
     
-
+    protected  function _after_insert($data,$options){
+        if ($data['type'] == self::SALES_DEPARTMENT) {
+            D('Distribute')->setOne(DistributeModel::DEPARTMENT, $data['id']);
+        }
+    }
 
     
 

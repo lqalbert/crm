@@ -14,7 +14,7 @@ class SpreadController extends Controller{
     */
     private function database(){
         $sql = " alter table `customers_basic` add column `spread_id` int unsigned not null default '0' comment '推广部id'; ";
-        $sql .= " alter table `customers_basic` add column `department_id` int unsigned not null default '0' comment '分配的销售部id';";
+        $sql .= " alter table `customers_basic` add column `depart_id` int unsigned not null default '0' comment '分配的销售部id';";
         $sql .= " alter table `customers_basic` add column `to_gid` int unsigned not null default '0' comment '分配的小组id'; ";
         $newTable = <<<TABLE
 create table `distribute_basic`(
@@ -27,5 +27,61 @@ create table `distribute_basic`(
 TABLE;
         M()->execute($sql);
         M()->execute($newTable);
+    }
+
+
+    public function setCustomer(){
+        $sql = "alter table `customers_basic` add column 'share_benefit' char(8)  null default ''";
+        M()->execute($sql);
+    }
+
+    public function setAutoDistribute(){
+        $m = M("distribute_basic");
+        //obj_id 单位id 部门id或是小组id
+        //type 0总经办 1部门 2小组
+        //全都默认手动
+        //1、生成总经办的
+        
+        $config = array();
+        $config['limina'] = 0;
+        $config['type'] = 1;
+        $config['list'] = array();
+
+        
+        $data = array();
+        $data['obj_id'] = 0;
+        $data['type']   = 0;
+        $data['config'] = json_encode($config);
+
+        $m->create($data);
+        $re = $m->add();
+        echo $re;
+
+        $departments = D("Home/Department")->getGoodSalesDepartments("id");
+        
+        foreach ($departments as $value) {
+            $tmp = array();
+            $tmp['obj_id'] = $value['id'];
+            $tmp['type']   = 1;
+            $tmp['config'] = json_encode($config);
+            $m->create($tmp);
+            echo $m->add();
+
+            //小组
+            $groups = D("Home/Group")->getAllGoups($value['id'], "id");
+
+            foreach ($groups as $group) {
+                $groupConfig = array();
+                $groupConfig['obj_id'] = $group['id'];
+                $groupConfig['type']   = 2;
+                $groupConfig['config'] = json_encode($config);
+                $m->create($groupConfig);
+                echo $m->add();
+            }
+
+
+        }
+
+
     }
 }

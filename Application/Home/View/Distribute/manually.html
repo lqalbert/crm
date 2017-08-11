@@ -1,11 +1,7 @@
 <extend name="Common:base" />
 <block name="head">
     <style>
-        .el-input-number input {
-            background-image: url("/Public/images/percent.jpg");
-            background-repeat: no-repeat;
-            background-position: left center;
-        }
+        
         .hidden{
             display: none;
         }
@@ -18,18 +14,19 @@
     <div id="app" class="container">
         <div class="wrapp" v-show="show" style="display:none">
             <el-form ref="editForm"  :model="editForm" >
-                <el-form-item label="分配方式" prop="title">
-                    <el-radio class="radio" v-model="editForm.type" label="1" >手动</el-radio>
-                    <el-radio class="radio" v-model="editForm.type" label="2">自动</el-radio>
-                </el-form-item>
+                
                 <el-form-item>
                     <el-alert
-                    title="所有的比例相加应为100%"
+                    title="所有的相加不能大于总人数"
                     type="info"
                     show-icon>
                   </el-alert>
                 </el-form-item>
-                
+                <el-form-item label="总人数">
+                  <el-col :span="10">
+                      <el-input v-model="total" disabled placeholder="请输入内容"></el-input>
+                  </el-col>
+                </el-form-item>
                 <el-form-item  
                     v-for="(item, index) in editForm.percent"
                     
@@ -46,7 +43,7 @@
                     </p>
                     
                   
-                    <el-input-number v-model="item.value"   :step="10" :max="100">
+                    <el-input-number v-model="item.value"    :max="total">
                     </el-input-number>
                     <el-button @click.prevent="remove(item)">删除</el-button>
                 </el-form-item>
@@ -57,26 +54,6 @@
                 </el-form-item>
                  
             </el-form>
-
-            <?php if($gold): ?>
-            <el-form ref="argForm"  :model="argForm">
-              <fieldset>
-                <legend>全局</legend>
-                <el-form-item label="分配比率" prop="arg">
-                <el-select v-model="argForm.benefit" placeholder="请选择">
-                  <el-option v-for="benefit in benefits" :label="benefit" :value="benefit"></el-option>
-                </el-select> 成 * 锁 * 
-              </el-form-item>
-              <el-form-item>
-                <el-button type="primary"  @click="saveBenefit">保 存</el-button>
-              </el-form-item>
-              </fieldset>
-              
-            </el-form>
-          <?php endif; ?>
-
-
-
         </div>
         <div class="hidden">
             <!-- page -->
@@ -89,33 +66,27 @@
 <block name="scripts">
 <script>
 
-  page.saveBenefitUrl = "{:U('saveBenefit')}";
-
+  page.disUrl = "{:U('manuallyDistribute')}";  
   window.defaultOption.setDatas({
     types:{:json_encode($types)},
     optionList:{:json_encode($optionList)},
-    benefits:{:json_encode($benefits)},
     submitStatus:false,
+    total:{$total}
   }).setForm('edit',{
-    id:{$id},
-    limina:{$limina},
-    type:"{$type}",
-    percent:{$percent}
-  }).setForm('arg',{
-    benefit:'{$benefit}'
+    total:{$total},
+    percent:[]
   }).setMethod("editSubmit", function(){
      var form = this.editForm;
-     if ( !this.checkAuto() && !this.checkPercent()) {
+     if (  !this.checkPercent()) {
         return ;
      }
 
      if ( !this.checkId() ) {
         return ;
      }
-
-     form.limina = this.calculateLimina();
+    
      this.submitStatus != this.submitStatus;
-     this.$http.post(page.editFormUrl, form).then(function(response){
+     this.$http.post(page.disUrl, form).then(function(response){
         this.submitStatus != this.submitStatus;
         this.$message.success("保存成功")
      }, function(response){
@@ -127,33 +98,17 @@
     var total = 0;
     var vmThis = this;
     var zore = false;
-    if (this.editForm.type==1) {
-      return ;
-    }
+    
     list.forEach(function(current){
-        if (current.value==0) {
-            zore = true;
-        }
         total += parseInt(current.value);
     });
-    if (zore) {
-        this.$message.error("比率不能为0");
-        return false;
-    }
-    if (total !=100) {
-        this.$message.error("比例相加应为100%");
+    
+
+    if (total > this.total) {
+        this.$message.error("不能大于总数");
         return false;
     } 
     return true;
-  }).setMethod('calculateLimina', function(){
-    var list = this.editForm.percent;
-    var d = list.every(function(current){
-        var y = current.value % 10;
-        return y==0;
-    });
-    return d ? 10 : 100;
-  }).setMethod('checkAuto', function(){
-     return this.editForm.type == 1 ;
   }).setMethod("addItem", function(){
     this.editForm.percent.push({
           value: 0,
@@ -193,13 +148,6 @@
       return false;
     }
     return true;
-  }).setMethod('saveBenefit', function(){
-    var obj = this.argForm;
-    this.$http.post(page.saveBenefitUrl, obj).then(function(response){
-
-    }, function(response){
-
-    })
   })
 </script>
 </block>

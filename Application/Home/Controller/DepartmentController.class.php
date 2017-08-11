@@ -205,10 +205,4 @@ class DepartmentController extends CommonController {
         // echo json_decode($list);
 	}
 
-	
-
-
-
-
-
 }
