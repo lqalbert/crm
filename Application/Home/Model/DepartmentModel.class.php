@@ -121,6 +121,10 @@ class DepartmentModel extends Model {
         return $this->where(array('type'=>self::SALES_DEPARTMENT, 'status'=> 1))->field($fields)->select();
     }
 
+    public function getSpreadDepartments($fields="id,name"){
+        return $this->where(array('type'=>self::SPREAD_DEPARTMENT, 'status'=> 1))->field($fields)->select();
+    }
+
     /**
     * 跟据不同的权限  index.html 显示不同的内容
     * 列表的操作列

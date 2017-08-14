@@ -79,7 +79,7 @@ class DistributeController extends CommonController{
 
     private function goldCondition(){
         $row = $this->M->where(array('obj_id'=>0))->find();
-        $this->assign("optionList", D("Department")->getSalesDepartments("id,name", 1));
+        $this->assign("optionList", D("Department")->getGoodSalesDepartments("id,name"));
         $this->setRow($row );
 
         $re = F(DistributeCustomerModel::BENEFIT);
