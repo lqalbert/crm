@@ -24,7 +24,28 @@ create table `distribute_basic`(
     `config` text comment 'json_encode序列化的数组',
     UNIQUE INDEX `depart_group_user` (`obj_id`,`type`)
 )engine=innodb comment'自动分配参数表';
+
+create table `distribute_record`(
+    `id` int unsigned not null primary key auto_increment,
+    `type` tinyint unsigned not null comment '类型 0 1 2',
+    `obj_id` int unsigned not null ,
+    `num` int unsigned not null default '0',
+    `created_at` timestamp not null default  current_timestamp
+)engine=innodb comment '分配记录表';
+
+create table `distribute_detail`(
+    `id` int unsigned not null primary key auto_increment,
+    `record_id` int  not null,
+    `name` varchar(10) ,
+    `value` varchar(10)
+)engine=innodb comment '详情表'
+
+
 TABLE;
+
+
+
+
         M()->execute($sql);
         M()->execute($newTable);
     }

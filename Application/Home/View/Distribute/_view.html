@@ -18,9 +18,9 @@
     <div id="app" class="container">
         <div class="wrapp" v-show="show" style="display:none">
             <el-form ref="editForm"  :model="editForm" >
-                <el-form-item label="分配方式" prop="title">
-                    <el-radio class="radio" v-model="editForm.type" label="1" >手动</el-radio>
-                    <el-radio class="radio" v-model="editForm.type" label="2">自动</el-radio>
+                <el-form-item label="自动分配" prop="title">
+                    <el-radio class="radio" v-model="editForm.type" label="1" >禁用</el-radio>
+                    <el-radio class="radio" v-model="editForm.type" label="2">启用</el-radio>
                 </el-form-item>
                 <el-form-item>
                     <el-alert
@@ -62,7 +62,7 @@
             <el-form ref="argForm"  :model="argForm">
               <fieldset>
                 <legend>全局</legend>
-                <el-form-item label="分配比率" prop="arg">
+                <el-form-item label="业绩分成比率" prop="arg">
                 <el-select v-model="argForm.benefit" placeholder="请选择">
                   <el-option v-for="benefit in benefits" :label="benefit" :value="benefit"></el-option>
                 </el-select> 成 * 锁 * 

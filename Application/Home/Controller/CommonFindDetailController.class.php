@@ -11,7 +11,9 @@ class CommonFindDetailController extends CommonController{
   
   /**
   *   获取跟踪信息
-  *   
+  *   @param int $type
+  *   @param int $cus_id
+  *   @param str $name
   */
 	public function trackInfo(){                   
     $type=D('Customer')->getType(I('post.type'));

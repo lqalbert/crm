@@ -131,19 +131,19 @@ class DistributeController extends CommonController{
     private function departmentMasterManuallyCondition(){
         $depart_id = session('account')['userInfo']['department_id'];
         $this->assign("optionList", D("Group")->getAllGoups($depart_id,"id,name"));
-        $count = D("Customer")->where(array("depart_id"=>$depart_id, 'to_gid'=>0))->count();
+        $count = D("Customer")->where(array("depart_id"=>$depart_id,  'to_gid'=>0))->count();
         $this->assign("total", $count);
     }
 
     private function captainManuallyCondition(){
         $group_id = session('account')['userInfo']['group_id'];
         $this->assign("optionList", D("User")->getGroupEmployee($group_id,"id,realname as name"));
-        $count = D("Customer")->where(array("to_gid"=>$depart_id, 'salesman_id'=>0))->count();
+        $count = D("Customer")->where(array("to_gid"=>$group_id, 'salesman_id'=>0))->count();
         $this->assign("total", $count);
     }
 
     public function manuallyDistribute(){
-        $list   = I("post.percent");
+        // $list   = I("post.percent");
         $re =  $this->dealDistribute(I("post.percent"));
         $this->ajaxReturn($re);
     }
@@ -160,6 +160,13 @@ class DistributeController extends CommonController{
     private function departmentMasterManuallyDeal($list){
         $depart_id = session('account')['userInfo']['department_id'];
         $allids = D("Customer")->where(array('depart_id'=>$depart_id, 'to_gid'=>0))->getField("id", true);
+
+        $record_id = M('distribute_record')->add(array(
+                    'type' => 1,
+                    'obj_id' => $depart_id,
+                    'num' => I("post.total")
+                ));
+
         $re = array();
         foreach ($list as $key => &$value) {
             $tmp = array();
@@ -171,6 +178,13 @@ class DistributeController extends CommonController{
             $tmp['num'] = M()->execute($sql);
 
             $re[] = $tmp;
+
+
+            M('distribute_detail')->add(array(
+                'record_id' => $record_id,
+                'name'      => D("Group")->where(array('id'=>$value['id']))->getField("name"),
+                'value'     => count($value['ids'])
+            ));
         }
         return $re;
 
@@ -180,6 +194,14 @@ class DistributeController extends CommonController{
     private function captainManuallyDeal($list){
         $g_id = session('account')['userInfo']['group_id'];
         $allids = D("Customer")->where(array('to_gid'=>$g_id, 'salesman_id'=>0))->getField("id", true);
+
+
+        $record_id = M('distribute_record')->add(array(
+                    'type' => 2,
+                    'obj_id' => $g_id,
+                    'num' => I("post.total")
+                ));
+
         $re = array();
         foreach ($list as $key => &$value) {
             $tmp = array();
@@ -191,13 +213,20 @@ class DistributeController extends CommonController{
             $tmp['num'] = M()->execute($sql);
 
             $re[] = $tmp;
+
+
+            M('distribute_detail')->add(array(
+                'record_id' => $record_id,
+                'name'      => M("user_info")->where(array('user_id'=>$value['id']))->getField("realname"),
+                'value'     => count($value['ids'])
+            ));
         }
         return $re;
 
     }
 
     public function saveBenefit(){
-        $re = F(DistributeCustomerModel::BENEFIT, $_POST['']);
+        $re = F(DistributeCustomerModel::BENEFIT, $_POST);
         if ($re) {
             $this->success("");
         } else {

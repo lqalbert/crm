@@ -36,7 +36,12 @@ class DistributeCustomerModel extends Model {
     //分配的比率
     public function setBenefit($v){
        $re =  F(self::BENEFIT, I("post."));
-      return $re['benefit'];
+       if ($re) {
+         return $re['benefit'];
+       } else {
+        return "9/1";
+       }
+      
     }
 
 

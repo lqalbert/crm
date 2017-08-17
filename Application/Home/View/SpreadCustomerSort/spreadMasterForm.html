@@ -1,0 +1,5 @@
+<el-form-item prop="to_gid">
+  <el-select size="small" style="width:120px;"  clearable   v-model="searchForm.to_gid"  placeholder="请选择小组">
+    <el-option v-for="group in groups" :value="group.id" :label="group.name"></el-option>
+  </el-select>
+</el-form-item>

@@ -7,6 +7,7 @@ class DistributeModel extends Model{
 
     const DEPARTMENT = 1;
     const GROUP = 2;
+    const GOLD = 0;
 
 
     protected $tableName = 'distribute_basic';

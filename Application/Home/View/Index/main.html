@@ -28,7 +28,7 @@
 			  <div slot="header" class="clearfix">
 			    <span>个人信息</span>
 			  </div>
-			  <div id="two" style="min-width:410px;display: table-cell;vertical-align:middle;padding:10px;">
+			  <div id="two" style="display: table-cell;vertical-align:middle;">
 			  	<php>
 						$userInfo = session('account')['userInfo'];
 						$arr=M('user_info')->where(array('user_id'=>$userInfo['user_id']))->find(); 

@@ -253,7 +253,7 @@ class DepartmentCustomerController extends CommonController {
         $d = D('CustomerTransflog');
         $cus_ids = I('post.cus_id');
         $rec_dep = I('post.rec_dep');
-        $proportion = I('post.proportion/d');
+        $proportion = I('post.proportiond');
         $rec_group = I('post.rec_group');
         $rec_user = I('post.rec_user');//跟踪方
         $content = I('post.content');

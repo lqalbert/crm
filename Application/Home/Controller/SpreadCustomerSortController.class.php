@@ -6,14 +6,43 @@ namespace Home\Controller;
 class SpreadCustomerSortController extends CommonController{
 
     protected $table = "Customer";
-    protected $pageSize = 11;
+    protected $pageSize = 15;
   
     public function index(){
 
         $this->assign('searchGroup', array(array("name"=>"个人", "value"=>"user_id"), array("name"=>"小组", "value"=>"to_gid"), array("name"=>"部门", "value"=>"spread_id")));
 
         $this->assign("allDeparts", $this->getSpreadDepartment());
+        $this->assign("role", $this->getRoleEname());
+        $this->setRoleVar();
         $this->display();
+    }
+
+    private function setRoleVar(){
+        $role = $this->getRoleEname();
+        switch ($role) {
+            case 'gold':
+                $this->assign("spread_id", "");
+                $this->assign("to_gid", "");
+                $this->assign('allgroups', array());
+                break;
+            case 'spreadMaster':
+                $this->assign("spread_id", $this->getUserDepartmentId());
+                $this->assign("to_gid", "");
+                $this->assign('allgroups',D("Group")->getAllGoups($this->getUserDepartmentId()));
+                break;
+            case 'spreadCaptain':
+                $this->assign("spread_id", $this->getUserDepartmentId());
+                $this->assign("to_gid", $this->getUserGroupId());
+                $this->assign('allgroups', array());
+                break;
+            default:
+                $this->assign("spread_id", "");
+                $this->assign("to_gid", "");
+                $this->assign('allgroups', array());
+                break;
+        }
+        
     }
 
     private function getSpreadDepartment(){
@@ -44,7 +73,79 @@ class SpreadCustomerSortController extends CommonController{
         } else {
             $this->M->where(array("spread_id"=>$spread_id));
         }
+
+        $roleName = $this->getRoleEname();
+        $funcName = $roleName."Condition";
+        if (method_exists($this, $funcName)) {
+            call_user_func(array($this, $funcName), $searchgroup);
+        }
+
     }  
+    //GOLD
+    //SP_MASTER
+    //SP_CAPTAIN
+
+    private function goldCondition($searchgroup){
+        switch ($searchgroup) {
+            case 'user_id':
+                $this->M->join("left join department_basic as db on customers_basic.spread_id=db.id")
+                        ->join("left join user_info as ui on  customers_basic.user_id = ui.user_id")
+                        ->field("concat(db.name,'-', ui.realname) as name");
+                break;
+
+            case 'to_gid':
+                $this->M->join("left join department_basic as db on customers_basic.spread_id=db.id")
+                        ->join("left join user_info as ui on  customers_basic.user_id = ui.user_id")
+                        ->join("left join group_basic as gb on ui.group_id = gb.id")
+                        ->field("concat(db.name,'-', gb.name) as name");
+                break;
+
+            case 'spread_id':
+                 $this->M->join("left join department_basic as db on customers_basic.spread_id=db.id")
+                        ->field("db.name");
+                break;
+            
+            default:
+                $this->M->join("left join department_basic as db on customers_basic.spread_id=db.id")
+                        ->field("db.name");
+                break;
+        }
+    }
+
+    private function spreadMasterCondition($searchgroup){
+        switch ($searchgroup) {
+            case 'user_id':
+                $this->M->join("left join user_info as ui on  customers_basic.user_id = ui.user_id")
+                        ->field("concat(db.name,'-', ui.realname) as name");
+                break;
+
+            case 'to_gid':
+                $this->M->join("left join user_info as ui on  customers_basic.user_id = ui.user_id")
+                        ->join("left join group_basic as gb on ui.group_id = gb.id")
+                        ->field("concat(gb.name,'-', ui.realname) as name");
+                break;
+            default:
+                $this->M->join("left join user_info as ui on  customers_basic.user_id = ui.user_id")
+                        ->field("concat(db.name,'-', ui.realname) as name");
+                break;
+        }
+    }
+
+    private function spreadCaptainCondition($searchgroup){
+        switch ($searchgroup) {
+            case 'user_id':
+                $this->M->join("left join user_info as ui on  customers_basic.user_id = ui.user_id")
+                        ->field("ui.realname as name");
+                break;
+            default:
+                $this->M->join("left join user_info as ui on  customers_basic.user_id = ui.user_id")
+                        ->field("ui.realname as name");
+                break;
+        }
+    }
+
+
+
 
     private function getAll(){
         $this->setQeuryCondition();
@@ -53,7 +154,7 @@ class SpreadCustomerSortController extends CommonController{
 
     private function getVAll(){
         $this->setQeuryCondition();
-        $this->M->where(array('type'=>array(array('EQ','V'),array('EQ','VX'),array('EQ','VT'), 'OR')));
+        $this->M->where(array('customers_basic.type'=>array(array('EQ','V'),array('EQ','VX'),array('EQ','VT'), 'OR')));
         return $this->M->select();
     }
 

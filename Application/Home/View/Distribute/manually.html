@@ -24,7 +24,7 @@
                 </el-form-item>
                 <el-form-item label="总人数">
                   <el-col :span="10">
-                      <el-input v-model="total" disabled placeholder="请输入内容"></el-input>
+                      <el-input v-model="ctotal" disabled placeholder="请输入内容"></el-input>
                   </el-col>
                 </el-form-item>
                 <el-form-item  
@@ -71,7 +71,7 @@
     types:{:json_encode($types)},
     optionList:{:json_encode($optionList)},
     submitStatus:false,
-    total:{$total}
+    ctotal:{$total}
   }).setForm('edit',{
     total:{$total},
     percent:[]
@@ -104,10 +104,12 @@
     });
     
 
-    if (total > this.total) {
+    if (total > this.ctotal) {
         this.$message.error("不能大于总数");
         return false;
     } 
+
+    this.editForm.total = total;
     return true;
   }).setMethod("addItem", function(){
     this.editForm.percent.push({

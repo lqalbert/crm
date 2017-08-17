@@ -42,7 +42,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-
+          <?php if($role=="gold"): ?>
           <el-form-item prop="spread_id">
               <el-select 
               size="small" 
@@ -54,12 +54,15 @@
                 <el-option v-for="dep in Alldeps" :value="dep.id" :label="dep.name"></el-option>
               </el-select>
           </el-form-item>
-
+          <?php endif; ?>
+          
+          <?php if($role!="spreadCaptain"): ?>
           <el-form-item prop="to_gid">
               <el-select size="small" style="width:120px;"  clearable   v-model="searchForm.to_gid"  placeholder="请选择小组">
                 <el-option v-for="group in groups" :value="group.id" :label="group.name"></el-option>
               </el-select>
           </el-form-item>
+          <?php endif; ?>
 
             <el-form-item>
               <el-button type="info" size="small" icon="search" @click="search2">查询</el-button>
@@ -118,7 +121,7 @@
       dateclear:false,
       searchGroup:{:json_encode($searchGroup)},
       Alldeps:{:json_encode($allDeparts)},
-      groups:[],
+      groups:{:json_encode($allgroups)},
       sortMap:{
         descending:'desc',
         ascending:'asc'
@@ -132,8 +135,8 @@
       start:'{$start}',
       end:'{$end}',
       searchgroup:"user_id",
-      spread_id:"",
-      to_gid:"",
+      spread_id:"{$spread_id}",
+      to_gid:"{$to_gid}",
       order:"desc",
       field:"v"
     }).setMethod('startDateChange', function(v){

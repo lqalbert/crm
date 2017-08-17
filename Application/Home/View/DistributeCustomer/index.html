@@ -107,7 +107,7 @@
       empty-text="暂无数据,请录入客户！"
       ref="select" 
       @current-change="handleSelectionChange"
-     
+      @row-click="trackLog"  
       @sort-change="sortChange">
 
       
@@ -123,9 +123,6 @@
 
         <el-table-column  prop="realname" label="跟踪员工" sortable='customer' width="150" >
         </el-table-column>
-
-        
-
         <el-table-column   prop="qq" label="QQ号"  width="170" header-align="center">
           <template scope="scope">
             {{ scope.row.qq }}
@@ -239,54 +236,15 @@
   <include file="Customer::_add" />
   <!-- / 录入客户 -->
   <!-- 跟踪内容 -->
-  <include file="_traceContent" />
+  <include file="Customer::_traceContent" />
   <!-- /跟踪内容 -->
-  <!-- 投诉内容 -->
-  <include file="_complainContent" />
-  <!-- /投诉内容 -->
-  <!-- 录入高级查询条件 -->
-  <include file="_advancedQuery" />
+
   <!-- 客户预查 -->
   <include file="_preCheck" />
   <!-- 索取统计 -->
-  <include file="_exactsCon" />
+
   <!-- 编辑 -->
   <include file="Customer::_edit" />
-  <!-- 显示客户一般资料 -->
-  <include file="_userInfo"/>
-  <!-- 录入跟踪  -->
-  <include file="_track" />
-  <!-- / 录入跟踪 -->
-  <!-- 录入计划 -->
-  <include file="_plan"/>
-  <!-- /录入计划 -->
-  
-  <!-- 录入提醒 -->
-  <include file="_remind"/>
-  <!-- /录入提醒 -->
-  <!-- 录入自选 -->
-  <include file="_choice"/>
-  <!-- /录入自选 -->
-  <!-- 客户全部资料 -->
-  <include file="_detail"/>
-  <!-- /客户全部资料 -->
-  <!-- 客户资料导入 -->
-  <include file="_importd" />
-  <!-- /客户资料导入 -->
-  <!-- V类客户资料 -->
-  <include file="_realInfo" />
-  <!-- /V类客户资料 -->
-  <!-- 录入投诉 -->
-  <include file="_complain" />
-  <!-- 录入投诉 -->
-
-  <!-- 购买 -->
-  <include file="_buy" />
-  <!-- /购买 -->
-
-  <!-- 续费 -->
-  <include file="_renewal" />
-  <!-- /续费 -->
 
 
 </div>
@@ -877,15 +835,9 @@
    // console.log(this.products);
     this.dialogLabelWidth = "100px";
   }).setMethod('trackLog',function(row,event,column){
-      // this.$refs.select.toggleRowSelection(row);
-      this.$http.post("{:U('trackInfo')}",row).then(function(response){
+      var params = {name:row.name, type:row.type, cus_id:row.id};
+      this.$http.post("{:U('CommonFindDetail/trackInfo')}",params).then(function(response){
         this.tableData = response.body;
-      },function(response){
-        console.log("操作失败");
-      });
-
-      this.$http.post("{:U('CommonFindDetail/complainInfo')}",row).then(function(response){
-        this.tableDataOne = response.body;
       },function(response){
         console.log("操作失败");
       });

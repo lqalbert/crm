@@ -1,0 +1,91 @@
+<extend name="Common:base"/>
+<block name="head">
+<style>
+  .demo-table-expand {
+    font-size: 0;
+  }
+  .demo-table-expand label {
+    width: 90px;
+    color: #99a9bf;
+  }
+  .demo-table-expand .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+    width: 50%;
+  }
+</style>
+</block>
+<block name="body">
+  <div id="app" class="container">
+    <div class="wrapp" v-show="show" style="display:none;">
+
+      <el-row>
+        <el-col :span="24">
+          <el-form :inline="true" ref="searchForm" :model="searchForm">
+           
+
+            <el-form-item>
+              <!-- <el-button type="info" size="small" icon="search" @click="loadDatalist">查询</el-button> -->
+              <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start">
+                <el-button size="small" @click="resetBack" style="margin-left:10px;">重置</el-button>
+              </el-tooltip>
+            </el-form-item>
+            
+          </el-form>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-table 
+          :data="dataList" 
+          border highlight-current-row
+          v-loading="dataLoad" 
+          element-loading-text="{:L('DATA_LOGIN')}"
+         >
+            <!-- <el-table-column label="序号"  align="center" width="65" :formatter="handleIndex"  >
+            </el-table-column> -->
+            <el-table-column   type="expand"  >
+              <template scope="props">
+                <el-form label-position="left" inline class="demo-table-expand">
+                  <el-form-item v-for="item in props.row.details" label="item.name">
+                    <span>{{ item.value }}</span>
+                  </el-form-item>
+                </el-form>
+              </template>
+            </el-table-column>
+
+            
+            <el-table-column  align="center" prop="name"  label="总数"   width="150">
+            </el-table-column>
+            <el-table-column   align="center" prop="spread_name" label="日期"  >
+            </el-table-column>
+                   
+          </el-table>
+        </el-col>
+      </el-row>
+      <el-row type="type" justify="start" align="middle" class="row-bg">
+        <el-col :span="12">
+              <div class="grid-content bg-purple-light pull-right">
+                <!-- page -->
+                <include file="Common:_pagination" />
+                <!-- / page -->
+              </div>
+        </el-col>
+      </el-row>
+    </div>
+  </div>
+</block>
+<block name="scripts">
+<script src="__PUBLIC__/js/calculate.js"></script>
+  <script>
+    // window.defaultOption.hooks.delAll('mounted');
+    
+    window.defaultOption.setDatas({
+      
+    }).setForm('search',{
+      
+    }).setMethod('resetBack', function(){
+      window.location.reload();
+    })
+  </script>
+</block>

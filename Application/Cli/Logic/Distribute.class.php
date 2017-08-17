@@ -12,8 +12,16 @@ class Distribute {
 
     private $allCus = array();
     private $totalNum  = 0 ;
+    private $disTotal = 0;
 
     
+    private function setDisTotal(){
+        $this->disTotal = $this->totalNum - ( $this->totalNum % $this->limina );
+    }
+
+    public function getDistotal(){
+        return $this->disTotal;
+    }
 
     public function setConfig($config){
         $this->limina = $config['limina'];
@@ -35,12 +43,16 @@ class Distribute {
             return false;
         }
 
+        $this->setDisTotal();
+
         return true;
     }
 
+
+
     public function getDataList(){
         //待分配的数量
-        $total = $this->totalNum - ( $this->totalNum % $this->limina );
+        $total = $this->disTotal;
         $itemRate = array();
         foreach ($this->disRate as $key => $value) {
             $tmp = array();

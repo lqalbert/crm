@@ -214,5 +214,13 @@ class CommonController extends Controller {
 		return $this->_roleEname ;
 	}
 
+	protected function getUserDepartmentId(){
+		return session('account')['userInfo']['department_id'];
+	}
+
+	protected function getUserGroupId(){
+		return session('account')['userInfo']['group_id'];
+	}
+
 
 }
