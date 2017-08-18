@@ -121,41 +121,56 @@ class CustomerLogic extends Model{
                 break;
             case 'transfto':
                 if($Contro == 'DepCus'){
-                    $D->where(array(
-                        'transfer_status'=>1, 
-                        'from_department_id'=> $this->depart_id,
-                        ))
-                        ->join('customer_transflog as ct on customers_basic.id=ct.cus_id');
+                    // $D->where(array(
+                    //     'transfer_status'=>1, 
+                    //     'from_department_id'=> $this->depart_id,
+                    //     ))
+                    //     ->join('customer_transflog as ct on customers_basic.id=ct.cus_id');
                         //'ct.created_at'=>array('EGT', $this->ThreeMonthsAge())
+                    $departUser = M("user_info")->where(array('department_id'=> $this->depart_id))->getField("user_id", true);
+                    if ($departUser) {
+                        $D->where(array('customers_basic.user_id'=>array(array("NEQ", 'salesman_id'), array("IN", $departUser), 'AND')));
+                    } else {
+                        $D->where(array("customers_basic.user_id"=>-1));
+                    }
+                    
                 }else{
                    // $D->where(array('transfer_status'=>1, 'transfer_to'=>array('NEQ', 0)));
-                    $D->where(array(
-                        'transfer_status'=>1, 
-                        'ct.from_id'=> session('uid'),
-                        ))
-                        ->join('customer_transflog as ct on customers_basic.id=ct.cus_id');
+                    // $D->where(array(
+                    //     'transfer_status'=>1, 
+                    //     'ct.from_id'=> session('uid'),
+                    //     ))
+                    //     ->join('customer_transflog as ct on customers_basic.id=ct.cus_id');
                        // 'ct.created_at'=>array('EGT', D('Customer','Logic')->ThreeMonthsAge())
+                    $D->where(array('customers_basic.user_id'=>session('uid'), 'salesman_id'=>array("NEQ", session('uid'))));
                 }
                 
                 break;
             case 'transfin':
                 if($Contro == 'DepCus'){
-                    $D->where(array(
+                    /*$D->where(array(
                         'transfer_status'=>1, 
                         'to_department_id'=> $this->depart_id,
                         ))
-                        ->join('customer_transflog as ct on customers_basic.id=ct.cus_id');
+                        ->join('customer_transflog as ct on customers_basic.id=ct.cus_id');*/
                         //'ct.created_at'=>array('EGT', $this->ThreeMonthsAge())
+                    $departUser = M("user_info")->where(array('department_id'=> $this->depart_id))->getField("user_id", true);
+                    if ($departUser) {
+                        $D->where(array('salesman_id'=>array(array("NEQ", 'customers_basic.user_id'), array("IN", $departUser), 'AND')));
+                    } else {
+                        $D->where(array("salesman_id"=>-1));
+                    }
                 }else{
                     // 多条相同的客户转让记录 会出现多条数据
                     // 用子查询 join (select from  这里选出 一条纪录 ) on customers_basic.id=ct.cus_id
                     // 这种思路 
-                   $D->where(array(
-                        'transfer_status'=>1, 
-                        'ct.to_id'=> session('uid'),
-                        ))
-                        ->join('customer_transflog as ct on customers_basic.id=ct.cus_id');
+                   // $D->where(array(
+                   //      'transfer_status'=>1, 
+                   //      'ct.to_id'=> session('uid'),
+                   //      ))
+                   //      ->join('customer_transflog as ct on customers_basic.id=ct.cus_id');
                         //'ct.created_at'=>array('EGT', $this->ThreeMonthsAge())
+                    $D->where(array('salesman_id'=>session('uid'), 'customers_basic.user_id'=>array("NEQ", session('uid'))));
                 }
                 
                 break;

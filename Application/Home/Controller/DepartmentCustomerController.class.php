@@ -257,8 +257,9 @@ class DepartmentCustomerController extends CommonController {
         $rec_group = I('post.rec_group');
         $rec_user = I('post.rec_user');//跟踪方
         $content = I('post.content');
-        $trackCommisson = D('CustomerLog')->getTrackProportion($proportion);//跟踪方比例
-        $addCommisson = D('CustomerLog')->getAddProportion($proportion);//锁定方比例
+        $share_benefit = DistributeCustomerModel::$shareBenefit[$proportion-1];
+        /*$trackCommisson = D('CustomerLog')->getTrackProportion($proportion);//跟踪方比例
+        $addCommisson = D('CustomerLog')->getAddProportion($proportion);//锁定方比例*/
 
         $preDate = array(
             'from_department_id' => $this->depart_id,
@@ -296,17 +297,16 @@ class DepartmentCustomerController extends CommonController {
             
             $cusData = array(
                 'salesman_id'=>$rec_user,
-                'commission'=>$trackCommisson,
-                'add_commission'=>$addCommisson
+                'share_benefit' => $share_benefit
+                // 'commission'=>$trackCommisson,
+                // 'add_commission'=>$addCommisson
             );
             $res = D('Customer')->where(array('id'=>$value))->data($cusData)->save();
             if ($res===false) {
                 $d->rollback();
                 $this->error('转让失败');
             }
-            
-
-
+        
         }
 
         $d->commit();
