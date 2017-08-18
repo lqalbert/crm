@@ -124,15 +124,17 @@ class CustomerLogic extends Model{
                     $D->where(array(
                         'transfer_status'=>1, 
                         'from_department_id'=> $this->depart_id,
-                        'ct.created_at'=>array('EGT', $this->ThreeMonthsAge())))
+                        ))
                         ->join('customer_transflog as ct on customers_basic.id=ct.cus_id');
+                        //'ct.created_at'=>array('EGT', $this->ThreeMonthsAge())
                 }else{
                    // $D->where(array('transfer_status'=>1, 'transfer_to'=>array('NEQ', 0)));
                     $D->where(array(
                         'transfer_status'=>1, 
                         'ct.from_id'=> session('uid'),
-                        'ct.created_at'=>array('EGT', D('Customer','Logic')->ThreeMonthsAge())))
+                        ))
                         ->join('customer_transflog as ct on customers_basic.id=ct.cus_id');
+                       // 'ct.created_at'=>array('EGT', D('Customer','Logic')->ThreeMonthsAge())
                 }
                 
                 break;
@@ -141,8 +143,9 @@ class CustomerLogic extends Model{
                     $D->where(array(
                         'transfer_status'=>1, 
                         'to_department_id'=> $this->depart_id,
-                        'ct.created_at'=>array('EGT', $this->ThreeMonthsAge())))
+                        ))
                         ->join('customer_transflog as ct on customers_basic.id=ct.cus_id');
+                        //'ct.created_at'=>array('EGT', $this->ThreeMonthsAge())
                 }else{
                     // 多条相同的客户转让记录 会出现多条数据
                     // 用子查询 join (select from  这里选出 一条纪录 ) on customers_basic.id=ct.cus_id
@@ -150,8 +153,9 @@ class CustomerLogic extends Model{
                    $D->where(array(
                         'transfer_status'=>1, 
                         'ct.to_id'=> session('uid'),
-                        'ct.created_at'=>array('EGT', $this->ThreeMonthsAge())))
+                        ))
                         ->join('customer_transflog as ct on customers_basic.id=ct.cus_id');
+                        //'ct.created_at'=>array('EGT', $this->ThreeMonthsAge())
                 }
                 
                 break;

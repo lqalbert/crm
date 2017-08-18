@@ -549,113 +549,7 @@ class CustomerController extends CommonController {
     }
 
 
-    public function importMyc(){
-        $realname = session('account')['userInfo']['realname'];
-        $group_id = session('account')['userInfo']['group_id'];
-
-        $roleName = $this->getRoleEname();
-        if ($roleName!="departmentMaster") {
-           $data = M('import_table2')->where(array('import_table'=>$group_id, 'sales'=>$realname))->select();
-        } else {
-            $data = M('import_table2')->where(array('import_table'=>0, 'sales'=>$realname))->select();
-        }
-
-
-                
-        $m = M();
-        
-        set_time_limit (120);
-        
-        foreach ($data as $value) {
-            
-
-            /**
-            * customers_contacts
-            * cus_id
-            * phone 
-            * qq
-            * weixin
-            * is_main
-            */
-
-            /**
-            * customers_basic
-            * name
-            * id_card D
-            * type E
-            * help_salesman  F
-            * help_transfer G ==> salesman_id
-            * help_user     H ==> user_id
-            * old_encode    I
-            *
-            */
-            
-            
-            //手机号不为空
-            if (!empty($value['phone']) &&  !empty($value['name']) &&  mb_strpos($value['name'], '简称')=== false) {
-                
-                if ($value['user']==$value['sales']) {
-                    $user_id = session('uid');
-                } else {
-                    $user_id = M('user_info')->where(array('realname'=>$value['user']))->getField('user_id');
-                }
-
-                $basicData = array(
-                    'name'=> $value['name'],
-                    'type'=> strtoupper(mb_substr($value['ctype'], 0,1)) ,
-                    'area_province'=>null,
-                    'area_city'=>null,
-                    'user_id'=>$user_id,
-                    'salesman_id'=>session('uid'),
-                    /*'help_group_id'=>$group_id,
-                    'help_salesman'=> $value['F'],
-                    'help_transfer'=> $value['G'],
-                    'help_user'    => $value['H'],*/
-                    'old_encode'   => $value['oldcode'],
-                    'created_at'   => null,
-                );
-
-                
-
-                $contactData = array(
-                    'cus_id'  =>  0,
-                    'phone'   =>  $this->fixPhone($value['phone']),
-                    'qq'      =>  $value['qq'],
-                    'is_main' => 1
-                );
-
-                $re = D('CustomerContact')->create($contactData);
-                
-                if($re){
-                    M('customers_basic')->create($basicData);
-                    $m->startTrans();
-                    $cus_id = M('customers_basic')->add();
-                    if (!$cus_id) {
-                        $m->rollback();
-                        $this->error("Customer".  M('customers_basic')->getError());
-                    } else {
-                        $re['cus_id'] = $cus_id;
-                        $id = D('CustomerContact')->data($re)->add();
-                        if (!$id) {
-                            $m->rollback();
-                            $this->error(D('CustomerContact')->getError());
-                        }  else {
-                            $m->commit();
-                            M('import_table2')->delete($value['id']);
-                        }
-                    }
-                }else{
-                    /*$m->rollback();
-                    $this->error(D('CustomerContact')->getError());*/
-                }
-
-            }
-        }
-
-        $this->success();
-
-        // $this->ajaxReturn(array('c'=>$re, 't'=>$re2));
-    }
+   
     
     
     
@@ -793,12 +687,8 @@ class CustomerController extends CommonController {
     */
     public function history(){
         $cus_id = I("get.cus_id");
-        $re = $this->M->where(array('cus_id'=>$cus_id, "status"=>1))->select();
+        $re = M("customers_buy")->where(array('cus_id'=>$cus_id, "status"=>1))->select();
         $this->ajaxReturn($re);
     }
-
-    
-
-    
 
 }
