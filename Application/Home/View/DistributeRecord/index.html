@@ -47,7 +47,7 @@
             <el-table-column   type="expand"  >
               <template scope="props">
                 <el-form label-position="left" inline class="demo-table-expand">
-                  <el-form-item v-for="item in props.row.details" label="item.name">
+                  <el-form-item v-for="item in props.row.details" :label="item.name">
                     <span>{{ item.value }}</span>
                   </el-form-item>
                 </el-form>
@@ -55,9 +55,9 @@
             </el-table-column>
 
             
-            <el-table-column  align="center" prop="name"  label="总数"   width="150">
+            <el-table-column  align="center" prop="num"  label="总数"   width="150">
             </el-table-column>
-            <el-table-column   align="center" prop="spread_name" label="日期"  >
+            <el-table-column   align="center" prop="created_at" label="日期"  >
             </el-table-column>
                    
           </el-table>

@@ -156,7 +156,7 @@ class CommonController extends Controller {
 	public function getList(){
 
 		$result = $this->_getList();
-	  	// echo $this->M->getLastSql();
+	  	
 		if (IS_AJAX) {
 			$this->ajaxReturn($result);
 			// $this->ajaxReturn($this->M->getLastSql());
