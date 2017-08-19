@@ -25,6 +25,7 @@ class DistributeController extends Controller {
 
     private function toDepartment(){
         $row = $this->configM->where(array("obj"=>0))->find();
+
         if (!$row) {
             return false;
         }
@@ -34,9 +35,11 @@ class DistributeController extends Controller {
         $alg = $this->al;
         $alg->setConfig($config);
         $alg->setAllCustomer($data);// array('id', 'id');
+        
         if (!$alg->isOk()) {
             return false;
         }
+
 
         //进入分配
         $record_id = M('distribute_record')->add(array(

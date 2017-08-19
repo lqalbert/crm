@@ -35,13 +35,15 @@ class Distribute {
     }
 
     public function isOk(){
-        if ($this->type ==1) { //手动
+        
+        if ($this->type ==1) { //禁用
             return false;
         }
 
         if ($this->totalNum < $this->limina) { //不够数量
             return false;
         }
+
 
         $this->setDisTotal();
 

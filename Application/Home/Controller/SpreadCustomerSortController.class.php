@@ -59,7 +59,8 @@ class SpreadCustomerSortController extends CommonController{
         $searchGroup = I("get.searchgroup");
         $this->M->group($searchgroup);
 
-        $this->M->field("count(id) as c, $searchGroup as obj_id");
+        $this->fields = "count(id) as c, customers_basic.$searchGroup as obj_id";
+        // $this->M->field();
 
         $to_gid = I("get.to_gid",0);
         if (!empty($to_gid)) {
@@ -90,24 +91,24 @@ class SpreadCustomerSortController extends CommonController{
             case 'user_id':
                 $this->M->join("left join department_basic as db on customers_basic.spread_id=db.id")
                         ->join("left join user_info as ui on  customers_basic.user_id = ui.user_id")
-                        ->field("concat(db.name,'-', ui.realname) as name");
+                        ->field($this->fields.", concat(db.name,'-', ui.realname) as name");
                 break;
 
             case 'to_gid':
                 $this->M->join("left join department_basic as db on customers_basic.spread_id=db.id")
                         ->join("left join user_info as ui on  customers_basic.user_id = ui.user_id")
                         ->join("left join group_basic as gb on ui.group_id = gb.id")
-                        ->field("concat(db.name,'-', gb.name) as name");
+                        ->field($this->fields.", concat(db.name,'-', gb.name) as name");
                 break;
 
             case 'spread_id':
                  $this->M->join("left join department_basic as db on customers_basic.spread_id=db.id")
-                        ->field("db.name");
+                        ->field($this->fields.", db.name");
                 break;
             
             default:
                 $this->M->join("left join department_basic as db on customers_basic.spread_id=db.id")
-                        ->field("db.name");
+                        ->field($this->fields.", db.name");
                 break;
         }
     }
@@ -116,17 +117,17 @@ class SpreadCustomerSortController extends CommonController{
         switch ($searchgroup) {
             case 'user_id':
                 $this->M->join("left join user_info as ui on  customers_basic.user_id = ui.user_id")
-                        ->field("concat(db.name,'-', ui.realname) as name");
+                        ->field($this->fields.", concat(db.name,'-', ui.realname) as name");
                 break;
 
             case 'to_gid':
                 $this->M->join("left join user_info as ui on  customers_basic.user_id = ui.user_id")
                         ->join("left join group_basic as gb on ui.group_id = gb.id")
-                        ->field("concat(gb.name,'-', ui.realname) as name");
+                        ->field($this->fields.", concat(gb.name,'-', ui.realname) as name");
                 break;
             default:
                 $this->M->join("left join user_info as ui on  customers_basic.user_id = ui.user_id")
-                        ->field("concat(db.name,'-', ui.realname) as name");
+                        ->field($this->fields.", ui.realname as name");
                 break;
         }
     }
@@ -135,11 +136,11 @@ class SpreadCustomerSortController extends CommonController{
         switch ($searchgroup) {
             case 'user_id':
                 $this->M->join("left join user_info as ui on  customers_basic.user_id = ui.user_id")
-                        ->field("ui.realname as name");
+                        ->field($this->fields.", ui.realname as name");
                 break;
             default:
                 $this->M->join("left join user_info as ui on  customers_basic.user_id = ui.user_id")
-                        ->field("ui.realname as name");
+                        ->field($this->fields.", ui.realname as name");
                 break;
         }
     }
@@ -149,7 +150,9 @@ class SpreadCustomerSortController extends CommonController{
 
     private function getAll(){
         $this->setQeuryCondition();
-        return $this->M->select();
+        $re = $this->M->select();
+       
+        return $re;
     }
 
     private function getVAll(){

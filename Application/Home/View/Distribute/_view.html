@@ -162,11 +162,23 @@
     return true;
   }).setMethod('calculateLimina', function(){
     var list = this.editForm.percent;
+
+    //是不是均分的情况
+    if (list.length==10 || list.length==5 || list.length==4 || list.length==2) {
+       var b = list[0]['value'];
+       var r = list.every(function(current){
+           return b == current;
+       });
+       if (r) {
+        return list.length;
+       }
+    }
+
     var d = list.every(function(current){
-        var y = 100 % current.value;
+        var y = current.value % 10;
         return y==0;
     });
-    return d.length==list.length ? d.length : 100;
+    return d ? 10 : 100;
   }).setMethod('checkAuto', function(){
      return this.editForm.type == 1 ;
   }).setMethod("addItem", function(){
