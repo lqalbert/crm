@@ -148,10 +148,10 @@
   }).setMethod('calculateLimina', function(){
     var list = this.editForm.percent;
     var d = list.every(function(current){
-        var y = current.value % 10;
+        var y = 100 % current.value;
         return y==0;
     });
-    return d ? 10 : 100;
+    return d.length==list.length ? d.length : 100;
   }).setMethod('checkAuto', function(){
      return this.editForm.type == 1 ;
   }).setMethod("addItem", function(){

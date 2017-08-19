@@ -27,8 +27,13 @@ class DistributeCustomerModel extends Model {
         array('salesman_id', '0'),
         array('last_track', 'getDate', 1, 'callback'),
         array('service_time','time', 1, 'function'),
-        array('share_benefit', 'setBenefit', 1 , 'callback')
+        array('share_benefit', 'setBenefit', 1 , 'callback'),
+        array('spread_id', 'setSpreadId', 1, 'callback')
     );
+
+    public function setSpreadId($v){
+      return session('account')['userInfo']['department_id'];
+    }
 
     public function getDate($v){
       return Date("Y-m-d H:i:s");
