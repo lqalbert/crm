@@ -64,6 +64,10 @@ class DistributeController extends CommonController{
     private function setRow($row){
         $config = json_decode($row['config'], true);
         if ($row) {
+            
+            foreach ($config['list'] as $key => &$value) {
+                $value['value'] = intval($value['value']);
+            }
             $this->assign("id",     $row['id']);
             $this->assign("limina", $config['limina']);
             $this->assign("type",   $config['type']);
@@ -227,11 +231,12 @@ class DistributeController extends CommonController{
 
     public function saveBenefit(){
         $re = F(DistributeCustomerModel::BENEFIT, $_POST);
-        if ($re) {
-            $this->success("");
+        $this->success("保存成功");
+        /*if ($re) {
+           
         } else {
-            $this->error();
-        }
+            $this->error("失败");
+        }*/
         //$Data = F('data');
     }
 

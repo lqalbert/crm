@@ -34,7 +34,13 @@
                     v-for="(item, index) in editForm.percent"
                     
                     :key="item.key"
-                    :prop="'percent.' + index + '.value'">
+                    :prop="'percent.' + index + '.value'"
+
+                    :rules="[
+                        { required: true, message: '不能为空'},
+                        { type: 'number', message: '必须为整数且大于0'}
+                      ]"
+                    >
                     <p>
                         <el-select v-model="item.id" @change="selectChange">
                             <el-option
@@ -104,24 +110,30 @@
   }).setForm('arg',{
     benefit:'{$benefit}'
   }).setMethod("editSubmit", function(){
-     var form = this.editForm;
-     if ( !this.checkAuto() && !this.checkPercent()) {
-        return ;
-     }
+    var vmThis = this;
+    this.$refs['editForm'].validate(function(valid){
+      if (valid) {
+        var form = vmThis.editForm;
+        if ( !vmThis.checkAuto() && !vmThis.checkPercent()) {
+           return ;
+        }
 
-     if ( !this.checkId() ) {
-        return ;
-     }
+        if ( !vmThis.checkId() ) {
+           return ;
+        }
 
-     form.limina = this.calculateLimina();
-     this.submitStatus != this.submitStatus;
-     this.$http.post(page.editFormUrl, form).then(function(response){
-        this.submitStatus != this.submitStatus;
-        this.$message.success("保存成功")
-     }, function(response){
-        this.submitStatus != this.submitStatus;
-        this.$message.error("操作失败");
-     });
+        form.limina = vmThis.calculateLimina();
+        vmThis.submitStatus != vmThis.submitStatus;
+        vmThis.$http.post(page.editFormUrl, form).then(function(response){
+           vmThis.submitStatus != vmThis.submitStatus;
+           vmThis.$message.success("保存成功")
+        }, function(response){
+           vmThis.submitStatus != vmThis.submitStatus;
+           vmThis.$message.error("操作失败");
+        });
+      }
+    })
+     
   }).setMethod("checkPercent", function(){
     var list = this.editForm.percent;
     var total = 0;
@@ -134,6 +146,9 @@
         if (current.value==0) {
             zore = true;
         }
+
+
+
         total += parseInt(current.value);
     });
     if (zore) {
@@ -196,9 +211,9 @@
   }).setMethod('saveBenefit', function(){
     var obj = this.argForm;
     this.$http.post(page.saveBenefitUrl, obj).then(function(response){
-
+      this.$message.success("操作成功");
     }, function(response){
-
+      this.$message.error("操作失败");
     })
   })
 </script>

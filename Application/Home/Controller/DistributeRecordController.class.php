@@ -1,7 +1,7 @@
 <?php
 namespace Home\Controller;
 
-use Home\DistributeModel;
+use Home\Model\DistributeModel;
 
 class DistributeRecordController extends CommonController{
 
@@ -14,7 +14,7 @@ class DistributeRecordController extends CommonController{
     }
 
 
-    public function setQueryCondition(){
+    public function setQeuryCondition(){
         $roleName = $this->getRoleEname();
         $funcName = $roleName."Condition";
         if (method_exists($this, $funcName)) {
@@ -23,15 +23,15 @@ class DistributeRecordController extends CommonController{
     }
 
     public function goldCondition(){
-        $this->where(array("type"=>DistributeModel::GOLD));
+        $this->M->where(array("type"=>DistributeModel::GOLD));
     }
 
     public function departmentMasterCondition(){
-        $this->where(array("type"=>DistributeModel::DEPARTMENT, "obj_id"=>$this->getUserDepartmentId()));
+        $this->M->where(array("type"=>DistributeModel::DEPARTMENT, "obj_id"=>$this->getUserDepartmentId()));
     }
 
     public function captainCondition(){
-        $this->where(array("type"=>DistributeModel::GROUP, "obj_id"=>$this->getUserGroupId()));
+        $this->M->where(array("type"=>DistributeModel::GROUP, "obj_id"=>$this->getUserGroupId()));
     }
 
     protected function _getList(){
