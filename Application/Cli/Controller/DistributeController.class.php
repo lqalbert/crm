@@ -37,7 +37,7 @@ class DistributeController extends Controller {
         $alg->setAllCustomer($data);// array('id', 'id');
         
         if (!$alg->isOk()) {
-            return false;
+            return true;
         }
 
 

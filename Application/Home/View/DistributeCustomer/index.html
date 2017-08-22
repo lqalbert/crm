@@ -70,6 +70,13 @@
         <el-form-item prop="contact" style="width:170px">
           <el-input v-model="searchForm.contact" size="small" placeholder="手机|qq|微信号"></el-input>
         </el-form-item>
+        <?php if($isCaptain): ?>
+        <el-form-item prop="group" style="width:100px">
+          <el-select v-model="searchForm.group" size="small" placeholder="请选择">
+            <el-option v-for="item in searchGroup" :label="item.name" :value="item.user_id" :disabled="item.disabled"></el-option>
+          </el-select>
+        </el-form-item>
+        <?php endif; ?>
         
 
         <el-form-item prop="field" v-show="false">

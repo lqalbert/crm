@@ -2,7 +2,7 @@
 namespace Home\Controller;
 
 
-
+//todo   fix problem 没有客户的 没有统计 部门显示只显示一条
 class SpreadCustomerSortController extends CommonController{
 
     protected $table = "Customer";
@@ -19,7 +19,8 @@ class SpreadCustomerSortController extends CommonController{
     }
 
     private function setRoleVar(){
-        $role = $this->getRoleEname();
+        // $role = $this->getRoleEname();
+        $role= 'gold';
         switch ($role) {
             case 'gold':
                 $this->assign("spread_id", "");
@@ -59,7 +60,7 @@ class SpreadCustomerSortController extends CommonController{
         $searchGroup = I("get.searchgroup");
         $this->M->group($searchgroup);
 
-        $this->fields = "count(id) as c, customers_basic.$searchGroup as obj_id";
+        $this->fields = "count(customers_basic.id) as c, customers_basic.$searchGroup as obj_id";
         // $this->M->field();
 
         $to_gid = I("get.to_gid",0);
@@ -75,10 +76,12 @@ class SpreadCustomerSortController extends CommonController{
             $this->M->where(array("spread_id"=>$spread_id));
         }
 
-        $roleName = $this->getRoleEname();
+        // $roleName = $this->getRoleEname();
+        $roleName = "gold";
         $funcName = $roleName."Condition";
         if (method_exists($this, $funcName)) {
-            call_user_func(array($this, $funcName), $searchgroup);
+            
+            call_user_func(array($this, $funcName), $searchGroup);
         }
 
     }  
@@ -87,6 +90,7 @@ class SpreadCustomerSortController extends CommonController{
     //SP_CAPTAIN
 
     private function goldCondition($searchgroup){
+
         switch ($searchgroup) {
             case 'user_id':
                 $this->M->join("left join department_basic as db on customers_basic.spread_id=db.id")
@@ -117,7 +121,7 @@ class SpreadCustomerSortController extends CommonController{
         switch ($searchgroup) {
             case 'user_id':
                 $this->M->join("left join user_info as ui on  customers_basic.user_id = ui.user_id")
-                        ->field($this->fields.", concat(db.name,'-', ui.realname) as name");
+                        ->field($this->fields.", ui.realname as name");
                 break;
 
             case 'to_gid':

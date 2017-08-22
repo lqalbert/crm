@@ -1,6 +1,7 @@
 <?php
 namespace Home\Controller;
 
+use Home\Model\RoleModel;
 class DistributeCustomerController extends CommonController{
 
     protected $table = "DistributeCustomer";
@@ -24,9 +25,23 @@ class DistributeCustomerController extends CommonController{
         $this->assign('Intention',    $customerM->getIntention(null));
 
         $this->assign('Source',       $customerM->getSource(null));
+        $this->assign("searchGroup",  $this->getSearchGroup());
+
+        $this->assign("isCaptain",  $this->getRoleEname()==RoleModel::SP_CAPTAIN);
+        $this->assign("uid", session("uid"));
 
 
         $this->display();
+    }
+
+    private function getSearchGroup(){
+        $group_id = $this->getUserGroupId();
+        if ($group_id!=0) {
+            return D("User")->getGroupEmployee($group_id, 'user_id, realname as name');
+        } else {
+            return  array();
+        }
+        
     }
 
     /**
@@ -82,7 +97,13 @@ class DistributeCustomerController extends CommonController{
             }
         }
 
-        $this->M->where(array("customers_basic.user_id"=> session("uid") ));
+        if (I("get.group")) {
+            $this->M->where(array("customers_basic.user_id"=> I("get.group") ));
+        } else {
+            $this->M->where(array("customers_basic.user_id"=> session("uid") ));
+        }
+
+        
 
             
 

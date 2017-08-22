@@ -127,7 +127,7 @@
         ascending:'asc'
       },
       pickerOptions0: {
-          disabledDate(time) {
+          disabledDate:function(time) {
             return time.getTime() > Date.now() ;
           }
         },
