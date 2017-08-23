@@ -178,8 +178,13 @@ class DistributeController extends CommonController{
             $value['ids'] = array_slice($allids, 0 , $value['value']);
 
             $allids = array_diff($allids, $value['ids']);
-            $sql = "update customers_basic set to_gid=".$value['id']." where id in (".implode(",", $value['ids']).")";
-            $tmp['num'] = M()->execute($sql);
+            if ($value['ids']) {
+                $sql = "update customers_basic set to_gid=".$value['id']." where id in (".implode(",", $value['ids']).")";
+                $tmp['num'] = M()->execute($sql);
+            } else {
+                $tmp['num'] = 0;
+            }
+            
 
             $re[] = $tmp;
 
@@ -213,8 +218,13 @@ class DistributeController extends CommonController{
             $value['ids'] = array_slice($allids, 0 , $value['value']);
 
             $allids = array_diff($allids, $value['ids']);
-            $sql = "update customers_basic set salesman_id=".$value['id']." where id in (".implode(",", $value['ids']).")";
-            $tmp['num'] = M()->execute($sql);
+            if ($value['ids']) {
+                $sql = "update customers_basic set salesman_id=".$value['id']." where id in (".implode(",", $value['ids']).")";
+                $tmp['num'] = M()->execute($sql);
+            } else {
+                $tmp['num'] = 0;
+            }
+            
 
             $re[] = $tmp;
 

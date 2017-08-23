@@ -170,4 +170,14 @@ class UserModel extends  Model{
         }
     }
 
+    public function getSpreadCommEmployee($spread_id, $field="user_id, realname"){
+        $roleModel = new RoleModel;
+
+
+        return $this->m->join('user_info on rbac_user.id = user_info.user_id')
+             ->where(array('department_id'=>$spread_id, 'rbac_user.status'=>array('NEQ', RbacUserModel::DELETE_SATUS), 'user_info.role_id'=>array('IN',  array($roleModel->getIdByEname(RoleModel::SP_MASTER), $roleModel->getIdByEname(RoleModel::SP_CAPTAIN), $roleModel->getIdByEname(RoleModel::SP_STAFF)))))
+             ->field($field)
+             ->select();
+    }
+
 }

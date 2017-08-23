@@ -134,7 +134,7 @@ class DistributeCustomerController extends CommonController{
 
      public function edit() {
         $this->M->startTrans();
-        if ($this->M->create($_POST, Model::MODEL_UPDATE) && ($this->M->save() !== false) )  {
+        if ($this->M->create($_POST, \Think\Model::MODEL_UPDATE) && ($this->M->save() !== false) )  {
             $D_cc  = D('CustomerContact');
             $D_cc->where(array('is_main'=>1, 'cus_id'=>$_POST['id']))->find();
             $mainData = $D_cc->getMainPost();

@@ -88,7 +88,8 @@
      this.submitStatus != this.submitStatus;
      this.$http.post(page.disUrl, form).then(function(response){
         this.submitStatus != this.submitStatus;
-        this.$message.success("保存成功")
+        this.$message.success("操作成功")
+        window.location.reload();
      }, function(response){
         this.submitStatus != this.submitStatus;
         this.$message.error("操作失败");
