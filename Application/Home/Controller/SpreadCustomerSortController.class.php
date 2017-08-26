@@ -64,7 +64,7 @@ class SpreadCustomerSortController extends CommonController{
 
         //1 获取所有的
         $all = $this->getDataAll($searchGroup);
-
+        $this->count = count($all);
         //2 统计录入数
         $this->getCAll($searchGroup);
 
@@ -232,7 +232,7 @@ class SpreadCustomerSortController extends CommonController{
         if ($re[0]['id'] == null) {
             $this->ajaxReturn(array('list'=>[], 'count'=>0));
         } else {
-            $this->ajaxReturn(array('list'=>$list, 'count'=>count($all)));
+            $this->ajaxReturn(array('list'=>$list, 'count'=>$this->count));
         }
         
     }
@@ -285,7 +285,7 @@ class SpreadCustomerSortController extends CommonController{
                 } else {
                     $re = D("Group")->join("left join department_basic as db on group_basic.department_id=db.id")
                               ->where(array('db.type'=>DepartmentModel::SPREAD_DEPARTMENT,"db.status"=>1,"group_basic.status"=>1))
-                              ->field("group_basic.id, concat(db.name, group_basic.name) as name")
+                              ->field("group_basic.id, concat(db.name, ' - ',group_basic.name) as name")
                               ->select();
                 }
                 return $re;

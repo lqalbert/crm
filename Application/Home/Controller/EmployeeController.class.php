@@ -47,6 +47,7 @@ class EmployeeController extends CommonController {
 	public function getList()
     {
         $result=$this->_getList();
+        
         foreach ($result['list'] as $k=>$v){
             $result['list'][$k]['qq_nickname']=mb_substr($v['qq_nickname'],0,12);
             $result['list'][$k]['weixin_nickname']=mb_substr($v['weixin_nickname'],0,12);

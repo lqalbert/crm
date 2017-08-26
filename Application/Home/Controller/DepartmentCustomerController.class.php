@@ -230,7 +230,7 @@ class DepartmentCustomerController extends CommonController {
     public function getGroupMemberList(){
         $id = I('get.id',0);
         // 重复了 ，赶进度啊
-        if ($id == 0) {
+        if (empty($id)) {
             $members = M('user_info')->where(array('department_id'=>$this->depart_id, 'user_id'=>array('NEQ', session('uid'))))
                                      ->field('user_id, realname')
                                      ->select();

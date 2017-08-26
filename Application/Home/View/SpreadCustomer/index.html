@@ -9,18 +9,79 @@
       <el-row>
         <el-col :span="24">
           <el-form :inline="true" ref="searchForm" :model="searchForm">
+            <!-- <el-form-item>
+              <el-select size="small" style="width:120px;" clearable v-model="searchForm.type" placeholder="查询类型">
+                <el-option v-for="item in searchGroup" :label="item.name" :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item> -->
+          
             <el-form-item>
-            <el-select size="small" style="width:120px;" clearable v-model="searchForm.type" placeholder="查询类型">
-              <el-option v-for="item in searchGroup" :label="item.name" :value="item.value">
-              </el-option>
-            </el-select>
-          </el-form-item>
+              <el-input size="small" v-model="searchForm.name" clearable  placeholder="客户姓名"></el-input>
+            </el-form-item>
+
+            <!-- 推广部门 -->
+            <p>
+              <el-form-item>
+                <el-select 
+                size="small" 
+                v-model="searchForm.spread_id" 
+                clearable 
+                placeholder="推广部"
+                @change="spreadChange">
+                  <el-option v-for="spread in spreads" :label="spread.name" :value="spread.id"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item>
+                <el-select 
+                size="small" 
+                v-model="searchForm.spread_gid" 
+                clearable 
+                placeholder="推广小组"
+                @change="spreadGChange">
+                  <el-option v-for="group in spreadGroups" :label="group.name" :value="group.id"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item>
+                <el-select size="small" v-model="searchForm.spread_uid" clearable placeholder="推广员工">
+                <el-option v-for="user in spreadUsers" :label="user.name" :value="user.id"></el-option>
+                </el-select>
+              </el-form-item>
+            </p>
+              <!-- / 推广部门 -->
+            
+            <!-- 销售部门 -->
+            <el-form-item>
+              <el-select 
+              size="small" 
+              v-model="searchForm.depart_id"  
+              clearable 
+              placeholder="销售部"
+              @change="departChange">
+                <el-option v-for="department in departments" :label="department.name" :value="department.id"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-select 
+              size="small" 
+              v-model="searchForm.depart_gid" 
+              clearable 
+              placeholder="销售小组"
+              @change="departGChange">
+                <el-option v-for="group in departGroups" :label="group.name" :value="group.id"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-select size="small" v-model="searchForm.depart_uid" clearable placeholder="销售员工">
+                <el-option v-for="user in departUsers" :label="user.name" :value="user.id"></el-option>
+              </el-select>
+            </el-form-item>
+            <!-- / 销售部门 -->
+
+
 
             <el-form-item>
-              <el-button type="info" size="small" icon="search" @click="loadDatalist">查询</el-button>
-              <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start">
-                <el-button size="small" @click="resetBack" style="margin-left:10px;">重置</el-button>
-              </el-tooltip>
+              <el-button type="info" size="small" icon="search" @click="dataReload">查询</el-button>
             </el-form-item>
             <el-form-item>
               <el-tooltip content="点击刷新当前页面" placement="right">
@@ -30,34 +91,9 @@
           </el-form>
         </el-col>
       </el-row>
-      <el-row>
-        <el-col :span="24">
-          <el-table 
-          :data="dataList" 
-          border highlight-current-row
-          v-loading="dataLoad" 
-          element-loading-text="{:L('DATA_LOGIN')}"
-         >
-                    <el-table-column label="序号"  align="center" width="65" :formatter="handleIndex"  >
-                    </el-table-column>
-                    <el-table-column  align="center" prop="name"  label="客户"   width="150">
-                    </el-table-column>
-                    <el-table-column   align="center" prop="spread_name" label="推广部"  >
-                    </el-table-column>
-                    <el-table-column   align="center" prop="sale_name" label="销售部"  >
-                    </el-table-column>
-          </el-table>
-        </el-col>
-      </el-row>
-      <el-row type="type" justify="start" align="middle" class="row-bg">
-        <el-col :span="12">
-              <div class="grid-content bg-purple-light pull-right">
-                <!-- page -->
-                <include file="Common:_pagination" />
-                <!-- / page -->
-              </div>
-        </el-col>
-      </el-row>
+      
+      <include file="SpreadCustomer::_tableData" />
+
     </div>
   </div>
 </block>
@@ -66,12 +102,56 @@
   <script>
     // window.defaultOption.hooks.delAll('mounted');
     page.getGroupsUrl = "{:U('getGroups')}";
+    page.getUsersUrl  = "{:U('getUsers')}";
     window.defaultOption.setDatas({
       searchGroup:[{name:"已分配", value:1}, {name:"未分配", value:2}],
+      departments:{:json_encode($departments)},
+      spreads:{:json_encode($spreads)},
+      spreadGroups:[],
+      spreadUsers:[],
+      departGroups:[],
+      departUsers:[]
     }).setForm('search',{
-      type:""
+      name:"",
+      spread_id:"",
+      spread_gid:"",
+      spread_uid:"",
+      depart_id:"",
+      depart_gid:"",
+      depart_uid:""
     }).setMethod('resetBack', function(){
       window.location.reload();
+    }).setMethod("spreadChange", function(v){
+      this.searchForm.spread_gid = "";
+      this.searchForm.spread_uid = "";
+      this.spreadGroups = [];
+      this.spreadUsers = [];
+      
+      this.selectChange(v,page.getGroupsUrl, 'spreadGroups');
+    }).setMethod("spreadGChange", function(v){
+      this.searchForm.spread_uid = "";
+      this.spreadUsers = [];
+      this.selectChange(v,page.getUsersUrl, 'spreadUsers');
+    }).setMethod("departChange", function(v){
+      this.searchForm.depart_gid = "";
+      this.searchForm.depart_uid = "";
+      this.departGroups = [];
+      this.departUsers = [];
+      
+      this.selectChange(v,page.getGroupsUrl, 'departGroups');
+    }).setMethod("departGChange", function(v){
+      this.searchForm.depart_uid = "";
+      this.spreadUsers = [];
+      this.selectChange(v,page.getUsersUrl, 'departUsers');
+    }).setMethod("selectChange", function(v,url,hold){
+      if (v=="") {
+        return;
+      }
+      this.$http.get(url,{params:{id:v}}).then(function(response){
+        this[hold] = response.body;
+      }, function(response){
+        this.$message.error("出错了");
+      });
     })
   </script>
 </block>

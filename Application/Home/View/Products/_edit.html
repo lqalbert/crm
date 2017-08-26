@@ -8,9 +8,19 @@
     <span>元人民币</span>
   </el-form-item>
  <el-form-item label="服务周期" prop="service_cycle">
-    <el-input-number size="small" v-model="editForm.service_cycle" :min="0" style="line-height: 0;"></el-input-number>
+    <el-input-number size="small" v-model="editForm.service_cycle" :min="0" style="line-height: 0;" @change="editServiceChange"></el-input-number>
     <span>个月</span>
  </el-form-item>
+
+  <el-form-item label="升级时限" prop="upgrade">
+    <el-input-number size="small" v-model="editForm.upgrade" :min="0" style="line-height: 0;"></el-input-number><span> 个月以内(0表示没有升级时限)</span> 
+    <br>
+      <el-tooltip class="item" effect="dark" content="服务周期的3分之2" placement="right">
+        <el-button  size="small" @click="editServiceChange">自动计算</el-button>
+      </el-tooltip> 服务周期要为3的倍数
+ </el-form-item>
+
+
  <el-form-item label="产品说明" prop="mark">
     <el-input type="textarea" v-model="editForm.mark" :autosize="{ minRows: 2, maxRows: 4}"
      placeholder="请描述产品说明" style="width:300px;"></el-input>

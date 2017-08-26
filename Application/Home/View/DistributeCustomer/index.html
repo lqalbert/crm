@@ -128,7 +128,10 @@
         <el-table-column  prop="lock_name" label="锁定员工" sortable='customer' width="150" >
         </el-table-column>
 
-        <el-table-column  prop="realname" label="跟踪员工" sortable='customer' width="150" >
+        <el-table-column   label="跟踪员工" sortable='customer' width="150" >
+         <template scope="scope">
+            {{ getName(scope.row.depart_name, scope.row.realname) }}
+          </template>
         </el-table-column>
         <el-table-column   prop="qq" label="QQ号"  width="170" header-align="center">
           <template scope="scope">
@@ -1089,6 +1092,8 @@
       this.renewalForm.product_money = row.price;
       this.renewalForm.product_t = row.service_cycle;
     }
+  }).setMethod('getName', function(dname, rname){
+    return dname==null ? '' : ( dname +'-'+ (rname==null? '' : rname));
   });
 </script>
 

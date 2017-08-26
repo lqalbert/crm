@@ -59,13 +59,13 @@
 			    width: 0;
 			    height: 10px;
 			}
-			#allUser{
+			#allUser,#spreadUser{
 				 text-indent: 0;
 			}
-			#allUser{
+			#allUser,#spreadUser{
 				line-height: 40px;
 			}
-		  #allUser li a {
+		  #allUser li a,#spreadUser li a {
 		    display: inline;
 		    vertical-align: top;
 		    height: 26px;
@@ -191,7 +191,7 @@
 		    elem: '#allUser', //指定元素
 		    click:function(item){
 		        if(item.field === undefined){
-		       	  console.log(item);
+		       	  // console.log(item);
 			        layer.msg('出现未知错误请联系技术团队', {
 			          time: 3000, //3s后自动关闭
 			          btn: ['马上去', '知道了', '哦']
@@ -202,6 +202,22 @@
 		        }
 		    }, 
 		    nodes: {:json_encode($tree)},
+		  });
+		  layui.tree({
+		    elem: '#spreadUser', //指定元素
+		    click:function(item){
+		        if(item.field === undefined){
+		       	  // console.log(item);
+			        layer.msg('出现未知错误请联系技术团队', {
+			          time: 3000, //3s后自动关闭
+			          btn: ['马上去', '知道了', '哦']
+			        });
+		        }else{
+
+		       	  tab.tabAdd(item.field);
+		        }
+		    }, 
+		    nodes: {:json_encode($spreadTree)},
 		  });
 		 
 		  //生成一个模拟树

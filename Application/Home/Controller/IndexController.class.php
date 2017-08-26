@@ -4,21 +4,25 @@ use Home\Model\RoleModel;
 class IndexController extends CommonController {
 
 	protected $pageSize = 4;
-	protected $tree = null;
+    protected $tree = null;
+	protected $spreadTree = null;
 	protected $navbar = null;
 
 
 	public function index() {
-    $ename = $this->getRoleEname();
-    if($ename == RoleModel::GOLD){
-    	$treeOb = new TreeController;
-      $this->tree = $treeOb->setMenuDep();
-      $this->navbar = $this->decoratorView();
-    }
+        $ename = $this->getRoleEname();
+        if($ename == RoleModel::GOLD){
+            $treeOb = new TreeController;
+            $this->tree = $treeOb->setMenuDep();
+            $this->navbar = $this->decoratorView();
 
-    //var_dump($tree);die();
-    $this->assign('tree',$this->tree);
-    $this->assign('navbar',$this->navbar);
+            $spreadOb = new SpreadTreeController;
+            $this->spreadTree = $spreadOb->setMenuDep();
+        }
+
+        $this->assign('tree',$this->tree);
+        $this->assign('spreadTree', $this->spreadTree);
+        $this->assign('navbar',$this->navbar);
 		$this->display ();
 	}
 
@@ -96,6 +100,20 @@ class IndexController extends CommonController {
 			</dl>
 		</li>
 	</ul>
+</div>
+<div class="layui-side-scroll" id="admin-spread-side" lay-filter="side">
+    <ul class="layui-nav layui-nav-tree beg-navbar">
+        <li class="layui-nav-item">
+            <a href="javascript:;">
+                <i class="layui-icon" data-icon="&#xe640;">&#xe640;</i>
+                <cite>推广客户</cite>
+                <span class="layui-nav-more"></span>
+            </a>
+            <dl class="layui-nav-child">
+                <ul id="spreadUser"></ul>
+            </dl>
+        </li>
+    </ul>
 </div>
 NAV;
   	return $navbar;

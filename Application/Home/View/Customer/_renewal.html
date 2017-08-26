@@ -2,19 +2,23 @@
     <el-form ref="renewalForm" :label-position="'top'" :model="renewalForm">
         
         <el-form-item label="购买过的商品" v-if="buyHistory.length">
-            <p v-for=" item in buyHistory ">
-                {{item.product_name}}-{{item.product_money}}
-            </p>
+            <el-select v-model="renewalForm.his_id">
+                <el-option 
+                    v-for="item in buyHistory" 
+                    :label="item.product_name + '-' + item.product_money"
+                    :value="item.id"></el-option>
+            </el-select>
+            
         </el-form-item>
         <el-form-item v-else>
             还没有购买过。请先购买
         </el-form-item>
 
-        <el-form-item label="详细地址:" prop="address">
+        <!-- <el-form-item label="详细地址:" prop="address">
             <el-input type="textarea" placeholder="详细地址" v-model="renewalForm.address"></el-input>
-        </el-form-item>
+        </el-form-item> -->
 
-        <el-form-item label="商品:" prop="product_index">
+       <!--  <el-form-item label="商品:" prop="product_index">
             <el-select placheholder="请选择" v-model="renewalForm.product_index" @change="renewalSelectChange">
                 <el-option v-for="(product,index) in products" :label="product.name" :value="index"></el-option>
             </el-select>
@@ -23,7 +27,7 @@
             <el-col :span="10">
                 <el-input placeholder="价格" v-model="renewalForm.product_money"></el-input>
             </el-col>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="够买时间"  prop="buy_time" required>
            <el-date-picker v-model="renewalForm.buy_time" :editable="false" type="date" placeholder="选择日期">
            </el-date-picker>

@@ -7,6 +7,11 @@ use Home\Model\DistributeCustomerModel;
 class DistributeController extends CommonController{
 
     protected $table = "Distribute";
+    private $nameMap = array(
+        'gold' => '部门',
+        'departmentMaster' => '小组',
+        'captain' => '员工'
+    );
 
 
     public function index(){
@@ -45,6 +50,7 @@ class DistributeController extends CommonController{
 
     private function setRole(){
         $roleName = $this->getRoleEname();
+        $this->assign('name', $this->nameMap[$roleName]);
         $funcName = $roleName."Condition";
         if (method_exists($this, $funcName)) {
            call_user_func(array($this, $funcName));
@@ -120,6 +126,7 @@ class DistributeController extends CommonController{
 
     private function setManullyConfig(){
         $roleName = $this->getRoleEname();
+        $this->assign('name', $this->nameMap[$roleName]);
         $funcName = $roleName."ManuallyCondition";
         if (method_exists($this, $funcName)) {
            call_user_func(array($this, $funcName));
@@ -179,7 +186,7 @@ class DistributeController extends CommonController{
 
             $allids = array_diff($allids, $value['ids']);
             if ($value['ids']) {
-                $sql = "update customers_basic set to_gid=".$value['id']." where id in (".implode(",", $value['ids']).")";
+                $sql = "update customers_basic set to_gid=".$value['id'].",dis_time='".Date('Y-m-d H:i:s')."' where id in (".implode(",", $value['ids']).")";
                 $tmp['num'] = M()->execute($sql);
             } else {
                 $tmp['num'] = 0;
@@ -219,7 +226,7 @@ class DistributeController extends CommonController{
 
             $allids = array_diff($allids, $value['ids']);
             if ($value['ids']) {
-                $sql = "update customers_basic set salesman_id=".$value['id']." where id in (".implode(",", $value['ids']).")";
+                $sql = "update customers_basic set salesman_id=".$value['id'].",dis_time='".Date('Y-m-d H:i:s')."' where id in (".implode(",", $value['ids']).")";
                 $tmp['num'] = M()->execute($sql);
             } else {
                 $tmp['num'] = 0;

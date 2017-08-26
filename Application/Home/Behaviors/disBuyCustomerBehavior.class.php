@@ -51,9 +51,18 @@ class disBuyCustomerBehavior extends \Think\Behavior {
         $riskUsers = $this->getRisk();
         $callUsers = $this->getCallback();
 
+        // echo "riskUsers";
+        // var_dump($riskUsers);
+
+        // echo "callUsers";
+        // var_dump($callUsers);
+
+
         $risk_i = $this->riskRoll % count($riskUsers);
         $call_i = $this->callBackRoll % count($callUsers);
 
+        // var_dump($risk_i);
+        // var_dump($call_i);
 
         $data = array(
             'risk_id'=>$riskUsers[$risk_i]['id'],

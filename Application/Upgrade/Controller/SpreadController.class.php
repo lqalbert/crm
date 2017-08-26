@@ -16,6 +16,7 @@ class SpreadController extends Controller{
         $sql = " alter table `customers_basic` add column `spread_id` int unsigned not null default '0' comment '推广部id'; ";
         $sql .= " alter table `customers_basic` add column `depart_id` int unsigned not null default '0' comment '分配的销售部id';";
         $sql .= " alter table `customers_basic` add column `to_gid` int unsigned not null default '0' comment '分配的小组id'; ";
+        $sql .= " alter table `customers_basic` add column `dis_time` int unsigned not null default '0' comment '分配时的时间'; ";
         $newTable = <<<TABLE
 create table `distribute_basic`(
     `id` int unsigned not null primary key auto_increment ,

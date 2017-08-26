@@ -1,0 +1,72 @@
+<extend name="Common:base"/>
+<block name="head">
+
+</block>
+<block name="body">
+  <div id="app" class="container">
+    <div class="wrapp" v-show="show" style="display:none;">
+
+      <el-row>
+        <el-col :span="24">
+          <el-form :inline="true" ref="searchForm" :model="searchForm">
+
+          
+            <el-form-item>
+              <el-input size="small" v-model="searchForm.name" clearable  placeholder="客户姓名"></el-input>
+            </el-form-item>
+
+            <!-- 销售部门 -->
+          
+            <el-form-item>
+              <el-select size="small" v-model="searchForm.depart_uid" clearable placeholder="销售员工" @change="userChange">
+                <el-option v-for="user in departUsers" :label="user.name" :value="user.id"></el-option>
+              </el-select>
+            </el-form-item>
+
+            <el-form-item>
+              <el-checkbox v-model="searchForm.checked" @change="checkChange">未分配</el-checkbox>
+            </el-form-item>
+            <!-- / 销售部门 -->
+
+
+
+            <el-form-item>
+              <el-button type="info" size="small" icon="search" @click="dataReload">查询</el-button>
+            </el-form-item>
+            <el-form-item>
+              <el-tooltip content="点击刷新当前页面" placement="right">
+                <el-button @click="refresh" size="small" type="danger">刷新</el-button>
+              </el-tooltip>
+            </el-form-item>
+          </el-form>
+        </el-col>
+      </el-row>
+      <include file="SpreadCustomer::_tableData" />
+    </div>
+  </div>
+</block>
+<block name="scripts">
+<script src="__PUBLIC__/js/calculate.js"></script>
+  <script>
+    // window.defaultOption.hooks.delAll('mounted');
+    // page.getGroupsUrl = "{:U('getGroups')}";
+    page.getUsersUrl  = "{:U('getUsers')}";
+    window.defaultOption.setDatas({
+      searchGroup:[{name:"已分配", value:1}, {name:"未分配", value:2}],
+      departUsers:{:json_encode($users)},
+    }).setForm('search',{
+      name:"",
+      checked:false,
+      depart_uid:""
+    }).setMethod('resetBack', function(){
+      window.location.reload();
+    }).setMethod('checkChange', function(v){
+      this.searchForm.depart_uid="";
+      // this.spreadUsers = [];
+    }).setMethod('userChange', function(v){
+      if (v!='') {
+        this.searchForm.checked = false;
+      }
+    })
+  </script>
+</block>

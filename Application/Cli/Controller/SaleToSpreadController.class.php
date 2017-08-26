@@ -6,11 +6,12 @@ use Home\Model\RoleModel;
 
 class SaleToSpreadController extends Controller{
 
-    private $ids = array();
+    private $ids = array(87);
 
 
     public function index(){
-
+        $this->setRoleId();
+        $this->departments($this->ids);
     }
 
     private function setRoleId(){
@@ -31,15 +32,18 @@ class SaleToSpreadController extends Controller{
         foreach ($departments as $key => $value) {
             // rbac_role_user 重新处理 
             // M('user_info')->data(array('user_id'=>$user_id, 'role_id'=>$role_ids))->save();
-            $users = M('user_info')->where(array('department_id'=>$value['id']));
+            $users = M('user_info')->where(array('department_id'=>$value['id']))->select();
+            var_dump($users);
             foreach ($users as $user) {
                 if ($user['role_id'] == $this->sa_master_id) {
                     $this->setRole($user['user_id'], $this->sp_master_id);
                 } else if($user['role_id'] == $this->sa_captain_id) {
                     $this->setRole($user['user_id'], $this->sp_captain_id);
                 } else if($user['role_id'] == $this->sa_staff_id){
-                    $this->setRole($user['user_id'], $this->sa_staff_id);
-                } 
+                    $this->setRole($user['user_id'], $this->sp_staff_id);
+                }
+                $this->setCustomers($user['user_id'], $value['id']);
+
             }           
         }
 
@@ -49,12 +53,18 @@ class SaleToSpreadController extends Controller{
         $M = D('rbac_role_user');
         $insert_list = array();
         $insert_list[] = array('role_id'=>$role_id, 'user_id'=>$user_id);
-
+        var_dump($insert_list);
         $M->startTrans(); 
         $result = $M->where(array('user_id'=>$user_id))->delete();
 
         $insert_result = $M->addAll($insert_list);
         $re = M('user_info')->data(array('user_id'=>$user_id, 'role_id'=>$role_id))->save();
         $M->commit();
+    }
+    //只假设一种情况 这些客户都在一个部门内转让
+    private function setCustomers($user_id, $depart_id){
+        $sql = "update customers_basic set salesman_id=0 ,spread_id=$depart_id where user_id=$user_id ";
+        M()->execute($sql);
+
     }
 }

@@ -13,7 +13,7 @@
 <block name="body">
     <div id="app" class="container">
         <div class="wrapp" v-show="show" style="display:none">
-            <el-form ref="editForm"  :model="editForm" >
+            <el-form ref="editForm"  :model="editForm" label-position="left">
                 
                 <el-form-item>
                     <el-alert
@@ -24,15 +24,29 @@
                 </el-form-item>
                 <el-form-item label="总人数">
                   <el-col :span="10">
-                      <el-input v-model="ctotal" disabled placeholder="请输入内容"></el-input>
+                      {$total}
+                      <!-- <el-input v-model="ctotal" disabled placeholder="请输入内容"></el-input> -->
                   </el-col>
                 </el-form-item>
-                <el-form-item  
+                <table>
+                  <tr>
+                    <td width="200">{$name}</td>
+                    <td>人数</td>
+                  </tr>
+                </table>
+                <?php foreach($optionList as $key=>$value): ?>
+                  <el-form-item  label="{$value['name']}" label-width="150px">
+                        <el-input-number v-model="editForm.obj_{$value['id']}"  :max="{$total}"></el-input-number>
+                   <!--  <el-input-number v-model="item.value"    :max="{$total}">
+                    </el-input-number> -->
+                    <!-- <el-button @click.prevent="remove(item)">删除</el-button> -->
+
+                  </el-form-item>
+                <?php endforeach;?>
+                <!-- <el-form-item  
                     v-for="(item, index) in editForm.percent"
-                    
                     :key="item.key"
                     :prop="'percent.' + index + '.value'">
-                    <p>
                         <el-select v-model="item.id" @change="selectChange">
                             <el-option
                               v-for="option in optionList"
@@ -40,17 +54,14 @@
                               :value="option.id">
                             </el-option>
                         </el-select>
-                    </p>
-                    
-                  
-                    <el-input-number v-model="item.value"    :max="total">
+                    <el-input-number v-model="item.value"    :max="{$total}">
                     </el-input-number>
                     <el-button @click.prevent="remove(item)">删除</el-button>
-                </el-form-item>
+                </el-form-item> -->
                 <el-form-item>
-                    <el-button type="primary" v-show="!submitStatus" @click="editSubmit">确 定</el-button>
-                    <el-button @click="addItem">添加一项</el-button>   
-                    <el-button type="primary" v-show="submitStatus" :loading="true" >添加中</el-button>
+                    <el-button type="primary" v-show="!submitStatus" @click="editSubmit2">确 定</el-button>
+                   <!--  <el-button @click="addItem">添加一项</el-button>   
+                    <el-button type="primary" v-show="submitStatus" :loading="true" >添加中</el-button> -->
                 </el-form-item>
                  
             </el-form>
@@ -74,7 +85,10 @@
     ctotal:{$total}
   }).setForm('edit',{
     total:{$total},
-    percent:[]
+    percent:[],
+    <?php foreach($optionList as $key=>$value): ?>
+    obj_{$value['id']}:0,
+    <?php endforeach;?>
   }).setMethod("editSubmit", function(){
      var form = this.editForm;
      if (  !this.checkPercent()) {
@@ -151,6 +165,56 @@
       return false;
     }
     return true;
+  }).setMethod("editSubmit2", function(){
+     var form = this.editForm;
+     if (  !this.checkPercent2()) {
+        return ;
+     }
+
+     
+     this.submitStatus != this.submitStatus;
+     this.$http.post(page.disUrl, form).then(function(response){
+        this.submitStatus != this.submitStatus;
+        this.$message.success("操作成功")
+        window.location.reload();
+     }, function(response){
+        this.submitStatus != this.submitStatus;
+        this.$message.error("操作失败");
+     });
+  }).setMethod('checkPercent2', function(v){
+    var obj = [];
+    <?php foreach($optionList as $key=>$value): ?>
+    obj.push("obj_{$value['id']}");
+    <?php endforeach;?>
+
+    var total = 0;
+    var vmThis = this;
+    var zore = false;
+    var percent = [];
+    
+    obj.forEach(function(current){
+        total += parseInt(this.editForm[current]);
+    }, this);
+    
+
+    if (total > this.ctotal) {
+        this.$message.error("不能大于总数");
+        return false;
+    } 
+
+    obj.forEach(function(current){
+        var d = parseInt(this.editForm[current]);
+        percent.push({id:current.split("_")[1],value:d});
+    },this);
+
+
+    this.editForm.percent = percent;
+
+
+
+    this.editForm.total = total;
+    return true;
+    
   })
 </script>
 </block>

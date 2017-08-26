@@ -2,7 +2,7 @@
 <block name="head">
     <style>
         .el-input-number input {
-            background-image: url("/Public/images/percent.jpg");
+            background-image: url("__ROOT__/Public/images/percent.jpg");
             background-repeat: no-repeat;
             background-position: left center;
         }
@@ -17,7 +17,7 @@
 <block name="body">
     <div id="app" class="container">
         <div class="wrapp" v-show="show" style="display:none">
-            <el-form ref="editForm"  :model="editForm" >
+            <el-form ref="editForm"  :model="editForm" label-position="left">
                 <el-form-item label="自动分配" prop="title">
                     <el-radio class="radio" v-model="editForm.type" label="1" >禁用</el-radio>
                     <el-radio class="radio" v-model="editForm.type" label="2">启用</el-radio>
@@ -29,8 +29,22 @@
                     show-icon>
                   </el-alert>
                 </el-form-item>
-                
-                <el-form-item  
+                <table>
+                  <tr>
+                    <td width="200">{$name}</td>
+                    <td>比例</td>
+                  </tr>
+                </table>
+                <?php foreach($optionList as $key=>$value): ?>
+                  <el-form-item label="{$value['name']}" label-width="150px" >
+                        <el-input-number v-model="editForm.obj_{$value['id']}"  :step="1" :max="100"></el-input-number>
+                   <!--  <el-input-number v-model="item.value"    :max="{$total}">
+                    </el-input-number> -->
+                    <!-- <el-button @click.prevent="remove(item)">删除</el-button> -->
+
+                  </el-form-item>
+                <?php endforeach;?>
+                <!-- <el-form-item  
                     v-for="(item, index) in editForm.percent"
                     
                     :key="item.key"
@@ -41,7 +55,6 @@
                         { type: 'number', message: '必须为整数且大于0'}
                       ]"
                     >
-                    <p>
                         <el-select v-model="item.id" @change="selectChange">
                             <el-option
                               v-for="option in optionList"
@@ -49,17 +62,14 @@
                               :value="option.id">
                             </el-option>
                         </el-select>
-                    </p>
-                    
-                  
-                    <el-input-number v-model="item.value"   :step="10" :max="100">
+                    <el-input-number v-model="item.value"   :step="1" :max="100">
                     </el-input-number>
                     <el-button @click.prevent="remove(item)">删除</el-button>
-                </el-form-item>
+                </el-form-item> -->
                 <el-form-item>
-                    <el-button type="primary" v-show="!submitStatus" @click="editSubmit">确 定</el-button>
-                    <el-button @click="addItem">添加一项</el-button>   
-                    <el-button type="primary" v-show="submitStatus" :loading="true" >添加中</el-button>
+                    <el-button type="primary" v-show="!submitStatus" @click="editSubmit2">确 定</el-button>
+                    <!-- <el-button @click="addItem">添加一项</el-button>   
+                    <el-button type="primary" v-show="submitStatus" :loading="true" >添加中</el-button> -->
                 </el-form-item>
                  
             </el-form>
@@ -95,6 +105,28 @@
 <block name="scripts">
 <script>
 
+  function gcd(  n,  m ){ 
+    if( m == 0 ) return n; 
+    return gcd( m, n % m ); 
+  }
+
+  function lcm(a, b){
+    return a*b/ gcd(Math.min(a,b), Math.max(a,b));
+  } 
+
+  //获得最小公倍数多个    
+  function doLCM(arr ){    
+    var x,y,num=arr[0];  
+    //去数组的第一和第二个数，计算它们的公倍数，然后再取第三个数，  
+    //和之前的公倍数计算它们的公倍数，直到只有一个数。  
+    for (var i = 0, len = arr.length; i < len-1 ; i++) {
+      x = num;
+      y = arr[i+1];
+      num = lcm(x, y);
+    } 
+    return num;    
+}  
+
   page.saveBenefitUrl = "{:U('saveBenefit')}";
 
   window.defaultOption.setDatas({
@@ -106,7 +138,10 @@
     id:{$id},
     limina:{$limina},
     type:"{$type}",
-    percent:{$percent}
+    percent:{$percent},
+    <?php foreach($optionList as $key=>$value): ?>
+    obj_{$value['id']}:0,
+    <?php endforeach;?>
   }).setForm('arg',{
     benefit:'{$benefit}'
   }).setMethod("editSubmit", function(){
@@ -162,23 +197,17 @@
     return true;
   }).setMethod('calculateLimina', function(){
     var list = this.editForm.percent;
-
+    //todo : fix this bug
+    //http://www.cnblogs.com/cssfirefly/archive/2012/10/23/2734936.html
+    //应该是先约分 然后以分母的最小公倍数来
     //是不是均分的情况
-    if (list.length==10 || list.length==5 || list.length==4 || list.length==2) {
-       var b = list[0]['value'];
-       var r = list.every(function(current){
-           return b == current.value;
-       });
-       if (r) {
-        return list.length;
-       }
-    }
-
-    var d = list.every(function(current){
-        var y = current.value % 10;
-        return y==0;
+    var lcgArr = [];
+    var gcdV=1;
+    list.forEach(function(current){
+      gcdV = gcd( parseInt(current.value), 100);
+      lcgArr.push(100/gcdV);
     });
-    return d ? 10 : 100;
+    return  doLCM(lcgArr);
   }).setMethod('checkAuto', function(){
      return this.editForm.type == 1 ;
   }).setMethod("addItem", function(){
@@ -227,6 +256,69 @@
     }, function(response){
       this.$message.error("操作失败");
     })
+  }).setMethod("editSubmit2", function(){
+    var vmThis = this;
+    this.$refs['editForm'].validate(function(valid){
+      if (valid) {
+        var form = vmThis.editForm;
+        if ( !vmThis.checkAuto() && !vmThis.checkPercent2()) {
+           return ;
+        }
+
+        if ( !vmThis.checkId() ) {
+           return ;
+        }
+
+        form.limina = vmThis.calculateLimina();
+        vmThis.submitStatus != vmThis.submitStatus;
+        vmThis.$http.post(page.editFormUrl, form).then(function(response){
+           vmThis.submitStatus != vmThis.submitStatus;
+           vmThis.$message.success("保存成功")
+        }, function(response){
+           vmThis.submitStatus != vmThis.submitStatus;
+           vmThis.$message.error("操作失败");
+        });
+      }
+    })
+     
+  }).setMethod("checkPercent2", function(){
+    var list = this.editForm.percent;
+    var total = 0;
+    var vmThis = this;
+    var zore = false;
+    var percent = [];
+    if (this.editForm.type==1) {
+      return ;
+    }
+
+    var obj = [];
+    <?php foreach($optionList as $key=>$value): ?>
+    obj.push("obj_{$value['id']}");
+    <?php endforeach;?>
+
+    obj.forEach(function(current){
+        total += parseInt(this.editForm[current]);
+    }, this);
+
+    if (total !=100) {
+        this.$message.error("比例相加应为100%");
+        return false;
+    } 
+
+     obj.forEach(function(current){
+        var d = parseInt(this.editForm[current]);
+        percent.push({id:current.split("_")[1],value:d});
+    },this);
+
+
+    this.editForm.percent = percent;
+
+
+    return true;
+  }).setVueHook('mounted', function(){
+    this.editForm.percent.forEach(function(current){
+      this.editForm['obj_'+current.id] = current.value;
+    },this)
   })
 </script>
 </block>

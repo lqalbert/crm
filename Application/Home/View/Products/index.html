@@ -49,6 +49,11 @@
                 {{ scope.row.service_cycle | handleSerCycle }}
               </template>
             </el-table-column>
+            <el-table-column label="升级时限" prop="upgrade" header-align="center">
+              <template scope="scope">
+                {{ scope.row.upgrade==0?"无": scope.row.upgrade + "月" }}
+              </template>
+            </el-table-column>
             <el-table-column label="产品说明" prop="mark" header-align="center">
               <template scope="scope">
                 {{ scope.row.mark | handleString(10) }}
@@ -170,16 +175,36 @@
     name:'',
     price:'',
     service_cycle:'1',
+    upgrade:'0',
     mark:'',
   }).setForm('edit',{
     id:'',
     name:'',
     price:'',
     service_cycle:'1',
+    upgrade:'0',
     mark:'',
   }).setMethod('showMark', function(row){
     this.markContent = row.mark;
     this.openDialog('mark');
+  }).setMethod('addServiceChange', function(){
+    var u = this.upgrade(this.addForm.service_cycle);
+    if (u!=null) {
+      this.addForm.upgrade = u;
+    }
+  }).setMethod('editServiceChange', function(v){
+    var u = this.upgrade(this.editForm.service_cycle);
+    if (u!=null) {
+      this.editForm.upgrade = u;
+    }
+  }).setMethod('upgrade', function(v){
+     var d = v%3;
+     if (d!=0) {
+      this.$message.error("服务周期要为3的倍数");
+      return null;
+     } else {
+      return v/3*2;
+     }
   });
 </script>
 </block>

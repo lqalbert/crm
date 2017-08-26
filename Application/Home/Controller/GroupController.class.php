@@ -44,6 +44,7 @@ class GroupController extends CommonController {
 		$user = new User();
 		$user->getRoleObject();
 		$members = $user->getAllBenC();
+		
 		$this->ajaxReturn($members);
 	}
 
@@ -105,6 +106,9 @@ class GroupController extends CommonController {
 	public function setEmployees(){
 		$id = I("post.id");
 		$user_ids = I("post.user_ids");
+		if (empty($user_ids)) {
+			$this->error("请选择成员");
+		}
 		$this->setGroupEmployee($user_ids, $id);
 		
 	}

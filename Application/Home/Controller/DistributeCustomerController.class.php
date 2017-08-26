@@ -112,9 +112,10 @@ class DistributeCustomerController extends CommonController{
                 ->where(array('customers_basic.status'=>array('NEQ', -1)))
                 ->join('left join user_info as ui on customers_basic.salesman_id = ui.user_id')
                 ->join('left join user_info as usi on customers_basic.user_id = usi.user_id')
+                ->join("left join department_basic as db2 on customers_basic.depart_id=db2.id")
                 ->field('customers_basic.*,cc.qq,cc.phone,cc.weixin,cc.qq_nickname,cc.weixin_nickname, cc.is_main as cc_main,
             cc2.qq as qq2,cc2.phone as phone2,cc2.weixin as weixin2,cc2.qq_nickname as qq_nickname2,
-            cc2.weixin_nickname as weixin_nickname2, ui.realname,usi.realname as lock_name');
+            cc2.weixin_nickname as weixin_nickname2, ui.realname,usi.realname as lock_name,db2.name as depart_name');
 
     }
 
