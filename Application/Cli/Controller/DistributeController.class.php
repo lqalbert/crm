@@ -51,8 +51,11 @@ class DistributeController extends Controller {
         $dataList = $alg->getDataList();
         foreach ($dataList as $key => $value) {
             // M("customers_basic")->where(array("id"=>$value['ids']))->
-            $sql = "update customers_basic set depart_id=".$value['id'].",dis_time='".Date('Y-m-d H:i:s')."' where id in (".implode(",", $value['ids']).")";
-            M()->execute($sql);
+            if ($value['ids']) {
+                $sql = "update customers_basic set depart_id=".$value['id'].",dis_time='".Date('Y-m-d H:i:s')."' where id in (".implode(",", $value['ids']).")";
+                M()->execute($sql);
+            }
+            
 
             M('distribute_detail')->add(array(
                 'record_id' => $record_id,
@@ -84,8 +87,10 @@ class DistributeController extends Controller {
                 $dataList = $alg->getDataList();
                 foreach ($dataList as $key => $value) {
                     // M("customers_basic")->where(array("id"=>$value['ids']))->
-                    $sql = "update customers_basic set to_gid=".$value['id'].",dis_time='".Date('Y-m-d H:i:s')."' where id in (".implode(",", $value['ids']).")";
-                    M()->execute($sql);
+                    if ($value['ids']) {
+                        $sql = "update customers_basic set to_gid=".$value['id'].",dis_time='".Date('Y-m-d H:i:s')."' where id in (".implode(",", $value['ids']).")";
+                        M()->execute($sql);
+                    }
 
                     M('distribute_detail')->add(array(
                         'record_id' => $record_id,
@@ -120,8 +125,11 @@ class DistributeController extends Controller {
                 $dataList = $alg->getDataList();
                 foreach ($dataList as $key => $value) {
                     // M("customers_basic")->where(array("id"=>$value['ids']))->
-                    $sql = "update customers_basic set salesman_id=".$value['id'].",dis_time='".Date('Y-m-d H:i:s')."' where id in (".implode(",", $value['ids']).")";
-                    M()->execute($sql);
+                    if ($value['ids']) {
+                        $sql = "update customers_basic set salesman_id=".$value['id'].",dis_time='".Date('Y-m-d H:i:s')."' where id in (".implode(",", $value['ids']).")";
+                        M()->execute($sql);
+                    }
+                    
 
                     M('distribute_detail')->add(array(
                         'record_id' => $record_id,

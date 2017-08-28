@@ -64,7 +64,7 @@ class SpreadDepartmentCustomerController extends CommonController{
 
     public function setQeuryCondition(){
         if (I('get.name')) {
-            $this->M->where(array("name"=> array('like', I('get.name')."%")));
+            $this->M->where(array("customers_basic.name"=> array('like', I('get.name')."%")));
         }
 
         if (I("get.user_id")) {
@@ -156,7 +156,7 @@ class SpreadDepartmentCustomerController extends CommonController{
     */
     public function edit() {
         $this->M->startTrans();
-        if ($this->M->create($_POST, Model::MODEL_UPDATE) && ($this->M->save() !== false) )  {
+        if ($this->M->create($_POST, \Think\Model::MODEL_UPDATE) && ($this->M->save() !== false) )  {
             $D_cc  = D('CustomerContact');
             $olddate = $D_cc->where(array('is_main'=>1, 'cus_id'=>$_POST['id']))->find();
             // $D_cc->find($olddate['id']);

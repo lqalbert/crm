@@ -644,66 +644,71 @@ class CustomerController extends CommonController {
     }
 
     /**
-    * 升级 、 续费
+    * 续费
     */
     public function renewal(){
-
 
         //升级要求
         // 指定时间之内
         // 只能升级一次
-        $his_id = I("post.his_id");
-        $hisRow = M("customers_buy")->find($his_id);
-        $newRow = $hisRow;
+        // 其它情况只能是续费
+
+
+        $data = D('CustomerBuy')->create($_POST);
+        $data['user_id'] = session("uid");
+        $data['type'] = 2;
+
         $buy_time = I('post.buy_time');
-        $newRow['buy_time'] = UTCToLocaleDate($buy_time); //I("post.buy_time");
-        $newRow['status'] = 0;
-        unset($newRow['id']);
-        if (!$hisRow) {
-            $this->error("未找指定的购买纪录");
+        $data['buy_time'] = UTCToLocaleDate($buy_time);
+
+        $cus_id = I("post.cus_id");
+        $row = $this->M->find($cus_id);
+        
+        if (!$row) {
+            $this->error("没找到对应的数据");
+        }
+       
+        $this->setDetail($this->M, array('address'=>I('post.address')));
+        $re = $this->M->save();
+        if ($re === false) {
+            $this->error('更新失败');
         }
 
-        //检测是不是已经有升级了
+        $tmp = json_decode($data['todo_list'], true);
+        unset($tmp['distribute']);
+        $data['todo_list'] = json_encode($tmp);
+
+        // 检测是不是 已经有升级了
         $hasRow = M('customers_buy')->where(array(
-            'cus_id'=>$hisRow['cus_id'],
-            'product_id'=>$hisRow['product_id'],
+            'cus_id'=>$cus_id,
             'type'=>1,
             '_string' => 'callback_state<> -1 or risk_state <> -1 or status<> -1'
             ))->find();
-        var_dump(M('customers_buy')->getLastSql());
-        if ($hasRow) {
-            //续费
-            $newRow['type'] = 2;
-        } else {
+        if ($hasRow) { //那就是续费
+            $data['type'] = 2;
+        } else { // 如果没有 检查是不是在时间段之内
             //检查是不是在时间段之内
-            $productRow = M("products")->find($hisRow['product_id']);
-            if ($productRow['upgrade']!=0) {
+            $productRow = M("products")->find($hasRow['product_id']);
+            if ($productRow['upgrade']!=0) { //升级时限
                 //
                 $time = time();
                 //不能自动计算准确 2017-08-31 + 1month = 2017-10-01
-                $upgradeTime = strtotime("+".$productRow['upgrade']." months 23 hours 59 minutes 59 seconds",  strtotime($hisRow['buy_time']) );
+                $upgradeTime = strtotime("+".$productRow['upgrade']." months 23 hours 59 minutes 59 seconds",  strtotime($hasRow['buy_time']) );
                 if ($time <= $upgradeTime) {
                     //升级
-                    $newRow['type'] = 1;
+                    $data['type'] = 1;
                 } else {
                     //续费
-                    $newRow['type'] = 2;
+                    $data['type'] = 2;
                 }
 
             } else {
                 //续费
-                $newRow['type'] = 2;
+                $data['type'] = 2;
             }
         }
 
-        $this->setDetail($this->M, array('address'=>I('post.address')));
-
-        $tmp = json_decode($newRow['todo_list'], true);
-        unset($tmp['distribute']);
-        $newRow['todo_list'] = json_encode($tmp);
-
-        $re = $this->addBuy($newRow);
-
+        $re = $this->addBuy($data);
         if (!$re) {
             $this->error("操作失敗");
         }
@@ -719,7 +724,7 @@ class CustomerController extends CommonController {
     */
     public function history(){
         $cus_id = I("get.cus_id");
-        $re = M("customers_buy")->where(array('cus_id'=>$cus_id, "status"=>1, 'type'=>0))->select();
+        $re = M("customers_buy")->where(array('cus_id'=>$cus_id, "status"=>1))->select();
         $this->ajaxReturn($re);
     }
 

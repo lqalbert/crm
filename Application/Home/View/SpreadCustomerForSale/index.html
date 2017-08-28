@@ -75,7 +75,7 @@
     }).setMethod('resetBack', function(){
       window.location.reload();
     }).setMethod("departGChange", function(v){
-      this.searchForm.spread_uid = "";
+      this.searchForm.depart_uid = "";
       this.spreadUsers = [];
       
       this.selectChange(v,page.getUsersUrl, 'departUsers');

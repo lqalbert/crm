@@ -115,6 +115,7 @@
       ref="select" 
       @current-change="handleSelectionChange"
       @row-click="trackLog"  
+      @row-dblclick="dbClick"  
       @sort-change="sortChange">
 
       
@@ -1094,6 +1095,8 @@
     }
   }).setMethod('getName', function(dname, rname){
     return dname==null ? '' : ( dname +'-'+ (rname==null? '' : rname));
+  }).setMethod('dbClick', function(v){
+    this.handleEdit(this.dataList.indexOf(v) , v);
   });
 </script>
 

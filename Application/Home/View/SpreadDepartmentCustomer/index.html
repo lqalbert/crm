@@ -47,6 +47,7 @@
 
   <el-row>
     <el-col :span="24">
+    <!-- @row-click="trackLog" -->
         <el-table 
       :data="dataList" 
       border  
@@ -54,10 +55,11 @@
       element-loading-text="{:L('DATA_LOGIN')}"
       highlight-current-row
       @selection-change="handleSelectionChange"
-      @row-click="trackLog"  ref="select" 
-      @row-dblclick="userInfo" @sort-change="sortChange">
+        ref="select" 
+      @row-dblclick="userInfo" 
+      @sort-change="sortChange">
 
-        <el-table-column type="selection"  width="50" ></el-table-column>
+        
 
         <el-table-column   label="{:L('INDEX')}"   :formatter="handleIndex" width="65"  ></el-table-column>
 

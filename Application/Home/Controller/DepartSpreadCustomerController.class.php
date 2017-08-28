@@ -71,6 +71,13 @@ class DepartSpreadCustomerController extends CommonController {
                             ." where group_basic.status=1 ";
                 $this->fields = "group_basic.id, group_basic.name, b.c";
                 
+
+                if (I("get.group_id")) {
+                    $this->sql.=" and group_basic.id=".I("get.group_id")." ";
+                    return ;
+                }
+
+
                 if (I("get.depart_id")) {
                     $this->sql.=" and group_basic.department_id=".I("get.depart_id")." ";
                 }
@@ -83,6 +90,9 @@ class DepartSpreadCustomerController extends CommonController {
                 /*$this->M->join("department_basic as db on customers_basic.depart_id=db.id")
                         ->group('depart_id')
                         ->field("count(customers_basic.id) as c, db.name");*/
+                if (I("get.depart_id")) {
+                    $this->sql.=" and department_basic.id=".I("get.depart_id")." ";
+                }
                 break;
             
             default:
