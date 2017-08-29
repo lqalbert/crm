@@ -73,6 +73,7 @@ class SpreadCustomerSortController extends CommonController{
 
         //3 统计成交数
         $vAll = $this->getDataVAll($searchGroup);
+        
 
         //4 组合
         return  $this->getDataContact($all,$numAll,$vAll);

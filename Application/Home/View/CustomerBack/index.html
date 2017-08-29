@@ -1,0 +1,115 @@
+<extend name="Common:base" />
+<block name="head">
+</block>
+<block name="body">
+    <div id="app" class="container">
+        <div id="drapable" v-show="show" style="display: none;">
+            <el-row>
+                <el-col :span="24">
+                    <el-form :inline="true" ref="searchForm" :model="searchForm">
+                        <el-form-item prop="name">
+                            <el-input v-model="searchForm.name" size="small" placeholder="客户姓名"></el-input>
+                        </el-form-item>
+
+                        <el-form-item prop="group" style="width:100px">
+                          <el-select v-model="searchForm.group" size="small" placeholder="请选择">
+                            <el-option v-for="item in searchGroup" :label="item.name" :value="item.user_id"></el-option>
+                          </el-select>
+                        </el-form-item>
+
+                        <el-form-item prop="field" v-show="false">
+                          <input type="hidden" size="small" v-model="searchForm.field">
+                        </el-form-item>
+                        
+                        <el-form-item>
+                            <el-button type="info" size="small" icon="search" @click="loadDatalist">查询</el-button> 
+          
+                          <el-tooltip content="录入高级查询条件"  style="margin-left:10px;">
+                            <el-button  @click="openDialog('advancedQuery')" size="small" type="primary">{:L('ADVANCED_QUERY')}</el-button>
+                          </el-tooltip>
+                            <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
+                              <el-button  size="small" @click="searchReset2">重置</el-button>
+                            </el-tooltip>
+
+                            <el-tooltip content="本人跟踪的客户" placement="bottom-start">
+                            <el-badge :value="{$aggregation.log}" :max="9" style="margin-left:10px;">
+                              <el-button type="info" size="small" v-bind:class="{on:flag==1}" @click="setField('log',1)">跟踪</el-button>
+                            </el-badge>
+                          </el-tooltip>
+
+                          <el-tooltip content="本人没有跟踪的客户" placement="bottom-start">
+
+                            <el-badge :value="{$aggregation.unlog}" :max="9" style="margin-left:15px;">
+                              <el-button type="info" size="small" v-bind:class="{'on':flag==2}" @click="setField('unlog',2)">未跟踪</el-button>
+                            </el-badge>
+                          </el-tooltip>
+
+                          <el-tooltip content="本人计划跟踪的客户" placement="bottom-start">
+                            <el-badge :value="{$aggregation.plan}" :max="9" style="margin-left:15px;">
+                              <el-button type="info" size="small" v-bind:class="{'on':flag==3}" @click="setField('plan',3)" >计划</el-button>
+                            </el-badge>
+                          </el-tooltip>
+
+                         <el-tooltip content="本人把客户转给他人的客户(分成)" placement="bottom-start">
+                            <el-badge :value="{$aggregation.transfto}" :max="9" style="margin-left:15px;">
+                              <el-button type="info" size="small" v-bind:class="{'on':flag==4}" @click="setField('transfto',4)">转让</el-button>
+                            </el-badge>
+                          </el-tooltip>
+
+                          <el-tooltip content="他人把客户转给本人的客户(分成)" placement="bottom-start">
+
+                            <el-badge :value="{$aggregation.transfin}" :max="9" style="margin-left:15px;">
+                              <el-button type="info" size="small" v-bind:class="{'on':flag==5}" @click="setField('transfin',5)">转入</el-button>
+                            </el-badge>
+                          </el-tooltip>
+
+                          <el-tooltip content="本人跟踪且成交了的客户" placement="bottom-start">
+                            <el-badge :value="{$aggregation.type}" :max="9" style="margin-left:15px;">
+                              <el-button type="primary" size="small" v-bind:class="{'on':flag==6}" @click="setField('type',6)">服务</el-button>
+                            </el-badge>
+                          </el-tooltip>
+
+                          <el-tooltip content="对客户进行筛选后重点跟踪" placement="bottom-start">
+                            <el-badge :value="{$aggregation.important}" :max="9" style="margin-left:15px;">
+                              <el-button type="info" size="small" v-bind:class="{'on':flag==7}" @click="setField('important',7)">自选</el-button>
+                            </el-badge>
+                          </el-tooltip>
+
+                          <el-tooltip content="他人的客户与您的客户有冲突" placement="bottom-start">
+                            <el-badge :value="{$aggregation.conflict}" :max="9" style="margin-left:15px;">
+                              <el-button size="small" type="danger" v-bind:class="{'on':flag==8}" @click="setField('conflict',8)">冲突</el-button>
+                            </el-badge>
+                          </el-tooltip>
+                        </el-form-item>
+                    </el-form>
+                </el-col>
+            </el-row>
+            <el-row>
+                <el-col>
+                    <!-- page -->
+                    <include file="Common:_pagination" />
+                    <!-- / page -->
+
+                </el-col>
+            </el-row>
+        </div>
+    </div>
+</block>
+<block name="scripts">
+    <script>
+        window.defaultOption.setDatas({
+            searchGroup: {:json_encode($searchGroup)},
+            flag:"",
+        }).setForm('search', {
+            name:"",
+            group:"",
+            field:"",
+        }).setMethod('setField', function(field, num){
+            console.log(field);
+            console.log(num);
+        }).setMethod('searchReset2', function(){
+
+        })
+    </script>
+    
+</block>

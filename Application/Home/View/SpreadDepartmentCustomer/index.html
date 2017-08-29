@@ -228,13 +228,13 @@ Vue.filter("handleString", function(v) {
       ],
       weixin:[
           { min: 6, max: 20, trigger:'blur', message:"长度为6-20个字符" },
-          { pattern:/^[a-zA-Z]{1}[-_a-zA-Z0-9]{5,19}$/, message:"仅支持数字、下划线或减号，以字母开头", trigger:'blur'},
+          { pattern:/^[a-zA-Z0-9\_\-]{6,20}$/, message:"仅支持数字、下划线或减号、字母", trigger:'blur'},
 
           // { validator: WxValidata, trigger:'blur' },
       ],
       weixin2:[
           {min: 6, max: 20, trigger:'blur', message:"长度为6-20个字符" },
-          { pattern:/^[a-zA-Z]{1}[-_a-zA-Z0-9]{5,19}$/, message:"仅支持数字、下划线或减号，以字母开头", trigger:'blur'},
+          { pattern:/^[a-zA-Z0-9\_\-]{6,20}$/, message:"仅支持数字、下划线或减号、字母", trigger:'blur'},
       ],
       type:[
         { required:true, message:'请选择客户类型',trigger:'blur'},
