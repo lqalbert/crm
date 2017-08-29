@@ -67,7 +67,7 @@
             </el-form-item>
 
 		        <el-form-item>
-		          <el-button @click="loadDatalist" type="info" size="small" icon="search">查询</el-button> 
+		          <el-button @click="search" type="info" size="small" icon="search">查询</el-button> 
 		          
 <!-- 		          <el-tooltip content="录入高级查询条件"  style="margin-left:10px;">
 		            <el-button @click="openDialog('advancedQuery')" size="small" type="primary">{:L('ADVANCED_QUERY')}</el-button>
@@ -140,7 +140,7 @@
 	            </template>
 		        </el-table-column>
 
-		        <el-table-column  prop="last_track" sortable='customer' label="最后跟踪时间" align="center" width="175"></el-table-column>
+		        <el-table-column  prop="last_track"  label="最后跟踪时间" align="center" width="175"></el-table-column>
 
 		        <el-table-column  prop="commission" label="跟踪方比例"  header-align="center" width="110"></el-table-column>
 
@@ -383,10 +383,15 @@
       'content':'',
       'user':''     
     }],
+    asrule:{
+      user_id:[
+         { required: true, message: '请选择', trigger: 'change' },
+      ]
+    }
   }).setForm('search',{
     name:'',
     contact:'',
-    field: '',
+    field:'',
     gen:'0',
   }).setForm('advancedQuery',{
     start:'',
@@ -478,19 +483,29 @@
 
     var body = {user_id:this.batchAssignForm.user_id, cus_ids:cus_ids };
 
+    this.$refs['batchAssignForm'].validate(function(valid){
+        
+        if (valid) {
+          vmThis.assignFormSubmitStatus = true;
+          vmThis.$http.post(url, body).then(function(response){
+            vmThis.$message({message: '操作成功',type: 'success'});
+            setTimeout(function(){
+              vmThis.batchAssignFormDialog = false;
+              vmThis.assignFormSubmitStatus = false;
+              vmThis.$refs.batchAssignForm.resetFields(); 
+              vmThis.refresh();
+            }, 2000);  
+          },function(response){
+            vmThis.$message.error("操作出错啦");
+          });
+        } else {
+          // console.log('error submit!!');
+          
+          return false;
+        }
+      })
 
-    this.assignFormSubmitStatus = true;
-    this.$http.post(url, body).then(function(response){
-      vmThis.$message({message: '操作成功',type: 'success'});
-      setTimeout(function(){
-        vmThis.batchAssignFormDialog = false;
-        vmThis.assignFormSubmitStatus = false;
-        vmThis.$refs.batchAssignForm.resetFields(); 
-        vmThis.refresh();
-      }, 2000);  
-    },function(response){
-      vmThis.$message.error("操作出错啦");
-    });
+    
   }).setMethod('viewtraceContents',function(row,event){
     this.traceContentFormDialog = true;
     this.traceContentForm.content = row.content;
@@ -589,6 +604,9 @@
     },function(response){
       vmThis.$message.error("操作出错啦");
     });
+  }).setMethod("search", function(){
+    this.dataLoad = true;
+    this.loadDatalist();
   });
 </script>
 </block>

@@ -212,6 +212,7 @@ function toInt(v){
     oldDepValue:'',
     oldGroupValue:'',
     tableData:[],
+    
 
   }).setForm('search', {
     type:'',
@@ -220,6 +221,13 @@ function toInt(v){
     department_id:"{$initDep}",
     group_id:''
   }).setMethod('loadDatalist',function(){
+
+    if (this.searchForm.start > this.searchForm.end) {
+      this.$message.error("请选择正确的时间段");
+      return ;
+    }
+
+
     this.ctrlOrdershow = this.searchForm.type == 'user' ? true : false;
     var vmThis = this;
     var params = {p:this.currentPage};

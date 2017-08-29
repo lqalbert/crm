@@ -71,18 +71,16 @@ class WorkStepController extends \Think\Controller {
         $this->insert_data = array();
         foreach ($alluser as $value) {
             $tmp_row = array(
-                'user_id'=>$value['user_id'], 
-                'group_id'=>$value['group_id'],
+                'user_id'   =>$value['user_id'], 
+                'group_id'  =>$value['group_id'],
                 'group_name'=>$value['group_name'],
-                'department_id'=>$value['department_id'],
+                'department_id'   =>$value['department_id'],
                 'department_name' =>$value['department_name'],
                 'date'=>$this->date);
 
             if (isset($this->allData[$value['user_id']])) {
                 foreach ($this->fieldMap as $key => $val) {
-
                     if (isset($this->allData[$value['user_id']][$key])) {
-
                         $tmp_row[$val] = $this->allData[$value['user_id']][$key];
                     } else {
                         $tmp_row[$val] = 0;

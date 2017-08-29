@@ -123,7 +123,7 @@ class NavController extends CommonController {
 			//跟据权限加载菜单
 			$sql = "select role_id from rbac_role_user where user_id = ". session('uid');
 			$sql = "select node_id from rbac_access where role_id in ($sql)";
-			$sql = "select * from menu_basic where node_id in ($sql)";
+			$sql = "select * from menu_basic where node_id in ($sql) order by `sort` asc";
 			
 			$result = $m->query($sql);
 			
@@ -144,7 +144,7 @@ class NavController extends CommonController {
 		} else {
 			foreach ($menu as $key => $me) {
 				$menu[$key]['spread'] = false;
-				$menu[$key]['children'] = $m->where(array('pid'=>$me['id']))->select();
+				$menu[$key]['children'] = $m->where(array('pid'=>$me['id']))->order('sort asc')->select();
 			}
 		}
 		

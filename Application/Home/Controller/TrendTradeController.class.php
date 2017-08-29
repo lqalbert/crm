@@ -4,8 +4,10 @@ namespace Home\Controller;
 use Home\Model\RoleModel;
 use Home\Service\CustomersGather;
 use Common\Lib\User;
+
 class TrendTradeController extends CommonController{
 	protected $pageSize = 15;
+  protected $table = "statistics_usercustomers";
 
  	protected function getSearchGroup(){
  		$searchGroup = array(
@@ -20,11 +22,11 @@ class TrendTradeController extends CommonController{
   protected function setInitSearch(){
     $ename = $this->getRoleEname();
     if ($ename == RoleModel::GOLD) {
-      $department = "";
-      $group = "";
+      $department = null;
+      $group = null;
     }elseif($ename == RoleModel::DEPARTMENTMASTER){
       $department = session('account')['userInfo']['department_id'];
-      $group = "";
+      $group = null;
     }elseif ($ename == RoleModel::CAPTAIN) {
       $department = session('account')['userInfo']['department_id'];
       $group = session('account')['userInfo']['group_id'];
@@ -36,8 +38,99 @@ class TrendTradeController extends CommonController{
 	public function index(){
 		$this->assign('searchGroup',$this->getSearchGroup());
     $this->assign('initSearch',$this->setInitSearch());
+    
 		$this->display();
 	}
+
+  public function getList(){
+    $this->M->where(array(
+        'date'=>array(
+          array('egt',I("get.start")), 
+          array('elt', I("get.end")))))->field(" sum(today_v) as v, sum(create_num) as c,sum(conflict_to) as ct , sum(conflict_from) as cf ,`date`")
+        ->group('`date`');
+
+    $group_id = I("get.group_id", null);
+    $user_id  = I("get.user_id", null);
+    if ($user_id!== "") {
+      $this->M->where(array('user_id'=> $user_id));
+    } else {
+      if ($group_id !== "") {
+        if ($group_id!=0) {
+          $this->M->where(array('group_id'=> $group_id));
+        }
+      } else {
+        //如果department_id ==0 或 小于 0 则返回所有的
+        $department_id = I("get.department_id", null);
+        if ($department_id!== "") {
+          if ($department_id != 0) {
+            $this->M->where(array('department_id'=> $department_id));
+          } 
+        }
+      }
+    }
+
+
+   
+    
+    $re = $this->M->select();
+    // var_dump($this->M->getLastSql());
+    $row = $re[0];
+    $this->getDateFromRange(I("get.start"), I('get.end'));
+    if ($row['date'] != null ) {
+      $dates = array_column($re, 'date');
+      foreach ($this->date as $key => $value) {
+        if (!in_array($value, $dates)) {
+          array_splice($re, $key, 0, array(array(
+            'v'    =>0,
+            'c'    =>0,
+            'cf'   =>0,
+            'ct'   =>0,
+            'data' =>$value
+          )));
+        }
+      }
+
+      $v = array_column($re, 'v');
+      $c = array_column($re, 'c');
+      $cf = array_column($re, 'cf');
+      $ct = array_column($re, 'ct');
+      $dd=array(
+          'date'=>$this->date,
+          'series'=>array(
+              array('name'=>'自锁数','type'=>'line','yAxisIndex'=>0,'data'=>$c),
+              // array('name'=>'成交数','type'=>'line','yAxisIndex'=>0, 'data'=>$v),
+              array('name'=>'冲突数','type'=>'line','yAxisIndex'=>0, 'data'=>$ct),
+              array('name'=>'被冲突数','type'=>'line','yAxisIndex'=>0, 'data'=>$cf)
+           )
+      );
+
+      $dd2 = array(
+          'date'=>$this->date,
+          'series'=>array(
+              array('name'=>'成交数','type'=>'line', 'data'=>$v),
+              
+           )
+      );
+      $result = array(
+        $dd, $dd2
+      );
+    } else {
+      
+      $dd=array(
+            'date'=>$this->date ,
+            'series'=>array()
+        );
+      $dd2 = $dd;
+
+      $result = array(
+        $dd, $dd2
+      );
+    }
+    $this->ajaxReturn($result);
+
+  }
+
+
 
 	/**
 	 * 公用 获取列表
@@ -45,7 +138,7 @@ class TrendTradeController extends CommonController{
 	 * @return array() || null
 	 * 
 	 **/
-	public function getList(){
+	public function getList_del(){
     
 		$this->d = new CustomersGather;
 		$this->setServiceQuery();
@@ -151,7 +244,7 @@ class TrendTradeController extends CommonController{
   public function getUsers($department_id,$group_id){
   	$treeOb = $this->treeOb();
   	$arr = $treeOb->getGroupEmployee($department_id,$group_id, 'id,realname');
-    echo M()->getLastSql();die();
+    // echo M()->getLastSql();die();
   	$this->ajaxReturn($arr);
   }
 
@@ -251,10 +344,10 @@ class TrendTradeController extends CommonController{
                 array('name'=>'成交数','type'=>'line','data'=>$v),
                 array('name'=>'冲突','type'=>'line','data'=>$ct),
                 array('name'=>'被冲突','type'=>'line','data'=>$cf),
-                array('name'=>'自锁数曲线','type'=>'line',"smooth"=>  true,'data'=>$c),
+                /*array('name'=>'自锁数曲线','type'=>'line',"smooth"=>  true,'data'=>$c),
                 array('name'=>'成交数曲线','type'=>'line',"smooth"=>  true,'data'=>$v),
                 array('name'=>'冲突曲线','type'=>'line',"smooth"=>  true,'data'=>$ct),
-                array('name'=>'被冲突曲线','type'=>'line',"smooth"=>  true,'data'=>$cf),
+                array('name'=>'被冲突曲线','type'=>'line',"smooth"=>  true,'data'=>$cf),*/
                //array('name'=>'成交数','type'=>'bar',"barWidth"=> '20%','data'=>$v),
              )
         );

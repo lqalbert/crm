@@ -49,6 +49,11 @@
       overflow-y: auto;
       max-height: 400px;
     }
+    .echarts{
+      height: 400px; 
+      width:700px;  
+      margin-top:20px;
+    }
   </style>
 </block>
 <block name="body">
@@ -86,16 +91,17 @@
               <el-button size="small" @click="setField('month')">本月</el-button>
             </el-form-item>
 
-            <el-form-item>
+            <!-- <el-form-item>
               <el-select size="small" style="width:120px;" v-model="searchForm.type" placeholder="查询类型" @change="allTypeChange">
                 <el-option v-for="item in searchGroup" :label="item.key" :value="item.value">
                 </el-option>
               </el-select>
-            </el-form-item>
+            </el-form-item> -->
             
             <el-form-item prop="department_id">
               <el-tooltip content="选择某个部门后点击查询或者继续选择下属小组再查询" placement="bottom-start">
                 <el-select size="small" style="width:120px;" :clearable="depClearable" filterable   v-model="searchForm.department_id" @change="depChange" placeholder="请选择部门">
+                  
                   <el-option v-for="dep in deps" :value="dep.id" :label="dep.name"></el-option>
                 </el-select>
               </el-tooltip>
@@ -103,11 +109,21 @@
 
             <el-form-item prop="group_id">
               <el-tooltip content="必须先选择部门方可选择团组后点击查询" placement="bottom-start">
-                <el-select size="small" style="width:120px;" :disabled="ctrlSelect" clearable filterable  v-model="searchForm.group_id" @change="groupChange" placeholder="请选择小组">
+                <el-select size="small" style="width:120px;"  clearable filterable  v-model="searchForm.group_id" @change="groupChange" placeholder="请选择小组">
                   <el-option v-for="group in groups" :value="group.id" :label="group.name"></el-option>
                 </el-select>
               </el-tooltip>
             </el-form-item>
+
+            <el-form-item prop="user_id">
+              <el-tooltip content="必须先选择小组方可选择团组后点击查询" placement="bottom-start">
+                <el-select size="small" style="width:120px;"  clearable filterable  v-model="searchForm.user_id"  placeholder="请选择员工">
+                  <el-option v-for="user in users" :value="user.id" :label="user.name"></el-option>
+                </el-select>
+              </el-tooltip>
+            </el-form-item>
+
+
 
             <el-form-item>
               <el-tooltip content="填写或者选择好筛选条件后点击此按钮" placement="bottom-start">
@@ -125,45 +141,8 @@
           </el-form>
         </el-col>
       </el-row>
-      <el-row>
-        <el-col :span="24">
-          <el-table 
-          :data="dataList" 
-          border highlight-current-row
-          v-loading="dataLoad" 
-          element-loading-text="{:L('DATA_LOGIN')}"
-          @sort-change="sortChange" @row-click="showCharts">
-            <el-table-column label="序号"  align="center" width="65" :formatter="handleIndex"  >
-            </el-table-column>
-
-            <el-table-column  prop="name" header-align="center" label="名称" width="150">
-            </el-table-column>
-
-            <el-table-column v-if="searchForm.type=='group'" header-align="center" prop="realname" label="主管" width="150">
-            </el-table-column>
-
-            <el-table-column v-if="searchForm.type!='department'"  prop="department_name" 
-                header-align="center" label="部门"   width="150">
-            </el-table-column>
-
-            <el-table-column sortable="custom"  align="center" prop="create_num" label="自锁数"  >
-            </el-table-column>
-
-            <el-table-column sortable="custom"  align="center" prop="today_v" label="成交数"  >
-            </el-table-column>
-
-            <el-table-column sortable="custom"  align="center" prop="conflict_to" label="冲突"  >
-            </el-table-column>
-
-            <el-table-column sortable="custom"  align="center" prop="conflict_from" label="被冲突"  >
-            </el-table-column>
-
-            <!-- <el-table-column sortable="custom"  align="center" prop="pulls_num" label="索取"  >
-            </el-table-column> -->
-          </el-table>
-        </el-col>
-      </el-row>
-      <el-row type="type" justify="start" align="middle" class="row-bg">
+      
+      <el-row style="display: none;" type="type" justify="start" align="middle" class="row-bg">
         <el-col :offse="12">
           <div class="grid-content bg-purple-light pull-right">
             <!-- page -->
@@ -173,9 +152,8 @@
         </el-col>
       </el-row>
       <el-row>
-				<div id="echarts" style="height: 400px;margin-top:20px;">
-					
-				</div>
+				<div id="echarts"  class="echarts"></div>
+        <div id="echarts2" class="echarts"></div>
       </el-row>
     </div>
   </div>
@@ -218,10 +196,9 @@
   }).setForm('search',{
       start:"{$start}",
       end:"{$end}",
-      type:"",
       department_id:"{$initSearch.department}",
       group_id:"{$initSearch.group}",
-      user_id:"",
+      user_id:""
   }).setMethod('startDateChange', function(v){
       this.searchForm.start = v;
   }).setMethod('endDateChange', function(v){
@@ -243,9 +220,9 @@
         this.searchForm.end   = showLastWeekLastDay(); 
       }
 
-      this.dataLoad = true;
-      this.loadDatalist();
-      this.detailReset();
+      // this.dataLoad = true;
+      // this.loadDatalist();
+      // this.detailReset();
   }).setVueHook('mounted', function(){
 
     if(this.searchForm.department_id != ""){
@@ -288,10 +265,138 @@
         showClose: true
       })
     } else {
-      this.dataLoad = true;
-      this.currentPage = 1;
-      this.loadDatalist();
-      this.detailReset();
+      var edom = document.getElementById('echarts');
+      var edom2 = document.getElementById('echarts2');
+      var myChart = echarts.init(edom);
+      var myChartv = echarts.init(document.getElementById('echarts2'));
+     var option = {
+        // color: colors,
+        title: {
+          text: this.searchForm.start+'至'+this.searchForm.end+'录入统计情况',
+          x:'center'
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow'
+          }
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        toolbox: {
+          feature: {
+            dataView: {show: true, readOnly: false},
+            restore: {show: true},
+            saveAsImage: {show: true}
+          }
+        },
+        legend: {
+          data:['自锁数','冲突数','被冲突数'],
+          align: 'right',
+          right: 10,
+        },
+        xAxis: {
+          type: 'category',
+          axisTick: {
+              alignWithLabel: true
+          },
+          data: []
+        },
+        yAxis: [{
+                type: 'value',
+                name: '',
+                position: 'left',
+                
+                axisLabel: {
+                    formatter: '{value} 个'
+                }
+            }
+        ],
+        series: []
+    };
+
+    // window.onresize = myChart.resize;
+    var noptions = {
+        // color: colors,
+        title: {
+          text: this.searchForm.start+'至'+this.searchForm.end+'成交统计情况',
+          x:'center'
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow'
+          }
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        toolbox: {
+          feature: {
+            dataView: {show: true, readOnly: false},
+            restore: {show: true},
+            saveAsImage: {show: true}
+          }
+        },
+        legend: {
+          data:['成交数'],
+          align: 'right',
+          right: 10,
+        },
+        xAxis: {
+          type: 'category',
+          axisTick: {
+              alignWithLabel: true
+          },
+          data: []
+        },
+        yAxis: [{
+                type: 'value',
+                name: '',
+                position: 'left',
+                
+                axisLabel: {
+                    formatter: '{value} 个'
+                }
+            }
+        ],
+        series: []
+    };
+
+
+    window.onresize = function(){
+      myChart.resize();
+      myChartv.resize();
+    };
+    this.$http.get("{:U('getList')}",{params:this.searchForm}).then(function(response){
+      // console.log(response.body);
+
+      option.xAxis.data = response.body[0].date;
+      option.series = response.body[0].series;
+      myChart.setOption(option);
+
+      noptions.xAxis.data = response.body[1].date;
+      noptions.series = response.body[1].series;
+      myChartv.setOption(noptions);
+
+      edom.style.width="auto";
+      edom2.style.width="auto";
+      myChart.resize();
+      myChartv.resize();
+      // window.resize();
+    }, function(response){
+      this.$message.error("出错了，请联系开发");
+    })
+
+
+
     }                               
   }).setMethod('readySearch', function(){
       return this.searchForm.start.length ==0 || this.searchForm.end.length==0;
@@ -374,74 +479,23 @@
   }).setMethod('allTypeChange',function(v){
     this.ctrlSelect = v=="department" ? true : false;
   }).setMethod('showCharts',function(row, event, column){
-    var id = this.searchForm.type == "user" ? row.user_id : row.id ;
-    var type = this.searchForm.type;
-    var start = this.searchForm.start;
-    var end = this.searchForm.end ;
-    var name = row.name;
-
-		var myChart = echarts.init(document.getElementById('echarts'));
-		var colors = ['#5793f3', '#27727B', '#675bba','#C1232B','#B5C334','#FCCE10','#E87C25','#27727B'];
-
-		var option = {
-		    color: colors,
-			  title: {
-			    text: start+'至'+end+name+'统计情况',
-			    x:'center'
-			  },
-		    tooltip: {
-		      trigger: 'axis',
-		      axisPointer: {
-		        type: 'shadow'
-		      }
-		    },
-		    grid: {
-		    	left: '3%',
-		    	right: '4%',
-		    	bottom: '3%',
-		    	containLabel: true
-		    },
-		    toolbox: {
-		      feature: {
-		        dataView: {show: true, readOnly: false},
-		        restore: {show: true},
-		        saveAsImage: {show: true}
-		      }
-		    },
-		    legend: {
-		      data:['自锁数','成交数','冲突','被冲突'],
-		      align: 'right',
-		    	right: 10,
-		    },
-		    xAxis: {
-	        type: 'category',
-	        axisTick: {
-	            alignWithLabel: true
-	        },
-	        data: []
-		    },
-		    yAxis: [{
-		            type: 'value',
-		            name: '',
-		            position: 'left',
-		            
-		            axisLabel: {
-		                formatter: '{value} 个'
-		            }
-		        }
-		        
-		    ],
-		    series: []
-		};
-
-    window.onresize = myChart.resize;
-
+    
 
     this.$http.get("{:U('echarts')}",{params:{id:id,start:start,end:end,name:name,type:type}}).then(function(response){
-			option.xAxis.data = response.body.date;
-			option.series = response.body.series;
-			myChart.setOption(option);
-			console.log(response.body);
+
+      // console.log(response.body);
+
+			// option.xAxis.data = response.body[0].date;
+			// option.series = response.body[0].series;
+			// myChart.setOption(option);
+
+   //    noptions.xAxis.data = response.body[1].date;
+   //    noptions.series = response.body[1].series;
+   //    myChartv.setOption(noptions);
+
+
+			// console.log(response.body);
+      // myChart.resize();
     }, function(response){
     	this.$message.error("出错了，请联系开发");
     })
@@ -451,15 +505,9 @@
 
   }).setMethod('sbsbb',function(v){
     alert(v);
+  }).setVueHook('mounted',function(){
+     this.search2();
   });
-
-
-
-
-
-
-
-
 
 
   function titleCase(str) {

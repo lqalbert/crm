@@ -26,11 +26,16 @@ class CustomerSheetController extends CommonController{
   }
 
   private function goldDepartments(){
+    $this->assign("depart_id", "");
+    $this->assign('groups', array());
     return D("Department")->getSalesDepartments();
   }
 
   private function departmentMasterDepartments(){
-    return D("Department")->getTheDepartments( $this->getDepartment_id() );
+    $depart_id = $this->getDepartment_id();
+    $this->assign("depart_id", $depart_id);
+    $this->assign("groups", D("group")->getAllGoups($depart_id, 'id,name'));
+    return D("Department")->getTheDepartments( $depart_id );
   }
 
   private function getDepartment_id(){
@@ -57,7 +62,7 @@ class CustomerSheetController extends CommonController{
     if ($user_ids) {
       $users = M('user_info')->field("user_id, realname")->where(array("user_id"=>array("IN", $user_ids)))->select();
     } else {
-      $users = array();
+      $users = D('User')->getGroupEmployee($group_id, 'user_id,realname');
     }
     $this->ajaxReturn($users);
   }

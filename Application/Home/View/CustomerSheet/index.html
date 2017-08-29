@@ -158,13 +158,13 @@
 
       }},
       departments:{:json_encode($departments)},
-      groups:[],
+      groups:{:json_encode($groups)},
       users:[],
 		
   }).setForm('search',{
     distMin:"",
     distMax:"",
-    department_id:"",
+    department_id:"{$depart_id}",
     group_id:"",
     user_id:""
   }).setMethod('refresh',function(){
@@ -192,6 +192,12 @@
   }).setMethod('groupChange',function (v) {
       var vmThis=this;
       var param = {group_id:v};
+
+      if (v.length==0) {
+        this.deleteArrAllItem('users');
+        return ;
+      }
+      
       if (this.searchForm.distMin) {
         param.distMin = this.searchForm.distMin
       }

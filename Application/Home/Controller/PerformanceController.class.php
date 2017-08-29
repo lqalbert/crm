@@ -62,6 +62,8 @@ class PerformanceController extends CommonController {
     }
     if($start && $end){
       $this->dateWhere = "where date>='$start' and date<='$end' ";
+    } else {
+      $this->dateWhere = "where date>='2022-01-01' ";
     }
   }
 
@@ -101,6 +103,7 @@ class PerformanceController extends CommonController {
 
     $sql = "select department_id as id, department_name as name, sum(order_num) as order_num,sum(sale_amount) as sale_amount 
      from statistics_sale_achievement ".$this->dateWhere." $depWhere group by department_id ".$this->orderWhere;
+     // var_dump($sql);
     $re = M()->cache(true,180)->query($sql);
     return $re;
   }
