@@ -1,0 +1,178 @@
+<extend name="Common:base"/>
+<block name="head">
+  <style>
+    .el-tabs__header{
+      border-top:2px solid #ea4b4b;
+      border-bottom: 1px solid #c51f1f;
+    }
+    .el-dialog .el-tabs__header{
+      border-top:none;
+    }
+    .el-tabs--border-card .el-tabs__item{
+      border-left: none;
+    }
+    .el-tabs--border-card .el-tabs__item.is-active {
+      background-color: #fff;
+      border-right-color: #d3dce6;
+      background: #544b8f;
+      color: #fff;
+    }
+    .el-tabs--border-card .el-tabs__header {
+      background-color: #fff;
+      margin: 0;
+    }
+    .container > .wrapp > .a > .el-row {
+      margin-bottom: 6px;
+    }
+    .el-tabs--border-card .el-tabs__content{
+      padding:0 9px 5px 9px;
+    }
+    .el-card, .el-menu--horizontal .el-submenu>.el-menu, .el-tabs--border-card{
+      box-shadow: none;
+    }
+    .el-tabs--border-card{
+      border: none;
+    }
+    .el-tabs__item{
+    	font-family: Microsoft YaHei;
+    	color:#0d0f10;
+    	font-size: 14px;
+    }
+    .el-dialog__body{
+      color: rgb(72, 87, 106);
+      font-size: 14px;
+      /*padding: 30px 20px;*/
+      padding: 30px 20px 6px 20px;
+    }
+
+  </style>
+</block>
+<block name="body">
+	<div id="app" class="container">
+		<div class="wrapp" v-show="show" style="display:none;">
+			<div class="a">
+				<el-row>
+        	<el-col :span="24">
+          	<el-form :inline="true" ref="searchForm" :model="searchForm">
+
+			  		  <el-form-item prop="name" style="width:150px">
+			  		    <el-input v-model="searchForm.qq" size="small" placeholder="注册人QQ"></el-input>
+			  		  </el-form-item>
+
+			  		  <el-form-item prop="name" style="width:150px">
+			  		    <el-input v-model="searchForm.phone" size="small" placeholder="注册人手机"></el-input>
+			  		  </el-form-item>
+
+	            <el-form-item prop="start">
+                <el-date-picker size="small" v-model="searchForm.start" 
+                  placeholder="时间区间开始" 
+                  @change="startDateChange">
+                </el-date-picker>
+	            </el-form-item>
+
+	            <el-form-item prop="end">
+                <el-date-picker size="small" v-model="searchForm.end" 
+                  placeholder="时间区间截止" 
+                  @change="endDateChange">
+                </el-date-picker>
+	            </el-form-item>
+
+	            <el-form-item>
+	              <el-tooltip content="填写或者选择好筛选条件后点击此按钮" placement="bottom-start">
+	                <el-button type="info" size="small" icon="search" @click="loadDatalist">查询</el-button>
+	              </el-tooltip> 
+	            </el-form-item>
+             
+              <el-form-item>
+	              <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start">
+	                <el-button size="small" @click="searchReset">重置</el-button>
+	              </el-tooltip>
+              </el-form-item>
+
+	            <el-form-item>
+	              <el-tooltip content="点击刷新当前页面" placement="right">
+	                <el-button @click="refresh" size="small" type="danger">刷新</el-button>
+	              </el-tooltip>
+	            </el-form-item>
+
+            </el-form>
+          </el-col>
+			  </el-row>
+
+			  <el-row>
+        	<el-col :span="24">
+	          <el-table v-loading="dataLoad" :data="dataList"
+	              element-loading-text="{:L('DATA_LOGIN')}"
+	              empty-text="暂无数据,销售妹子正在努力中！"
+	              highlight-current-row ref="select" border>
+
+			  	    <el-table-column align="center" label="{:L('INDEX')}" type="index" width="65" >
+			  	    </el-table-column>
+
+	            <el-table-column  align="center" prop="qq" label="注册人QQ">
+	            </el-table-column>
+
+			  	    <el-table-column  align="center" prop="phone" label="注册人手机">
+			  	    </el-table-column>
+
+              <el-table-column  align="center" prop="ip" label="网络IP">
+              </el-table-column>
+
+              <el-table-column  align="center" prop="location" label="地理位置" show-overflow-tooltip>
+              </el-table-column>
+
+              <el-table-column  align="center" prop="lock" label="锁定状态(注册时)" show-overflow-tooltip>
+                <template scope="scope">
+                  <el-tag v-if="scope.row.lock == '0'" type="danger">QQ和电话均被锁定</el-tag>
+                  <el-tag v-else-if="scope.row.lock == '1'" type="primary">未被锁定</el-tag>
+                  <el-tag v-else-if="scope.row.lock == '2'" type="danger">QQ已被锁定</el-tag>
+                  <el-tag v-else-if="scope.row.lock == '3'" type="danger">手机已被锁定</el-tag>
+                </template>
+              </el-table-column>
+
+              <el-table-column  align="center" prop="reg_time" label="注册时间">
+              </el-table-column>
+
+	          </el-table>
+          </el-col>
+			  </el-row>
+			  <el-row>
+			  	<el-col :span="12">
+			      <div class="grid-content bg-purple">
+              <span class="wrapper">
+
+              </span>
+			      </div>
+			    </el-col>
+			  	<el-col :span="12" offset="12">
+			      <div class="grid-content bg-purple-light pull-right">
+			        <!-- page -->
+			        <include file="Common:_pagination" />
+			        <!-- / page -->
+			      </div>
+			    </el-col>
+			  </el-row>
+			</div>
+			<div class="dialogWrapper" v-show="show" style="display: none">
+
+			</div>
+		</div>
+	</div>
+</block>
+<block name="scripts">
+<script>
+	window.defaultOption.setDatas({
+
+
+	}).setForm('search',{
+    qq:"",
+    phone:'',
+    start:'',
+    end:''
+	}).setMethod('startDateChange',function(v){
+		this.searchForm.start = v;
+	}).setMethod('endDateChange',function(v){
+		this.searchForm.end = v;
+	});
+</script>
+</block>

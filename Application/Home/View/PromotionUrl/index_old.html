@@ -1,0 +1,251 @@
+<extend name="Common:base"/>
+<block name="head">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/Jcrop/jquery.Jcrop.min.css" rel="stylesheet" />
+<style>
+  .el-table__body tr.current-row>td{
+    background: rgba(157, 195, 232, 0.7);
+  }
+  .el-tabs__header{
+    border-top:2px solid #ea4b4b;
+    border-bottom: 1px solid #c51f1f;
+  }
+  .el-dialog .el-tabs__header{
+    border-top:none;
+  }
+  .el-tabs--border-card .el-tabs__item{
+    border-left: none;
+  }
+  .el-tabs--border-card .el-tabs__item.is-active {
+    background-color: #fff;
+    border-right-color: #d3dce6;
+    background: #544b8f;
+    color: #fff;
+  }
+  .el-tabs--border-card .el-tabs__header {
+    background-color: #fff;
+    margin: 0;
+  }
+  .container > .wrapp > .el-row {
+    margin-bottom: 6px;
+  }
+  .el-tabs--border-card .el-tabs__content{
+    padding:0 9px 5px 9px;
+  }
+  .el-card, .el-menu--horizontal .el-submenu>.el-menu, .el-tabs--border-card{
+    box-shadow: none;
+  }
+  .el-tabs--border-card{
+    border: none;
+  }
+  
+  .el-tabs__item{
+      font-family: Microsoft YaHei;
+      color:#0d0f10;
+      font-size: 14px;
+  }
+  .el-form-item__content{
+    font-size: 16px;
+  }
+  .el-dropdown-menu {
+    overflow-y: auto;
+    max-height: 400px;
+  }
+  .el-alert__title {
+    font-size: 18px;
+    line-height: 18px;
+    font-weight: 700;
+  }
+  .el-input.is-disabled .el-input__inner {
+    margin-top:20px;
+    background-color: #EFF2F7;
+    border-color: #D3DCE6;
+    color: #3a3636;
+    cursor: text;
+    font-size: 18px;
+  }
+.layui-form-item {
+  width: 33.33333333%;
+      float: left;
+    margin-bottom: 15px;
+    clear: both;
+/*    line-height: 40px;*/
+}
+.layui-form .layui-form-item label.layui-form-label {
+    width: 120px;
+    font-family: "Microsoft YaHei";
+}
+
+.layui-form-label {
+    float: left;
+    display: block;
+    padding: 9px 15px;
+    width: 80px;
+    font-weight: 400;
+    text-align: right;
+}
+
+.layui-form-label, .layui-form-mid, .layui-textarea {
+    line-height: 20px;
+    position: relative;
+}
+.layui-input-block {
+    margin-left: 160px;
+}
+.layui-input-block {
+    margin-left: 110px;
+    min-height: 36px;
+}
+.layui-input-block, .layui-input-inline {
+    position: relative;
+}
+.layui-upload-file {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left:10px;
+    min-width: 120px;
+    height: 38px;
+    border: 1px solid #20a0ff;
+    border-radius: 4px;
+    overflow: hidden;
+    color: #fff;
+    background-color: #20a0ff;
+    cursor:pointer;
+}
+.layui-upload-file {
+    outline: 0;
+    -webkit-transition: border-color .3s cubic-bezier(.65,.05,.35,.5);
+    transition: border-color .3s cubic-bezier(.65,.05,.35,.5);
+    -webkit-box-sizing: border-box!important;
+    -moz-box-sizing: border-box!important;
+    box-sizing: border-box!important;
+}
+</style>
+</block>
+<block name="body">
+  <div id="app" class="container">
+    <div class="wrapp" v-show="show" style="display:none;">
+      <el-row>
+        <el-col :span="16">
+          <el-alert title="以下为您的推广链接,请全选->右击复制(或ctrl+c)->右键粘贴(或ctrl+v)！" type="error" show-icon :closable="false"></el-alert>
+        </el-col> 
+      </el-row>
+      <el-row> 
+        <el-col :span="16">
+          <el-input v-model="url" :disabled="true"></el-input>
+        </el-col>
+      </el-row>
+    </div>
+  </div>
+
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">微信二维码</label>
+    <div class="layui-input-block">
+      <input id="Button1" type="button" class="layui-upload-file" value="选择微信二维码图"/>
+      <input id="files" type="button" class="layui-upload-file" value="上传二维码截图"/>
+    </div>
+    <div id="fileList" style="margin-top:10px;margin-left:20px;font-size:13px;"></div>  
+  </div>
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">QQ二维码</label>
+    <div class="layui-input-block">
+      <input id="qq-qr" type="button" class="layui-upload-file" value="选择QQ二维码图"/>
+      <input id="qq-upload" type="button" class="layui-upload-file" value="上传二维码截图"/>
+    </div>
+    <div id="qq-fileList" style="margin-top:10px;margin-left:20px;font-size:13px;"></div>  
+  </div>
+
+    <div id="testdiv" style="padding-top: 580px">  
+         
+    </div> 
+
+</block>
+<block name="scripts">
+<script>
+
+  window.defaultOption.setDatas({
+    url:"{$url}"
+  }).setVueHook('mounted',function(){
+    
+  }).setMethod('test',function(){
+
+  });
+
+</script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.1.11.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/Jcrop/jquery.Jcrop.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/Jcrop/imageCropperUpload.js"></script>
+<script>
+  var commonConfig = {
+    commonFileSuffixs:["jpg", "png", "jpeg","gif"],
+    commonCropperParam: {
+      maxSize: [200, 200],//不要小于50，如maxSize:[40,24]
+      minSize: [200, 200],//不要小于50，如minSize:[40,24]
+      bgColor: "black",  
+      bgOpacity: .4,  
+      allowResize: false,  
+      allowSelect: false,
+      animationDelay:10,
+      aspectRatio:1,
+    },
+
+  };
+  $(function () {  
+    var btn = $("#Button1");  
+    btn.cropperUpload({  
+      url: "{:U('Upload/imageCropperUpload?folder=wxqr')}",
+      fileSuffixs: commonConfig.commonFileSuffixs,  
+      // errorText: "{0}",  
+      onComplete: function (msg) {  
+        $("#fileList").hide();
+        alert(msg);
+      },
+      //Jcrop参数设置，除onChange和onSelect不要使用，其他属性都可用
+      cropperParam: commonConfig.commonCropperParam,  
+      perviewImageElementId: "fileList", //设置预览图片的元素id    
+      perviewImgStyle: { width: '700px', height: '500px',border: '1px solid #ebebeb'}//设置预览图片的样式    
+    });  
+
+    var upload = btn.data("uploadFileData");  
+
+    $("#files").click(function () {  
+      upload.submitUpload();
+    });  
+  });  
+</script>
+<script>
+  $(function () {  
+    var btn = $("#qq-qr");  
+    btn.cropperUpload({  
+      url: "{:U('Upload/imageCropperUpload?folder=qqqr')}",
+      fileSuffixs: ["jpg", "png", "jpeg","gif"],  
+      errorText: "{0}",  
+      onComplete: function (msg) {  
+        //$("#testimg").attr("src", msg);  
+        alert(111);
+      },
+      //Jcrop参数设置，除onChange和onSelect不要使用，其他属性都可用
+      cropperParam: {
+        maxSize: [200, 200],//不要小于50，如maxSize:[40,24]
+        minSize: [200, 200],//不要小于50，如minSize:[40,24]
+        bgColor: "black",  
+        bgOpacity: .4,  
+        allowResize: false,  
+        allowSelect: false,  
+        animationDelay:10,
+        aspectRatio:1,
+      },  
+      perviewImageElementId: "qq-fileList", //设置预览图片的元素id    
+      perviewImgStyle: { width: '700px', height: '500px',border: '1px solid #ebebeb'}//设置预览图片的样式    
+    });  
+
+    var upload = btn.data("uploadFileData");  
+
+    $("#qq-upload").click(function () {
+      upload.submitUpload();  
+    });  
+  });  
+</script>
+</block>
