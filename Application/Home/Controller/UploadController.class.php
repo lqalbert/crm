@@ -60,7 +60,7 @@ class UploadController extends CommonController {
 	    }
 	}
 
-  //处理微信和QQ二维码截图
+  //处理微信和QQ二维码截图裁图缩图
   public function imageCropperUpload($folder,$authSub=true){
 	  $upload = new \Think\Upload();// 实例化上传类
     $upload->maxSize   =     3145728 ;// 设置附件上传大小3M
@@ -69,7 +69,7 @@ class UploadController extends CommonController {
     $upload->autoSub   =     $authSub;
     $info   = $upload->upload();
     if(!$info) {// 上传错误提示错误信息
-			echo "上传失败，请稍后再试！";
+			echo $upload->getError();
     }else{// 上传成功
     	$user_id=session('uid');
     	foreach ($info as $file) {

@@ -6,8 +6,6 @@ class RegisterInfoController extends CommonController{
   protected $pageSize = 15;
 
   public function index(){
-  	// $res = $this->M->select();
-  	// va_dump($res);
   	$this->display();
   }
 

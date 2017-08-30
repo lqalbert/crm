@@ -98,7 +98,7 @@
 		.el-alert__title {
 		  font-size: 18px;
 		  line-height: 18px;
-		  font-weight: 700;
+		  font-weight: 600;
 		}
 		.el-input {
 		  position: relative;
@@ -137,6 +137,8 @@
 		  -webkit-appearance: none;
 		  outline: 0;
 		}
+		#qq-fileList{margin-top:10px;margin-left:20px;font-size:16px;}
+		#tips{margin-top:10px;margin-left:20px;font-size:16px;font-weight:700;color:#ff4949;}
   </style>
 </head>
 <body>
@@ -153,7 +155,7 @@
   		<input type="text" disabled="disabled" autocomplete="off" class="el-input__inner" value="{$res}"/>
   	</div>
   </div>
-
+  <div id="tips">请只截取中间二维码部分！！！</div>
   <div class="layui-form-item" style="margin-top:20px;">
     <label class="layui-form-label">微信二维码</label>
     <div class="layui-input-block">
@@ -169,7 +171,7 @@
       <input id="qq-qr" type="button" class="layui-upload-file" value="选择QQ二维码图"/>
       <input id="qq-upload" type="button" class="layui-upload-file" value="上传二维码截图"/>
     </div>
-    <div id="qq-fileList" style="margin-top:10px;margin-left:20px;font-size:13px;"></div>  
+    <div id="qq-fileList"></div>  
   </div>
 
 <script type="text/javascript" src="__PUBLIC__/js/jquery.1.11.min.js"></script>
@@ -180,11 +182,11 @@
     commonFileSuffixs:["jpg", "png", "jpeg","gif"],
     commonErrorText:"{0}",
     commonCropperParam: {
-      maxSize: [200, 200],//不要小于50，如maxSize:[40,24]
+      maxSize: [300, 300],//不要小于50，如maxSize:[40,24]
       minSize: [200, 200],//不要小于50，如minSize:[40,24]
-      bgColor: "black",  
+      bgColor: "black",
       bgOpacity: .4,  
-      allowResize: false,  
+      allowResize: true,  
       allowSelect: false,
       animationDelay:10,
       aspectRatio:1,
