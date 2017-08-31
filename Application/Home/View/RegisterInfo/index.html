@@ -133,6 +133,19 @@
               <el-table-column  align="center" prop="reg_time" label="注册时间">
               </el-table-column>
 
+              <el-table-column  align="center" prop="leadin" label="导入状态">
+                <template scope="scope">
+                    <el-tag v-if="scope.row.leadin == '0'" type="primary">未导入</el-tag>
+                    <el-tag v-else="scope.row.leadin == '1'" >已导入</el-tag>
+                  </template>
+              </el-table-column>
+
+              <el-table-column label="操作">
+                <template scope="scope">
+                  <el-button @click="leadIn(scope.row)" :disabled="scope.row.lock != '1' &&  scope.row.leadin !='0' "  type="primary" size="small">导入客户</el-button>
+                </template>
+              </el-table-column>
+
 	          </el-table>
           </el-col>
 			  </el-row>
@@ -154,25 +167,77 @@
 			  </el-row>
 			</div>
 			<div class="dialogWrapper" v-show="show" style="display: none">
-
+        <include file="_leadIn" />
 			</div>
 		</div>
 	</div>
 </block>
 <block name="scripts">
+<script src="__PUBLIC__/js/contactValidate.js"></script>
 <script>
+
+
+  var CustomerRule = {
+      name:[
+        { required: true, message: '请输入客户姓名', trigger: 'blur' },
+      ],
+      money:[
+        { required:true, message:'请选择客户资料量',trigger:'change'},
+      ],
+      qq:[
+       {required:true, message:"请输入qq号", trigger: 'blur'},
+       { validator: QQValidata, trigger:'blur' },
+      ],
+      phone:[
+        { required: true, message:"请输入手机号", trigger: 'blur'},
+        { validator: phoneValidata , trigger: 'blur' },
+      ]
+     
+    };
+
+  page.leadInUrl = "{:U('leadIn')}";
+
 	window.defaultOption.setDatas({
-
-
+    leadInRule:CustomerRule,
+    moneyOptions:{:json_encode($moneyOptions)},
 	}).setForm('search',{
     qq:"",
     phone:'',
     start:'',
     end:''
-	}).setMethod('startDateChange',function(v){
+	}).setForm('leadIn',{
+    name:"",
+    money:"",
+    qq:"",
+    phone:"",
+    reg_id:""
+  },true).setMethod('startDateChange',function(v){
 		this.searchForm.start = v;
 	}).setMethod('endDateChange',function(v){
 		this.searchForm.end = v;
-	});
+	}).setMethod('leadIn', function(v){
+    this.leadInForm.name="";
+    this.leadInForm.money="";
+    this.leadInForm.qq = v.qq;
+    this.leadInForm.phone = v.phone;
+    this.leadInForm.reg_id = v.id;
+    this.openDialog("leadIn");
+  }).setMethod("submitLeadIn", function(){
+    this.$refs['leadInForm'].validate((valid) => {
+          if (valid) {
+            this.leadInPost(page.leadInUrl, this.leadInForm);
+          } else {
+            
+            return false;
+          }
+        });
+  }).setMethod("leadInPost", function(url,row){
+    this.$http.post(url, row).then(function(response){
+      this.$message.success("操作成功");
+      this.closeDialog("leadIn");
+    }, function(response){
+      this.$message.error("操作失败");
+    })
+  })
 </script>
 </block>

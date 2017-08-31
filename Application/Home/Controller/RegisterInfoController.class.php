@@ -1,11 +1,13 @@
 <?php
 namespace Home\Controller;
 use Home\Model\RegisterInfoModel;
+// use Home\Model\CustomerModel;
 class RegisterInfoController extends CommonController{
 	protected $table = "RegisterInfo";
   protected $pageSize = 15;
 
   public function index(){
+    $this->assign("moneyOptions", D("Customer")->getMoney());
   	$this->display();
   }
 
@@ -71,6 +73,28 @@ class RegisterInfoController extends CommonController{
   public function setEnd($field, $value){
     $this->M->where(array($field=>array('ELT', $value." 23:59:59")));
   }  
+
+
+  public function leadIn(){
+    $_POST['source'] = 11;
+    $_POST['user_id'] = session('uid');
+    $data = D("Customer")->create();
+
+    if (!$data) {
+        $this->error(D("Customer")->getError());
+    }
+    
+    $id = D("Customer")->add();
+    if (!$id) {
+        
+        $this->error(D("Customer")->getError());
+    }
+
+    $update = array('leadin'=>1);
+    D("RegisterInfo")->where(array('id'=>I("post.reg_id")))->save($update);
+
+    $this->success("操作成功");
+  }
 
 
 
