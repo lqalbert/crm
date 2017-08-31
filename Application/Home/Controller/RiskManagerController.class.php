@@ -30,7 +30,12 @@ class RiskManagerController extends CommonController{
     switch (I('get.queryType',null)) {
       case 'cus_name':
         $cus_id = M('customers_basic')->where(array('name'=>array('like', $searchName."%")))->getField('id',true);
-        $this->M->where(array('customers_buy.cus_id'=>array('IN',$cus_id)));
+        if ($cus_id) {
+          $this->M->where(array('customers_buy.cus_id'=>array('IN',$cus_id)));
+        } else {
+          $this->M->where(array('customers_buy.cus_id'=>-1));
+        }
+        
         break;
       case 'user_name':
         $user_id = M('user_info')->where(array('realname'=>array('like', $searchName."%")))->getField('user_id');

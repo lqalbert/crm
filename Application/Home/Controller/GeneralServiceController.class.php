@@ -82,7 +82,14 @@ class GeneralServiceController extends CommonController{
         $this->M->join("customers_contacts as cc on customers_basic.id = cc.cus_id and cc.is_main = 1 ");
         if(I('get.contact')){
         	  $val=I('get.contact');
-        	  $this->M->where(array('cc.qq|cc.phone|cc.weixin'=>array('LIKE',$val."%")));
+            $ids = M("customers_contacts")->where(array('qq|phone|weixin'=>array('LIKE', $val."%")))->getField("cus_id", true);
+            if ($ids) {
+              $this->M->where(array("customers_basic.id"=>array("in", $ids)));
+            } else {
+              $this->M->where(array("customers_basic.id"=>-1));
+            }
+            
+        	  // $this->M->where(array('cc.qq|cc.phone|cc.weixin'=>array('LIKE',$val."%")));
         }
         
 

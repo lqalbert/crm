@@ -11,6 +11,10 @@
 	#one .el-card__body{
 		padding:22px;
 	}
+	#echarts {
+		min-height: 200px;
+		width: 200px;
+	}
   </style>
 </block>
 <block name="body">
@@ -80,7 +84,7 @@
 					<span>业绩走势 试用数据</span>
 				</div>
 				<div>
-					<div id="echarts" style="min-height: 200px; ">
+					<div id="echarts" style=" ">
 						
 					</div>
 				</div>
@@ -241,6 +245,7 @@
 				xAxis:{data:response.body.date},
 				series:response.body.series
 			});
+			edom.style.width="auto";
 		}, function(response){
 			this.$message.error("图表数据出错了");
 		});
