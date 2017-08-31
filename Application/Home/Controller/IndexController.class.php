@@ -9,16 +9,16 @@ class IndexController extends CommonController {
 
 
 	public function index() {
-    $ename = $this->getRoleEname();
-    if($ename == RoleModel::GOLD){
-    	$treeOb = new TreeController;
-      $this->tree = $treeOb->setMenuDep();
-      $this->navbar = $this->decoratorView();
-    }
+		$ename = $this->getRoleEname();
+		if($ename == RoleModel::GOLD){
+			$treeOb = new TreeController;
+		$this->tree = $treeOb->setMenuDep();
+		$this->navbar = $this->decoratorView();
+		}
 
-    //var_dump($tree);die();
-    $this->assign('tree',$this->tree);
-    $this->assign('navbar',$this->navbar);
+		//var_dump($tree);die();
+		$this->assign('tree',$this->tree);
+		$this->assign('navbar',$this->navbar);
 		$this->display ();
 	}
 
