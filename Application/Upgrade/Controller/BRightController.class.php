@@ -144,6 +144,20 @@ class BRightController extends Controller{
             'roles' => array(),
         ),
 
+        array(
+            'name' => 'RiskManager',
+            'pid'  => '1',
+            'remark' => '购买流程',
+            'sort'  => '0',
+            'status' => 1,
+            'title' => '购买流程', //分配明细
+            'level' => 2,
+            'children' => array(
+                    array('name'=>'index', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'列表', 'roles'=>array()),
+                ),
+            'roles' => array(),
+        ),
+
 
 
         
