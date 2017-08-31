@@ -1,0 +1,25 @@
+<el-dialog title="导入客户" v-model="leadInFormDialog">
+ <el-form :model="leadInForm"  ref="leadInForm" :rules="leadInRule"  :label-width="dialogLabelWidth">
+     <el-form-item label="姓名" prop="name">
+        <el-input v-model="leadInForm.name" style="max-width: 150px"></el-input>
+     </el-form-item>
+
+     <el-form-item label="资金" prop="money">
+         <el-select v-model="leadInForm.money">
+             <el-option v-for="(money,key) in moneyOptions" :label="money" :value="key"></el-option>
+         </el-select>
+     </el-form-item>
+
+     <el-form-item label="qq" prop="qq">
+        <el-input v-model="leadInForm.qq" style="max-width: 150px"></el-input>
+     </el-form-item>
+
+     <el-form-item label="手机" prop="phone">
+        <el-input v-model="leadInForm.phone" style="max-width: 150px"></el-input>
+     </el-form-item>
+ </el-form>
+<div slot="footer" class="dialog-footer">
+ <el-button @click="closeDialog('leadIn')">取 消</el-button>
+ <el-button type="primary"  @click="submitLeadIn" >确 定</el-button>
+</div>
+</el-dialog>
