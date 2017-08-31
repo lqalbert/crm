@@ -73,7 +73,7 @@
 	    box-sizing: border-box!important;
 		}
 		.el-col-16 {
-	    width:50%;
+	    width:800px;
 	    box-sizing: border-box;
 		}
 		.el-alert--error {
@@ -139,7 +139,7 @@
 		}
 		#qq-fileList{margin-top:10px;margin-left:20px;font-size:16px;}
 		#tips{margin-top:10px;margin-left:20px;font-size:16px;font-weight:700;color:#ff4949;}
-		#wx-refresh,#qq-refresh{display:none;margin-top:-50px;margin-top: -50px;background-color: #ff4949;border-color: #ff4949;height: 30px;}
+		#wx-refresh,#qq-refresh{display:none;background-color: #ff4949;border-color: #ff4949;height: 30px;}
   </style>
 </head>
 <body>
@@ -153,7 +153,7 @@
 
   <div class="el-col-16">
   	<div class="el-input is-disabled">
-  		<input type="text" disabled="disabled" autocomplete="off" class="el-input__inner" value="{$res}"/>
+  		<input type="text" disabled="disabled" autocomplete="off" class="el-input__inner" value="{$res.urlRes}"/>
   	</div>
   </div>
   <div id="tips">请只截取中间二维码部分！！！</div>
@@ -163,8 +163,8 @@
       <input id="wx-qr" type="button" class="layui-upload-file" value="选择微信二维码图"/>
     </div>
     <div id="wx-fileList" style="margin-top:10px;margin-left:20px;font-size:13px;"></div>  
-    <img  id="show-wxqr" alt="" src="" style="margin:10px 20px;"/> 
-    <input id="wx-upload" type="button" class="layui-upload-file" value="确定截图" style="display:none;margin-left:20px;"/>
+    <img  id="show-wxqr" alt="" src="{$res.wxqrImg}" style="margin:10px 20px;"/> 
+    <input id="wx-upload" type="button" class="layui-upload-file" value="确定截图" style="display:none;margin-left:20px;float: right;"/>
     <input id="wx-refresh" type="button" class="layui-upload-file" value="如不满意点击刷新再传"/>
   </div>
 
@@ -174,22 +174,24 @@
       <input id="qq-qr" type="button" class="layui-upload-file" value="选择QQ二维码图"/>
     </div>
     <div id="qq-fileList"></div>  
-    <img  id="show-qqqr" alt="" src="" style="margin:10px 20px;"/>
-    <input id="qq-upload" type="button" class="layui-upload-file" value="确定截图" style="display:none;margin-left:20px;"/>
+    <img  id="show-qqqr" alt="" src="{$res.qqqrImg}" style="margin:10px 20px;"/>
+    <input id="qq-upload" type="button" class="layui-upload-file" value="确定截图" style="display:none;margin-left:20px;float: right;"/>
     <input id="qq-refresh" type="button" class="layui-upload-file" value="如不满意点击刷新再传"/>
   </div>
-
+ 
 <script type="text/javascript" src="__PUBLIC__/js/jquery.1.11.min.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/Jcrop/jquery.Jcrop.min.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/Jcrop/imageCropperUpload.js"></script>
 <script>
   var webRoot = "__ROOT__";
+  var qqqrImg = "{$res.qqqrImg}";
+  var wxqrImg = "{$res.wxqrImg}";
   var commonConfig = {
     commonFileSuffixs:["jpg", "png", "jpeg","gif"],
     commonErrorText:"{0}",
     commonCropperParam: {
       maxSize: [300, 300],//不要小于50，如maxSize:[40,24]
-      minSize: [200, 200],//不要小于50，如minSize:[40,24]
+      minSize: [190, 190],//不要小于50，如minSize:[40,24]
       bgColor: "black",
       bgOpacity: .4,  
       allowResize: true,  
@@ -211,10 +213,14 @@
       onComplete: function (msg) {  
         $("#wx-fileList").hide();
         $("#show-wxqr").attr("src", webRoot+msg);
-        $('#wx-refresh').show();
+        if(wxqrImg == ""){
+        	window.location.reload();
+        }else{
+        	$('#wx-refresh').show();
+        	btn.attr('disabled',"true");
+        	btn.css({"background-color":"#c2c2c2","border-color":"#c2c2c2","color":"#ffffff","cursor":"not-allowed"});
+        }
         $("#wx-upload").hide();
-        btn.attr('disabled',"true");
-        btn.css({"background-color":"#c2c2c2","border-color":"#c2c2c2","color":"#ffffff","cursor":"not-allowed"});
       },
       //Jcrop参数设置，除onChange和onSelect不要使用，其他属性都可用
       cropperParam: commonConfig.commonCropperParam,  
@@ -244,14 +250,17 @@
       url: "{:U('Upload/imageCropperUpload?folder=qqqr')}",
       fileSuffixs: commonConfig.commonFileSuffixs,  
       errorText: commonConfig.commonErrorText,    
-      onComplete: function (msg) {  
-        //$("#testimg").attr("src", msg);  
+      onComplete: function (msg) {   
         $("#qq-fileList").hide();
         $("#show-qqqr").attr("src", webRoot+msg);
-        $('#qq-refresh').show();
+        if(qqqrImg == ""){
+        	window.location.reload();
+        }else{
+        	$('#qq-refresh').show();
+        	btn.attr('disabled',"true");
+        	btn.css({"background-color":"#c2c2c2","border-color":"#c2c2c2","color":"#ffffff","cursor":"not-allowed"});
+        }
         $("#qq-upload").hide();
-        btn.attr('disabled',"true");
-        btn.css({"background-color":"#c2c2c2","border-color":"#c2c2c2","color":"#ffffff","cursor":"not-allowed"});
       },
       //Jcrop参数设置，除onChange和onSelect不要使用，其他属性都可用
       cropperParam: commonConfig.commonCropperParam,   
