@@ -10,7 +10,6 @@
 	<meta name="apple-mobile-web-app-capable" content="yes">	
 	<meta name="format-detection" content="telephone=no">	
 	<link rel="stylesheet" type="text/css" href="__PUBLIC__/plugins/layui/css/layui.css" media="all">
-	<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/Jcrop/jquery.Jcrop.min.css" rel="stylesheet" />
 	<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/bootstrap.css" media="all">
 	<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/global.css" media="all">
 	<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/userdetail.css" media="all">
@@ -108,16 +107,6 @@
 						<input type="file" name="head" class="layui-upload-file" lay-title="修改头像吧亲！">
 					</div>
 				</div>
-
-				<div class="layui-form-item">
-					<label class="layui-form-label">微信二维码</label>
-					<div class="layui-input-block">
-						<input id="Button1" type="button" class="layui-upload-file" lay-title="选择微信二维码"/>
-            <input id="files" type="button" class="layui-upload-file" lay-title="上传二维码截图"/>
-					</div>
-          <div id="fileList" style="margin-top:10px;margin-left:50px;font-size:13px;width:400px"></div>  
-				</div>
-
 				<div class="layui-form-item layui-form-text">
 					<label class="layui-form-label">座右铭</label>
 					<div class="layui-input-block">
@@ -179,41 +168,6 @@
 		  });
 
 	});
-</script>
-<script type="text/javascript" src="__PUBLIC__/js/Jcrop/jquery.Jcrop.min.js"></script>
-<script type="text/javascript" src="__PUBLIC__/js/Jcrop/imageCropperUpload.js"></script>
-<script>
-	$(function () {  
-    var btn = $("#Button1");  
-    btn.cropperUpload({  
-      url: "{:U('Upload/imageCropperUpload?folder=wxqr')}",
-      fileSuffixs: ["jpg", "png", "jpeg","gif"],  
-      errorText: "{0}",  
-      onComplete: function (msg) {  
-        //$("#testimg").attr("src", msg);  
-       
-      },
-      //Jcrop参数设置，除onChange和onSelect不要使用，其他属性都可用
-      cropperParam: {
-        maxSize: [200, 200],//不要小于50，如maxSize:[40,24]  
-        minSize: [200, 200],//不要小于50，如minSize:[40,24]  
-        bgColor: "black",  
-        bgOpacity: .4,  
-        allowResize: false,  
-        allowSelect: false,  
-        animationDelay:10,
-        aspectRatio:1,
-      },  
-      perviewImageElementId: "fileList", //设置预览图片的元素id    
-      perviewImgStyle: { width: '500px', height: '500px',border: '1px solid #ebebeb' }//设置预览图片的样式    
-    });  
-
-    var upload = btn.data("uploadFileData");  
-
-    $("#files").click(function () {  
-      upload.submitUpload();  
-    });  
-	});  
 </script>
 </body>
 </html>
