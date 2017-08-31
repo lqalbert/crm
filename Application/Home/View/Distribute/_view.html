@@ -136,7 +136,7 @@
     submitStatus:false,
   }).setForm('edit',{
     id:{$id},
-    limina:{$limina},
+    limina:{$limina|default="0"},
     type:"{$type}",
     percent:{$percent},
     <?php foreach($optionList as $key=>$value): ?>

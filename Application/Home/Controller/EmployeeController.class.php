@@ -188,6 +188,11 @@ class EmployeeController extends CommonController {
 		$this->setDepartmentEmployee();
 	}
 
+	//推广部经理
+	private function spreadMasterCondition(){
+		$this->setDepartmentEmployee();
+	}
+
 
 	public function setRoleCondition(){
 		$this->roleEname = $this->getRoleEname();

@@ -98,6 +98,10 @@ class RbacUserModel extends RelationModel {
       return $this->departmentMasterGetView();
     }
 
+     private function spreadMasterGetView(){
+      return $this->departmentMasterGetView();
+    }
+
     //部门经理
      private function departmentMasterGetView(){
        $oprateColumn = <<<'EOD'
@@ -117,9 +121,13 @@ EOD;
         );
     }
 
+
+
     private function hrMasterGetView(){
         return $this->humanResourceGetView();
     }
+
+
 
 
     private function goldGetView(){

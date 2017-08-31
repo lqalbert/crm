@@ -15,13 +15,13 @@ class BRightController extends Controller{
             'title' => '客户分配',
             'level' => 2,
             'children' => array(
-                    array('name'=>'manuallyDistribute', 'pid'=>0, 'sort'=>0, 'level'=>3, 'status'=>1, 'title'=>'手动分配action', 'roles'=>array(1,5,6)),
-                    array('name'=>'manually', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'手动分配', 'roles'=>array(1,5,6)),
-                    array('name'=>'edit', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'编辑分配参数','roles'=>array(1,5,6)),
-                    array('name'=>'view', 'pid'=>0, 'sort'=>0, 'status'=>1,'level'=>3, 'title'=>'参数编辑','roles'=>array(1,5,6)),
-                    array('name'=>'saveBenefit', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'分成比率','roles'=>array(1)),
+                    array('name'=>'manuallyDistribute', 'pid'=>0, 'sort'=>0, 'level'=>3, 'status'=>1, 'title'=>'手动分配action', 'roles'=>array()),
+                    array('name'=>'manually', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'手动分配', 'roles'=>array()),
+                    array('name'=>'edit', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'编辑分配参数','roles'=>array()),
+                    array('name'=>'view', 'pid'=>0, 'sort'=>0, 'status'=>1,'level'=>3, 'title'=>'参数编辑','roles'=>array()),
+                    array('name'=>'saveBenefit', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'分成比率','roles'=>array()),
                 ),
-            'roles' => array(1,5,6),
+            'roles' => array(),
         ),
 
 
@@ -34,10 +34,10 @@ class BRightController extends Controller{
             'title' => '推广客户管理',
             'level' => 2,
             'children' => array(
-                    array('name'=>'edit', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'编辑', 'roles'=>array(1,20,21,22)),
-                    array('name'=>'add', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'添加', 'roles'=>array(1,20,21,22)),
+                    array('name'=>'edit', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'编辑', 'roles'=>array()),
+                    array('name'=>'add', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'添加', 'roles'=>array()),
                 ),
-            'roles' => array(1,20,21,22),
+            'roles' => array(),
         ),
 
         array(
@@ -49,9 +49,9 @@ class BRightController extends Controller{
             'title' => '分配明细-销信组',
             'level' => 2,
             'children' => array(
-                    array('name'=>'index', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'列表', 'roles'=>array(6)),
+                    array('name'=>'index', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'列表', 'roles'=>array()),
                 ),
-            'roles' => array(6),
+            'roles' => array(),
         ),
 
         array(
@@ -63,9 +63,9 @@ class BRightController extends Controller{
             'title' => '分配明细-销售',
             'level' => 2,
             'children' => array(
-                    array('name'=>'getUsers', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'获取员工', 'roles'=>array(5)),
+                    array('name'=>'getUsers', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'获取员工', 'roles'=>array()),
                 ),
-            'roles' => array(5),
+            'roles' => array(),
         ),
 
         
@@ -79,11 +79,11 @@ class BRightController extends Controller{
             'title' => '分配的客户', //分配明细
             'level' => 2,
             'children' => array(
-                    array('name'=>'index', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'列表', 'roles'=>array(1)),
-                    array('name'=>'getUsers', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'获取员工', 'roles'=>array(1)),
-                    array('name'=>'getGroups', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'获取小组', 'roles'=>array(1)),
+                    array('name'=>'index', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'列表', 'roles'=>array()),
+                    array('name'=>'getUsers', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'获取员工', 'roles'=>array()),
+                    array('name'=>'getGroups', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'获取小组', 'roles'=>array()),
                 ),
-            'roles' => array(1),
+            'roles' => array(),
         ),
 
         array(
@@ -95,9 +95,9 @@ class BRightController extends Controller{
             'title' => '分配历史', //分配明细
             'level' => 2,
             'children' => array(
-                    array('name'=>'index', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'列表', 'roles'=>array(1,5,6)),
+                    array('name'=>'index', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'列表', 'roles'=>array()),
                 ),
-            'roles' => array(1,5,6),
+            'roles' => array(),
         ),
 
         array(
@@ -109,12 +109,42 @@ class BRightController extends Controller{
             'title' => '推广部客户', //分配明细
             'level' => 2,
             'children' => array(
-                    array('name'=>'index', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'列表', 'roles'=>array(5,6)),
-                    array('name'=>'edit', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'编辑', 'roles'=>array(5,6)),
-                    array('name'=>'getGroupMemberList', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'获取小组成员', 'roles'=>array(5,6)),
+                    array('name'=>'index', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'列表', 'roles'=>array()),
+                    array('name'=>'edit', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'编辑', 'roles'=>array()),
+                    array('name'=>'getGroupMemberList', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'获取小组成员', 'roles'=>array()),
                 ),
-            'roles' => array(5,6),
+            'roles' => array(),
         ),
+
+        array(
+            'name' => 'SpreadCustomerSort',
+            'pid'  => '1',
+            'remark' => '',
+            'sort'  => '0',
+            'status' => 1,
+            'title' => '推广客户排名', //分配明细
+            'level' => 2,
+            'children' => array(
+                    array('name'=>'getGroups', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'获取小组', 'roles'=>array()),
+                ),
+            'roles' => array(),
+        ),
+
+        array(
+            'name' => 'DepartSpreadCustomer',
+            'pid'  => '1',
+            'remark' => '查看销售部 小组 员工 被分配的客户数量',
+            'sort'  => '0',
+            'status' => 1,
+            'title' => '分配总数', //分配明细
+            'level' => 2,
+            'children' => array(
+                    array('name'=>'getGroups', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'获取小组', 'roles'=>array()),
+                ),
+            'roles' => array(),
+        ),
+
+
 
         
         
