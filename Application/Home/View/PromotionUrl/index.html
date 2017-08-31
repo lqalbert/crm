@@ -139,6 +139,7 @@
 		}
 		#qq-fileList{margin-top:10px;margin-left:20px;font-size:16px;}
 		#tips{margin-top:10px;margin-left:20px;font-size:16px;font-weight:700;color:#ff4949;}
+		#wx-refresh,#qq-refresh{display:none;margin-top:-50px;margin-top: -50px;background-color: #ff4949;border-color: #ff4949;height: 30px;}
   </style>
 </head>
 <body>
@@ -160,24 +161,29 @@
     <label class="layui-form-label">微信二维码</label>
     <div class="layui-input-block">
       <input id="wx-qr" type="button" class="layui-upload-file" value="选择微信二维码图"/>
-      <input id="wx-upload" type="button" class="layui-upload-file" value="上传二维码截图"/>
     </div>
     <div id="wx-fileList" style="margin-top:10px;margin-left:20px;font-size:13px;"></div>  
+    <img  id="show-wxqr" alt="" src="" style="margin:10px 20px;"/> 
+    <input id="wx-upload" type="button" class="layui-upload-file" value="确定截图" style="display:none;margin-left:20px;"/>
+    <input id="wx-refresh" type="button" class="layui-upload-file" value="如不满意点击刷新再传"/>
   </div>
 
   <div class="layui-form-item">
     <label class="layui-form-label">QQ二维码</label>
     <div class="layui-input-block">
       <input id="qq-qr" type="button" class="layui-upload-file" value="选择QQ二维码图"/>
-      <input id="qq-upload" type="button" class="layui-upload-file" value="上传二维码截图"/>
     </div>
     <div id="qq-fileList"></div>  
+    <img  id="show-qqqr" alt="" src="" style="margin:10px 20px;"/>
+    <input id="qq-upload" type="button" class="layui-upload-file" value="确定截图" style="display:none;margin-left:20px;"/>
+    <input id="qq-refresh" type="button" class="layui-upload-file" value="如不满意点击刷新再传"/>
   </div>
 
 <script type="text/javascript" src="__PUBLIC__/js/jquery.1.11.min.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/Jcrop/jquery.Jcrop.min.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/Jcrop/imageCropperUpload.js"></script>
 <script>
+  var webRoot = "__ROOT__";
   var commonConfig = {
     commonFileSuffixs:["jpg", "png", "jpeg","gif"],
     commonErrorText:"{0}",
@@ -194,15 +200,21 @@
     commonPerviewImgStyle:{width: '700px', height: '500px',border: '1px solid #ebebeb'}
   };
   $(function () {  
-    var btn = $("#wx-qr");  
+    var btn = $("#wx-qr");
+    btn.click(function () {  
+      $("#wx-upload").show();
+    }); 
     btn.cropperUpload({  
       url: "{:U('Upload/imageCropperUpload?folder=wxqr')}",
       fileSuffixs: commonConfig.commonFileSuffixs,  
       errorText: commonConfig.commonErrorText,  
       onComplete: function (msg) {  
         $("#wx-fileList").hide();
-        alert(msg);
-        window.location.reload()
+        $("#show-wxqr").attr("src", webRoot+msg);
+        $('#wx-refresh').show();
+        $("#wx-upload").hide();
+        btn.attr('disabled',"true");
+        btn.css({"background-color":"#c2c2c2","border-color":"#c2c2c2","color":"#ffffff","cursor":"not-allowed"});
       },
       //Jcrop参数设置，除onChange和onSelect不要使用，其他属性都可用
       cropperParam: commonConfig.commonCropperParam,  
@@ -215,11 +227,19 @@
     $("#wx-upload").click(function () {  
       upload.submitUpload();
     });  
+
+    $('#wx-refresh').click(function() {
+    	window.location.reload();
+    });
+
   });  
 </script>
 <script>
   $(function () {  
-    var btn = $("#qq-qr");  
+    var btn = $("#qq-qr");
+    btn.click(function () {  
+      $("#qq-upload").show();
+    }); 
     btn.cropperUpload({  
       url: "{:U('Upload/imageCropperUpload?folder=qqqr')}",
       fileSuffixs: commonConfig.commonFileSuffixs,  
@@ -227,8 +247,11 @@
       onComplete: function (msg) {  
         //$("#testimg").attr("src", msg);  
         $("#qq-fileList").hide();
-        alert(msg);
-        window.location.reload()
+        $("#show-qqqr").attr("src", webRoot+msg);
+        $('#qq-refresh').show();
+        $("#qq-upload").hide();
+        btn.attr('disabled',"true");
+        btn.css({"background-color":"#c2c2c2","border-color":"#c2c2c2","color":"#ffffff","cursor":"not-allowed"});
       },
       //Jcrop参数设置，除onChange和onSelect不要使用，其他属性都可用
       cropperParam: commonConfig.commonCropperParam,   
@@ -240,7 +263,10 @@
 
     $("#qq-upload").click(function () {
       upload.submitUpload();  
-    });  
+    }); 
+    $('#qq-refresh').click(function() {
+    	window.location.reload();
+    });
   });  
 </script>
 </body>

@@ -85,7 +85,7 @@ class UploadController extends CommonController {
     	$res=M('user_info')->where(array('user_id'=>$user_id))->save($data);
     	if($res){
    			$_SESSION['account']['userInfo'][$folder]=$data[$folder];
-   			echo "上传成功！";
+   			echo $qrPath;
     	}else{
    			echo "上传失败，请稍后再试！";
     	}
