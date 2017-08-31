@@ -31,6 +31,8 @@ class PromotionUrlController extends CommonController{
       $res['wxqrImg'] = $qrArr['wxqr'];
     }
     return $res;
+
+    
   }
 
 
