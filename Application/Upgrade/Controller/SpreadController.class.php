@@ -19,8 +19,8 @@ class SpreadController extends Controller{
         $sql .= " alter table `customers_basic` add column `depart_id` int unsigned not null default '0' comment '分配的销售部id';";
         $sql .= " alter table `customers_basic` add column `to_gid` int unsigned not null default '0' comment '分配的小组id'; ";
         $sql .= " alter table `customers_basic` add column `dis_time` TIMESTAMP   null default '' comment '分配时的时间'; ";
-        $sql .= " alter table `customers_basic` add column `wxqr` varchar(256)   null default '' comment '微信二维码'; ";
-        $sql .= " alter table `customers_basic` add column `qqqr` varchar(256)   null default '' comment 'QQ二维码'; ";
+        $sql .= " alter table `user_info` add column `wxqr` varchar(256)   null default '' comment '微信二维码'; ";
+        $sql .= " alter table `user_info` add column `qqqr` varchar(256)   null default '' comment 'QQ二维码'; ";
         $newTable = <<<TABLE
 create table `distribute_basic`(
     `id` int unsigned not null primary key auto_increment ,
