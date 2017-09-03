@@ -11,6 +11,10 @@
                             <el-input v-model="searchForm.name" size="small" placeholder="客户姓名"></el-input>
                         </el-form-item>
 
+                        <el-form-item prop="name">
+                            <el-input v-model="searchForm.contact" size="small" placeholder="手机|微信|qq"></el-input>
+                        </el-form-item>
+
                         <el-form-item prop="group" style="width:100px">
                           <el-select v-model="searchForm.group" size="small" placeholder="请选择">
                             <el-option v-for="item in searchGroup" :label="item.name" :value="item.user_id"></el-option>
@@ -85,13 +89,124 @@
                 </el-col>
             </el-row>
             <el-row>
-                <el-col>
+              <el-col :span="24">
+                <el-table
+                :data="dataList"
+                border
+                v-loading="dataLoad"
+                element-loading-text="{:L('DATA_LOGIN')}"
+                >
+                <el-table-column 
+                label="{:L('INDEX')}"
+                :formatter="handleIndex"
+                width="65" ></el-table-column>
+
+                <el-table-column 
+                prop="name"
+                label="客户姓名"
+                width="150"></el-table-column>
+                <el-table-column prop="type" label="客户类型"></el-table-column>
+
+                <el-table-column prop="realname" label="跟踪员工"></el-table-column>
+                <el-table-column prop="lockname" label="锁定员工"></el-table-column>
+                <!-- ton -->
+                <el-table-column prop="qq" label="qq" width="120">
+                  <template scope="scope">
+                    {{ scope.row.contact[0].qq }}
+                  </template>
+                </el-table-column>
+                <el-table-column prop="qq_nickname" label="qq昵称">
+                  <template scope="scope">
+                    {{ scope.row.contact[0].qq_nickname }}
+                  </template>
+                </el-table-column>
+                <el-table-column prop="phone" label="手机" width="150">
+                  <template scope="scope">
+                    {{ scope.row.contact[0].phone }}
+                  </template>
+                </el-table-column>
+                <el-table-column prop="weixin" label="微信" width="150">
+                  <template scope="scope">
+                    {{ scope.row.contact[0].weixin }}
+                  </template>
+                </el-table-column>
+                <el-table-column prop="weixin_name" label="微信号" width="150">
+                  <template scope="scope">
+                    {{ scope.row.contact[0].weixin_name }}
+                  </template>
+                </el-table-column>
+
+                <el-table-column prop="last_track" label="最后跟踪时间" width="180"></el-table-column>
+                <el-table-column prop="share_benefit" label="分成比例"></el-table-column>
+                <el-table-column prop="plan" label="下次计划"  width="180"></el-table-column>
+
+                <el-table-column prop="sex_text" label="性别"></el-table-column>
+
+                <el-table-column label="操作" width="170" fixed="right">
+                  <template scope="scope">
+                    <el-button size="small" @click="buy(scope.row)" type="primary">购买</el-button>
+                    <el-button size="small" @click="openRenewal(scope.row)" type="primary">续费</el-button>
+                  </template>
+                </el-table-column>
+                  
+                </el-table>
+              </el-col>
+            </el-row>
+
+            <el-row>
+                <el-col :span="12"> 
+                  <el-row style="margin-bottom:6px">
+                    <el-col :span="24">
+                      <el-tooltip content="录入新的客户" placement="bottom-start" style="margin-left:0px;">
+                          <el-button  @click="openDialog('add')" size="small" type="primary">添加客户</el-button>
+                      </el-tooltip>
+                      <el-tooltip content="编辑客户资料" placement="bottom-start" style="margin-left:10px;">
+                          <el-button   size="small" type="primary">修改客户</el-button>
+                      </el-tooltip>
+                    </el-col>
+                  </el-row>
+                  <el-row>
+                    <el-col :span="24">
+                      <div class="grid-content bg-purple">
+                    <span class="wrapper">
+                      <!-- <el-tooltip content="选择客户录入跟踪信息" placement="right">
+                        <el-button size="small" @click="openDialog('addTrack')" type="primary">录入跟踪</el-button>
+                      </el-tooltip>
+
+                      <el-tooltip content="选择客户录入投诉意见" placement="right">
+                        <el-button size="small" @click="openDialog('complain')" type="primary" style="margin-left:10px;">客户投诉</el-button>
+                      </el-tooltip>
+
+                      <el-tooltip content="选择客户录入对其跟踪计划" placement="right">
+                        <el-button size="small" @click="openDialog('addPlan')" type="primary" style="margin-left:10px;">计划</el-button>
+                      </el-tooltip>
+
+                      <el-tooltip content="选择客户录入其提醒事项及内容" placement="right">
+                        <el-button size="small" @click="openDialog('addRemind')" type="info" style="margin-left:10px;">提醒</el-button>
+                      </el-tooltip>
+
+                      <el-tooltip content="筛选客户重点跟踪" placement="right">
+                        <el-button size="small" @click="openDialog('addChoice')" type="primary" style="margin-left:10px;">自选</el-button>
+                      </el-tooltip>
+                    </span> -->
+                  </div>
+                    </el-col>
+                  </el-row>
+                </el-col>
+                <el-col :span="12">
+                  <div class="pull-right">
                     <!-- page -->
                     <include file="Common:_pagination" />
                     <!-- / page -->
+                  </div>
 
                 </el-col>
             </el-row>
+
+        </div>
+
+        <div class="dialogWrapper" v-show="show" style="display: none">
+          <include file="_add" />
         </div>
     </div>
 </block>
@@ -100,14 +215,39 @@
         window.defaultOption.setDatas({
             searchGroup: {:json_encode($searchGroup)},
             flag:"",
+            customerType:{:json_encode($customerType)},
+            sexType:{:json_encode($sexType)},
+            Quality:{:json_encode($Quality)},
+            Year:{:json_encode($Year)},
+            Income:{:json_encode($Income)},
+            Sty:{:json_encode($Sty)},
+            Money:{:json_encode($Money)},
+            Energy:{:json_encode($Energy)},
+            Problem:{:json_encode($Problem)},
+            Mode:{:json_encode($Mode)},
+            Attitude:{:json_encode($Attitude)},
+            Profession:{:json_encode($Profession)},
+            Intention:{:json_encode($Intention)},
+            Source:{:json_encode($Source)},
+            Proportion:{:json_encode($Proportion)},
+            Remind:{:json_encode($Remind)},
+            products:{:json_encode($Products)},
+            addRules:{}
         }).setForm('search', {
             name:"",
             group:"",
             field:"",
-        }).setMethod('setField', function(field, num){
-            console.log(field);
-            console.log(num);
+            contact:""
+        }).setForm('add',{
+
+        },true).setMethod('setField', function(field, num){
+            // console.log(field);
+            // console.log(num);
         }).setMethod('searchReset2', function(){
+
+        }).setMethod("buy", function(){
+
+        }).setMethod('openRenewal', function(){
 
         })
     </script>

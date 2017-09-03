@@ -80,7 +80,7 @@ class DistributeCustomerController extends CommonController{
     public function setQeuryCondition() {
         
         if (I('get.name')) {
-            $this->M->where(array("name"=> array('like', I('get.name')."%")));
+            $this->M->where(array("customers_basic.name"=> array('like', I('get.name')."%")));
         }
 
         if (I('get.contact')) {

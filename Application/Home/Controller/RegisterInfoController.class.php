@@ -77,6 +77,7 @@ class RegisterInfoController extends CommonController{
 
   public function leadIn(){
     $_POST['source'] = 11;
+    $_POST['type'] = 'C';
     $_POST['user_id'] = session('uid');
     $data = D("Customer")->create();
 

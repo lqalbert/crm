@@ -142,7 +142,7 @@
 
               <el-table-column label="操作">
                 <template scope="scope">
-                  <el-button @click="leadIn(scope.row)" :disabled="scope.row.lock != '1' &&  scope.row.leadin !='0' "  type="primary" size="small">导入客户</el-button>
+                  <el-button @click="leadIn(scope.row)" :disabled="scope.row.lock != '1' "  type="primary" size="small">导入客户</el-button>
                 </template>
               </el-table-column>
 
@@ -216,6 +216,10 @@
 	}).setMethod('endDateChange',function(v){
 		this.searchForm.end = v;
 	}).setMethod('leadIn', function(v){
+    if (v.leadin==1) {
+      this.$message.error("已经导入");
+      return;
+    }
     this.leadInForm.name="";
     this.leadInForm.money="";
     this.leadInForm.qq = v.qq;

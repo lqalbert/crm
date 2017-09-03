@@ -34,7 +34,7 @@ class CustomerModel extends Model {
     	);
 
     protected $sexType = array(
-    	  "未选择",
+    	    "未选择",
           "男",
           "女"
     	);

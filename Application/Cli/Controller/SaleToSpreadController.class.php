@@ -6,10 +6,13 @@ use Home\Model\RoleModel;
 
 class SaleToSpreadController extends Controller{
 
-    private $ids = array(87);
+    private $ids = array(6,9,11,13,14,15,16,17);
 
 
     public function index(){
+        // echo "is_has 清了吗？"
+        // die();
+        $this->mark = Date("Y-m-d");
         $this->setRoleId();
         $this->departments($this->ids);
     }
@@ -33,7 +36,7 @@ class SaleToSpreadController extends Controller{
             // rbac_role_user 重新处理 
             // M('user_info')->data(array('user_id'=>$user_id, 'role_id'=>$role_ids))->save();
             $users = M('user_info')->where(array('department_id'=>$value['id']))->select();
-            var_dump($users);
+            
             foreach ($users as $user) {
                 if ($user['role_id'] == $this->sa_master_id) {
                     $this->setRole($user['user_id'], $this->sp_master_id);
@@ -42,7 +45,8 @@ class SaleToSpreadController extends Controller{
                 } else if($user['role_id'] == $this->sa_staff_id){
                     $this->setRole($user['user_id'], $this->sp_staff_id);
                 }
-                $this->setCustomers($user['user_id'], $value['id']);
+                $this->setCustomers($user['user_id'], $value['id'], $user['group_id']);
+                $this->setUserOn($user['user_id']);
 
             }           
         }
@@ -53,7 +57,7 @@ class SaleToSpreadController extends Controller{
         $M = D('rbac_role_user');
         $insert_list = array();
         $insert_list[] = array('role_id'=>$role_id, 'user_id'=>$user_id);
-        var_dump($insert_list);
+        
         $M->startTrans(); 
         $result = $M->where(array('user_id'=>$user_id))->delete();
 
@@ -62,9 +66,16 @@ class SaleToSpreadController extends Controller{
         $M->commit();
     }
     //只假设一种情况 这些客户都在一个部门内转让
-    private function setCustomers($user_id, $depart_id){
-        $sql = "update customers_basic set salesman_id=0 ,spread_id=$depart_id where user_id=$user_id ";
+    private function setCustomers($user_id, $depart_id ,$gid){
+        // $sql = "update customers_basic set salesman_id=0 ,spread_id=$depart_id where user_id=$user_id ";
+
+        $sql = "update customers_basic set spread_id=$depart_id,depart_id=$depart_id, to_gid=$gid, olde_mark='".$this->mark."' where user_id=$user_id ";
         M()->execute($sql);
 
+    }
+
+    private function setUserOn($user_id){
+        $sql = "update rbac_user set status=1 where id=$user_id ";
+        M()->execute($sql);
     }
 }

@@ -89,7 +89,7 @@ class CustomerController extends CommonController {
             $user = new User();
             $user->getRoleObject()->setMemberUserCondition($this->M);
         } else {
-            $this->M->where(array("salesman_id"=> $condition ));
+            $this->M->where(array("salesman_id|customers_basic.user_id"=> $condition ));
         }
 
 
@@ -118,7 +118,7 @@ class CustomerController extends CommonController {
         $this->setGroupCondition(I('get.group',session('uid')));
 
         if (I('get.name')) {
-            $this->M->where(array("name"=> array('like', I('get.name')."%")));
+            $this->M->where(array("customers_basic.name"=> array('like', I('get.name')."%")));
         }
 
         if (I('get.phone')) {
@@ -159,7 +159,7 @@ class CustomerController extends CommonController {
             $this->setGroupCondition(I('get.group',session('uid')));
 
             if (I('get.name')) {
-                $this->M->where(array("name"=> array('like', I('get.name')."%")));
+                $this->M->where(array("customers_basic.name"=> array('like', I('get.name')."%")));
             }
 
             if (I('get.contact')) {
@@ -412,7 +412,7 @@ class CustomerController extends CommonController {
 		$this->M->where(array('plan'=>$between_today))
 		        ->where(array("salesman_id"=> session('uid')))
                 ->join('customers_contacts as cc on customers_basic.id = cc.cus_id and cc.is_main=1')
-		        ->field('customers_basic.id,qq,name,plan,remind');
+		        ->field('customers_basic.id,qq,customers_basic.name,plan,remind');
 		$re = $this->M->select();
 		foreach ($re as $key => $value) {
 			$re[$key]['time'] = strtotime($value['plan']) * 1000;
@@ -713,8 +713,8 @@ class CustomerController extends CommonController {
             $this->error("操作失敗");
         }
 
-        $data['id'] = $id;
-
+        $data['id'] = $re;
+        // var_dump($data);
         //自动分配给风控专员和回访专员
         tag(HOOK_DISTRIBUTE_BUY_CUSTOMER, $data);
     }

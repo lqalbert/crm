@@ -202,9 +202,15 @@
   	    </el-table-column>
 
         <el-table-column  prop="realname" label="跟踪员工" sortable='customer' width="150" >
+          <template scope="scope">
+            {{ scope.row.creat_depart + "-"  + scope.row.realname }} 
+          </template>
         </el-table-column>
 
         <el-table-column  prop="lock_name" label="锁定员工" sortable='customer' width="150" >
+          <template scope="scope">
+            {{ scope.row.creat_depart + "-"  + scope.row.lock_name }} 
+          </template>
         </el-table-column>
 
         <el-table-column   prop="qq" label="QQ号"  width="170" header-align="center">
