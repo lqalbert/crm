@@ -55,4 +55,34 @@ class MoveEController extends Controller {
             echo 'no';
         }
     }
+
+    public function fixUser(){
+
+        $arr = array(
+            
+            "朱鹏",
+            "张金东",
+            "石磊",
+            "张家维",
+            "吴攀哲",
+            "陈润红",
+            "谷文峰" 
+        );
+        /*
+            
+        */
+
+        $str = array();
+        foreach ($arr as $key => $value) {
+            $str[] = "realname='{$value}'";
+        }
+
+        $sql="update rbac_user set status=1 where id in (select user_id from user_info where  department_id=3 and ( ". implode(" or ", $str) ." ))";
+
+        M()->execute($sql);
+    }
 }
+
+
+
+

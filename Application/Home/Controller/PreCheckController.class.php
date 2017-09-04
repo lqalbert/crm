@@ -73,6 +73,7 @@ class PreCheckController extends CommonController {
 
 
     public function getUser(){
+        $this->error("关闭");
         $id = I("post.id");
 
         //如果是 部门经理 就暂时不能索取

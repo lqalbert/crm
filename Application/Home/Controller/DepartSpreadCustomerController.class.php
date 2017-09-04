@@ -43,7 +43,7 @@ class DepartSpreadCustomerController extends CommonController {
                     $roleM->getIdByEname(RoleModel::DEPARTMENTMASTER)
                 );
                 $this->sql = "select ### from user_info"
-                      ." left join (select count(*) as c, salesman_id from customers_basic where spread_id<>0 group by salesman_id) as b on user_info.user_id=b.salesman_id"
+                      ." left join (select count(*) as c, salesman_id from customers_basic where spread_id<>0 and spread_id<>depart_id group by salesman_id) as b on user_info.user_id=b.salesman_id"
                       ." inner join rbac_user as ru on user_info.user_id = ru.id "
                       ." where ru.status=1 and user_info.role_id in (".implode(',',$roleids).")";
 
@@ -67,7 +67,7 @@ class DepartSpreadCustomerController extends CommonController {
                 break;
             case 'to_gid':
                 $this->sql = "select ### from group_basic  "
-                            ." left join (select count(*) as c, to_gid from  customers_basic where spread_id<>0 group by to_gid) as b on group_basic.id=b.to_gid"
+                            ." left join (select count(*) as c, to_gid from  customers_basic where spread_id<>0 and spread_id<>depart_id group by to_gid) as b on group_basic.id=b.to_gid"
                             ." where group_basic.status=1 ";
                 $this->fields = "group_basic.id, group_basic.name, b.c";
                 
@@ -84,7 +84,7 @@ class DepartSpreadCustomerController extends CommonController {
                 break;
             case 'spread_id':
                 $this->sql = "select ### from department_basic "
-                            ." left join (select count(*) as c, depart_id from customers_basic where spread_id<>0 group by depart_id) as b on department_basic.id=b.depart_id"
+                            ." left join (select count(*) as c, depart_id from customers_basic where spread_id<>0 and spread_id<>depart_id group by depart_id) as b on department_basic.id=b.depart_id"
                             ." where department_basic.status=1 and department_basic.type=" .DepartmentModel::SALES_DEPARTMENT;
                 $this->fields="department_basic.id, department_basic.name, b.c";
                 /*$this->M->join("department_basic as db on customers_basic.depart_id=db.id")
@@ -97,7 +97,7 @@ class DepartSpreadCustomerController extends CommonController {
             
             default:
                 $this->sql = "select ### from department_basic "
-                            ." left join (select count(*) as c, depart_id from customers_basic where spread_id<>0 group by depart_id) as b on department_basic.id=b.depart_id"
+                            ." left join (select count(*) as c, depart_id from customers_basic where spread_id<>0 and spread_id<>depart_id group by depart_id) as b on department_basic.id=b.depart_id"
                             ." where department_basic.status=1 and department_basic.type=" .DepartmentModel::SALES_DEPARTMENT;
                 $this->fields="department_basic.id, department_basic.name, b.c";
                 break;
