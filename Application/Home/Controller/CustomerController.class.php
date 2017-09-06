@@ -682,12 +682,19 @@ class CustomerController extends CommonController {
         $hasRow = M('customers_buy')->where(array(
             'cus_id'=>$cus_id,
             'type'=>1,
-            '_string' => 'callback_state<> -1 or risk_state <> -1 or status<> -1'
+            '_string' => 'status=1'
             ))->find();
+
         if ($hasRow) { //那就是续费
             $data['type'] = 2;
         } else { // 如果没有 检查是不是在时间段之内
             //检查是不是在时间段之内
+            $hasRow = M('customers_buy')->where(array(
+                'cus_id'=>$cus_id,
+                'type'=>0,
+                '_string' => 'status=1'
+                ))->find();
+
             $productRow = M("products")->find($hasRow['product_id']);
             if ($productRow['upgrade']!=0) { //升级时限
                 //

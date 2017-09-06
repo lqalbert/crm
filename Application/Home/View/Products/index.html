@@ -193,12 +193,13 @@
       this.addForm.upgrade = u;
     }
   }).setMethod('editServiceChange', function(v){
-    var u = this.upgrade(this.editForm.service_cycle);
+    var u = this.upgrades(this.editForm.service_cycle);
     if (u!=null) {
       this.editForm.upgrade = u;
     }
-  }).setMethod('upgrade', function(v){
+  }).setMethod('upgrades', function(v){
      var d = v%3;
+     console.log(v);
      if (d!=0) {
       this.$message.error("服务周期要为3的倍数");
       return null;

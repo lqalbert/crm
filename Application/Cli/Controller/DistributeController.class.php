@@ -31,7 +31,8 @@ class DistributeController extends Controller {
         }
 
         $config = json_decode($row['config'], true);
-        $data = $this->customerM->where(array('depart_id'=>0, 'spread_id'=>array('NEQ',0)))->getField("id", true);
+        $data = $this->customerM->where(array('depart_id'=>0, 'spread_id'=>array('NEQ',0), 'olde_mark'=>array('exp','is null')))->getField("id", true);
+        
         $alg = $this->al;
         $alg->setConfig($config);
         $alg->setAllCustomer($data);// array('id', 'id');
@@ -39,7 +40,7 @@ class DistributeController extends Controller {
         if (!$alg->isOk()) {
             return true;
         }
-
+        
 
         //进入分配
         $record_id = M('distribute_record')->add(array(

@@ -118,7 +118,7 @@ class SpreadDepartmentCustomerController extends CommonController{
         $this->setQeuryCondition();
 
         
-        $list = $this->M->page(I('get.p',0). ','. $this->pageSize)->select();
+        $list = $this->M->page(I('get.p',0). ','. $this->pageSize)->order("customers_basic.id desc")->select();
         
         //echo $this->M->getLastSql();
         foreach($list as $k=>$v){
