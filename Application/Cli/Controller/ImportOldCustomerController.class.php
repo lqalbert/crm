@@ -206,4 +206,19 @@ class ImportOldCustomerController  extends Controller{
         }
     }
 
+
+    public function conflict(){
+        $this->sourceM = M('', null, 'mysql://run_crm_0326:run2008run@139.224.40.238:3306/run_crm_0326#utf8');
+        $sql = "select id,user_id,salesman_id from customers_basic where is_has<>0";
+        $customers = $this->sourceM->query($sql);
+        foreach ($customers as $user) {
+            
+        }
+        /*$ids = array(2, 19); // 9部是2 8部是19
+        $users = M("user_info")->where(array("department_id"=>array('IN', $ids)))->field("user_id")->select();
+        foreach ($users as $user) {
+            $customers = M("customers_basic")->field("id")->where(array('user_id|salesman_id'=>$user['user_id']))->select();
+        }*/
+
+    }
 }
