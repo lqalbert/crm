@@ -23,6 +23,7 @@ class RoleModel extends Model {
 	const SP_MASTER = 'spreadMaster';
 	const SP_CAPTAIN = 'spreadCaptain';
 	const SP_STAFF = 'spreadStaff';
+	const COUNSELOR = 'counselor';
 
 	protected $tableName = 'rbac_role';
 
@@ -46,6 +47,7 @@ class RoleModel extends Model {
 		'spreadMaster', // 推广部经理
 		'spreadCaptain', //推广部主管
 		'spreadStaff', //推广部员工
+		'counselor'// 投资顾问
 	);
 
 	public function getEnames(){

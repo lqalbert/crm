@@ -46,10 +46,14 @@ function setCommonLogic(opt){
 		this.show = true;
 	})
 
-	//触发 第一页事件
-	opt.setVueHook("mounted", function(){
-		this.$refs.pagination.$emit("current-change", 1);
-	})
+	if (!window.notListPage) {
+		//触发 第一页事件
+		opt.setVueHook("mounted", function(){
+			this.$refs.pagination.$emit("current-change", 1);
+		})
+	}
+
+	
 
 	//pagination
 	// 共用的 方法 处理函数

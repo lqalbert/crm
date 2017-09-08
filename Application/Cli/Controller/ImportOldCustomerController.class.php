@@ -211,8 +211,33 @@ class ImportOldCustomerController  extends Controller{
         $this->sourceM = M('', null, 'mysql://run_crm_0326:run2008run@139.224.40.238:3306/run_crm_0326#utf8');
         $sql = "select id,user_id,salesman_id from customers_basic where is_has<>0";
         $customers = $this->sourceM->query($sql);
-        foreach ($customers as $user) {
-            
+        foreach ($customers as $cus) {
+            echo $cus['id'],$cus['user_id'],$cus['salesman_id'];
+            $contacts = $this->sourceM->query(M("customers_contacts")->where(array("cus_id"=>$cus['id'],'is_main'=>1))->buildsql());
+            $contact = $contacts[0];
+
+            //当前的用户id
+            $user = M("user_info")->where(array("old_id"=>$cus['salesman_id']))->find();
+
+            if ($user  ) { //存在 
+                //当前的contact
+                $curContact = $this->getContact($contact);
+                if (!curContact) {
+                    continue;
+                }
+                $curCusUser = M("customers_basic")->field('id,user_id,salesman_id')->where(array("id"=>$cusContact['cus_id']))->find();
+                //当前的员工id
+                $curUser = M("user_info")->field("department_id")->where(array("user_id"=>$curCusUser['salesman_id']))->find();
+                if (!$curUser) {
+                    continue;
+                }
+
+                if ($curUser['department_id'] == 2 ) {
+                    M("customers_basic")->data(array('salesman_id'=>$user['user_id']))->where(array("id"=>$cusContact['cus_id']))->save();
+                } else if($curUser['department_id'] == 19){
+                    M("customers_basic")->data(array('user_id'=>$user['user_id'], 'spread_id'=>0))->where(array("id"=>$cusContact['cus_id']))->save();
+                }
+            }
         }
         /*$ids = array(2, 19); // 9部是2 8部是19
         $users = M("user_info")->where(array("department_id"=>array('IN', $ids)))->field("user_id")->select();
@@ -220,5 +245,20 @@ class ImportOldCustomerController  extends Controller{
             $customers = M("customers_basic")->field("id")->where(array('user_id|salesman_id'=>$user['user_id']))->select();
         }*/
 
+    }
+
+    private function getContact($contact){
+        if (!empty($contact['qq'])) {
+            return M("customers_contacts")->where(array("qq"=>$contact['qq']))->find();
+        }
+
+        if (!empty($contact['phone'])) {
+            return M("customers_contacts")->where(array("qq"=>$contact['phone']))->find();
+        }
+
+        if (!empty($weixin)) {
+            return M("customers_contacts")->where(array("qq"=>$contact['weixin']))->find();
+        }
+        return null;
     }
 }
