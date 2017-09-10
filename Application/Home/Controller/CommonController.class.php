@@ -30,7 +30,7 @@ class CommonController extends Controller {
 		    }
 	    }
     
-		Rbac::AccessDecision() || $this->error(L('NO_AUTHORIZED'));
+		// Rbac::AccessDecision() || $this->error(L('NO_AUTHORIZED'));
 
 		$this->parseJsonParams();
 
@@ -221,6 +221,10 @@ class CommonController extends Controller {
 	protected function getUserGroupId(){
 		return session('account')['userInfo']['group_id'];
 	}
+
+	public function getCUsers(){
+        $this->ajaxReturn(D("User")->getGroupEmployee(I('get.id'),"id,realname as name"));
+    }
 
 
 }

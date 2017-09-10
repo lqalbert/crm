@@ -1,0 +1,143 @@
+<extend name="Common:base" />
+<block name="head">
+  <style>
+    /* .el-table__body tr.current-row>td{
+      background: rgba(157, 195, 232, 0.7);
+    } */
+    .container > .wrapp > .el-row {
+      margin-bottom: 6px;
+    }
+  </style>
+</block>
+<block name="body">
+    <div id="app" class="container">
+        <div class="wrapp" v-show="show" style="display: none">
+            <!-- seach form -->
+            <el-row>
+                <el-col>
+                    <el-form :inline="true"  ref="searchForm" :model="searchForm">
+                      <el-form-item style="display: none;" prop="id">
+                        <el-input  v-model="searchForm.id">
+                       </el-input>
+                      </el-form-item>
+                      
+                      <el-form-item prop="name" >
+                        <el-input size="small" placeholder="请输入单位名"  v-model="searchForm.name">
+                        </el-input>
+                      </el-form-item>
+
+                      <el-form-item>
+                        <el-button size="small" type="primary" icon="search" @click="loadDatalist" >查询</el-button> 
+                        <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start">
+                          <el-button size="small" @click="resetBack" style="margin-left:10px;">重置</el-button>
+                        </el-tooltip>
+                        <!-- <el-button  @click="openDialog('advancedSearch')" icon="search">高级查询</el-button>  -->
+                      </el-form-item>
+                        <el-form-item>
+                          <el-tooltip content="点击刷新当前页面" placement="right">
+                            <el-button @click="refresh" size="small" type="danger">刷新</el-button>
+                          </el-tooltip>
+                        </el-form-item>
+                    </el-form>
+                </el-col>
+                <el-col :span="12">
+                </el-col>   
+            </el-row>
+            <!-- / search form -->
+
+            <!-- datatables  -->
+            <el-row>
+                <el-col :span="24">
+                    <el-table 
+                    :data="dataList" 
+                    border    
+                    highlight-current-row
+                    v-loading="dataLoad"
+                    element-loading-text="{:L('DATA_LOGIN')}"
+                   
+                    @cell-click="showRemark"
+                    @row-click="handleSelectionChange" >
+
+                        
+                        <el-table-column label="序号"  align="center" width="65" :formatter="handleIndex"  >
+                        </el-table-column>
+                        <el-table-column   label="单位名"  prop="name" width="180">
+                        </el-table-column>
+                        <el-table-column label="类型" align="center" prop="typeText" >
+                        </el-table-column>
+
+                        <el-table-column label="联系人"  prop="contact">
+                        </el-table-column>
+                        <el-table-column label="联系电话" align="center" prop="tel" width="140">
+                        </el-table-column>
+                        <el-table-column label="是否启用" :context="_self" align="center" prop="status">
+                          <template scope="scope">
+                            <div>
+                                <el-switch
+                                  v-model="scope.row.switch"
+                                  on-color="#13ce66"
+                                  off-color="#ff4949" 
+                                  @change="switchHandle(scope.$index, scope.row)">
+                                </el-switch>
+                            </div>
+                         </template>
+                        </el-table-column>
+                          <el-table-column label="备注(点击查看)" align="center" prop="remark" width="200">
+                            <template scope="scope">
+                              {{scope.row.remark | limitRemark}}
+                            </template>
+                          </el-table-column>
+                          {$viewDecorator['oprate']}
+                        
+                    </el-table>
+                </el-col>
+            </el-row>
+            <!-- / datatables  -->
+            
+
+            <!-- toolbar -->
+            <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
+              <el-col :span="12">
+              <div class="grid-content bg-purple">
+                <span class="wrapper">
+
+                    {$viewDecorator['button']}
+                    
+                </span>
+              </div>
+              </el-col>
+              <el-col :span="12">
+                  <div class="grid-content bg-purple-light pull-right">
+                    <!-- page -->
+                    <include file="Common:_pagination" />
+                    <!-- / page -->
+                  </div>
+              </el-col>
+            </el-row>
+            <!-- / toolbar -->
+
+        </div>
+
+        <div v-show="show" style="display: none">
+            
+
+
+      <!-- /备注内容 -->
+
+        </div>
+
+
+    </div>
+</block>
+<block name="scripts">
+
+<script>
+
+    window.defaultOption.setDatas({
+
+     
+    });
+</script>
+
+    
+</block>

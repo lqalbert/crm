@@ -1,0 +1,120 @@
+<extend name="Common:base" />
+<block name="head">
+<style>
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #20a0ff;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
+</style>
+<link href="__PUBLIC__/um/themes/default/css/umeditor.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="__PUBLIC__/um/third-party/jquery.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/um/third-party/template.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="__PUBLIC__/um/mini.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="__PUBLIC__/um/umeditor.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/um/lang/zh-cn/zh-cn.js"></script>
+</block>
+<block name="body">
+    <div id="app" class="container">
+        <div class="wrapp" v-show="show" style="display: none">
+            
+        <el-row>
+          <el-col :span="12">
+            <el-form ref="addForm" :model="addForm" v-model="addForm" >
+              <el-form-item label="个人形象">
+                <el-upload
+                  class="avatar-uploader"
+                  action="{:U('Upload/index2')}"
+                  :show-file-list="false"
+                  :on-success="handleAvatarScucess"
+                  :before-upload="beforeAvatarUpload">
+                  <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
+              </el-form-item>
+              <el-form-item label="姓名">
+                <el-input v-model="addForm.name"></el-input>
+              </el-form-item>
+              <el-form-item label="简介">
+                <el-col :span="24">
+                  <script type="text/plain" id="myEditor" style="width:1000px;height:240px;">
+                  </script>
+                </el-col>
+                
+
+              <el-form-item label="证书编号?">
+                <el-input v-model="addForm.sac"></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" @click="addSubmit">保存</el-button>
+              </el-form-item>
+            </el-form>
+          </el-col>
+        </el-row>
+        
+        </div>
+    </div>
+<script>
+  window.notListPage = true;
+</script>
+</block>
+<block name="scripts">
+<script>
+    window.defaultOption.setDatas({
+     imageUrl:"",
+     um:null
+    }).setForm("add",{
+      coun_id:"{$coun_id}",
+      brief:"",
+      head:"",
+      name:"",
+      sac:""
+    }).setMethod('handleAvatarScucess',function(res, file){
+
+        // this.imageUrl = URL.createObjectURL(file.raw);
+        this.imageUrl = "__ROOT__" + res.path;
+        this.addForm.head = res.path;
+        // this.addForm.head= this.img
+    }).setMethod('beforeAvatarUpload', function(file){
+
+        const isJPG = file.type === 'image/jpeg';
+        const isLt2M = file.size / 1024 / 1024 < 2;
+
+        if (!isJPG) {
+          this.$message.error('上传头像图片只能是 JPG 格式!');
+        }
+        if (!isLt2M) {
+          this.$message.error('上传头像图片大小不能超过 2MB!');
+        }
+        return isJPG && isLt2M;
+    }).setMethod('addSubmit', function(){
+      this.addForm.brief = this.um.getContent();
+      this.$http.post(page.addFormUrl, this.addForm).then(function(response){
+        this.$message.success("操作成功");
+        window.location.href="{:U('editView')}";
+      }, function(response){
+        this.$message.error("操作失败");
+      })
+    }).setVueHook('mounted', function(){
+      this.um = UM.getEditor('myEditor');
+    });
+</script>
+</block>

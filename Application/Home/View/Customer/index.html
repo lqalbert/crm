@@ -123,15 +123,18 @@
           </el-tooltip>
 
           <el-tooltip content="他人把客户转给本人的客户(分成)" placement="bottom-start">
-
             <el-badge :value="{$aggregation.transfin}" :max="9" style="margin-left:15px;">
               <el-button type="info" size="small" v-bind:class="{'on':flag==5}" @click="setField('transfin',5)">转入</el-button>
             </el-badge>
           </el-tooltip>
 
+          <el-tooltip content="推广部" placement="bottom-start">
+            <el-button type="info" size="small"   @click="setField('recommend',5)">推广客户</el-button>
+          </el-tooltip>
+
           <el-tooltip content="本人跟踪且成交了的客户" placement="bottom-start">
             <el-badge :value="{$aggregation.type}" :max="9" style="margin-left:15px;">
-              <el-button type="primary" size="small" v-bind:class="{'on':flag==6}" @click="setField('type',6)">服务</el-button>
+              <el-button type="primary" size="small" v-bind:class="{'on':flag==9}" @click="setField('spread',9)">服务</el-button>
             </el-badge>
           </el-tooltip>
 
@@ -1053,6 +1056,20 @@
       this.flag=id;
       this[FormName.getFormName('search')].field = v;
       this[FormName.getFormName('search')].group = "{:session('uid')}";
+
+      /*if (sortObject.column === null) {
+      delete this.searchForm.sort_field;
+      delete this.searchForm.sort_order;
+    } else {
+      this.searchForm.sort_field = sortObject.prop;
+      this.searchForm.sort_order = sortMap[sortObject.order];
+    }*/
+
+      if (v == 'recommend') {
+        this.sortChange({column:"xx", prop:"recommend", order:"descending"});
+        return;
+      }
+
       this.dataLoad = true;
       this.loadDatalist();
   }).setMethod('beforeImportc', function(){

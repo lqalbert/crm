@@ -77,6 +77,8 @@
           </el-select>
         </el-form-item>
         <?php endif; ?>
+
+
         
 
         <el-form-item prop="field" v-show="false">
@@ -85,6 +87,7 @@
 
         <el-form-item>
           <el-button type="info" size="small" icon="search" @click="loadDatalist">查询</el-button> 
+          <el-button type="info" size="small" @click="openDialog('advancedQuery')"   >高级查询</el-button> 
           
           
           <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
@@ -131,7 +134,7 @@
 
         <el-table-column   label="跟踪员工" sortable='customer' width="150" >
          <template scope="scope">
-            {{ getName(scope.row.depart_name, scope.row.realname) }}
+            {{ getName(scope.row.depart_name, scope.row.realname) }}   {{ scope.row.ui_qq ? ("qq" + scope.row.ui_qq) : '' }}
           </template>
         </el-table-column>
         <el-table-column   prop="qq" label="QQ号"  width="170" header-align="center">
@@ -246,9 +249,9 @@
   <!-- 录入客户 -->
   <include file="Customer::_add" />
   <!-- / 录入客户 -->
-  <!-- 跟踪内容 -->
-  <include file="Customer::_traceContent" />
-  <!-- /跟踪内容 -->
+  
+  <!-- 录入高级查询条件 -->
+  <include file="_advancedQuery" />
 
   <!-- 客户预查 -->
   <include file="_preCheck" />
@@ -538,21 +541,11 @@
   }).setForm('advancedQuery',{
     start:'',
     end:'',
-    type:'',
-    group:'',
+
     ctrl:'advance',
     name:"",
     phone:"",
-    track_start:"",
-    track_end:"",
-  },true).setForm('traceContent',{
-    content:'',
-  },true).setForm('complainContent',{
-    content:'',
-  },true).setForm('exactsCon',{
-    reply:'',
-  },true).setForm('preCheck',{
-    reply:'',
+    dis: false
   },true).setForm('edit',{
     id:"",
     name:"",
@@ -583,100 +576,6 @@
     intention:'',
     source:'',
     remark:"",
-  },true).setForm('addTrack',{
-    cus_id:"",
-    next_datetime:'',
-    track_type:'',
-    to_type:"",
-    content:'',
-    name:"",
-    step:"",
-    track_type:'',
-  },true).setForm('addPlan',{
-     cus_id:'',
-     name:'',
-     plan:'',
-  },true).setForm('addTransfer',{
-     cus_id:'',
-     name:'',
-     rec_dep:'',
-     rec_user:'',
-     proportion:'',
-  },true).setForm('addRemind',{
-     cus_id:'',
-     name:'',
-     remind:'',
-     remark:'',
-  },true).setForm('addChoice',{
-     cus_id:'',
-     name:'',
-     remark:'',
-     choose:1,
-     type:'',
-  },true).setForm('showDetail',{
-    id:"",
-    name:"",
-    type:"",
-    phone:"",
-    phone2:"",
-    qq:"",
-    qq2:"",
-    qq_nickname:"",
-    qq_nickname2:"",
-    sex:0,
-    weixin:"",
-    weixin_nickname:"",
-    area_province:null,
-    area_city:null,
-    quality:'',
-    year:'',
-    re_income:'',
-    style:'',
-    money:'',
-    energy:'',
-    problem:'',
-    mode:'',
-    attitude:'',
-    profession:'',
-    intention:'',
-    source:'',
-    remark:"",
-  },true).setForm('importc',{
-    c:0,
-    t:0
-  },true).setForm('realInfo',{
-    identity:'',
-    pdt_id:'',
-    expense:'',
-    cycle:'',
-    address:'',
-    cus_id:'',
-    fm:'',
-  },true).setForm('complain',{
-    cus_id:'',
-    type:'',
-    name:'',
-    content:'',
-  }, true).setForm('buy',{
-    id:null,
-    id_card:"",
-    address:"",
-    product_id:null,
-    product_index:null,
-    product_name:"",
-    product_money:"",
-    product_t:"",
-    name:"",
-    buy_time:"",
-  },true).setForm('renewal',{
-    product_id:null,
-    product_index:null,
-    product_name:"",
-    product_money:"",
-    product_t:"",
-    cus_id:"",
-    buy_time:"",
-    address:""
   },true).setMethod('getType', function(type, field){
       return this[field][type];
   }).setMethod('searchCustomer', function(){

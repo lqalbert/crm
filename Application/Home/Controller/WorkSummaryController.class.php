@@ -1,13 +1,28 @@
 <?php
 namespace Home\Controller;
 
+use Home\Model\RoleModel;
+
 class WorkSummaryController extends CommonController{
   protected $table="work_summary";
   protected $pageSize = 11;
   
   public function index(){
   	$this->assign('SummaryType',$this->M->getType());
+    $this->assign("showReply", $this->getShowReply());
   	$this->display();
+  }
+
+
+  private function getShowReply(){
+    $roleName = $this->getRoleEname();
+    $showArr = array(
+      0=>RoleModel::GOLD,
+      1=>RoleModel::DEPARTMENTMASTER,
+      2=>RoleModel::HR_MASTER,
+      3=>RoleModel::SP_MASTER,
+    );
+    return in_array($roleName , $showArr) ? true : false;
   }
 
   //表格数据获取
@@ -76,6 +91,12 @@ class WorkSummaryController extends CommonController{
   private function hrMasterCondition(){
     $this->departmentMasterCondition();
   }
+
+  private function spreadMasterCondition(){
+    $this->departmentMasterCondition();
+  }
+
+
 
 
 

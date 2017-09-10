@@ -227,7 +227,7 @@
     this.leadInForm.reg_id = v.id;
     this.openDialog("leadIn");
   }).setMethod("submitLeadIn", function(){
-    this.$refs['leadInForm'].validate((valid) => {
+    this.$refs['leadInForm'].validate(function (valid) {
           if (valid) {
             this.leadInPost(page.leadInUrl, this.leadInForm);
           } else {

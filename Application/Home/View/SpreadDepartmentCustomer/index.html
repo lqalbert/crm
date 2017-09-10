@@ -36,6 +36,7 @@
          <el-form-item>
            <el-button type="info"  size="small" icon="search" @click="searchFunction">查询</el-button> 
            <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start">
+             <el-button type="info" size="small" @click="openDialog('advancedQuery')"   >高级查询</el-button>
              <el-button size="small" @click="searchReset">重置</el-button>
            </el-tooltip>
            <!-- <el-button size="small" @click="toggleShow">{{ buttonText }}</el-button> -->
@@ -96,17 +97,33 @@
       </el-table>
     </el-col>
   </el-row>
-  <el-row>
+    <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
+
+    <el-col :span="12"> 
+      <el-row style="margin-bottom:6px">
+        <el-col :span="24">
+          <el-tooltip content="录入新的客户" placement="bottom-start" style="margin-left:0px;">
+              <el-button  @click="openDialog('add')" size="small" type="primary">添加客户</el-button>
+          </el-tooltip>
+          <el-tooltip content="编辑客户资料" placement="bottom-start" style="margin-left:10px;">
+              <el-button  @click="beforeOpenEdit" size="small" type="primary">修改客户</el-button>
+          </el-tooltip>
+        </el-col>
+      </el-row>
+      
+    </el-col>
     <el-col :span="12">
-    <div class="grid-content bg-purple-light pull-right">
+      <div class="grid-content bg-purple-light pull-right">
 
         <!-- page -->
         <include file="Common:_pagination" />
         <!-- / page -->
         
       </div>
-      </el-col?
+    </el-col>
+
   </el-row>
+
  
   </div>
 </div>
@@ -116,6 +133,9 @@
  
   <!-- 编辑 -->
   <include file="DepartmentCustomer::_edit" />
+
+  <!-- 录入高级查询条件 -->
+  <include file="DistributeCustomer::_advancedQuery" />
  
  
   <!-- / 录入跟踪 -->
@@ -295,7 +315,15 @@ Vue.filter("handleString", function(v) {
     intention:'',
     source:'',
     remark:"",
-  }).setMethod('getType', function(type, field){
+  }).setForm('advancedQuery',{
+    start:'',
+    end:'',
+
+    ctrl:'advance',
+    name:"",
+    phone:"",
+    dis: false
+  },true).setMethod('getType', function(type, field){
       return this[field][type];
   }).setMethod('beforeList', function(data){
         data.forEach(function(currentValue){
@@ -570,6 +598,33 @@ Vue.filter("handleString", function(v) {
     });
   }).setMethod('getName', function(dname, rname){
     return dname==null ? '' : ( dname +'-'+ (rname==null? '' : rname));
-  })
+  }).setMethod('beforeOpenEdit', function(){
+      var form='edit';
+
+      if (this.multipleSelection.length ==0 ) {
+          this.closeDialog(form);
+          this.$message.error('请先选择一个员工');
+      } else if(this.multipleSelection.length > 1){
+          this.closeDialog(form);
+          this.$message.error('只能选择一个员工');
+      }else {
+          var row = this.multipleSelection[0];
+          this.handleEdit(this.dataList.indexOf(row) , row);
+      }
+  }).setMethod('advancedQueryReset',function(){
+     this.$refs.advancedQueryForm.resetFields();
+  }).setMethod('advanceSearch',function(){
+
+       for (var x  in  this.advancedQueryForm) {
+         if (this.advancedQueryForm[x] instanceof  Date) {
+          this.advancedQueryForm[x] = this.advancedQueryForm[x].toLocaleDateString();
+         }
+       }
+      // this.searchForm = Oassign({}, this.searchForm, this.advancedQueryForm);
+      this.searchForm = Oassign({},  this.advancedQueryForm);
+      this.loadDatalist();
+      this.closeDialog('advancedQuery');
+
+  });
 </script>
 </block>

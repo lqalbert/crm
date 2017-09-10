@@ -1,0 +1,122 @@
+<extend name="Common:base"/>
+<block name="head">
+
+</block>
+<block name="body">
+  <div id="app" class="container">
+    <div class="wrapp" v-show="show" style="display:none;">
+
+      <el-row>
+        <el-col :span="24">
+          <el-form :inline="true" ref="searchForm" :model="searchForm">
+
+
+             <el-form-item >
+                <el-date-picker
+                  v-model="searchForm.start"
+                  type="date"
+                  placeholder="起始日期"
+                  size="small"
+                  @change="setStart"
+                  :clearable="false"
+                  >
+                </el-date-picker>
+             </el-form-item>
+
+             <el-form-item >
+                <el-date-picker
+                  v-model="searchForm.end"
+                  type="date"
+                  placeholder="截止日期"
+                  size="small"
+                  @change="setEnd"
+                  :clearable="false"
+                  >
+                </el-date-picker>
+             </el-form-item>
+
+            <!-- 推广部门 -->
+              <el-form-item>
+                <el-select 
+                size="small" 
+                v-model="searchForm.spread_gid" 
+                clearable 
+                placeholder="推广小组"
+                @change="spreadGChange">
+                  <el-option v-for="group in spreadGroups" :label="group.name" :value="group.id"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item>
+                <el-select size="small" v-model="searchForm.spread_uid" clearable placeholder="推广员工">
+                  <el-option v-for="user in spreadUsers" :label="user.name" :value="user.id"></el-option>
+                </el-select>
+              </el-form-item>
+              <!-- / 推广部门 -->
+            
+            <!-- 销售部门 -->
+            <el-form-item>
+              <el-radio class="radio" v-model="searchForm.dis" label="0">未分配</el-radio>
+              <el-radio class="radio" v-model="searchForm.dis" label="1">分配到部门</el-radio>
+              <el-radio class="radio" v-model="searchForm.dis" label="2">分配到小组</el-radio>
+              <el-radio class="radio" v-model="searchForm.dis" label="3">分配到员工</el-radio>
+            </el-form-item>
+            <!-- / 销售部门 -->
+
+
+
+            <el-form-item>
+              <el-button type="info" size="small" icon="search" @click="dataReload">查询</el-button>
+            </el-form-item>
+            <el-form-item>
+              <el-tooltip content="点击刷新当前页面" placement="right">
+                <el-button @click="refresh" size="small" type="danger">刷新</el-button>
+              </el-tooltip>
+            </el-form-item>
+          </el-form>
+        </el-col>
+      </el-row>
+      
+      <include file="_tableData" />
+
+    </div>
+  </div>
+</block>
+<block name="scripts">
+<script src="__PUBLIC__/js/calculate.js"></script>
+  <script>
+    // window.defaultOption.hooks.delAll('mounted');
+    page.getUsersUrl  = "{:U('getCUsers')}";
+    window.defaultOption.setDatas({
+      spreadGroups:{:json_encode($groups)},
+      spreadUsers:[],
+    }).setForm('search',{
+      spread_gid:"",
+      spread_uid:"",
+      dis:"0",
+      start:"",
+      end:"",
+    }).setMethod('resetBack', function(){
+      window.location.reload();
+    }).setMethod("spreadGChange", function(v){
+      this.searchForm.spread_uid = "";
+      this.spreadUsers = [];
+      this.selectChange(v,page.getUsersUrl, 'spreadUsers');
+    }).setMethod("selectChange", function(v,url,hold){
+      if (v=="") {
+        return;
+      }
+      this.$http.get(url,{params:{id:v}}).then(function(response){
+        this[hold] = response.body;
+      }, function(response){
+        this.$message.error("出错了");
+      });
+    }).setMethod('setStart', function(v){
+      this.searchForm.start = v;
+    }).setMethod('setEnd', function(v){
+      this.searchForm.end = v;
+    }).setVueHook('beforeMount', function(){
+    this.searchForm.start = showWeekFirstDay();
+    this.searchForm.end   = showWeekLastDay();
+  });
+  </script>
+</block>

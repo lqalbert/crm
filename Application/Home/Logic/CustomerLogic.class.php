@@ -176,6 +176,9 @@ class CustomerLogic extends Model{
                 }
                 
                 break;
+            case 'recommend':
+                $D->where(array('spread_id'=>array("neq",0), 'customers_basic.user_id'=>array("NEQ", session('uid')), 'salesman_id'=>session('uid')));
+                break;
             case 'type':
                 $D->where(array('type'=>CustomerModel::TYPE_V));
                 break;

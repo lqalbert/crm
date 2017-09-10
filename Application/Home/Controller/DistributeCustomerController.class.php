@@ -8,6 +8,14 @@ class DistributeCustomerController extends CommonController{
 
     public function index(){
 
+
+        $role = $this->getRoleEname();
+        if ($role== RoleModel::SP_MASTER) {
+            redirect(U("spreadDepartmentCustomer/index"));
+        }
+        // $controllerName = SpreadDetailFor. ucfirst($role);
+        
+
         $customerM = D("Customer");
 
         $this->assign('customerType', $customerM->getType(null));
@@ -97,10 +105,26 @@ class DistributeCustomerController extends CommonController{
             }
         }
 
+        if (I("get.phone")) {
+            $this->M->where(array('cc.phone'=>array('like', I("get.phone")."%")));
+        }
+
         if (I("get.group")) {
             $this->M->where(array("customers_basic.user_id"=> I("get.group") ));
         } else {
             $this->M->where(array("customers_basic.user_id"=> session("uid") ));
+        }
+
+        if (I("get.start") && I("get.end")) {
+            $start = str_replace("/", "-", I("get.start"));
+            $end   = str_replace("/", "-", I("get.end"))." 23:59:59";
+
+            $this->M->where(array("customers_basic.created_at"=>array(array('EGT', $start), array('ELT', $end))));
+        }
+
+
+        if (I("get.dis")) {
+            $this->M->where(array("customers_basic.depart_id"=>array('NEQ', 0)));
         }
 
         
@@ -115,7 +139,7 @@ class DistributeCustomerController extends CommonController{
                 ->join("left join department_basic as db2 on customers_basic.depart_id=db2.id")
                 ->field('customers_basic.*,cc.qq,cc.phone,cc.weixin,cc.qq_nickname,cc.weixin_nickname, cc.is_main as cc_main,
             cc2.qq as qq2,cc2.phone as phone2,cc2.weixin as weixin2,cc2.qq_nickname as qq_nickname2,
-            cc2.weixin_nickname as weixin_nickname2, ui.realname,usi.realname as lock_name,db2.name as depart_name');
+            cc2.weixin_nickname as weixin_nickname2, ui.realname,usi.realname as lock_name,db2.name as depart_name, ui.qq as ui_qq');
 
     }
 

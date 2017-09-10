@@ -16,9 +16,9 @@ return array(
 	'USER_AUTH_TYPE' => 1,       // 认证类型
 	'USER_AUTH_KEY' => 'uid',    // 认证识别号
 	//REQUIRE_AUTH_MODULE  需要认证模块
-	'NOT_AUTH_MODULE' => 'Index,nav,Area,PreCheck,Upload,UserDetail,Department,SysNotice,MsgBox,CommonFindDetail,CustomersCountSecond',// 无需认证模块
+	'NOT_AUTH_MODULE' => 'Index,nav,Area,PreCheck,Upload,UserDetail,Department,SysNotice,MsgBox,CommonFindDetail,CustomersCountSecond,Common,DistributeCustomerB,SpreadCustomerSortSpreadCaptain,SpreadCustomerSortSpreadMaster,SpreadDepartmentCustomerB',// 无需认证模块
 
-	'NOT_AUTH_ACTION' =>  'main,index,getList,checkCucstomers,importMyc,getUsers,getdepartgroups,getRecUser,findRealInfo,realInfo,trasnfCustomers,checContact,trackInfo', //无需认证操作
+	'NOT_AUTH_ACTION' =>  'main,index,getList,checkCucstomers,importMyc,getUsers,getdepartgroups,getRecUser,findRealInfo,realInfo,trasnfCustomers,checContact,trackInfo,getCUsers', //无需认证操作
 	//USER_AUTH_GATEWAY 认证网关
 	//RBAC_DB_DSN  数据库连接DSN
 	'RBAC_ROLE_TABLE' => 'rbac_role',      //角色表名称  

@@ -1,0 +1,533 @@
+<extend name="Common:base" />
+<block name="head">
+  
+</block>
+<block name="body">
+  
+
+<div id="app" class="container">
+
+<div class="wrapp" id="appx" v-show="show" style="display: none;">
+  <!-- <div class="a" style="border:1px solid red;"> -->
+  <div class="a" id="app3">
+    <el-row>
+    <el-col :span="24">
+        <el-form :inline="true" ref="searchForm" :model="searchForm">
+          <el-form-item prop="name" style="width:170px">
+            <el-input v-model="searchForm.name" size="small" placeholder="客户姓名"></el-input>
+          </el-form-item>
+
+        <el-form-item prop="contact" style="width:170px">
+          <el-input v-model="searchForm.contact" size="small" placeholder="手机|qq|微信号"></el-input>
+        </el-form-item>
+
+        <?php if($isCaptain): ?>
+        <el-form-item prop="uid" style="width:100px">
+          <el-select v-model="searchForm.uid" size="small" placeholder="请选择">
+            <el-option v-for="item in searchGroup" :label="item.name" :value="item.user_id" :disabled="item.disabled"></el-option>
+          </el-select>
+        </el-form-item>
+        <?php endif; ?>
+
+        <el-form-item>
+          <el-button type="info" size="small" icon="search" @click="loadDatalist">查询</el-button> 
+          <el-button type="info" size="small" @click="openDialog('advancedQuery')"   >高级查询</el-button> 
+          
+          
+          <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
+            <el-button  size="small" @click="searchReset2">重置</el-button>
+          </el-tooltip>
+
+
+          <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:10px;">
+            <el-button @click="refresh" size="small" type="danger" >刷新</el-button>
+          </el-tooltip>
+
+          </el-form-item>
+        </el-form>
+      </el-col>
+  </el-row>
+  <!-- max-height="500" -->
+
+  <el-row>
+    <el-col :span="24">
+        <el-table 
+      :data="dataList" 
+      border  
+      id="he"
+      v-loading="dataLoad" 
+      element-loading-text="{:L('DATA_LOGIN')}"
+      highlight-current-row
+      empty-text="暂无数据,请录入客户！"
+      ref="select" 
+      @current-change="handleSelectionChange"
+      @row-dblclick="dbClick"  
+      >
+        <el-table-column label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  ></el-table-column>
+        <el-table-column  prop="name"  label="客户姓名" width="150" ></el-table-column>
+        <el-table-column   prop="type" label="客户类型" sortable='customer' width="150" header-align="center">
+          <template scope="scope">
+            {{ getType(scope.row.type, 'customerType') }}
+          </template>
+        </el-table-column>
+        <el-table-column  prop="lock_name" label="锁定员工"  width="150" >
+        </el-table-column>
+
+        <el-table-column   label="跟踪员工"  width="150" >
+         <template scope="scope">
+            {{ getName(scope.row.depart_name, scope.row.realname) }}   {{ scope.row.ui_qq ? ("qq" + scope.row.ui_qq) : '' }}
+          </template>
+        </el-table-column>
+
+        <el-table-column   label="是否推荐"  width="150" >
+         <template scope="scope">
+            {{ scope.row.recommend == 0 ? "否" : "是" }}
+          </template>
+        </el-table-column>
+
+
+        <el-table-column   prop="qq" label="QQ号"  width="170" header-align="center">
+          <template scope="scope">
+            {{ scope.row.qq }}
+            <a v-if="scope.row.qq" :href="getTenct(scope.row.qq)">
+              <img width="25"  src="__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg" alt="">
+            </a>
+          </template>
+        </el-table-column>
+        <el-table-column  prop="qq_nickname" label="QQ昵称"  width="170" header-align="center"></el-table-column>
+          <el-table-column prop="phone" label="手机" align="center" width="130"></el-table-column>
+        <el-table-column  header-align="center" prop="weixin" label="微信号" header-align="center" width="170">
+          <template scope="scope">
+            {{ scope.row.weixin }}
+          </template>
+        </el-table-column>
+
+        <el-table-column  header-align="center" prop="weixin_nickname" label="微信昵称" header-align="center" width="170">
+          <template scope="scope">
+            {{ scope.row.weixin_nickname }}
+          </template>
+        </el-table-column>
+
+        <el-table-column  header-align="center"  label="地区" width="135">
+          <template scope="scope">
+            {{ scope.row.province_name+"-"+scope.row.city_name }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="sex"  label="性别" width="80"  header-align="center">
+          <template scope="scope">
+            {{ getType(scope.row.sex, 'sexType') }}
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-col>
+  </el-row>
+
+  <!-- toolbar -->
+  <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
+
+    <el-col :span="12"> 
+      <el-row style="margin-bottom:6px">
+        <el-col :span="24">
+          <el-tooltip content="录入新的客户" placement="bottom-start" style="margin-left:0px;">
+              <el-button  @click="openDialog('add')" size="small" type="primary">添加客户</el-button>
+          </el-tooltip>
+          <el-tooltip content="编辑客户资料" placement="bottom-start" style="margin-left:10px;">
+              <el-button  @click="beforeOpenEdit" size="small" type="primary">修改客户</el-button>
+          </el-tooltip>
+
+          <el-tooltip content="推荐" placement="bottom-start" style="margin-left:10px;">
+              <el-button   size="small" type="primary" @click="openDialog('recommend')">推荐</el-button>
+          </el-tooltip>
+
+
+        </el-col>
+      </el-row>
+      
+    </el-col>
+    <el-col :span="12">
+      <div class="grid-content bg-purple-light pull-right">
+
+        <!-- page -->
+        <include file="Common:_pagination" />
+        <!-- / page -->
+        
+      </div>
+    </el-col>
+
+  </el-row>
+  </div>
+</div>
+
+<div class="dialogWrapper" v-show="show" style="display: none">
+
+  <!-- 录入客户 -->
+  <include file="Customer::_add" />
+  <!-- / 录入客户 -->
+  
+  <!-- 录入高级查询条件 -->
+  <include file="_advancedQuery" />
+
+  <!-- 编辑 -->
+  <include file="Customer::_edit" />
+
+  <!-- 推荐 -->
+  <include file="_recommend" />
+
+
+</div>
+
+</div>
+</block>
+<block name="scripts">
+<script src="__PUBLIC__/js/contactValidate.js"></script>
+<script src="__PUBLIC__/js/customerEdit.config.js"></script>
+<script>
+  window.page.recommendUrl="{:U('recommend')}";
+  window.defaultOption.setDatas({
+
+    buyHistory:[],
+    flag:false,
+    realInfo:false,
+    gridData:[],
+    ddprops:'name',
+    dialogVisible:false,
+    sb:[],
+   
+    customerType:{:json_encode($customerType)},
+    sexType:{:json_encode($sexType)},
+    Quality:{:json_encode($Quality)},
+    Year:{:json_encode($Year)},
+    Income:{:json_encode($Income)},
+    Sty:{:json_encode($Sty)},
+    Money:{:json_encode($Money)},
+    Energy:{:json_encode($Energy)},
+    Problem:{:json_encode($Problem)},
+    Mode:{:json_encode($Mode)},
+    Attitude:{:json_encode($Attitude)},
+    Profession:{:json_encode($Profession)},
+    Intention:{:json_encode($Intention)},
+    Source:{:json_encode($Source)},
+    Proportion:{:json_encode($Proportion)},
+    Remind:{:json_encode($Remind)},
+    products:{:json_encode($Products)},
+    provinces:[],
+    cities:[],
+    // deps:[],//
+    reUsers:[],//
+    multipleSelection: [],
+    alertDesc:"",
+    logType:{:json_encode($logType)},
+    steps:{:json_encode($steps)},
+    searchGroup:{:json_encode($searchGroup)},
+    memberList:[],
+    curCheckedItem:{},
+    addRules:CustomerRule,
+    editRules:CustomerEditRule,
+    editOld:{},
+    qq_disabled:false,
+    weixin_disabled:false,
+    phone2_disabled:false,
+    qq2_disabled:false,
+    weixin2_disabled:false,
+
+    // renewalHistory:[]
+  }).setForm('search', {
+    name:'',
+    contact:'',
+    field: '',
+    uid:'{$uid}',
+  }).setForm('add',{
+    name:"",
+    type:"C",
+    phone:'',
+    phone2:"",
+    qq:'',
+    qq2:"",
+    qq_nickname:"",
+    qq_nickname2:"",
+    sex:0,
+    weixin:null,
+    weixin_nickname:"",
+    area_province:null,
+    area_city:null,
+    quality:'',
+    year:'',
+    re_income:'',
+    style:'',
+    money:'',
+    energy:'',
+    problem:'',
+    mode:'',
+    attitude:'',
+    profession:'',
+    intention:'',
+    source:'',
+    remark:"",
+  }).setForm('advancedQuery',{
+    start:'',
+    end:'',
+
+    ctrl:'advance',
+    name:"",
+    phone:"",
+    dis: false
+  },true).setForm('edit',{
+    id:"",
+    name:"",
+    type:"",
+    phone:"",
+    phone2:"",
+    qq:"",
+    qq2:"",
+    qq_nickname:"",
+    qq_nickname2:"",
+    sex:0,
+    weixin:"",
+    weixin_nickname:"",
+    weixin2:"",
+    weixin_nickname2:"",
+    area_province:null,
+    area_city:null,
+    quality:'',
+    year:'',
+    re_income:'',
+    style:'',
+    money:'',
+    energy:'',
+    problem:'',
+    mode:'',
+    attitude:'',
+    profession:'',
+    intention:'',
+    source:'',
+    remark:"",
+  },true).setForm("recommend",{
+    cus_id:"",
+    user_id:"{:session('uid')}",
+    content:""
+  },true).setMethod('getType', function(type, field){
+      return this[field][type];
+  }).setMethod('searchCustomer', function(){
+    var vmThis = this;
+    vmThis.$http.get(page.searchUrl, {params:{name:this.searchForm.name}}).then(function(response){
+      vmThis.$set(vmThis, 'dataList', response.body.list);
+      if (vmThis.dataList.length==0) {
+        vmThis.$alert('该客户还未锁定', '消息', {
+          confirmButtonText: '确定',
+        });
+      }
+    }, function(response){
+      vmThis.$message.error('错了哦，这是一条错误消息');
+    })
+  }).setMethod('beforeList', function(data){
+        
+        data.forEach(function(currentValue){
+          //将string类型转换为number和为0的变为空
+          currentValue.quality = currentValue.quality == 0?"":currentValue.quality;      
+          currentValue.year = currentValue.year == 0?"":currentValue.year;      
+          currentValue.re_income = currentValue.re_income == 0?"":currentValue.re_income;      
+          currentValue.style = currentValue.style == 0?"":currentValue.style;      
+          currentValue.money = currentValue.money == 0?"":currentValue.money;      
+          currentValue.energy = currentValue.energy == 0?"":currentValue.energy;      
+          currentValue.problem = currentValue.problem == 0?"":currentValue.problem;      
+          currentValue.mode = currentValue.mode == 0?"":currentValue.mode;      
+          currentValue.attitude = currentValue.attitude == 0?"":currentValue.attitude;      
+          currentValue.profession = currentValue.profession == 0?"":currentValue.profession;      
+          currentValue.intention = currentValue.intention == 0?"":currentValue.intention;      
+          currentValue.source = currentValue.source == 0?"":currentValue.source; 
+
+
+       })
+     return data;
+  }).setMethod('provinceChange', function(v){
+    var vmThis = this;
+    this.$http.get('{:U("Area/getAreasByPid")}', {params:{pid:v} }).then(function(response){
+      var cities = [];
+       response.body.forEach(function(currentValue,index){
+        cities.push({id: currentValue.id, name: currentValue.name});
+       })
+       vmThis.$set(vmThis, 'cities', cities);
+    });
+  }).setMethod('depChange',function(v){
+     //console.log(v);
+     var vmThis=this;
+     this.$http.get('{:U("getRecUser")}', {params:{p_name:v}}).then(function(response){
+       var reUsers = [];
+       response.body.forEach(function(currentValue,index){
+         reUsers.push({value:currentValue.value,name:currentValue.value});
+       })
+       vmThis.$set(vmThis,'reUsers',reUsers);
+     });
+  }).setMethod('beforeOpenEdit', function(){
+      var form='edit';
+
+      if (this.multipleSelection.length ==0 ) {
+          this.closeDialog(form);
+          this.$message.error('请先选择一个客户');
+      } else if(this.multipleSelection.length > 1){
+          this.closeDialog(form);
+          this.$message.error('请先选择一个客户');
+      }else {
+          var row = this.multipleSelection[0];
+          this.handleEdit(this.dataList.indexOf(row) , row);
+      }
+  }).setMethod('beforeEdit',function(){
+    if (!this.$refs['editselect']) {
+      this.provinceChange(this.editForm.area_province);
+    }
+    //配置一禁用的问题
+    //手机号 QQ WEIXIN 修改之后就不能再改了。
+    //手机1肯定是禁
+    // qq和weixin跟据有没有值来确定
+    var disableArr = [
+    'qq',
+    'weixin',
+    'phone2',
+    'qq2',
+    'weixin2'
+    ];
+    for (var i=0, len= disableArr.length; i<len; i++) {
+      // console.log(disableArr[i], !!this.editForm[disableArr[i]]);
+      this.editOld[disableArr[i]] = this.editForm[disableArr[i]];
+      this[disableArr[i] +"_disabled"] = !!this.editForm[disableArr[i]] ?  true : false ;
+    }
+
+
+  }).setMethod('handleSelectionChange', function(val){
+    this.deleteArrAllItem('multipleSelection');
+    this.multipleSelection.push(val) ;
+  }).setMethod('commonSelect',function(x){
+    var form = x;
+    var vmThis = this;
+    if (this.multipleSelection.length ==0 ||  this.multipleSelection.length>1) {
+      this.closeDialog(form);
+      this.$message.error('请先选择一位客户');
+      return false;
+    } else {
+      var  row = this.multipleSelection.pop();
+      this[FormName.getForm(x)].name = row.name;
+      this[FormName.getForm(x)].cus_id = row.id;
+      this.complainForm.type = row.type;
+      this.complainForm.to_id = row.salesman_id;
+      this.realInfoForm.cus_id = row.id;
+      this.row=row;
+      return row;
+    }
+  }).setMethod('beforeAddChoice',function(){
+    
+    var re = this.commonSelect('addChoice');
+    if(re !== false){
+      this.addChoiceForm.type = this.customerType[re.type];
+      this.addChoiceForm.choose = parseInt(re.important);
+    }   
+  }).setMethod('beforeShowDetail',function(){
+    if(this.commonSelect('showDetail') !== false){
+      this.showDetailForm = this.row; 
+    }
+    //this.commonSelect('showDetail');
+  }).setAdvancedSearch().setVueHook('mounted', function(){
+    var vmThis = this;
+    //省份、城市
+    this.$http.get('{:U("Area/getAreasByPid")}', {params:{pid:1} }).then(function(response){
+      var provinces = [];
+      response.body.forEach(function(currentValue,index){
+        //console.log(currentValue);
+        provinces.push({id: currentValue.id, name: currentValue.name});
+      })
+      /*console.log(vmThis.provinces);*/
+      vmThis.$set(vmThis, 'provinces', provinces);
+      /*console.log(vmThis.provinces);*/
+    });
+
+    this.dialogLabelWidth = "100px";
+  }).setMethod('userInfo',function(row,event){
+      var index = this.dataList.indexOf(row);
+      this.realInfoForm.cus_id = row.id;
+      this.$http.get('{:U("findRealInfo")}', {params:{cus_id:row.id} }).then(function(response){
+         this.realInfoForm.identity = response.body.identity;
+         this.realInfoForm.pdt_id = response.body.pdt_id;
+         this.realInfoForm.expense = response.body.expense;
+         this.realInfoForm.cycle = response.body.cycle;
+         this.realInfoForm.address = response.body.address;
+      });
+
+      this.handleEdit(index, row);
+  }).setMethod('setField', function(v,id){
+      this.flag=id;
+      this[FormName.getFormName('search')].field = v;
+      this[FormName.getFormName('search')].group = "{:session('uid')}";
+      this.dataLoad = true;
+      this.loadDatalist();
+  }).setMethod('beforeImportc', function(){
+      var vmThis = this;
+      this.$http.get('{:U("checkCucstomers")}').then(function(response){
+        vmThis.importcForm.c = response.body.c;
+        vmThis.importcForm.t = response.body.t;
+      }, function(response){
+        vmThis.$message.error("出错了");
+      })
+  }).setMethod('refresh',function(){
+    window.location.reload();
+  }).setMethod('advancedQueryReset',function(){
+     this.$refs.advancedQueryForm.resetFields();
+  }).setMethod('advanceSearch',function(){
+       for (var x  in  this.advancedQueryForm) {
+         if (this.advancedQueryForm[x] instanceof  Date) {
+          this.advancedQueryForm[x] = this.advancedQueryForm[x].toLocaleDateString();
+         }
+       }
+      this.searchForm = Oassign({},  this.advancedQueryForm);
+      this.loadDatalist();
+      this.closeDialog('advancedQuery');
+
+  }).setComputed('isTypeV', function(){
+    return this.editForm.type == 'V';
+  }).setMethod("searchReset2", function(){
+
+    this.searchForm = Oassign({}, this._search) ;
+    this.dataLoad = true;
+    this.loadDatalist();
+
+  }).setVueHook('created', function(){
+      this._search = Oassign({}, this.searchForm) ; //this.searchForm;
+  }).setMethod('editSubmit',function(url, form){
+    FormName.type = form;
+    var  formName    =  FormName.getFormName();  //form+"Form"; 
+    if(this[formName].type=='V'){
+       this.realInfoFormDialog=true;
+       this.realInfoForm.fm = 'edit'; 
+    }else{ 
+       this.editFormSubmit(url, form);
+    }   
+  }).setMethod('addSubmit',function(url, form){
+    FormName.type = form;
+    var  formName    =  FormName.getFormName(); 
+    if(this[formName].type=='V'){
+       this.realInfoFormDialog=true;
+       this.realInfoForm.fm = 'add'; 
+    }else{ 
+       this.addFormSubmit(url, form);
+    } 
+  }).setMethod('getName', function(dname, rname){
+    return dname==null ? '' : ( dname +'-'+ (rname==null? '' : rname));
+  }).setMethod('dbClick', function(v){
+    this.handleEdit(this.dataList.indexOf(v) , v);
+  }).setMethod('beforeRecommend', function(){
+      var form='recommend';
+      
+      if (this.multipleSelection.length ==0 ) {
+          this.closeDialog(form);
+          this.$message.error('请先选择一个员工');
+          return;
+      } else if(this.multipleSelection.length > 1){
+          this.closeDialog(form);
+          this.$message.error('只能选择一个员工');
+          return;
+      }
+      var  formName    =  FormName.getFormName(); 
+      this[formName].cus_id = this.multipleSelection[0].id;
+  });
+</script>
+
+
+</block>

@@ -1,0 +1,611 @@
+<extend name="Common:base" />
+<block name="head">
+ 
+</block>
+<block name="body">
+  
+
+<div id="app" class="container">
+
+<div class="wrapp" id="appx" v-show="show" style="display: none;">
+  <div class="a" id="app3">
+  <el-row>
+    <el-col :span="24">
+        <el-form :inline="true"  label-position="left" ref="searchForm" :model="searchForm">
+
+          <el-form-item prop="field" v-show="false">
+            <input type="hidden" v-model="searchForm.field">
+          </el-form-item>
+
+          <el-form-item prop="name" >
+            <el-input v-model="searchForm.name" size="small" placeholder="客户姓名"></el-input>
+          </el-form-item>
+
+          <el-form-item prop="gid" >
+            <el-select v-model="searchForm.gid" size="small" clearable  placeholder="请选择小组" @change="groupChange">
+              <el-option v-for="item in searchGroup" :label="item.name" :value="item.id" :disabled="item.disabled"></el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item prop="uid" >
+            <el-select v-model="searchForm.uid" size="small" clearable  placeholder="请选择队员">
+              <el-option v-for="item in memeberList" :label="item.name" :value="item.id" :disabled="item.disabled"></el-option>
+            </el-select>
+          </el-form-item>
+          
+         <el-form-item>
+           <el-button type="info"  size="small" icon="search" @click="searchFunction">查询</el-button> 
+           <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start">
+             <el-button type="info" size="small" @click="openDialog('advancedQuery')"   >高级查询</el-button>
+             <el-button size="small" @click="searchReset">重置</el-button>
+           </el-tooltip>
+           <!-- <el-button size="small" @click="toggleShow">{{ buttonText }}</el-button> -->
+         </el-form-item>
+
+        </el-form>
+    </el-col>
+  </el-row>
+
+  <el-row>
+    <el-col :span="24">
+    <!-- @row-click="trackLog" -->
+      <el-table 
+      :data="dataList" 
+      border  
+      v-loading="dataLoad" 
+      element-loading-text="{:L('DATA_LOGIN')}"
+      highlight-current-row
+      ref="select" 
+      @current-change="handleSelectionChange"
+      @row-dblclick="userInfo" 
+      @row-click="trackLog"  
+      >
+        <el-table-column   label="{:L('INDEX')}"   :formatter="handleIndex" width="65"  ></el-table-column>
+
+        <el-table-column prop="name" header-align="center" label="客户姓名" width="140" ></el-table-column>
+
+        <el-table-column prop="type" header-align="center"  label="客户类型" width="180" >
+          <template scope="scope">
+            {{ getType(scope.row.type, 'customerType') }}
+          </template>
+        </el-table-column>
+        <el-table-column  prop="lock_name"   label="锁定员工"  width="200"></el-table-column>
+        <el-table-column   label="跟踪员工"  width="200">
+          <template scope="scope">
+            {{ getName(scope.row.depart_name, scope.row.realname) }}
+          </template>
+        </el-table-column>
+        <el-table-column   label="是否推荐"  width="150" >
+         <template scope="scope">
+            {{ scope.row.recommend == 0 ? "否" : "是" }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="qq" label="QQ号" header-align="center" width="160"></el-table-column>
+        <el-table-column prop="qq_nickname"   label="QQ昵称"  width="140"></el-table-column>
+
+        <el-table-column prop="phone" label="手机" align="center" width="140"></el-table-column>
+        <el-table-column prop="share_benefit" label="分成比例" align="center"></el-table-column>
+           
+        <el-table-column prop="sex" header-align="center" label="性别" width="80" >
+          <template scope="scope">
+            {{ getType(scope.row.sex, 'sexType') }}
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-col>
+  </el-row>
+    <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
+
+    <el-col :span="12"> 
+      <el-row style="margin-bottom:6px">
+        <el-col :span="24">
+          <el-tooltip content="录入新的客户" placement="bottom-start" style="margin-left:0px;">
+              <el-button  @click="openDialog('add')" size="small" type="primary">添加客户</el-button>
+          </el-tooltip>
+          <el-tooltip content="编辑客户资料" placement="bottom-start" style="margin-left:10px;">
+              <el-button  @click="beforeOpenEdit" size="small" type="primary">修改客户</el-button>
+          </el-tooltip>
+
+          <el-tooltip content="推荐" placement="bottom-start" style="margin-left:10px;">
+              <el-button   size="small" type="primary" @click="openDialog('recommend')">推荐</el-button>
+          </el-tooltip>
+        </el-col>
+      </el-row>
+      
+    </el-col>
+    <el-col :span="12">
+      <div class="grid-content bg-purple-light pull-right">
+
+        <!-- page -->
+        <include file="Common:_pagination" />
+        <!-- / page -->
+        
+      </div>
+    </el-col>
+
+  </el-row>
+
+    <el-row >
+     <el-col :span="24">
+        <el-tabs  >
+          <el-tab-pane label="跟踪记录">
+            <el-table 
+            :data="tableData"  
+            empty-text="请点击客户显示跟踪信息" 
+            border 
+            style="width: 100%"  
+            @row-dblclick="viewtraceContents">
+              <el-table-column prop="user" label="操作员工" header-align="center">
+              </el-table-column>
+
+              <el-table-column prop="type" label="客户类型(当前)" header-align="center">
+              </el-table-column>
+
+              <el-table-column prop="name" label="客户姓名" header-align="center">
+              </el-table-column>
+              
+              <el-table-column label="内容" header-align="center">
+                <template scope="scope">
+                  {{scope.row.content | handleString}}
+                </template>
+              </el-table-column>
+
+              <el-table-column prop="created_at" label="跟踪时间" width="180" align="center">
+              </el-table-column>
+
+              <el-table-column prop="track_text" label="跟踪类型" header-align="center">
+              </el-table-column>
+
+            </el-table>
+          </el-tab-pane>
+
+          
+     </el-col>
+    </el-row>
+
+ 
+  </div>
+</div>
+
+<div class="dialogWrapper" v-show="show" style="display: none">
+
+ <!-- 录入客户 -->
+  <include file="Customer::_add" />
+  <!-- / 录入客户 -->
+
+  <!-- 编辑 -->
+  <include file="DepartmentCustomer::_edit" />
+
+  <!-- 录入高级查询条件 -->
+  <include file="DistributeCustomerB::_advancedQuery" />
+ 
+  <!-- 推荐 -->
+  <include file="DistributeCustomerB::_recommend" />
+
+</div>
+
+</div>
+
+</block>
+<block name="scripts">
+<script src="__PUBLIC__/js/contactValidate.js"></script>
+<script src="__PUBLIC__/js/customerEdit.config.js"></script>
+<script>
+  page.recommendUrl="{:U('recommend')}";
+  page.getGroupMemberListUrl = "{:U('getCUsers')}";
+  page.getTrackLogUrl = "{:U('CommonFindDetail/trackInfo')}";
+  
+  window.defaultOption.setDatas({
+    flag:false,
+    advanchShow:false,
+    buttonText:"展开",
+    ddprops:'name',
+    dialogVisible:false,
+    sb:[],
+    customerType:{:json_encode($customerType)},
+    sexType:{:json_encode($sexType)},
+    Quality:{:json_encode($Quality)},
+    Year:{:json_encode($Year)},
+    Income:{:json_encode($Income)},
+    Sty:{:json_encode($Sty)},
+    Money:{:json_encode($Money)},
+    Energy:{:json_encode($Energy)},
+    Problem:{:json_encode($Problem)},
+    Mode:{:json_encode($Mode)},
+    Attitude:{:json_encode($Attitude)},
+    Profession:{:json_encode($Profession)},
+    Intention:{:json_encode($Intention)},
+    Source:{:json_encode($Source)},
+    Proportion:{:json_encode($Proportion)},
+    Remind:{:json_encode($Remind)},
+    GoodsType:{:json_encode($GoodsType)},
+    provinces:[],
+    cities:[],
+    deps:[],//
+    reUsers:[],//
+    multipleSelection: [],
+    alertDesc:"",
+    searchGroup:{:json_encode($searchGroup)},
+    memeberList:[],
+    reGroup:[],
+    addRules:CustomerRule,
+    editRules:CustomerEditRule,
+
+    qq_disabled:false,
+    weixin_disabled:false,
+    phone2_disabled:false,
+    qq2_disabled:false,
+    weixin2_disabled:false,
+    cusNameList:[],
+    tableData:[]
+  }).setForm("recommend",{
+    cus_id:"",
+    user_id:"{:session('uid')}",
+    content:""
+  },true).setForm('search', {
+    field: '',
+    start:'',
+    end:'',
+    gid:"{$gid}",
+    name:"",
+    phone:"",
+    qq:"",
+    uid:"{$uid}"
+  }).setForm('add',{
+    name:"",
+    type:"C",
+    phone:'',
+    phone2:"",
+    qq:'',
+    qq2:"",
+    qq_nickname:"",
+    qq_nickname2:"",
+    sex:0,
+    weixin:null,
+    weixin_nickname:"",
+    area_province:null,
+    area_city:null,
+    quality:'',
+    year:'',
+    re_income:'',
+    style:'',
+    money:'',
+    energy:'',
+    problem:'',
+    mode:'',
+    attitude:'',
+    profession:'',
+    intention:'',
+    source:'',
+    remark:"",
+  }).setForm('edit',{
+    id:"",
+    name:"",
+    type:"",
+    phone:"",
+    phone2:"",
+    qq:"",
+    qq2:"",
+    qq_nickname:"",
+    qq_nickname2:"",
+    sex:0,
+    weixin:"",
+    weixin_nickname:"",
+    area_province:null,
+    area_city:null,
+    quality:'',
+    year:'',
+    re_income:'',
+    style:'',
+    money:'',
+    energy:'',
+    problem:'',
+    mode:'',
+    attitude:'',
+    profession:'',
+    intention:'',
+    source:'',
+    remark:"",
+  }).setForm('advancedQuery',{
+    start:'',
+    end:'',
+
+    ctrl:'advance',
+    name:"",
+    phone:"",
+    dis: false
+  },true).setMethod('getType', function(type, field){
+      return this[field][type];
+  }).setMethod('beforeList', function(data){
+        data.forEach(function(currentValue){
+          //将string类型转换为number和为0的变为空
+          currentValue.quality = currentValue.quality == 0?"":currentValue.quality;      
+          currentValue.year = currentValue.year == 0?"":currentValue.year;      
+          currentValue.re_income = currentValue.re_income == 0?"":currentValue.re_income;      
+          currentValue.style = currentValue.style == 0?"":currentValue.style;      
+          currentValue.money = currentValue.money == 0?"":currentValue.money;      
+          currentValue.energy = currentValue.energy == 0?"":currentValue.energy;      
+          currentValue.problem = currentValue.problem == 0?"":currentValue.problem;      
+          currentValue.mode = currentValue.mode == 0?"":currentValue.mode;      
+          currentValue.attitude = currentValue.attitude == 0?"":currentValue.attitude;      
+          currentValue.profession = currentValue.profession == 0?"":currentValue.profession;      
+          currentValue.intention = currentValue.intention == 0?"":currentValue.intention;      
+          currentValue.source = currentValue.source == 0?"":currentValue.source;          
+          //console.log(typeof(currentValue.quality));
+       })
+     return data;
+  }).setMethod('provinceChange', function(v){
+    var vmThis = this;
+    this.$http.get('{:U("Area/getAreasByPid")}', {params:{pid:v} }).then(function(response){
+      var cities = [];
+       response.body.forEach(function(currentValue,index){
+        cities.push({id: currentValue.id, name: currentValue.name});
+       })
+       vmThis.$set(vmThis, 'cities', cities);
+    });
+  }).setMethod('beforeEdit',function(){
+    if (!this.$refs['editselect']) {
+      this.provinceChange(this.editForm.area_province);
+    }
+  }).setMethod('handleSelectionChange', function(val){
+    this.deleteArrAllItem('multipleSelection');
+    this.multipleSelection.push(val) ;
+  }).setMethod('commonSelect',function(x){
+    var form = x;
+    var vmThis = this;
+    if (this.multipleSelection.length ==0 ||  this.multipleSelection.length>1) {
+      this.closeDialog(form);
+      this.$message.error('请先选择一位客户');
+      return false;
+    } else {
+      var  row = this.multipleSelection.pop();
+      this[FormName.getForm(x)].name = row.name;
+      this[FormName.getForm(x)].cus_id = row.id;
+      this.complainForm.type = row.type;
+      this.complainForm.to_id = row.salesman_id;
+      this.row=row;
+      return row;
+    }
+  }).setMethod('beforeAddTrack', function(){
+    this.commonSelect('addTrack');
+  }).setMethod('beforeAddComplain', function(){
+    this.commonSelect('complain');
+  }).setMethod('beforeAddPlan',function(){
+    this.commonSelect('addPlan');
+    // this.dialogLabelWidth = "140px";
+  }).setMethod('beforeAddTransfer',function(){
+
+    if (this.multipleSelection.length ==0) {
+      this.closeDialog('addTransfer');
+      this.$message.error('请先至少选择一位客户');
+    } else {
+      var tmp = [];
+      for (var i = this.multipleSelection.length - 1; i >= 0; i--) {
+        tmp.push(this.multipleSelection[i].id);
+      }
+    }
+
+    for (var x = 0,len = this.multipleSelection.length;x < len;x++) {
+      this.cusNameList.push(this.multipleSelection[x].name);
+    }
+    this.addTransferForm.cus_id = tmp;
+    console.log(typeof(this.Profession));
+    this.addTransferForm.name = this.cusNameList.join(' | ');
+
+  }).setMethod('beforeAddRemind',function(){      
+    this.commonSelect('addRemind'); 
+  }).setMethod('beforeAddChoice',function(){
+    //this.commonSelect('addChoice');
+    var re = this.commonSelect('addChoice');
+    if(re !== false){
+      this.addChoiceForm.type = this.customerType[re.type];
+      this.addChoiceForm.choose = parseInt(re.important);
+    }   
+  }).setMethod('beforeShowDetail',function(){
+    if(this.commonSelect('showDetail') !== false){
+      this.showDetailForm = this.row; 
+    }
+  }).setAdvancedSearch().setVueHook('mounted', function(){
+    var vmThis = this;
+    this.$http.get('{:U("Area/getAreasByPid")}', {params:{pid:1} }).then(function(response){
+      var provinces = [];
+      response.body.forEach(function(currentValue,index){
+        provinces.push({id: currentValue.id, name: currentValue.name});
+      })
+      vmThis.$set(vmThis, 'provinces', provinces);
+    });
+    this.groupChange(this.searchForm.gid);
+    // this.dialogLabelWidth = "100px";
+  }).setMethod('trackLog',function(row,event,column){
+      this.$http.post(page.getTrackLogUrl,{cus_id:row.id,type:row.type}).then(function(response){
+        this.tableData = response.body;
+      },function(response){
+        console.log("操作失败");
+      });
+
+  }).setMethod('userInfo',function(row,event){
+      var index = this.dataList.indexOf(row);
+      this.handleEdit(index, row);
+  }).setMethod('setField', function(v,id){
+      this.flag=id;
+      this[FormName.getFormName('search')].field = v;
+      this.loadDatalist();
+  }).setMethod('refresh',function(){
+    window.location.reload();
+
+  }).setMethod('startDateChange', function(v){
+    this.searchForm.start = v;
+  }).setMethod('endDateChange', function(v){
+    this.searchForm.end = v;
+  }).setMethod('startTrackChange', function(v){
+    this.searchForm.track_start = v;
+  }).setMethod('endTrackChange', function(v){
+    this.searchForm.track_end = v;
+  }).setMethod('searchCustomer', function(){
+    
+  }).setMethod('toggleShow', function(){
+    this.advanchShow = ! this.advanchShow;
+    if (this.buttonText == '展开') {
+      this.buttonText = "收起";
+    } else {
+      this.buttonText = '展开';
+    }
+  }).setMethod('groupChange', function(v){
+    this.searchForm.uid="";
+    if (v && v.length > 0) {
+        this.$http.get(page.getGroupMemberListUrl, {params:{id:v}}).then(function(response){
+        this.memeberList = response.body;
+      }, function(response){
+        this.$message.error('出错了');
+      })
+    } else {
+      this.memeberList = [];
+    }
+    
+  }).setMethod('sortChange', function(sortObject){
+
+    var sortMap = {
+      ascending: 'asc',
+      descending: 'desc'
+    }
+
+    if (sortObject.column === null) {
+      delete this.searchForm.sort_field;
+      delete this.searchForm.sort_order;
+    } else {
+      this.searchForm.sort_field = sortObject.prop;
+      this.searchForm.sort_order = sortMap[sortObject.order];
+    }
+
+
+    this.dataLoad = true;
+    this.loadDatalist();
+
+    
+  }).setMethod('addRealInfo',function(url){
+      var  vmThis = this;
+      this.realInfoFormSubmitStatus = true;
+      this.$http.post(url,this.realInfoForm).then(function (response) {
+        vmThis.$message({
+              message: '操作成功',
+              type: 'success'
+            });
+        setTimeout(function(){
+          vmThis.realInfoFormDialog = false;
+          vmThis.realInfoFormSubmitStatus = false;
+          vmThis.$refs.realInfoForm.resetFields(); 
+          if(vmThis.realInfoForm.fm=='edit'){
+             vmThis.editFormSubmit(page.editFormUrl, 'edit');
+          }else if(vmThis.realInfoForm.fm=='add'){
+             vmThis.addFormSubmit(page.addFormUrl, 'add'); 
+          }else{
+             vmThis.addTrackFormSubmit(page.addTrackFormUrl, 'addTrack'); 
+          } 
+        }, 2000);  
+      }, function(response){  
+          vmThis.$message({
+            message: '操作失败：'+response.body.info,
+            type: 'error'
+          });
+          setTimeout(function(){
+            vmThis.realInfoFormSubmitStatus = false;
+          },2000);
+      });
+  }).setMethod('editSubmit',function(url, form){
+    FormName.type = form;
+    var  formName    =  FormName.getFormName();  //form+"Form"; 
+  
+    this.editFormSubmit(url, form);
+  }).setMethod('viewtraceContents',function(row,event){
+    // var index = this.tableData.indexOf(row);
+    this.traceContentFormDialog = true;
+    this.traceContentForm.content = row.content;
+  }).setMethod('viewComplainContents',function(row,event){
+    this.complainContentFormDialog = true;
+    this.complainContentForm.content = row.content;
+  }).setMethod('searchFunction', function(){
+    this.searchForm.field = "";
+    this.dataLoad = true;
+    this.loadDatalist();
+  }).setMethod('departChange', function(v){
+    this.$http.get(page.getGroupsUrl,{params:{id:v}}).then(function(response){
+      this.addTransferForm.rec_group = "";
+      this.reGroup = response.body;
+    },function(response){
+
+    })
+  }).setMethod('pdtChange',function(v){
+   // alert(v);
+    var vmThis = this;
+    this.$http.get('{:U("Products/getProduct")}', {params:{id:v} }).then(function(response){
+      console.log(response);
+      vmThis.realInfoForm.expense=response.body.price;
+      vmThis.realInfoForm.cycle=response.body.service_cycle;
+    });
+  }).setMethod('handleClose',function(){
+    this.cusNameList = [];
+  }).setMethod('complainSubmit',function(url){
+    var  vmThis   = this;
+    this.complainFormSubmitStatus = true;
+    this.$http.post(url,this.complainForm).then(function(response){
+      vmThis.$message({message: '操作成功',type: 'success'});
+      setTimeout(function(){
+        vmThis.complainFormDialog = false;
+        vmThis.complainFormSubmitStatus = false;
+        vmThis.$refs.complainForm.resetFields(); 
+        vmThis.refresh();
+      }, 2000);  
+    },function(response){
+      vmThis.$message.error("操作出错啦");
+    });
+  }).setMethod('getName', function(dname, rname){
+    return dname==null ? '' : ( dname +'-'+ (rname==null? '' : rname));
+  }).setMethod('beforeOpenEdit', function(){
+      var form='edit';
+
+      if (this.multipleSelection.length ==0 ) {
+          this.closeDialog(form);
+          this.$message.error('请先选择一个客户');
+      } else if(this.multipleSelection.length > 1){
+          this.closeDialog(form);
+          this.$message.error('请先选择一个客户');
+      }else {
+          var row = this.multipleSelection[0];
+          this.handleEdit(this.dataList.indexOf(row) , row);
+      }
+  }).setMethod('advancedQueryReset',function(){
+     this.$refs.advancedQueryForm.resetFields();
+  }).setMethod('advanceSearch',function(){
+
+       for (var x  in  this.advancedQueryForm) {
+         if (this.advancedQueryForm[x] instanceof  Date) {
+          this.advancedQueryForm[x] = this.advancedQueryForm[x].toLocaleDateString();
+         }
+       }
+      // this.searchForm = Oassign({}, this.searchForm, this.advancedQueryForm);
+      this.searchForm = Oassign({},  this.advancedQueryForm);
+      this.dataLoad = true;
+      this.loadDatalist();
+      this.closeDialog('advancedQuery');
+
+  }).setMethod('addSubmit',function(url, form){
+    FormName.type = form;
+    var  formName    =  FormName.getFormName(); 
+    this.addFormSubmit(url, form);
+  }).setMethod('beforeRecommend', function(){
+      var form='recommend';
+      
+      if (this.multipleSelection.length ==0 ) {
+          this.closeDialog(form);
+          this.$message.error('请先选择一个员工');
+          return;
+      } else if(this.multipleSelection.length > 1){
+          this.closeDialog(form);
+          this.$message.error('只能选择一个员工');
+          return;
+      }
+      var  formName    =  FormName.getFormName(); 
+      this[formName].cus_id = this.multipleSelection[0].id;
+  });
+</script>
+</block>

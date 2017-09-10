@@ -1,7 +1,7 @@
 <?php
 namespace Home\Controller;
 
-
+use Home\Model\RoleModel;
 use Home\Model\DepartmentModel;
 //todo   fix problem 没有客户的 没有统计 部门显示只显示一条
 class SpreadCustomerSortController extends CommonController{
@@ -11,17 +11,25 @@ class SpreadCustomerSortController extends CommonController{
   
     public function index(){
 
+        $role = $this->getRoleEname();
+        if ($role == RoleModel::SP_MASTER || $role == RoleModel::SP_CAPTAIN) {
+            $controllerName = "SpreadCustomerSort". ucfirst($role);
+            redirect(U($controllerName."/index"));
+        } 
+        
+        
+
         $this->assign('searchGroup', array(array("name"=>"个人", "value"=>"user_id"), array("name"=>"小组", "value"=>"to_gid"), array("name"=>"部门", "value"=>"spread_id")));
 
         $this->assign("allDeparts", $this->getSpreadDepartment());
-        $this->assign("role", $this->getRoleEname());
+        // $this->assign("role", $this->getRoleEname());
         $this->setRoleVar();
         $this->display();
     }
 
-    private function setRoleVar(){
-        // $role = $this->getRoleEname();
-        $role= 'gold';
+    protected function setRoleVar(){
+        $role = $this->getRoleEname();
+        // $role= 'gold';
         switch ($role) {
             case 'gold':
                 $this->assign("spread_id", "");
@@ -80,43 +88,7 @@ class SpreadCustomerSortController extends CommonController{
 
 
         //5 排序分页
-
-
-        
-
-        
-
-       
-       /* $this->M->group($searchgroup);
-
-        $this->fields = "count(customers_basic.id) as c, customers_basic.$searchGroup as obj_id";
-        // $this->M->field();
-
-        $to_gid = I("get.to_gid",0);
-        if (!empty($to_gid)) {
-            $this->M->where(array("to_gid"=>$to_gid));
-            return;
-        }
-
-        $spread_id = I("get.spread_id",0);
-        if (empty($spread_id)) {
-            $this->M->where(array("spread_id"=>array("NEQ", $spread_id)));
-        } else {
-            $this->M->where(array("spread_id"=>$spread_id));
-        }
-
-        // $roleName = $this->getRoleEname();
-        $roleName = "gold";
-        $funcName = $roleName."Condition";
-        if (method_exists($this, $funcName)) {
-            
-            call_user_func(array($this, $funcName), $searchGroup);
-        }*/
-
     }  
-    //GOLD
-    //SP_MASTER
-    //SP_CAPTAIN
 
     private function goldCondition($searchgroup){
 

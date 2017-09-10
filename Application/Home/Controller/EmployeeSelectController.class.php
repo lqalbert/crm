@@ -42,9 +42,9 @@ class EmployeeSelectController extends CommonController
             $this->M->where(array('account'=>'kajshdjkashjkdash123132'));
         }
         //账号查询
-        if (isset($_GET['name'])) {
+        /*if (isset($_GET['name'])) {
             $this->M->where(array('account'=>array('like', I('get.name')."%")));
-        }
+        }*/
         //姓名查询
         if (isset($_GET['realname'])) {
             $this->M->where(array('realname'=>array('like', I('get.realname')."%")));
