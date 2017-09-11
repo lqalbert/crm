@@ -47,6 +47,10 @@ class UserModel extends  Model{
     }
 
     public function getGroupEmployee($group_id, $field="id,account,realname"){
+        if ($group_id==0) {
+            return array();
+        }
+
         $roleModel = new RoleModel;
 
         return $this->m->join('user_info on rbac_user.id = user_info.user_id')
