@@ -72,7 +72,7 @@ class EmployeeController extends CommonController {
 		        	department_id,group_id,
 		        	head,rbac_user.id,mphone,no_authorized,phone,
 		        	qq,qq_nickname,realname,role_ename,role_id,sex,rbac_user.status,user_info.user_id,weixin,
-		        	weixin_nikname,id_card,card_img,card_front,card_back,ip,location,lg_time,out_time')->where(array('no_authorized'=>0))
+		        	weixin_nikname,id_card,card_img,card_front,card_back,ip,location,lg_time,out_time,creator')->where(array('no_authorized'=>0))
 		        ->where(array('rbac_user.status'=>I('get.status')));
 
         if (isset($_GET['department_id'])) {
@@ -303,6 +303,7 @@ class EmployeeController extends CommonController {
 		$re = $this->M->create($_POST, 1);
 		if ($re) {
 			$this->M->startTrans(); 
+			$this->setCreator();
 			$re['userInfo'] = M('userInfo')->create($_POST, 1);
 			if (empty($re['userInfo']['head'])) {
 				unset($re['userInfo']['head']);
@@ -311,6 +312,7 @@ class EmployeeController extends CommonController {
 			if ($id) {
 				$role_list = array('role_id'=>$re['userInfo']['role_id'], 'user_id'=>$id);
 				if (M('rbac_role_user')->add($role_list)) {
+					// 
 					$this->M->commit();
 					$this->success(L('ADD_SUCCESS'));
 				} else {
@@ -323,6 +325,19 @@ class EmployeeController extends CommonController {
 			}
 		} else {
 			$this->error($this->M->getError());
+		}
+
+	}
+
+	public function setCreator(){
+		$user = M("user_info")->where(array("user_id"=>session("uid")))->field("realname,department_id")->find();
+		if ($user) {
+			$user['depart_name'] = D("Department")->where(array("id"=>$user['department_id']))->getField('name');
+			if ($user['depart_name']) {
+				$_POST['creator'] = $user['depart_name'] ."-".$user['realname'];
+			} else {
+				$_POST['creator'] = $user['realname'];
+			}
 		}
 
 	}

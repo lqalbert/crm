@@ -259,6 +259,9 @@ class CustomerController extends CommonController {
     * 如果不是我的客户， 以及不是我团组的客户 就
     * 反回 false
     * 赶进度 暂时 这样写
+    *
+    *
+    * 
     */
     private function authCheck($id){
         $captainId = D('Role')->getIdByEname(RoleModel::CAPTAIN);
@@ -374,15 +377,22 @@ class CustomerController extends CommonController {
     *
     */
     public function addPlanLogs(){
-       $this->authCheck(I('post.cus_id'));
-    	if($this->M->auto(false)->create() && I('post.cus_id')){
+       // $this->authCheck(I('post.cus_id'));
+        // $re = $this-M>->where(array("salesman_id"=>session('uid'), 'id'=> I('post.cus_id')))->find();
+        // if (!$re) {
+        //     $this->error("你没有权限");
+        // }
+
+        if($this->M->auto(false)->create() && I('post.cus_id')){
            $re=$this->M->where(array('id'=>I('post.cus_id')))->save();
            if($re === false){
-           	 $this->error(L('ADD_ERROR').$this->M->getError());
+             $this->error(L('ADD_ERROR').$this->M->getError());
            }else{
             $this->success($this->M->getlastsql());
            }
-    	}
+        }
+
+    	
     }
 
 	public function getTracks(){
@@ -414,6 +424,7 @@ class CustomerController extends CommonController {
                 ->join('customers_contacts as cc on customers_basic.id = cc.cus_id and cc.is_main=1')
 		        ->field('customers_basic.id,qq,customers_basic.name,plan,remind');
 		$re = $this->M->select();
+        
 		foreach ($re as $key => $value) {
 			$re[$key]['time'] = strtotime($value['plan']) * 1000;
 		}
@@ -426,7 +437,7 @@ class CustomerController extends CommonController {
 	*/
 	public function setPlan() {
         $id = I("post.id");
-        $this->authCheck($id);
+        // $this->authCheck($id);
 		$re = $this->M->where("id=".$id)->data(array("plan"=>NULL))->save();
 		if ($re !== false) {
 			$this->success($this->M->getLastSql());

@@ -92,7 +92,7 @@ class IndexController extends CommonController {
 		<li class="layui-nav-item">
 			<a href="javascript:;">
 				<i class="layui-icon" data-icon="&#xe640;">&#xe640;</i>
-				<cite>员工客户</cite>
+				<cite>销售客户</cite>
 				<span class="layui-nav-more"></span>
 			</a>
 			<dl class="layui-nav-child">

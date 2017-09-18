@@ -3,12 +3,14 @@
 * 部门经理 管理 客户
 */
 namespace Home\Controller;
+
 use Common\Lib\User;
 use Home\Model\CustomerModel;
 use Home\Logic\CustomerLogic;
 use Home\Model\CustomerLogModel;
 use Home\Model\ProductModel;
 use Think\Model;
+use Home\Model\DistributeCustomerModel;
 
 class DepartmentCustomerController extends CommonController {
     private $depart_id = 0;
@@ -83,7 +85,7 @@ class DepartmentCustomerController extends CommonController {
     private function checkLikeField(){
         //改造成复合查询
         if (I('get.name')) {
-            $this->M->where(array('name'=>array('like', I('get.name')."%")));
+            $this->M->where(array('customers_basic.name'=>array('like', I('get.name')."%")));
         }
 
         $complexWhere = array('_logic'=>'OR');
@@ -166,7 +168,7 @@ class DepartmentCustomerController extends CommonController {
 
         //类型 
         if (I('get.type')) {
-            $this->M->where(array('type'=>I('get.type') ));
+            $this->M->where(array('customers_basic.type'=>I('get.type') ));
         }
         // $this->M->join('customers_contacts as cc on customers_basic.id = cc.cus_id');
 

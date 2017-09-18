@@ -21,9 +21,14 @@
             <el-input v-model="searchForm.name" size="small" placeholder="客户姓名"></el-input>
           </el-form-item>
 
+          <el-form-item prop="contact" style="width:170px">
+          <el-input v-model="searchForm.contact" size="small" placeholder="手机|qq|微信号"></el-input>
+        </el-form-item>
+
           <el-form-item prop="gid" >
             <el-select v-model="searchForm.gid" size="small" clearable  placeholder="请选择小组" @change="groupChange">
-              <el-option v-for="item in searchGroup" :label="item.name" :value="item.id" :disabled="item.disabled"></el-option>
+              <el-option   label="本部门" value="" ></el-option>
+              <el-option v-for="item in searchGroup" :label="item.name" :value="item.id"  ></el-option>
             </el-select>
           </el-form-item>
 
@@ -32,13 +37,39 @@
               <el-option v-for="item in memeberList" :label="item.name" :value="item.id" :disabled="item.disabled"></el-option>
             </el-select>
           </el-form-item>
+
+          <el-form-item prop="type" style="width:100px" >
+            <el-select v-model="searchForm.type" clearable size="small" placeholder="客户类型">
+              <el-option v-for="(key,type) in customerType" :value="type" :label="key"></el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item prop="start" >
+            <el-date-picker v-model="searchForm.start" size="small" :editable="false" placeholder="锁定起始时间">
+            </el-date-picker>
+        </el-form-item>
+
+         <el-form-item prop="end" >
+            <el-date-picker v-model="searchForm.end" size="small" :editable="false" placeholder="锁定截止时间">
+            </el-date-picker>
+        </el-form-item>
+
+        <el-form-item  prop="dis">
+          <el-checkbox v-model="searchForm.dis">分配</el-checkbox>
+        </el-form-item>
+
+          <el-form-item prop="recommend">
+          <el-checkbox v-model="searchForm.recommend">已推荐</el-checkbox>
+        </el-form-item>
           
          <el-form-item>
            <el-button type="info"  size="small" icon="search" @click="searchFunction">查询</el-button> 
-           <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start">
+           <!-- <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start">
              <el-button type="info" size="small" @click="openDialog('advancedQuery')"   >高级查询</el-button>
+           </el-tooltip> -->
              <el-button size="small" @click="searchReset">重置</el-button>
-           </el-tooltip>
+
+           <el-button size="small" @click="openDialog('quitOut')">离职客户资料</el-button>
            <!-- <el-button size="small" @click="toggleShow">{{ buttonText }}</el-button> -->
          </el-form-item>
 
@@ -118,6 +149,8 @@
 
         <!-- page -->
         <include file="Common:_pagination" />
+
+       
         <!-- / page -->
         
       </div>
@@ -139,9 +172,6 @@
               </el-table-column>
 
               <el-table-column prop="type" label="客户类型(当前)" header-align="center">
-              </el-table-column>
-
-              <el-table-column prop="name" label="客户姓名" header-align="center">
               </el-table-column>
               
               <el-table-column label="内容" header-align="center">
@@ -177,10 +207,14 @@
   <include file="DepartmentCustomer::_edit" />
 
   <!-- 录入高级查询条件 -->
-  <include file="DistributeCustomerB::_advancedQuery" />
+
  
   <!-- 推荐 -->
   <include file="DistributeCustomerB::_recommend" />
+
+  <include file="_quitOut" />
+
+  <include file="Customer::_traceContent" />
 
 </div>
 
@@ -246,11 +280,14 @@
     field: '',
     start:'',
     end:'',
-    gid:"{$gid}",
+    gid:"{$gid==0? '':$gid}",
     name:"",
     phone:"",
     qq:"",
-    uid:"{$uid}"
+    uid:"{$uid}",
+    type:"",
+    dis: false,
+    recommend:""
   }).setForm('add',{
     name:"",
     type:"C",
@@ -309,12 +346,17 @@
   }).setForm('advancedQuery',{
     start:'',
     end:'',
-
-    ctrl:'advance',
     name:"",
     phone:"",
-    dis: false
-  },true).setMethod('getType', function(type, field){
+    dis: false,
+    gid:"",
+    qq:"",
+    weixin:"",
+    uid:""
+  },true).setForm('traceContent',{
+    content:'',
+  },true).setForm('quitOut',{}
+  ,true).setMethod('getType', function(type, field){
       return this[field][type];
   }).setMethod('beforeList', function(data){
         data.forEach(function(currentValue){

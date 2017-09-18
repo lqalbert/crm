@@ -239,6 +239,9 @@
           vmThis.users=response.body
           vmThis.searchForm.user_id=''
       })
+  }).setVueHook('beforeMount', function(){
+    this.searchForm.distMin   = showLastWeekFirstDay();
+    this.searchForm.distMax   = showLastWeekLastDay();
   });
 </script>
 </block>

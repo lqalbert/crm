@@ -130,6 +130,7 @@ class SpreadCustomerSortController extends CommonController{
                         ->join("left join group_basic as gb on ui.group_id = gb.id")
                         ->field($this->fields.", concat(gb.name,'-', ui.realname) as name");
                 break;
+            
             default:
                 $this->M->join("left join user_info as ui on  customers_basic.user_id = ui.user_id")
                         ->field($this->fields.", ui.realname as name");
@@ -181,6 +182,7 @@ class SpreadCustomerSortController extends CommonController{
     }
 
     private function setOrder(&$all, $orderfield, $orderway){
+        
         $array = array("asc"=> SORT_ASC, 'desc'=> SORT_DESC );
         $columen = array_column($all, $orderfield);
         array_multisort($columen, $array[$orderway] , SORT_NUMERIC, $all);
@@ -200,7 +202,7 @@ class SpreadCustomerSortController extends CommonController{
         $re = $this->setQeuryCondition();
 
         // $re = $this->setContact($all, $vall);
-        $this->setOrder($re, I("get.field", 'v'),I("get.order",'desc'));
+        $this->setOrder($re, I("get.field", 'c'),I("get.order",'desc'));
         $list = $this->setPage($re);
         if ($re[0]['id'] == null) {
             $this->ajaxReturn(array('list'=>[], 'count'=>0));
@@ -220,7 +222,7 @@ class SpreadCustomerSortController extends CommonController{
     //==============================================//
 
 
-    private function getDataAll($searchGroup){
+    protected function getDataAll($searchGroup){
         
         switch ($searchGroup) {
             case 'user_id': //获取推广部所有的员工
@@ -274,15 +276,15 @@ class SpreadCustomerSortController extends CommonController{
     }
 
 
-    private function getGroupUser($g_id){
+    protected function getGroupUser($g_id){
         return D("User")->getGroupEmployee($g_id, 'id, realname as name');
     }
 
-    private function getSpreadUser($s_id){
+    protected function getSpreadUser($s_id){
         return D("User")->getDepartmentEmployee($s_id, 'id, realname as name');
     }
 
-    private function getCAll($searchgroup){
+    protected function getCAll($searchgroup){
         $this->M->where(array('created_at'=>array(array('EGT', $this->start), array('ELT', $this->end." 23:59:59"))));
         switch ($searchgroup) {
             case 'user_id':
@@ -329,7 +331,7 @@ class SpreadCustomerSortController extends CommonController{
     }
 
 
-    private function getDataVAll($searchgroup){
+    protected function getDataVAll($searchgroup){
         $this->getCAll($searchgroup);
         $this->M->where(array('customers_basic.type'=>array(array('EQ','V'),array('EQ','VX'),array('EQ','VT'), 'OR')));
         return $this->M->select();

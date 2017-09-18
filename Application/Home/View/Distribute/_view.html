@@ -1,11 +1,7 @@
 <extend name="Common:base" />
 <block name="head">
     <style>
-        .el-input-number input {
-            background-image: url("__ROOT__/Public/images/percent.jpg");
-            background-repeat: no-repeat;
-            background-position: left center;
-        }
+        
         .hidden{
             display: none;
         }
@@ -37,7 +33,7 @@
                 </table>
                 <?php foreach($optionList as $key=>$value): ?>
                   <el-form-item label="{$value['name']}" label-width="150px" >
-                        <el-input-number v-model="editForm.obj_{$value['id']}"  :step="1" :max="100"></el-input-number>
+                        <el-input-number v-model="editForm.obj_{$value['id']}"  :step="1" ></el-input-number>
                    <!--  <el-input-number v-model="item.value"    :max="{$total}">
                     </el-input-number> -->
                     <!-- <el-button @click.prevent="remove(item)">删除</el-button> -->
@@ -125,7 +121,7 @@
       num = lcm(x, y);
     } 
     return num;    
-}  
+  }  
 
   page.saveBenefitUrl = "{:U('saveBenefit')}";
 
@@ -196,7 +192,7 @@
     } 
     return true;
   }).setMethod('calculateLimina', function(){
-    var list = this.editForm.percent;
+     var list = this.editForm.percent;
     //todo : fix this bug
     //http://www.cnblogs.com/cssfirefly/archive/2012/10/23/2734936.html
     //应该是先约分 然后以分母的最小公倍数来
@@ -207,7 +203,9 @@
       gcdV = gcd( parseInt(current.value), 100);
       lcgArr.push(100/gcdV);
     });
-    return  doLCM(lcgArr);
+    return  doLCM(lcgArr); 
+    return 0;
+
   }).setMethod('checkAuto', function(){
      return this.editForm.type == 1 ;
   }).setMethod("addItem", function(){

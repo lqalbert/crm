@@ -86,9 +86,11 @@ class DistributeCustomerBController extends CommonController{
             }
         }
 
-       
 
-       
+        if (I("get.type")) {
+            $this->M->where(array("customers_basic.type"=>I("get.type")));
+        }
+
 
         if (I("get.start") && I("get.end")) {
             $start = str_replace("/", "-", I("get.start"));
@@ -102,10 +104,23 @@ class DistributeCustomerBController extends CommonController{
             $this->M->where(array("customers_basic.depart_id"=>array('NEQ', 0)));
         }
 
-        if(I("get.uid")){
-            $this->M->where(array("customers_basic.user_id"=>I("get.uid")));
+        $uid = I("get.uid");
+        if ($uid != 0) {
+            $this->M->where(array("customers_basic.user_id"=>$uid));
+        } else {
+            $users = $this->getSearchGroup();
+            if ($users) {
+                $users = array_column($users, 'user_id');
+                $this->M->where(array("customers_basic.user_id"=>array('IN', $users)));
+            } else {
+                $this->M->where(array("customers_basic.user_id"=>0 ));
+            }
         }
-    
+
+        if (I("get.recommend")) {
+            $this->M->where(array("customers_basic.recommend"=>1));
+        }
+
 
     }
 

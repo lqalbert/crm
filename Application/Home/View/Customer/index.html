@@ -129,7 +129,7 @@
           </el-tooltip>
 
           <el-tooltip content="推广部" placement="bottom-start">
-            <el-button type="info" size="small"   @click="setField('recommend',5)">推广客户</el-button>
+            <el-button style="margin-left:15px;" type="info" size="small"   @click="setField('recommend',5)">推广客户</el-button>
           </el-tooltip>
 
           <el-tooltip content="本人跟踪且成交了的客户" placement="bottom-start">
@@ -237,6 +237,18 @@
             {{ scope.row.weixin_nickname }}
           </template>
         </el-table-column>
+        
+         <el-table-column label="是否推荐" prop="recommend">
+           <template scope="scope">
+             {{ scope.row.recommend==0 ? '否' : '是' }}
+           </template>
+         </el-table-column>
+
+         <el-table-column label="是否自选" prop="important">
+           <template scope="scope">
+             {{ scope.row.important==0 ? '否' : '是' }}
+           </template>
+         </el-table-column>
 
         <el-table-column  prop="last_track" sortable='customer' label="最后跟踪时间" align="center" width="180"></el-table-column>
         <el-table-column prop="share_benefit" label="分成比例" align="center"></el-table-column>

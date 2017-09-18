@@ -21,13 +21,24 @@
           <el-input v-model="searchForm.contact" size="small" placeholder="手机|qq|微信号"></el-input>
         </el-form-item>
 
+        <el-form-item prop="type" style="width:100px" >
+          <el-select v-model="searchForm.type" clearable size="small" placeholder="客户类型">
+            <el-option v-for="(key,type) in customerType" :value="type" :label="key"></el-option>
+          </el-select>
+        </el-form-item>
+
         <?php if($isCaptain): ?>
         <el-form-item prop="uid" style="width:100px">
           <el-select v-model="searchForm.uid" size="small" placeholder="请选择">
+            <el-option value="0" label="本组"></el-option>
             <el-option v-for="item in searchGroup" :label="item.name" :value="item.user_id" :disabled="item.disabled"></el-option>
           </el-select>
         </el-form-item>
         <?php endif; ?>
+
+        <el-form-item prop="recommend">
+          <el-checkbox v-model="searchForm.recommend">已推荐</el-checkbox>
+        </el-form-item>
 
         <el-form-item>
           <el-button type="info" size="small" icon="search" @click="loadDatalist">查询</el-button> 
@@ -236,6 +247,8 @@
     contact:'',
     field: '',
     uid:'{$uid}',
+    type:'',
+    recommend:''
   }).setForm('add',{
     name:"",
     type:"C",

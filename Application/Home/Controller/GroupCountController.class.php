@@ -61,6 +61,8 @@ class GroupCountController extends CommonController{
     return array('list'=>$list,'count'=>$count);
   }
 
+  
+
 
 
 

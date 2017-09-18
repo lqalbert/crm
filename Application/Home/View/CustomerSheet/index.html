@@ -237,6 +237,9 @@
       // this.loadDatalist();
   }).setMethod('readySearch', function(){
       return this.searchForm.distMin.length ==0 || this.searchForm.distMax.length==0;
-  })
+  }).setVueHook('beforeMount', function(){
+    this.searchForm.distMin   = showLastWeekFirstDay();
+    this.searchForm.distMax   = showLastWeekLastDay();
+  });
 </script>
 </block>

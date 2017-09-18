@@ -1,11 +1,12 @@
 <el-dialog title="推荐" v-model="recommendFormDialog" @open="beforeRecommend" >
 <el-form ref="recommendForm"  :model="recommendForm" size="small" label-width="140px">
     <el-row>
-      <el-col :span="12">
-        <el-form-item prop="content" label="推荐">
+      <el-col :span="20">
+        <el-form-item prop="content" >
             <el-input
+
               type="textarea"
-              :rows="2"
+              :rows="3"
               placeholder="请输入内容"
               v-model="recommendForm.content">
             </el-input>
@@ -17,8 +18,8 @@
 
 </el-form>
     <div slot="footer" class="dialog-footer">
-        
-        <el-button type="primary" v-show="!recommendFormSubmitStatus" @click="recommendFormSubmit(page.recommendUrl, 'recommend')" >确定</el-button>
+        <el-button @click="closeDialog('recommend')">暂不推荐</el-button>
+        <el-button type="primary" v-show="!recommendFormSubmitStatus" @click="recommendFormSubmit(page.recommendUrl, 'recommend')" >推荐</el-button>
         <el-button type="primary" v-show="recommendFormSubmitStatus" :loading="true" >提交中</el-button>
     </div>
 </el-dialog>

@@ -149,5 +149,15 @@ class GroupController extends CommonController {
         // echo json_decode($list);
 	}
 
+	public function _before_delete(){
+    $ids = I("post.ids");
+    
+    foreach ($ids as $key => $value) {
+      $sql = "update customers_basic set to_gid = 0 where to_gid =".$value." and salesman_id=0;";
+      M()->execute($sql);
+    }
+    
+  }
+
 
 }

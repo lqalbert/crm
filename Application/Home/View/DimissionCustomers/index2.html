@@ -1,0 +1,152 @@
+<extend name="Common:base" />
+<block name="head">
+
+</block>
+<block name="body">
+    <div id="app" class="container">
+        <div class="wrapp" v-show="show" style="display: none">
+            <el-row>
+              <el-col :span="24">
+                <el-form :inline="true">
+                  <el-form-item style="width:100px">
+                    <el-select v-model="searchForm.user_id" size="small" placeholder="员工">
+                      <el-option v-for="user in dUsers" :value="user.id" :label="user.realname"></el-option>
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item>
+                    <el-button size="small" @click="loadDatalist">确定</el-button>
+                  </el-form-item>
+                  <el-form-item>
+                    <el-checkbox v-model="searchForm.all" @change="allChange">全选(选择所有的客户)</el-checkbox>
+                  </el-form-item>
+                </el-form>
+                
+              </el-col>
+            </el-row>
+            <!-- datatables  -->
+            <el-row>
+                <el-col :span="24">
+                    <el-table 
+                  :data="dataList" 
+                  border
+                  v-loading="dataLoad" 
+                  element-loading-text="{:L('DATA_LOGIN')}"
+                   @selection-change="handleSelectionChange"
+                  >
+                    <el-table-column width="50" align="center" type="selection" :checked="true"></el-table-column>
+
+                    <el-table-column label="{:L('INDEX')}"  :formatter="handleIndex" width="65"  ></el-table-column>
+                    <el-table-column  prop="name"  label="客户姓名" width="110"></el-table-column>
+                    <el-table-column   prop="type" label="客户类型"  width="140">
+                    </el-table-column>
+
+                    <el-table-column prop="realname" label="锁定员工"></el-table-column>
+
+                      <el-table-column   prop="qq" label="QQ号"  width="170">
+                      </el-table-column>
+                      
+                      <el-table-column prop="phone" label="手机" align="center" width="130"></el-table-column>
+                      <el-table-column   prop="weixin" label="微信号" align="left" >
+                      </el-table-column>
+                  </el-table>
+                </el-col>
+            </el-row>
+            <!-- / datatables  -->
+            
+            <!-- toolbar -->
+                <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
+                  <el-col :span="12">
+                  <div class="grid-content bg-purple">
+                    <span class="wrapper">
+                    <el-tooltip content="重分配" placement="right">
+                      <el-button size="small"  @click="openDialog('resetUser')"  type="primary">分配</el-button>
+                    </el-tooltip>
+                  </div>
+                  </el-col>
+                  <el-col :span="12">
+                  <div class="grid-content bg-purple-light pull-right">
+                    <!-- page -->
+                    <include file="Common:_pagination" />
+                    <!-- / page -->
+                    
+                  </div></el-col>
+                </el-row>
+            <!-- / toolbar -->
+
+            <div v-show="show" style="display: none">
+              
+
+              <!-- 编辑 -->
+              <include file="_resetUser" />
+              <!-- / 编辑 -->
+
+
+              
+            </div>
+        </div>
+    </div>
+</block>
+<block name="scripts">
+
+    <script>
+        page.resetUserFormUrl="{:U('update2')}";
+        page.getAllUrl="{:U('getAllList')}";
+        window.defaultOption.setDatas({
+          salesmans:{:json_encode($users)},
+          isShow:false,
+          dUsers:{:json_encode($dUsers)},
+          multipleSelection: [],
+          groups:{:json_encode($groups)}
+        }).setForm('search',{
+          user_id:"",
+          all:false,
+          spread:"x"
+        }).setForm('resetUser',{
+            salesman_id:"",
+            cus_id:[],
+            group_id:""
+        }, true).setMethod('beforeReset', function(){
+          if (this.multipleSelection.length > 0) {
+            this.resetUserForm.cus_id = [];
+            for (var i = this.multipleSelection.length - 1; i >= 0; i--) {
+              this.resetUserForm.cus_id.push(this.multipleSelection[i].id);
+            }
+          } else {
+            this.resetUserFormDialog = false;
+            this.$message.error('请至少选择一位客户');
+            return false;
+          }
+        }).setMethod('handleSelectionChange', function(v){
+          this.multipleSelection = v;
+        }).setMethod('allChange', function(e){
+           if (this.searchForm.all === true) {
+              var vmThis = this;
+              var params = {p:0};
+              for (var x in this.searchForm ){
+                if (this.searchForm[x]!="") {
+                  params[x] = this.searchForm[x];
+                }
+              }
+              params.size = 99999;
+              this.$http.get(page.listUrl, {params:params}).then(function(response){
+                this.multipleSelection = response.body.list;
+                console.log(this.multipleSelection);
+              }, function(response) {
+                
+              })
+           }
+        }).setComputed("getGroupUser", function(){
+          var vmThis = this;
+          return this.salesmans.filter(function(value){
+            
+             if (value.group_id==vmThis.resetUserForm.group_id) {
+              return true;
+             } else {
+              return false;
+             }
+          })
+        }).setMethod('resetSaleman', function(){
+          this.resetUserForm.salesman_id = "";
+        })
+    </script>
+</block>

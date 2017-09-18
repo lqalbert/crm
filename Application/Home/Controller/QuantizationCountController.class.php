@@ -53,6 +53,7 @@ class QuantizationCountController extends CommonController{
       if (isset($_GET['group_id'])) {
           $this->M->where(array('statistics_quantization.group_id'=>$_GET['group_id']));
       }
+      
       if(isset($_GET['distMin'])&& isset($_GET['distMax'])){
           $this->M->where(
             array('statistics_quantization.date'=>

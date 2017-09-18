@@ -11,6 +11,8 @@ class EmployeeCountController  extends CommonController{
     public function index(){
         $this->setDepartments();
         $this->assign('departments', $this->departments);
+        $this->assign("role", $this->getRoleEname());
+        $this->assign("department_id", $this->getUserDepartmentId());
         $this->display();
     }
 

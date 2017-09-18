@@ -15,15 +15,59 @@
                 </el-option>
               </el-select>
             </el-form-item> -->
-          
-            <el-form-item>
-              <el-input size="small" v-model="searchForm.name" clearable  placeholder="客户姓名"></el-input>
+            <p>
+              <el-form-item>
+                <el-input size="small" v-model="searchForm.name" clearable  placeholder="客户姓名"></el-input>
+              </el-form-item>
+              <el-form-item prop="start">
+                <el-date-picker   size="small" clearable v-model="searchForm.start" 
+                placeholder="请选择起日期" 
+                @change="startDateChange"
+                
+                >
+                </el-date-picker>
+              </el-form-item>
+              <el-form-item prop="end">
+                <el-date-picker 
+                
+                v-model="searchForm.end" 
+                placeholder="请选择止日期" 
+                @change="endDateChange"
+                size="small"
+                clearable
+                >
+                </el-date-picker>
+              </el-form-item>
+
+              <el-form-item prop="contact">
+                <el-input v-model="searchForm.contact" placeholder="手机|微信|qq" size="small"></el-input>
+              </el-form-item>
+
+              <el-form-item prop="salman">
+                <el-input v-model="searchForm.salman" placeholder="销售姓名" size="small"></el-input>
+              </el-form-item>
+
+              <el-form-item prop="spman">
+                <el-input v-model="searchForm.spman" placeholder="推广姓名" size="small"></el-input>
+              </el-form-item>
+              
+              <el-form-item>
+              <el-button type="info" size="small" icon="search" @click="dataReload">查询</el-button>
             </el-form-item>
+            <el-form-item>
+              <el-tooltip content="点击刷新当前页面" placement="right">
+                <el-button @click="refresh" size="small" type="danger">刷新</el-button>
+              </el-tooltip>
+
+            </p>
+          
+            
 
             <!-- 推广部门 -->
             <p>
               <el-form-item>
                 <el-select 
+                style="width:174px;"
                 size="small" 
                 v-model="searchForm.spread_id" 
                 clearable 
@@ -34,6 +78,7 @@
               </el-form-item>
               <el-form-item>
                 <el-select 
+                style="width:170px;"
                 size="small" 
                 v-model="searchForm.spread_gid" 
                 clearable 
@@ -43,7 +88,7 @@
                 </el-select>
               </el-form-item>
               <el-form-item>
-                <el-select size="small" v-model="searchForm.spread_uid" clearable placeholder="推广员工">
+                <el-select style="width:170px;" size="small" v-model="searchForm.spread_uid" clearable placeholder="推广员工">
                 <el-option v-for="user in spreadUsers" :label="user.name" :value="user.id"></el-option>
                 </el-select>
               </el-form-item>
@@ -53,6 +98,7 @@
             <!-- 销售部门 -->
             <el-form-item>
               <el-select 
+              style="width:174px;"
               size="small" 
               v-model="searchForm.depart_id"  
               clearable 
@@ -63,6 +109,7 @@
             </el-form-item>
             <el-form-item>
               <el-select 
+              style="width:170px;"
               size="small" 
               v-model="searchForm.depart_gid" 
               clearable 
@@ -72,7 +119,7 @@
               </el-select>
             </el-form-item>
             <el-form-item>
-              <el-select size="small" v-model="searchForm.depart_uid" clearable placeholder="销售员工">
+              <el-select style="width:170px;" size="small" v-model="searchForm.depart_uid" clearable placeholder="销售员工">
                 <el-option v-for="user in departUsers" :label="user.name" :value="user.id"></el-option>
               </el-select>
             </el-form-item>
@@ -80,13 +127,7 @@
 
 
 
-            <el-form-item>
-              <el-button type="info" size="small" icon="search" @click="dataReload">查询</el-button>
-            </el-form-item>
-            <el-form-item>
-              <el-tooltip content="点击刷新当前页面" placement="right">
-                <el-button @click="refresh" size="small" type="danger">刷新</el-button>
-              </el-tooltip>
+            
             </el-form-item>
           </el-form>
         </el-col>
@@ -118,7 +159,12 @@
       spread_uid:"",
       depart_id:"",
       depart_gid:"",
-      depart_uid:""
+      depart_uid:"",
+      start:"",
+      end:"",
+      contact:"",
+      salman:"",
+      spman:""
     }).setMethod('resetBack', function(){
       window.location.reload();
     }).setMethod("spreadChange", function(v){
@@ -152,6 +198,13 @@
       }, function(response){
         this.$message.error("出错了");
       });
-    })
+    }).setMethod("startDateChange", function(v){
+      this.searchForm.start = v;
+    }).setMethod("endDateChange", function(v){
+      this.searchForm.end = v;
+    }).setVueHook('beforeMount', function(){
+    this.searchForm.start   = showLastWeekFirstDay();
+    this.searchForm.end     = showLastWeekLastDay();
+  });
   </script>
 </block>

@@ -14,8 +14,23 @@
   </el-row>
 
 
-
-
+  <el-row>
+    <el-col :span="12">
+      <el-form-item prop="gid" label="小组">
+        <el-select v-model="advancedQueryForm.gid" size="small" clearable  placeholder="请选择小组" @change="groupChange">
+          <el-option   label="本部门" value="" ></el-option>
+          <el-option v-for="item in searchGroup" :label="item.name" :value="item.id" :disabled="item.disabled"></el-option>
+        </el-select>
+      </el-form-item>
+    </el-col>
+    <el-col :span="12">
+      <el-form-item prop="uid" label="员工">
+        <el-select v-model="advancedQueryForm.uid" size="small" clearable  placeholder="请选择队员">
+          <el-option v-for="item in memeberList" :label="item.name" :value="item.id" :disabled="item.disabled"></el-option>
+        </el-select>
+      </el-form-item>
+    </el-col>
+  </el-row>
 
     <el-row>
       <el-col :span="12">

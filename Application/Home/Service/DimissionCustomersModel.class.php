@@ -32,6 +32,8 @@ class DimissionCustomersModel extends \Think\Model{
     */
     private $criteria = array();
 
+    private $joins = array();
+
 
     /**
     *   离职员工id
@@ -48,7 +50,7 @@ class DimissionCustomersModel extends \Think\Model{
         $this->customerModel =  new CustomerModel();
 
         $this->setDimissionsId();
-        $this->addcriterion(array('salesman_id'=>array('IN', $this->dimissionsId)));
+        // $this->addcriterion(array($fields=>array('IN', $this->dimissionsId)));
     }
 
 
@@ -67,6 +69,23 @@ class DimissionCustomersModel extends \Think\Model{
         return $this->customerModel->where($this->criteria);
     }
 
+    public function addJoins($str){
+        $this->joins[] = $str;
+       
+    }
+
+    public function applyJoin(){
+        
+        foreach ($this->joins as $value) {
+            $this->customerModel->join($value);
+            
+        }
+    }
+
+    public function getDimissionsId(){
+        return $this->dimissionsId;
+    }
+
 
     public function getList($page, $size = 10){
         $count = count($this->dimissionsId);
@@ -74,13 +93,13 @@ class DimissionCustomersModel extends \Think\Model{
 
             $recount = $this->applyCriteria()->count();
             
-
-            $list = $this->applyCriteria()->join('user_info on customers_basic.salesman_id = user_info.user_id')
-                                          ->join('left join customers_contacts as cc on (customers_basic.id = cc.cus_id and cc.is_main=1)')
+            $this->applyJoin();
+            $list = $this->applyCriteria()->join('left join customers_contacts as cc on (customers_basic.id = cc.cus_id and cc.is_main=1)')
                                           ->field("customers_basic.*, user_info.realname, cc.phone,cc.qq,cc.weixin")
                                           ->page($page. ','. $size)
                                           ->order('id desc')
-                                          ->select();                          
+                                          ->select();   
+            
             return array('list'=>$list, 'count'=>$recount);
         } else {
             return array('list'=>[], 'count'=>0);

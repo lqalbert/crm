@@ -22,12 +22,34 @@ class SpreadCustomerForSaleGroupController extends CommonController{
         $this->setSpread();
         $this->setDepart();
 
+
+        $created_at = array();
+        if (I("get.start")) {
+            $created_at[] = array('EGT', I("get.start"));
+        }
+        if (I("get.end")) {
+            $created_at[] = array('ELT', I("get.end")." 23:59:59");
+        }
+
+        if ($created_at) {
+            $this->M->where(array('customers_basic.created_at'=>$created_at ));
+        }
+
+        if (I('get.contact')) {
+            $cus_ids = M("customers_contacts")->where(array("phone|qq|weixin"=>array("like", I('get.contact')."%")))->getField("cus_id");
+            if ($cus_ids) {
+                $this->M->where(array("customers_basic.id"=>array("IN", $cus_ids )) );
+            } else {
+                $this->M->where(array("customers_basic.id"=>0));
+            }
+        }
+
         $this->M->join("left join department_basic as db1 on customers_basic.spread_id=db1.id")
                 ->join("left join department_basic as db2 on customers_basic.depart_id=db2.id")
                 ->join("left join user_info as ui1 on customers_basic.user_id=ui1.user_id")
                 ->join("left join user_info as ui2 on customers_basic.salesman_id=ui2.user_id")
                 ->join("left join group_basic as gb on customers_basic.to_gid=gb.id")
-                ->field("customers_basic.name,customers_basic.id,customers_basic.created_at,customers_basic.dis_time,customers_basic.type, CONCAT(db1.name,' - ',ui1.realname) as spread_name,db2.name as depart_name, gb.name as g_name ,ui2.realname as sale_name");
+                ->field("customers_basic.name,customers_basic.id,customers_basic.created_at,customers_basic.dis_time,customers_basic.type, CONCAT(db1.name,' - ',ui1.realname) as spread_name,db2.name as depart_name, gb.name as g_name ,ui2.realname as sale_name,ui1.qq,ui1.weixin");
     }
 
     private function setSpread(){

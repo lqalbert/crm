@@ -180,7 +180,7 @@ class CustomerLogic extends Model{
                 $D->where(array('spread_id'=>array("neq",0), 'customers_basic.user_id'=>array("NEQ", session('uid')), 'salesman_id'=>session('uid')));
                 break;
             case 'type':
-                $D->where(array('type'=>CustomerModel::TYPE_V));
+                $D->where(array('customers_basic.type'=>CustomerModel::TYPE_V));
                 break;
             case 'important':
                 $D->where(array('important'=>1));

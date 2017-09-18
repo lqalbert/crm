@@ -34,6 +34,19 @@ class SpreadCustomerController extends CommonController {
         $this->setDepart();
 
 
+        $created_at = array();
+        if (I("get.start")) {
+            $created_at[] = array('EGT', I("get.start"));
+        }
+        if (I("get.end")) {
+            $created_at[] = array('ELT', I("get.end")." 23:59:59");
+        }
+
+        if ($created_at) {
+            $this->M->where(array('customers_basic.created_at'=>$created_at ));
+        }
+
+
         $this->M->join("left join department_basic as db1 on customers_basic.spread_id=db1.id")
                 ->join("left join department_basic as db2 on customers_basic.depart_id=db2.id")
                 ->join("left join user_info as ui1 on customers_basic.user_id=ui1.user_id")
@@ -70,6 +83,38 @@ class SpreadCustomerController extends CommonController {
         } else {
             $this->M->where(array('spread_id'=>$spread_id ));
         }
+
+        if (I('get.contact')) {
+            $cus_ids = M("customers_contacts")->where(array("phone|qq|weixin"=>array("like", I('get.contact')."%")))->getField("cus_id");
+            if ($cus_ids) {
+                $this->M->where(array("customers_basic.id"=>array("IN", $cus_ids )) );
+            } else {
+                $this->M->where(array("customers_basic.id"=>0));
+            }
+        }
+
+        if (I("get.salman")) {
+            $id = M("user_info")->where(array('realname'=>array('like', I("get.salman")."%")))
+                                  ->getField("user_id");
+            if ($id) {
+                $this->M->where(array("customers_basic.salesman_id"=>$id));
+            } else {
+                $this->M->where(array("customers_basic.salesman_id"=>-1));
+            }
+         } 
+
+         if (I("get.spman")) {
+            $id = M("user_info")->where(array('realname'=>array('like', I("get.spman")."%")))
+                                  ->getField("user_id");
+            if ($id) {
+                $this->M->where(array("customers_basic.user_id"=>$id));
+            } else {
+                $this->M->where(array("customers_basic.user_id"=>-1));
+            }
+         } 
+
+
+        
     }
 
     private function setDepart(){
@@ -100,8 +145,6 @@ class SpreadCustomerController extends CommonController {
         foreach ($result['list'] as &$value) {
             $value['contacts'] = M("customers_contacts")->where(array('cus_id'=>$value['id']))->select();
         }
-
-
 
 
         if (IS_AJAX) {

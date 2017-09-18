@@ -53,7 +53,9 @@ class SpreadDepartmentCustomerBController extends DistributeCustomerBController{
             }
         }
 
-       
+        if (I("get.type")) {
+            $this->M->where(array("customers_basic.type"=>I("get.type")));
+        }
 
        
 
@@ -85,6 +87,10 @@ class SpreadDepartmentCustomerBController extends DistributeCustomerBController{
             } else {
                 $this->M->where(array("customers_basic.user_id"=>0));
             } 
+        }
+
+        if (I("get.recommend")) {
+            $this->M->where(array("customers_basic.recommend"=>1));
         }
     
 

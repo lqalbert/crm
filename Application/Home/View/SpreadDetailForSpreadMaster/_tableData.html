@@ -17,6 +17,15 @@
                 {{ props.row.depart_name }} - {{ props.row.g_name }} - {{ props.row.sale_name}}
               </template>
             </el-table-column>
+
+            <el-table-column   align="center" label="是否成交"  >
+              <template scope="props">
+              {{ (props.row.type=="V" || props.row.type=="VX" || props.row.type=="VT") ? '是' : '否' }}
+              </template>
+            </el-table-column>
+
+            
+
             <el-table-column    prop="spread_name" label="推广部"  width="180">
             </el-table-column>
             <el-table-column   align="center" prop="created_at" label="录入时间" width="180" >
@@ -24,42 +33,57 @@
             
             <el-table-column   align="center" prop="dis_time" label="分配时间"   width="180">
             </el-table-column>
-            <el-table-column   align="center" label="是否成交"  >
+            
+            <el-table-column     label="销售员工手机"  width="140">
               <template scope="props">
-              {{ (props.row.type=="V" || props.row.type=="VX" || props.row.type=="VT") ? '是' : '否' }}
+                {{ props.row.mphone }}
               </template>
             </el-table-column>
 
-            <el-table-column prop="qq"  align="center" label="qq"  >
+            <el-table-column     label="销售员工qq" width="140">
+              <template scope="props">
+                {{ props.row.qq }}
+              </template>
+            </el-table-column>
+
+            <el-table-column     label="销售员工微信" width="140">
+              <template scope="props">
+                {{ props.row.weixin }}
+              </template>
+            </el-table-column>
+
+            <el-table-column prop="qq"  align="center" label="qq"  width="140">
               <template scope="props">
               {{ props.row.contacts[0].qq }}
               </template>
             </el-table-column>
 
-            <el-table-column prop="qq_nickname"   align="center" label="qq昵称"  >
+            <el-table-column prop="qq_nickname"   align="center" label="qq昵称"  width="150">
               <template scope="props">
               {{ props.row.contacts[0].qq_nickname }}
               </template>
             </el-table-column>
 
-            <el-table-column prop="phone"   align="center" label="手机"  >
+            <el-table-column prop="phone"   align="center" label="手机"  width="140">
               <template scope="props">
               {{ props.row.contacts[0].phone }}
               </template>
             </el-table-column>
 
 
-            <el-table-column prop="weixin"   align="center" label="微信号"  >
+            <el-table-column prop="weixin"   align="center" label="微信号"  width="140">
               <template scope="props">
               {{ props.row.contacts[0].weixin }}
               </template>
             </el-table-column>
 
-            <el-table-column prop="weixin_nickname"   align="center" label="微信昵称"  >
+            <el-table-column prop="weixin_nickname"   align="center" label="微信昵称" width="180" >
               <template scope="props">
                 {{ props.row.contacts[0].weixin_nickname }}
               </template>
             </el-table-column>
+
+
 
 
 

@@ -26,12 +26,13 @@
                               :picker-options="pickerOptions0">
                             </el-date-picker>
                         </el-form-item>
+                        <?php if($role=="gold"): ?>
                         <el-form-item prop="department_id"  style="width: 120px">
                             <el-select placeholder="部门" v-model="searchForm.department_id" clearable >
                                 <el-option v-for="department in departments" :value="department.id" :label="department.name"></el-option>
                             </el-select>
                         </el-form-item>
-                        
+                        <?php endif; ?>
                         <el-form-item>
                             <el-button type="primary" icon="search" @click="loadDatalist">查询</el-button>
                             <el-button @click="searchReset" style="margin-left: 10px">重置</el-button>
@@ -64,7 +65,7 @@
     </div>
 </block>
 <block name="scripts">
-
+<script src="__PUBLIC__/js/calculate.js"></script>
     <script>
         page.searchUrl="{:U('search')}";
         window.defaultOption.setDatas({
@@ -78,7 +79,7 @@
         }).setForm('search',{
             start:'',
             end:'',
-            department_id:''
+            department_id:'{$department_id==0 ? "" :  $department_id}'
         }).setMethod('getType', function(type, field){
             return this[field][type];
         }).setMethod('handleSelectionChange', function(val){
@@ -91,6 +92,9 @@
             this.setValue(v,'end');
         }).setMethod('setValue', function(v,field){
             this.searchForm[field] = v;
-        })
+        }).setVueHook('beforeMount', function(){
+            this.searchForm.start   = showLastWeekFirstDay();
+            this.searchForm.end     = showLastWeekLastDay();
+          });
     </script>
 </block>

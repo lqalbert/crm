@@ -9,12 +9,34 @@
       <el-row>
         <el-col :span="24">
           <el-form :inline="true" ref="searchForm" :model="searchForm">
-
-          
-            <el-form-item>
+            
+            
+              <el-form-item>
               <el-input size="small" v-model="searchForm.name" clearable  placeholder="客户姓名"></el-input>
             </el-form-item>
-
+              <el-form-item prop="start">
+                <el-date-picker size="small" clearable v-model="searchForm.start" 
+                placeholder="请选择起日期" 
+                @change="startDateChange"
+                
+                >
+                </el-date-picker>
+              </el-form-item>
+              <el-form-item prop="end">
+                <el-date-picker 
+                v-model="searchForm.end" 
+                placeholder="请选择止日期" 
+                @change="endDateChange"
+                size="small"
+                clearable
+                >
+                </el-date-picker>
+              </el-form-item>
+              <el-form-item>
+                <el-input v-model="searchForm.contact" size="small" placeholder="手机|qq|微信"></el-input>
+              </el-form-item>
+            
+            
             <!-- 销售部门 -->
            
             <el-form-item>
@@ -37,9 +59,6 @@
               <el-checkbox v-model="searchForm.checked" @change="checkChange">未分配</el-checkbox>
             </el-form-item>
             <!-- / 销售部门 -->
-
-
-
             <el-form-item>
               <el-button type="info" size="small" icon="search" @click="dataReload">查询</el-button>
             </el-form-item>
@@ -51,7 +70,9 @@
           </el-form>
         </el-col>
       </el-row>
-      <include file="SpreadCustomer::_tableData" />
+
+      <include file="_tableDate" />
+
     </div>
   </div>
 </block>
@@ -69,9 +90,11 @@
     }).setForm('search',{
       name:"",
       checked:false,
-      
+      start:"",
+      end:"",
       depart_gid:"",
-      depart_uid:""
+      depart_uid:"",
+      contact:""
     }).setMethod('resetBack', function(){
       window.location.reload();
     }).setMethod("departGChange", function(v){
@@ -93,6 +116,13 @@
       this.searchForm.depart_gid="";
       this.searchForm.depart_uid="";
       this.spreadUsers = [];
-    })
+    }).setMethod("startDateChange", function(v){
+      this.searchForm.start = v;
+    }).setMethod("endDateChange", function(v){
+      this.searchForm.end = v;
+    }).setVueHook('beforeMount', function(){
+      this.searchForm.start   = showLastWeekFirstDay();
+      this.searchForm.end     = showLastWeekLastDay();
+    });
   </script>
 </block>
