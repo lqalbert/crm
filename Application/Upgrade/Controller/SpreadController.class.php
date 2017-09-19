@@ -80,7 +80,11 @@ TABLE;
         $data['config'] = json_encode($config);
 
         $m->create($data);
-        $re = $m->add();
+        try{
+            $re = $m->add();
+        }catch(Excption $e){
+        }
+        
         echo $re;
 
         $departments = D("Home/Department")->getGoodSalesDepartments("id");
@@ -91,7 +95,11 @@ TABLE;
             $tmp['type']   = 1;
             $tmp['config'] = json_encode($config);
             $m->create($tmp);
-            echo $m->add();
+            try{
+                echo $m->add();
+            }catch(Excption $e){
+            }
+            // echo $m->add();
 
             //小组
             $groups = D("Home/Group")->getAllGoups($value['id'], "id");
@@ -102,7 +110,11 @@ TABLE;
                 $groupConfig['type']   = 2;
                 $groupConfig['config'] = json_encode($config);
                 $m->create($groupConfig);
-                echo $m->add();
+                try{
+                    echo $m->add();
+                }catch(Excption $e){
+                }
+                
             }
 
 

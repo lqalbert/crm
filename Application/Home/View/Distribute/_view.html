@@ -18,17 +18,17 @@
                     <el-radio class="radio" v-model="editForm.type" label="1" >禁用</el-radio>
                     <el-radio class="radio" v-model="editForm.type" label="2">启用</el-radio>
                 </el-form-item>
-                <el-form-item>
+                <!-- <el-form-item>
                     <el-alert
                     title="所有的比例相加应为100%"
                     type="info"
                     show-icon>
                   </el-alert>
-                </el-form-item>
+                </el-form-item> -->
                 <table>
                   <tr>
                     <td width="200">{$name}</td>
-                    <td>比例</td>
+                    <td>人数</td>
                   </tr>
                 </table>
                 <?php foreach($optionList as $key=>$value): ?>
@@ -182,14 +182,14 @@
 
         total += parseInt(current.value);
     });
-    if (zore) {
-        this.$message.error("比率不能为0");
-        return false;
-    }
-    if (total !=100) {
-        this.$message.error("比例相加应为100%");
-        return false;
-    } 
+    // if (zore) {
+    //     this.$message.error("比率不能为0");
+    //     return false;
+    // }
+    // if (total !=100) {
+    //     this.$message.error("比例相加应为100%");
+    //     return false;
+    // } 
     return true;
   }).setMethod('calculateLimina', function(){
      var list = this.editForm.percent;
@@ -298,10 +298,10 @@
         total += parseInt(this.editForm[current]);
     }, this);
 
-    if (total !=100) {
-        this.$message.error("比例相加应为100%");
-        return false;
-    } 
+    // if (total !=100) {
+    //     this.$message.error("比例相加应为100%");
+    //     return false;
+    // } 
 
      obj.forEach(function(current){
         var d = parseInt(this.editForm[current]);

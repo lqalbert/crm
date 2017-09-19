@@ -613,6 +613,16 @@ class CustomerController extends CommonController {
         // unset($data['id']);
         $data['cus_id'] = $row['id'];
         $data['user_id'] = session("uid");
+
+        //设置到期时间
+        $product = M("products")->find(I("post.product_id"));
+        if ($product) {
+            // service_cycle
+           $date['dead_time'] =  strtotime("+".$product['service_cycle']." months 23 hours 59 minutes 59 seconds",  strtotime(I("post.buy_time")) );
+        } else {
+            // $date['dead_time'] = 
+        }
+        
        // $data['user_id'] = session("uid");
        
         $id = $this->addBuy($data);
