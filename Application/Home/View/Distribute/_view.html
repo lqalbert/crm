@@ -33,7 +33,7 @@
                 </table>
                 <?php foreach($optionList as $key=>$value): ?>
                   <el-form-item label="{$value['name']}" label-width="150px" >
-                        <el-input-number v-model="editForm.obj_{$value['id']}"  :step="1" ></el-input-number>
+                        <el-input-number v-model="editForm.obj_{$value['id']}"  :step="1" :max="100"></el-input-number>
                    <!--  <el-input-number v-model="item.value"    :max="{$total}">
                     </el-input-number> -->
                     <!-- <el-button @click.prevent="remove(item)">删除</el-button> -->

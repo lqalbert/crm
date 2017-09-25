@@ -121,8 +121,8 @@
     }).setMethod("endDateChange", function(v){
       this.searchForm.end = v;
     }).setVueHook('beforeMount', function(){
-      this.searchForm.start   = showLastWeekFirstDay();
-      this.searchForm.end     = showLastWeekLastDay();
+      this.searchForm.start   = '{:Date("Y-m-d")}';
+      this.searchForm.end     = '{:Date("Y-m-d")}';
     });
   </script>
 </block>

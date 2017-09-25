@@ -122,4 +122,106 @@ TABLE;
 
 
     }
+
+
+    public function setAutoDistribute2(){
+        $m = M("distribute_basic");
+        //obj_id 单位id 部门id或是小组id
+        //type 0总经办 1部门 2小组
+        //全都默认手动
+        //1、生成总经办的
+        
+        $config = array();
+        $config['limina'] = 0;
+        $config['type'] = 2;
+        $config['list'] = array();
+
+        
+
+        $groups = D("Home/Group")->select();
+
+        foreach ($groups as $group) {
+            
+            $list = D("Home/User")->getGroupEmployee($group['id'], 'id');
+            foreach ($list as &$value) {
+                $value['value'] = 1;
+            }
+
+            $config['list'] = $list;
+            $config['limina'] = count($list);
+
+            $groupConfig = array();
+            $groupConfig['obj_id'] = $group['id'];
+            $groupConfig['type']   = 2;
+            $groupConfig['config'] = json_encode($config);
+
+
+            $m->create($groupConfig);
+            try{
+                echo $m->add();
+            }catch(Excption $e){
+            }
+            
+        }
+
+        $config['limina'] = 0;
+        $config['type'] = 2;
+        $config['list'] = array();
+
+
+        $departments = D("Home/Department")->getGoodSalesDepartments("id");
+        // var_dump($departments);
+
+        foreach ($departments as $department) {
+            $groups = D("Home/Group")->getAllGoups($department['id'], 'id');
+            $total = 0;
+            foreach ($groups as &$value) {
+                // $value['value'] = 1;
+                $row = M("distribute_basic")->where(array('obj_id'=>$value['id'], 'type'=>2))->find();
+                $groupc = json_decode($row['config'], true);
+
+                $value['value'] = $groupc['limina'];
+                $total+=$groupc['limina'];
+            }
+
+            $config['list']   = $groups;
+            $config['limina'] = $total;
+
+
+            $departConfig = array();
+            $departConfig['obj_id'] = $department['id'];
+            $departConfig['type']   = 1;
+            $departConfig['config'] = json_encode($config);
+
+            $m->create($departConfig);
+            echo $m->add();
+        }
+
+
+
+
+        /*$config['limina'] = 0;
+        $config['type'] = 0;
+        $config['list'] = array();
+
+
+        $data = array();
+        $data['obj_id'] = 0;
+        $data['type']   = 0;
+        $data['config'] = json_encode($config);
+
+        $m->create($data);
+        try{
+            $re = $m->add();
+        }catch(Excption $e){
+        }*/
+        
+       
+
+
+    }
+
+
+
+
 }

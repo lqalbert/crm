@@ -49,7 +49,7 @@ class SpreadCustomerForSaleGroupController extends CommonController{
                 ->join("left join user_info as ui1 on customers_basic.user_id=ui1.user_id")
                 ->join("left join user_info as ui2 on customers_basic.salesman_id=ui2.user_id")
                 ->join("left join group_basic as gb on customers_basic.to_gid=gb.id")
-                ->field("customers_basic.name,customers_basic.id,customers_basic.created_at,customers_basic.dis_time,customers_basic.type, CONCAT(db1.name,' - ',ui1.realname) as spread_name,db2.name as depart_name, gb.name as g_name ,ui2.realname as sale_name,ui1.qq,ui1.weixin");
+                ->field("customers_basic.name,customers_basic.id,customers_basic.created_at,customers_basic.dis_time,customers_basic.type, CONCAT(db1.name,' - ',ui1.realname) as spread_name,db2.name as depart_name, gb.name as g_name ,ui2.realname as sale_name,ui1.qq,ui1.weixin,ui1.mphone");
     }
 
     private function setSpread(){

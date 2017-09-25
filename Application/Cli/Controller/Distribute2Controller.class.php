@@ -46,12 +46,12 @@ class Distribute2Controller extends Controller {
         if ($re) {
             return $re;
         } else {
-            $row = $this->configM->where(array("obj"=>0))->find();
+            $row = $this->configM->where(array("obj_id"=>0))->find();
             if (!$row) {
                 exit();
             }
             $list = json_decode($row['config'], true);
-            F(self::ODEPART, $list);
+            // F(self::ODEPART, $list);
             return $list;
         }
     }
@@ -104,6 +104,7 @@ class Distribute2Controller extends Controller {
         $alg->setConfig($config);
         $alg->setAllCustomer($data);// array('id', 'id');
         
+
         if (!$alg->isOk()) {
             return true;
         }
@@ -123,6 +124,8 @@ class Distribute2Controller extends Controller {
         $oldListMap = arr_to_map($oldList, "id", "value");
         foreach ($dataList as $key => $value) {
             // M("customers_basic")->where(array("id"=>$value['ids']))->
+            
+            
             if ($value['ids']) {
                 $sql = "update customers_basic set depart_id=".$value['id'].",dis_time='".Date('Y-m-d H:i:s')."' where id in (".implode(",", $value['ids']).")";
                 M()->execute($sql);
@@ -135,18 +138,22 @@ class Distribute2Controller extends Controller {
                 'value'     => count($value['ids'])
             ));
 
-            $oldListMap[$value['id']] = $oldListMap[$value['id']] - $value['num'];
+            $oldListMap[$value['id']] -=  $value['num'];
         }
         //重保存 下一次用
         foreach ($oldList as &$value) {
             $value['value'] = $oldListMap[$value['id']];
         }
+
+        
+
         $this->saveODisPlan($config);
         return true;   
     }
-
+    //部门 分到 小组
     private function toGroup(){
         $rows = $this->configM->where(array("type"=>1))->select();
+
         foreach ($rows as $key => $row) {
             $config = json_decode($row['config'], true);
             $list = $this->getGroupList($row['obj_id'], $row['type'], $config);
@@ -155,7 +162,9 @@ class Distribute2Controller extends Controller {
             $alg = $this->al;
             $alg->setConfig($list);
             $alg->setAllCustomer($data);// array('id', 'id');
-            if ($alg->isOk()){
+           
+            if ($alg->isOk() && $config['type']==2){
+                var_dump($list);
                 //进入分配
                 $record_id = M('distribute_record')->add(array(
                     'type' => 1,
@@ -167,31 +176,54 @@ class Distribute2Controller extends Controller {
                 $dataList = $alg->getDataList();
                 $oldList = &$list['list'];
                 $oldListMap = arr_to_map($oldList, "id", "value");
+               
                 foreach ($dataList as $key => $value) {
                     // M("customers_basic")->where(array("id"=>$value['ids']))->
+                    
+                    
                     if ($value['ids']) {
                         $sql = "update customers_basic set to_gid=".$value['id'].",dis_time='".Date('Y-m-d H:i:s')."' where id in (".implode(",", $value['ids']).")";
                         M()->execute($sql);
                     }
+
                     $gname = D("Home/Group")->where(array('id'=>$value['id']))->getField("name");
+                    echo 'grop_id:', $id," ,", var_dump(!!$gname);
+                    echo "\n";
                     if (!$gname) {
                         $gname = $value['id'];
+                        // unset($oldListMap[$value['id']]);
+                        M('distribute_record')->where('id='.$record_id)->setDec('num',$value['num']); 
+                        echo 'fail insert';
+                        var_dump($value);
+                        $value['num'] = 0;
+                        $oldListMap[$value['id']]  = 0;
+                    } else {
+                        $oldListMap[$value['id']] -= $value['num'];
                     }
 
                     M('distribute_detail')->add(array(
                         'record_id' => $record_id,
                         'name'      => $gname,
-                        'value'     => count($value['ids'])
+                        'value'     => $value['num']
                     ));
-
-                    $oldListMap[$value['id']] = $oldListMap[$value['id']] - $value['num'];
+                    
                 }
+
 
                 //重保存 下一次用
                 foreach ($oldList as &$value) {
                     $value['value'] = $oldListMap[$value['id']];
                 }
+
+
                 $this->saveGroupList($row['obj_id'], $row['type'], $list);
+            } else {
+                //进入分配
+                $record_id = M('distribute_record')->add(array(
+                    'type' => 1,
+                    'obj_id' => $row['obj_id'],
+                    'num' => 0
+                ));
             }
         } 
     }
@@ -206,7 +238,7 @@ class Distribute2Controller extends Controller {
             $alg = $this->al;
             $alg->setConfig($list);
             $alg->setAllCustomer($data);// array('id', 'id');
-            if ($alg->isOk()){
+            if ($alg->isOk() && $config['type']==2){
                 //进入分配
 
                 $record_id = M('distribute_record')->add(array(
@@ -220,19 +252,34 @@ class Distribute2Controller extends Controller {
                 $oldListMap = arr_to_map($oldList, "id", "value");
                 foreach ($dataList as $key => $value) {
                     // M("customers_basic")->where(array("id"=>$value['ids']))->
-                    if ($value['ids']) {
-                        $sql = "update customers_basic set salesman_id=".$value['id'].",dis_time='".Date('Y-m-d H:i:s')."' where id in (".implode(",", $value['ids']).")";
-                        M()->execute($sql);
+
+                    $userRow = M("rbac_user")->where(array("id"=>$value['id']))->find();
+                    if ($userRow['status']==1) {
+                        if ($value['ids']) {
+                            $sql = "update customers_basic set salesman_id=".$value['id'].",dis_time='".Date('Y-m-d H:i:s')."' where id in (".implode(",", $value['ids']).")";
+                            M()->execute($sql);
+                        }
+                        
+
+                        M('distribute_detail')->add(array(
+                            'record_id' => $record_id,
+                            'name'      => M("user_info")->where(array('user_id'=>$value['id']))->getField("realname"),
+                            'value'     => count($value['ids'])
+                        ));
+                        $oldListMap[$value['id']] = $oldListMap[$value['id']] - $value['num'];
+
+
+
+                    } else {
+                        M('distribute_detail')->add(array(
+                            'record_id' => $record_id,
+                            'name'      => M("user_info")->where(array('user_id'=>$value['id']))->getField("realname"),
+                            'value'     => 0
+                        ));
+                        M('distribute_record')->where('id='.$record_id)->setDec('num',$value['num']); 
+                        $value['num'] = 0;
+                        $oldListMap[$value['id']]  = 0;
                     }
-                    
-
-                    M('distribute_detail')->add(array(
-                        'record_id' => $record_id,
-                        'name'      => M("user_info")->where(array('user_id'=>$value['id']))->getField("realname"),
-                        'value'     => count($value['ids'])
-                    ));
-
-                    $oldListMap[$value['id']] = $oldListMap[$value['id']] - $value['num'];
                 }
 
                 //重保存 下一次用
@@ -240,6 +287,13 @@ class Distribute2Controller extends Controller {
                     $value['value'] = $oldListMap[$value['id']];
                 }
                 $this->saveGroupList($row['obj_id'], $row['type'], $list);
+            } else {
+                //进入分配
+                $record_id = M('distribute_record')->add(array(
+                    'type' => 2,
+                    'obj_id' => $row['obj_id'],
+                    'num' => 0
+                ));
             }
         } 
     }

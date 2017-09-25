@@ -20,6 +20,8 @@ class DistributeRecordController extends CommonController{
         if (method_exists($this, $funcName)) {
             call_user_func(array($this, $funcName));
         }
+
+        $this->M->where(array("num"=>array('NEQ',0)));
     }
 
     public function goldCondition(){

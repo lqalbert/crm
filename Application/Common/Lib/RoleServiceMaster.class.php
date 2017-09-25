@@ -21,7 +21,7 @@ class RoleServiceMaster extends RoleDepartmentMaster{
         $depart_id = $this->getDepartId($obj->id);
         $staffId = D('Role')->getIdByEname(RoleModel::GEN_SERVICE);
         if ($depart_id) {
-            $sql = "select user_info.user_id,realname, group_basic.name as group_name  from user_info left join group_basic on user_info.group_id = group_basic.id where   user_info.role_id = $staffId and user_info.department_id = ".$depart_id;
+            $sql = "select user_info.user_id,realname, group_basic.name as group_name  from user_info left join group_basic on user_info.group_id = group_basic.id  inner join rbac_user on user_info.user_id = rbac_user.id where rbac_user.status > -1 and    user_info.role_id = $staffId and user_info.department_id = ".$depart_id;
 
                     $members = M()->query($sql);
                     return $members;

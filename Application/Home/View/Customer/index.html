@@ -50,6 +50,25 @@
       color:#0d0f10;
       font-size: 14px;
     }
+
+    #app3{
+      margin-top: -10px;
+      padding-top: 10px;
+      padding-bottom:10px;
+      background: #fff;
+    }
+    #split-bar{
+      position: absolute;
+      bottom: 5px;
+      width:100%;
+      height:5px;
+      cursor:n-resize;
+
+      background: rgba(157, 195, 232, 0.3);
+    }
+    #split-bar:active,#split-bar:hover{
+      background: rgba(157, 195, 232, 0.7);
+    }
   </style>
 </block>
 <block name="body">
@@ -188,6 +207,7 @@
       element-loading-text="{:L('DATA_LOGIN')}"
       highlight-current-row
       empty-text="暂无数据,请录入客户！"
+      :height="tableHeight"
 
       @current-change="handleSelectionChange"
       @row-click="trackLog"  ref="select" 
@@ -206,7 +226,7 @@
 
         <el-table-column  prop="realname" label="跟踪员工" sortable='customer' width="150" >
           <template scope="scope">
-            {{ scope.row.sales_depart + "-"  + scope.row.realname }} 
+            {{ scope.row.sales_depart ? scope.row.sales_depart : ''  }} - {{ scope.row.realname ? scope.row.realname : ''  }}
           </template>
         </el-table-column>
 
@@ -235,6 +255,12 @@
         <el-table-column  header-align="center" prop="weixin_nickname" label="微信昵称" header-align="center" width="170">
           <template scope="scope">
             {{ scope.row.weixin_nickname }}
+          </template>
+        </el-table-column>
+
+        <el-table-column  header-align="center" prop="dis_time" label="分配时间" sortable='customer' header-align="center" width="180">
+          <template scope="scope">
+            {{ scope.row.dis_time ? scope.row.dis_time : '' }}
           </template>
         </el-table-column>
         
@@ -275,7 +301,8 @@
       </el-table>
     </el-col>
   </el-row>
-
+  <div style="" id="split-bar"></div>
+  </div>
   <!-- toolbar -->
   <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
 
@@ -330,7 +357,7 @@
     </el-col>
 
   </el-row>
-  </div>
+  
 
   <div id="app2" class="b" style="margin:5px -10px 5px;">
     <el-row >
@@ -458,6 +485,7 @@
 </block>
 <block name="scripts">
 <script src="__PUBLIC__/js/contactValidate.js"></script>
+<script src="__PUBLIC__/js/jquery.1.11.min.js"></script>
 <script>
   page.addPlanFormUrl = "{:U('addPlanLogs')}";
   page.addRemindFormUrl = "{:U('setRemid')}";
@@ -610,6 +638,7 @@
         return time.getTime() < Date.now() - 8.64e7;
       }
     },
+    tableHeight: 500,
     buyHistory:[],
     flag:false,
     realInfo:false,
@@ -1082,6 +1111,8 @@
         return;
       }
 
+      
+
       this.dataLoad = true;
       this.loadDatalist();
   }).setMethod('beforeImportc', function(){
@@ -1306,6 +1337,73 @@
       this.renewalForm.product_money = row.price;
       this.renewalForm.product_t = row.service_cycle;
     }
+  }).setVueHook('mounted',function(){
+    var d1 = $("#app3");
+    var bar = $("#split-bar");
+    var con = $("#appx");
+    var move = false;
+    var olde = 0;
+    var vmThis = this;
+    var first  = true;
+    // var dline = 0;
+    var min = 200;
+    var max = 0;
+   
+    bar.mousedown(function(e){
+      //console.log(d1.height());
+      move = true;
+      olde = e.pageY;
+      if (first) {
+        max = $("#split-bar").offset().top;
+        first = false;
+      }
+    }).mouseup(function(){
+      //console.log(d1.height());
+      // move =false;
+    }).mousemove(function(e){
+      
+    })
+
+    con.mousemove(function(e){
+      var cY = 0;
+      if(move){
+        if (e.pageY<=min) {
+          d1.height(min);
+          cY = min;
+        } else if(e.pageY>min ){
+          d1.height(e.pageY);
+          cY = e.pageY;
+        } 
+
+        /*else {
+          d1.height(max);
+          cY = max;
+        }*/
+
+        var deltY = cY - olde;
+        olde = cY;
+
+        
+
+        if (cY<=max) {
+          var height = vmThis.tableHeight + deltY;
+          vmThis.tableHeight = height > 500 ? 500 :  height;
+        } else {
+          vmThis.tableHeight = 500;
+        }
+      }
+    }).mouseup(function(){
+      move = false;
+    }).mouseleave(function(){
+      move =false;
+    })
+
+     d1.css({
+        'position':"relative",
+        // 'height':d1.height(),
+        // 'width':d1.width(),
+        'overflow':"hidden"
+      })  
   });
 </script>
 

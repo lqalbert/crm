@@ -48,9 +48,9 @@ class DistributeSencod {
 
     public function isOk(){
         
-        if ($this->type ==1) { //禁用
-            return false;
-        }
+        // if ($this->type ==1) { //禁用
+        //     return false;
+        // }
 
         if ($this->totalNum == 0) {
             return false;
