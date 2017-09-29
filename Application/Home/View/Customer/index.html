@@ -395,12 +395,6 @@
             <el-table :data="tableDataOne"  empty-text="请点击客户显示跟踪信息" border style="width: 100%"  @row-dblclick="viewComplainContents">
               <el-table-column prop="user" label="操作员工" header-align="center">
               </el-table-column>
-
-              <el-table-column prop="type" label="客户类型(当前)" header-align="center">
-              </el-table-column>
-
-              <el-table-column prop="name" label="客户姓名" header-align="center">
-              </el-table-column>
               
               <el-table-column label="投诉内容" header-align="center">
                 <template scope="scope">
@@ -411,7 +405,7 @@
               <el-table-column prop="created_at" label="投诉时间" width="180" align="center">
               </el-table-column>
 
-              <el-table-column prop="track_text" label="投诉类型" align="center">
+              <el-table-column prop="type_text" label="投诉类型" align="center">
               </el-table-column>
 
             </el-table>
@@ -466,8 +460,9 @@
   <!-- V类客户资料 -->
   <include file="_realInfo" />
   <!-- /V类客户资料 -->
+
   <!-- 录入投诉 -->
-  <include file="_complain" />
+  <include file="CustomerComplain::_add" />
   <!-- 录入投诉 -->
 
   <!-- 购买 -->
@@ -477,7 +472,6 @@
   <!-- 续费 -->
   <include file="_renewal" />
   <!-- /续费 -->
-
 
 </div>
 
@@ -495,6 +489,7 @@
   page.buyUrl = "{:U('buy')}";
   page.getBuyHistory = "{:U('history')}";
   page.addRenewalFormUrl = "{:U('renewal')}";
+
   // page.getrenewalHistoryUrl = "{:U('renewalHistory')}";
 
   var checkIdNum=function(rule,value,callback){
@@ -633,6 +628,7 @@
 
 
   window.defaultOption.setDatas({
+
     setPicker:{
       disabledDate:function(time) {
         return time.getTime() < Date.now() - 8.64e7;
@@ -677,6 +673,7 @@
     Proportion:{:json_encode($Proportion)},
     Remind:{:json_encode($Remind)},
     products:{:json_encode($Products)},
+    complainTypes:{:json_encode($complainTypes)},
     provinces:[],
     cities:[],
     // deps:[],//
@@ -886,7 +883,7 @@
     fm:'',
   },true).setForm('complain',{
     cus_id:'',
-    type:'',
+    type:0,
     name:'',
     content:'',
   }, true).setForm('buy',{
@@ -1012,7 +1009,7 @@
       var  row = this.multipleSelection[0];
       this[FormName.getForm(x)].name = row.name;
       this[FormName.getForm(x)].cus_id = row.id;
-      this.complainForm.type = row.type;
+      // this.complainForm.type = row.type;
       this.complainForm.to_id = row.salesman_id;
       this.realInfoForm.cus_id = row.id;
       this.row=row;
@@ -1022,6 +1019,7 @@
     this.commonSelect('addTrack');
   }).setMethod('beforeAddComplain', function(){
     this.commonSelect('complain');
+
   }).setMethod('beforeAddPlan',function(){
     this.commonSelect('addPlan');
     this.dialogLabelWidth = "140px";

@@ -10,21 +10,100 @@
     <div id="app" class="container">
         <div class="wrapp" v-show="show" style="display: none">
             <!-- seach form -->
+
+            <!-- 
+                客户姓名，
+                联系方式，
+
+                开单状态，
+                开单账号，
+
+                购买类型，
+                销售员工，
+                成交的时间区间
+             -->
             <el-row>
                 <el-col :span="12">
                     <el-form :inline="true"  ref="searchForm" :model="searchForm">
-                      <el-form-item  >
-                        <el-select v-model="searchForm.status" size="small" @change="loadDatalist">
+
+                      <el-form-item prop="name" style="width:170px">
+                        <el-input v-model="searchForm.name" size="small" placeholder="客户姓名"></el-input>
+                      </el-form-item>
+                      <el-form-item prop="contact" style="width:170px">
+                        <el-input v-model="searchForm.contact" size="small" placeholder="手机|qq|微信号"></el-input>
+                      </el-form-item>
+
+
+                    <!-- 开单状态， -->
+                      <el-form-item prop="status" style="width:170px">
+                        <el-select v-model="searchForm.status" size="small"  >
                             <el-option label="未开单" value="0"></el-option>
                             <el-option label="已开单" value="1"></el-option>
                         </el-select>
                       </el-form-item>
 
+                    <!-- 开单账号 -->
+                      <el-form-item prop="account" style="width:170px">
+                        <el-input v-model="searchForm.account" size="small" placeholder="开单账号"></el-input>
+                      </el-form-item>
+                    <!-- 购买类型 -->
+                      <el-form-item prop="type" style="width:170px">
+                          <el-select v-model="searchForm.type" placeholder="购买类型" size="small">
+                              <el-option label="购买" value="0"></el-option>
+                              <el-option label="续费" value="2"></el-option>
+                              <el-option label="升级" value="1"></el-option>
+                          </el-select>
+                      </el-form-item>
+
+                      <!-- 销售员工 -->
+                      <el-form-item style="width:170px" prop="department_id">
+                        <el-select 
+                        clearable
+                        size="small" 
+                        placeholder="销售部门"
+                        v-model="searchForm.department_id" 
+                        @change="departChange">
+                          <el-option v-for="depart in departments" :value="depart.id" :label="depart.name"></el-option>
+                        </el-select>
+                      </el-form-item>
+                      <el-form-item style="width:170px" prop="group_id">
+                        <el-select 
+                        clearable
+                        size="small" 
+                        placeholder="销售团队"
+                        v-model="searchForm.group_id" 
+                        @change="groupChange">
+                          <el-option v-for="group in groups" :value="group.id" :label="group.name"></el-option>
+                        </el-select>
+                      </el-form-item>
+                      <el-form-item style="width:170px" prop="user_id">
+                        <el-select 
+                        clearable
+                        size="small" 
+                        placeholder="销售员工"
+                        v-model="searchForm.user_id" >
+                          <el-option v-for="user in users" :value="user.id" :label="user.name"></el-option>
+                        </el-select>
+                      </el-form-item>
+                      <!-- / 销售员工 -->
+
+                      <el-form-item style="width:170px" prop="range">
+                        <el-date-picker
+                          size="small"
+                          v-model="searchForm.range"
+                          type="daterange"
+                          placeholder="选择成交时间范围"
+                          :picker-options="pickerOptions"
+                          @change="rangeChange">
+                        </el-date-picker>
+                      </el-form-item>
+
+
                       <el-form-item>
-                        <!-- <el-button type="primary" icon="search" @click="loadDatalist" >查询</el-button> 
+                        <el-button type="primary" icon="search" @click="dataReload" size="small">查询</el-button> 
                         <el-tooltip content="清空搜索框并刷新表格数据" placement="right">
-                         <el-button  @click="searchReset">重置</el-button>
-                        </el-tooltip> -->
+                         <el-button  @click="searchReset" size="small">重置</el-button>
+                        </el-tooltip>
                         <el-tooltip content="点击刷新当前页面" placement="right">
                           <el-button @click="refresh" size="small" type="danger" >刷新</el-button>
                         </el-tooltip>
@@ -177,13 +256,30 @@
                 { required: true, message: '请选择', trigger: 'blur', type: 'string' },
             ]
             
-        }
+        },
+        departments:[],
+        groups:[],
+        users:[],
+        pickerOptions: {
+          disabledDate:function(time) {
+            return time.getTime() > Date.now();
+          }
+        },
+        accountDisabled:false,
     }).setForm('add', {
        
     }).setForm('edit', {
         
     }).setForm('search', {
-        status:"0" //0
+        name:"",
+        contact:"",
+        account:"",
+        type:"",
+        status:"0", //0
+        department_id:"",
+        group_id:"",
+        user_id:"",
+        range:"",
     }).setForm('order',{
         buy_id:null,
         product_id:null,
@@ -277,45 +373,7 @@
 
 
         this.openDialog('order');
-    })/*.setMethod('submitOrder', function(url){
-        var  vmThis   = this;
-        this.$refs['orderForm'].validate(function(valid){
-            if (valid) {
-                FormName.type = 'order';
-                
-                var  formName    =  FormName.getFormName();       //form+"Form";
-                var  formStatus  =  FormName.getSubmitStatus();  // formName+"FormSubmitStatus";
-                var  formDialog  =  FormName.getDialog();         //form+"FormDialog";
-
-                this[formStatus] =  true;
-               
-                vmThis.$http.post(url, vmThis[formName]).then(function (response) {
-
-                    vmThis[formDialog] = false;
-                    vmThis[formStatus] = false;
-                    vmThis.$refs[formName].resetFields();
-                    // vmThis['distributeForm'].semaster_id = 
-                    vmThis['distributeForm'].cus_id = vmThis[formName].cus_id;
-                    
-
-                    vmThis.openDialog('distribute');
-                    // vmThis.dataReload();    
-                    // 弹一个分配的窗口
-                }, function(response){  
-                    vmThis.$message({
-                      message: '操作失败：'+response.body.info,
-                      type: 'error'
-                    });
-                    setTimeout(function(){
-                        vmThis[formStatus] = false;
-                    },2000);
-                });
-            } else {
-                
-                return false;
-            }
-        })
-    })*/.setMethod('setDistrute', function(row){
+    }).setMethod('setDistrute', function(row){
         this.distributeForm.cus_id = row.cus_id;
         this.distributeForm.buy_id     = row.id
         this.openDialog('distribute');
@@ -344,6 +402,10 @@
           this.$message.error("出错了");
        });
     }).setMethod('openOneStep', function(row){
+
+        // this.$refs['oneStepForm'].resetFields();
+        // console.log(this.$refs['oneStepForm'])
+
         this.onestepse = false;
         this.oneStepForm.account_id= "";
         this.oneStepForm.semaster_id= "";
@@ -363,6 +425,7 @@
         this.oneStepForm.order.salesman_id = row.user_id;
         this.oneStepForm.order.buy_id = row.id;
         this.oneStepForm.order.product_id = row.product_id;
+        this.oneStepForm.order.phone = "";
         var param = {cus_id:row.cus_id};
         this.$http.get(page.getBuyDetailUrl, {params: param}).then(function(response){
             var body = response.body;
@@ -386,7 +449,8 @@
             // this.$message.error("出错了");
         });
     }).setMethod('setOneStepAccount', function(row){
-        console.log(row);
+        // console.log(row);
+        this.accountDisabled = false;
         this.oneStepForm.account.cus_id = row.cus_id;
         this.oneStepForm.account.user_id = row.user_id;
         this.oneStepForm.account.pdt_id = row.product_id;
@@ -396,6 +460,7 @@
         //获取已有的账号
         this.$http.get('{:U("getAccount")}', {params: row.cus_id}).then(function(response){
             this.oneStepForm.account.account_id = response.body.account_id;
+            this.accountDisabled = true;
         }, function(response){
             // this.$message.error("出错了");
         });
@@ -404,6 +469,42 @@
         this.oneStepForm.distribute.semaster_id = this.oneStepForm.semaster_id;
 
         this.oneStepFormSubmit(page.setOneStepUrl, 'oneStep');
-    })
+    }).setMethod('departChange', function(v){
+    this.searchForm.group_id = "";
+    this.searchForm.user_id = "";
+    this.setGroups(v);
+
+  }).setMethod('groupChange', function(v){
+    this.searchForm.user_id = "";
+    this.setUsers(v);
+
+  }).setMethod('setGroups', function(v){
+    var vmThis = this;
+    if ( v == "") {
+      this.groups = [];
+      return;
+    }
+    this.$http.get('{:U("getGroups")}', {params:{id:v}}).then(function(response){
+      vmThis.groups = response.body;
+    });
+  }).setMethod('setUsers', function(v){
+    var vmThis = this;
+    if (v == "") {
+      this.users = [];
+      return;
+    }
+    this.$http.get('{:U("getUsers")}', {params:{id:v}}).then(function(response){
+      vmThis.users = response.body;
+    });
+  }).setMethod('rangeChange', function(v){
+    console.log(v);
+    // this.searchForm.range = v;
+  }).setVueHook('mounted', function(){
+    var vmThis = this;
+    //省份、城市
+    this.$http.get('{:U("getDepartms")}').then(function(response){
+      vmThis.$set(vmThis, 'departments', response.body);
+    });
+  })
 </script>
 </block>

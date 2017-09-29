@@ -5,7 +5,7 @@
     </el-form-item>
 
     <el-form-item label="销售金额" prop="sale_money">
-        <el-input  auto-complete="off" v-model="oneStepForm.order.sale_money" ></el-input>
+        <el-input  auto-complete="off" v-model="oneStepForm.order.sale_money" :disabled="true"></el-input>
     </el-form-item>
 
     <el-form-item label="应收金额" prop="receivable">
@@ -16,11 +16,11 @@
         <el-input  auto-complete="off" v-model="oneStepForm.order.paid_in" ></el-input>
     </el-form-item>
 
-    <el-form-item label="客户姓名" >
+    <el-form-item label="客户姓名" prop="customer_name">
         <el-input  auto-complete="off" v-model="oneStepForm.order.customer_name" ></el-input>
     </el-form-item>
 
-    <el-form-item label="客户手机" >
+    <el-form-item label="客户手机" prop="phone">
         <el-select v-model="oneStepForm.order.phone" >
             <el-option 
             v-for="phone in bphone" 
@@ -38,7 +38,7 @@
     </el-form-item>
 
     <el-form-item label="账号" prop="account_id">
-        <el-input placeholder="请输入账号" v-model="oneStepForm.account_id"></el-input>
+        <el-input placeholder="请输入账号" :disabled="accountDisabled" v-model="oneStepForm.account_id"></el-input>
     </el-form-item>
     <el-form-item label="说明">
         <el-input

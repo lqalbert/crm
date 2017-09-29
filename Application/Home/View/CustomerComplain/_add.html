@@ -1,0 +1,40 @@
+<el-dialog title="录入投诉/意见" v-model="complainFormDialog" @open="beforeAddComplain">
+  <el-form  ref="complainForm" :label-width="dialogLabelWidth" :model="complainForm">
+    <el-row>
+      <el-col :span="10">
+        <el-form-item label="客户姓名"  prop="name">
+          <el-input v-model="complainForm.name" :disabled="true"></el-input>
+        </el-form-item>
+      </el-col>
+      <el-col :span="10">
+        <el-form-item label="投诉类型" prop="type">
+          <el-select v-model="complainForm.type" clearable>
+            <el-option
+              v-for="(value, key) in complainTypes"
+              :label="value"
+              :value="key">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="18">
+        <el-form-item label="投诉内容"  prop="content">
+          <el-input
+          type="textarea"
+          :autosize="{ minRows: 2, maxRows: 4}"
+          placeholder="请输入投诉/意见内容"
+          v-model="complainForm.content"></el-input>
+        </el-form-item>
+      </el-col>
+    </el-row>
+  </el-form>
+
+  <div slot="footer" class="dialog-footer">
+   <el-button type="danger" @click="closeDialog('complain')">取 消</el-button>
+   <el-button type="primary" v-show="!complainFormSubmitStatus" @click="complainSubmit(page.addComplainFormUrl)">确 定</el-button>
+   <el-button type="primary" v-show="complainFormSubmitStatus" :loading="true" >添加中</el-button>
+  </div>
+
+</el-dialog>

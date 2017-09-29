@@ -1,0 +1,28 @@
+<el-dialog title="审核" v-model="checkFormDialog" @open="beforeCheck">
+  <el-form  ref="checkForm"  :model="checkForm" label-position="right" >
+    <el-form-item label="状态"  porp="state" >
+      <el-select v-model="checkForm.state">
+        <el-option value="-1" label="不通过"></el-option> 
+        <el-option value="1" label="通过"></el-option> 
+      </el-select>
+    </el-form-item>
+
+    <el-form-item label="说明" prop="mark" v-show="checkForm.state==-1">
+      <el-col :span="18">
+        <el-input
+          type="textarea"
+          :rows="2"
+          placeholder="请输入内容"
+          v-model="checkForm.mark">
+        </el-input>
+      </el-col>
+      
+    </el-form-item>
+  </el-form>
+  <div slot="footer" class="dialog-footer">
+   <el-button @click="closeDialog('check')">取 消</el-button>
+   <el-button type="primary" v-show="!checkFormSubmitStatus" @click="checkFormSubmit(page.setCheckUrl, 'check')" >确 定</el-button>
+   <el-button type="primary" v-show="checkFormSubmitStatus" :loading="true" >保存中</el-button>
+  </div>
+
+</el-dialog>

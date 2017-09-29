@@ -19,6 +19,18 @@ class IndexController extends CommonController {
             $spreadOb = new SpreadTreeController;
             $this->spreadTree = $spreadOb->setMenuDep();
         }
+        if ($ename == RoleModel::DEPARTMENTMASTER || $ename == RoleModel::CAPTAIN || $ename == RoleModel::STAFF) {
+            $this->assign("sales", true);
+        } else {
+            $this->assign("sales", false);
+        }
+        //先是风控衙回访 没问题了再是材料专员
+
+        if ($ename == RoleModel::CALL_BACK || $ename == RoleModel::RISK_ONE || $ename == RoleModel::DATASTAFF || $ename == RoleMOdel::SUP_SERVICE || $ename == RoleModel::GEN_SERVICE ) {
+            $this->assign("alert", true);
+        } else {
+            $this->assign("alert", false);
+        }
 
         $this->assign('tree',$this->tree);
         $this->assign('spreadTree', $this->spreadTree);
@@ -136,6 +148,23 @@ NAV;
 
 
 
+
+  public function getmsgalert(){
+    $uid = I("get.id");
+    $re = M("msg_alert")->where(array('to_id'=>$uid, 'is_send'=>0))->select();
+    if ($re) {
+        $ids = array();
+        foreach ($re as $key => $value) {
+            $ids[] = $value['id'];
+        }
+        $sql="update msg_alert set is_send=1 where id in (". implode(',', $ids).")";
+        M()->execute($sql);
+        $this->ajaxReturn($re);
+    } else {
+        $this->ajaxReturn(array());
+    }
+    
+  }
 
 
 

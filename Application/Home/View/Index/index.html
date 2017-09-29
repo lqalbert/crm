@@ -249,121 +249,66 @@
 		});
 		</script>
 		<script>
-     //console.log(navigator.userAgent);
 
-			//利用ajax将测试数据保存
-			function Ajapost(){
-				$.post("{:U('test')}");
-			}
-	    window.onbeforeunload = function(){
-	    	$.post("{:U('test')}");
-	      return Ajapost();
-	    }
+	    var imgurl     = "__PUBLIC__";
+	    var dayPlanUrl = "{:U('Customer/getTodays')}";
+	    var setPlanUrl = "{:U('Customer/setPlan')}";
 
 		</script>
-
-		<script>		
-		     var showList = {};
-			 if (window.Notification && Notification.permission !== "granted") {
-			    Notification.requestPermission(function (status) {
-			      if (Notification.permission !== status) {
-			        Notification.permission = status;
-
-			      }
-			    });
-			  }
-			  var trigger = document.getElementById("qqTrigger");
-
-
-			  function notify(option, customer){
-
-			  	// option.icon="__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg";
 		
-			  
-			  	if (window.Notification) {
-			  		option.icon="__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg"
-					var n = new Notification("您有一个即将到点计划",option);
-					n.addEventListener('click', showQQ);
-					n.addEventListener('close', function(e){
-						myWorker.postMessage({type:"del", data:this.customer.id});
-			  			layui.jquery.post("{:U('Customer/setPlan')}", {id:this.customer.id});
-					});
-			  	
+		<script>
+			// window.addEventListener('load', function () {
+			// 	if (!window.Notification) {
+			// 		alert("警告：你的浏览器内核无法使用通知组件");
+			// 		return;
+			// 	}
+
+			// 	if (Notification.permission !== "granted") {
+			// 		Notification.requestPermission( function(status) {
+			// 		  if (Notification.permission !== status) {
+			// 	        	Notification.permission = status;
+			// 	      }
+			// 		  var n = new Notification("消息通知", {body: "在这里将会显示通知"}); // 显示通知
+			// 		});
+			// 	}
+			// })
 			
-					n.customer = customer;
-			  	} else {
-			  		if (!showList[customer.qq]) {
-			  			$.amaran({
-					        'theme'     :'user no',
-					        'content'   :{
-					            img:'__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg',
-					            user:'您有一个即将到点计划',
-					            message:option.body.replace("\n", "<br>")
-					        },
-					        'diyoption':  customer,
-					        'position'  :'bottom right',
-					        'outEffect' :'slideBottom',
-					        'sticky'    :true,
-					        onClick:function(){
-					        	if (!!this.diyoption.qq && this.diyoption.qq.length > 0) {
-	        			        	trigger.setAttribute('href', "tencent://message/?uin="+ this.diyoption.qq +"&Site=&menu=yes");
-	        		  				trigger.click();
-	        			        	
-					        	} else {
-					        		alert("客户："+this.diyoption.name+" 计划即将到点，没有设置QQ");
-					        	}
-					        	myWorker.postMessage({type:"del", data:this.diyoption.id});
-        			        	layui.jquery.post("{:U('Customer/setPlan')}", {id:this.diyoption.id});
-        			        	delete showList[this.diyoption.id];
-					        	
-					        }
-					    });
-					    showList[customer.id] = customer;
-			  		}
-			  		
-			  	}
-			  	
-				
-			  }
-
-			  function showQQ(){
-			  	
-			  	if (!!this.customer.qq && this.customer.qq.length > 0) {
-			  		trigger.setAttribute('href', "tencent://message/?uin="+ this.customer.qq +"&Site=&menu=yes");
-			  		trigger.click();
-			  		
-			  	} else {
-			  		alert("客户："+this.customer.name+" 计划即将到点，没有设置QQ");
-			  	}
-			  	this.close();
-			  }
-
-			  // var de = {body:"客户：比",tag:"837737931"};
-			  // notify(de);
-
-			  var myWorker = new Worker('__PUBLIC__/js/worker.js');
-			  myWorker.onerror = function(e) { console.log(e); };
-			  myWorker.onmessage = function(e) { 
-			  	// console.log(e);
-			  	var d = new Date();
-			  	d.setTime(e.data.time);
-			  	 notify({body:"客户："+e.data.name+"\n计划时间："+d.toLocaleString() + "\n" + e.data.remind, tag: e.data.id }, e.data);
-			  }
-
-			  // myWorker.addEventListener('message', function(e){
-			  // 	console.log(e);
-			  // 	notify({body:"客户："+e.data.name, tag: e.data.qq }, e.data);
-			  // })
-			  myWorker.postMessage({type:"start", data:"{:U('Customer/getTodays')}"});
-
-			  // 每过5分钟就重新获取
-			  setInterval(function(){
-			  	myWorker.postMessage({type:"start", data:"{:U('Customer/getTodays')}"});
-			  }, 300000);
-
-			  
-        
 		</script>
+		<?php if($sales): ?>
+			<script src="__PUBLIC__/js/sales.js"></script>
+		<?php endif; ?>
+		<?php if($alert):?>
+		<script>
+			var getMsgAlertUrl = "{:U('getMsgAlert')}";
+			var uid = {:session('uid')};
+
+			function getAlertMsg(){
+				layui.jquery.get(getMsgAlertUrl , {id:uid}, function(data){
+					if (data.length) {
+						for (var i = data.length - 1; i >= 0; i--) {
+							// data[i];
+							setNotif(data[i]);
+						}
+					}
+				}, 'json');
+			}
+
+			function setNotif(data){
+				// new Notification(data.title, {body: data.content});
+				$.amaran({
+	                'theme'     :'tumblr',
+	                'content'   :{
+	                    title:data.title,
+	                    message:data.content
+	                },
+	                'position'  :'bottom right',
+	                'outEffect' :'slideBottom',
+	                'sticky'    :true
+	            });
+			}
+			var interval = setInterval(getAlertMsg, 300000);
+		</script>
+		<?php endif;?>
 	</body>
 
 </html>

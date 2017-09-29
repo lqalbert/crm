@@ -94,10 +94,39 @@ class BuyCheckController extends CommonController{
                             'user_id'=>session("uid"));
                 tag(HOOK_CHECK , $pa);
             }
+            //是否要给材料专员一个弹窗消息
+            // $buys = array();
+            $stuffs = D("User")->getDataStaff("id");
+            foreach ($ids as $id) {
+                $row=$this->M->where(array("id"=>$id, 'risk_state'=>1, 'callback_state'=>1))->find();
+                // $buys[] = $row;
+                foreach ($stuffs as  $stuff) {
+                    $this->setMsg($stuff['id'], $row['cus_id'], $row['product_name']);
+                }
+            }
           $this->success('成功');
         } else {
           $this->error($this->M->getError());
         }
+    }
+
+
+
+
+
+    //给风控和回访的弹窗消息
+    private function setMsg($id, $cus_id, $product){
+        $re = M("msg_alert")->create(array(
+                'title'=>"您有一个新的成交客户待审核",
+                'content'=>"客户：".$this->getCusName($cus_id)." 商品：".$product,
+                'to_id'=>$id));
+        if ($re) {
+            M("msg_alert")->add();
+        }
+    }
+
+    private function getCusName($id){
+        return D("Customer")->where(array("id"=>$id))->getField('name');
     }
 
     private function checkRoleCondition(){

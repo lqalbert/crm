@@ -58,8 +58,51 @@
 		          <input type="hidden" size="small" v-model="searchForm.field">
 		        </el-form-item>
 
+             <!-- 销售员工 -->
+              <el-form-item style="width:170px" prop="department_id">
+                <el-select 
+                clearable
+                size="small" 
+                placeholder="销售部门"
+                v-model="searchForm.department_id" 
+                @change="departChange">
+                  <el-option v-for="depart in departments" :value="depart.id" :label="depart.name"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item style="width:170px" prop="group_id">
+                <el-select 
+                clearable
+                size="small" 
+                placeholder="销售团队"
+                v-model="searchForm.group_id" 
+                @change="groupChange">
+                  <el-option v-for="group in groups" :value="group.id" :label="group.name"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item style="width:170px" prop="user_id">
+                <el-select 
+                clearable
+                size="small" 
+                placeholder="销售员工"
+                v-model="searchForm.user_id" >
+                  <el-option v-for="user in users" :value="user.id" :label="user.name"></el-option>
+                </el-select>
+              </el-form-item>
+              <!-- / 销售员工 -->
+
+              <el-form-item style="width:170px" prop="ranged">
+                <el-date-picker
+                  size="small"
+                  v-model="searchForm.ranged"
+                  type="daterange"
+                  placeholder="选择成交时间范围"
+                  :picker-options="pickerOptions"
+                  @change="rangeChange">
+                </el-date-picker>
+              </el-form-item>
+
 		        <el-form-item>
-		          <el-button @click="loadDatalist" type="info" size="small" icon="search">查询</el-button> 
+		          <el-button @click="dataReload" type="info" size="small" icon="search">查询</el-button> 
 		          
 <!-- 		          <el-tooltip content="录入高级查询条件"  style="margin-left:10px;">
 		            <el-button @click="openDialog('advancedQuery')" size="small" type="primary">{:L('ADVANCED_QUERY')}</el-button>
@@ -228,12 +271,6 @@
               <el-table :data="tableDataFour"  empty-text="请点击客户显示跟踪信息" border style="width: 100%"  @row-dblclick="viewComplainContents">
                 <el-table-column prop="user" label="操作员工" header-align="center">
                 </el-table-column>
-
-                <el-table-column prop="type" label="客户类型(当前)" header-align="center">
-                </el-table-column>
-
-                <el-table-column prop="name" label="客户姓名" header-align="center" >
-                </el-table-column>
                 
                 <el-table-column label="投诉内容" header-align="center">
                   <template scope="scope">
@@ -244,7 +281,7 @@
                 <el-table-column prop="created_at" label="投诉时间" width="180" align="center">
                 </el-table-column>
 
-                <el-table-column prop="track_text" label="投诉类型" align="center">
+                <el-table-column prop="type_text" label="投诉类型" align="center">
                 </el-table-column>
               </el-table>
             </el-tab-pane>
@@ -302,6 +339,9 @@
 <script>
   page.addComplainFormUrl = "{:U('CommonHandleLogic/addComplain')}";
   window.defaultOption.setDatas({
+    departments:[],
+    groups:[],
+    users:[],
     roleTypeVal:{$roleTypeVal},
   	customerType:{:json_encode($customerType)},
   	sexType:{:json_encode($sexType)},
@@ -343,12 +383,22 @@
       'content':'',
       'user':''     
     }],
+    pickerOptions: {
+          disabledDate:function(time) {
+            return time.getTime() > Date.now();
+          }
+        },
   }).setForm('search',{
     name:'',
     contact:'',
     field: '',
     group:'user_id',
     ctrl:'search',
+    department_id:"",
+    group_id:"",
+    user_id:"",
+    range:"",
+    ranged:""
   }).setForm('advancedQuery',{
     start:'',
     end:'',
@@ -374,7 +424,7 @@
     content:'',
   },true).setForm('complain',{
     cus_id:'',
-    type:'',
+    type:0,
     name:'',
     content:'',
   }, true).setMethod('getType', function(type, field){
@@ -452,7 +502,7 @@
     this.commonFind("{:U('CommonFindDetail/softwareInfo')}",'tableDataThree',row);
 
     row.condition = 'service';
-    this.$http.post("{:U('CommonFindDetail/complainInfo')}",row).then(function(response){
+    this.$http.post("{:U('CommonFindDetail/complainInfo')}",{id:row.cus_id}).then(function(response){
       this.tableDataFour = response.body;
     },function(response){
       this.$message.error("查询出错啦");
@@ -483,7 +533,7 @@
       this[FormName.getForm(x)].name = row.name;
       this[FormName.getForm(x)].cus_id = row.cus_id;
       this.complainForm.type = row.type;
-      this.complainForm.to_id = row.salesman_id;
+      // this.complainForm.to_id = row.salesman_id;
       this.row=row;
       return row;
     }
@@ -502,6 +552,42 @@
       }, 2000);  
     },function(response){
       vmThis.$message.error("操作出错啦");
+    });
+  }).setMethod('departChange', function(v){
+    this.searchForm.group_id = "";
+    this.searchForm.user_id = "";
+    this.setGroups(v);
+
+  }).setMethod('groupChange', function(v){
+    this.searchForm.user_id = "";
+    this.setUsers(v);
+
+  }).setMethod('setGroups', function(v){
+    var vmThis = this;
+    if ( v == "") {
+      this.groups = [];
+      return;
+    }
+    this.$http.get('{:U("getGroups")}', {params:{id:v}}).then(function(response){
+      vmThis.groups = response.body;
+    });
+  }).setMethod('setUsers', function(v){
+    var vmThis = this;
+    if (v == "") {
+      this.users = [];
+      return;
+    }
+    this.$http.get('{:U("getUsers")}', {params:{id:v}}).then(function(response){
+      vmThis.users = response.body;
+    });
+  }).setMethod('rangeChange', function(v){
+    // console.log(v);
+    this.searchForm.range = v;
+  }).setVueHook('mounted', function(){
+    var vmThis = this;
+    //省份、城市
+    this.$http.get('{:U("getDepartms")}').then(function(response){
+      vmThis.$set(vmThis, 'departments', response.body);
     });
   });
 </script>

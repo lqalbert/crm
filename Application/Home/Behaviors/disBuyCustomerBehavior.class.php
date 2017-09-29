@@ -51,11 +51,7 @@ class disBuyCustomerBehavior extends \Think\Behavior {
         $riskUsers = $this->getRisk();
         $callUsers = $this->getCallback();
 
-        // echo "riskUsers";
-        // var_dump($riskUsers);
 
-        // echo "callUsers";
-        // var_dump($callUsers);
 
 
         $risk_i = $this->riskRoll % count($riskUsers);
@@ -69,11 +65,27 @@ class disBuyCustomerBehavior extends \Think\Behavior {
             'callback_id'=>$callUsers[$call_i]['id']
         );
         
+        $this->setMsg($riskUsers[$risk_i]['id'], $param['cus_id'], $param['product_name']);
+        $this->setMsg($callUsers[$call_i]['id'], $param['cus_id'], $param['product_name']);
 
         $this->setRoll(++$risk_i, ++$call_i);
         
         $re = M('customers_buy')->data($data)->where(array('id'=>$param['id']))->save();
+ 
+    }
 
-        
+    //给风控和回访的弹窗消息
+    private function setMsg($id, $cus_id, $product){
+        $re = M("msg_alert")->create(array(
+                'title'=>"您有一个新的成交客户待审核",
+                'content'=>"客户：".$this->getCusName($cus_id)." 商品：".$product,
+                'to_id'=>$id));
+        if ($re) {
+            M("msg_alert")->add();
+        }
+    }
+
+    private function getCusName($id){
+        return D("Customer")->where(array("id"=>$id))->getField('name');
     }
 }

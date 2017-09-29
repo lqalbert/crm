@@ -78,6 +78,8 @@ class DepartmentCustomerController extends CommonController {
          $this->assign('Products', $Products);
          
          $this->assign('searchGroup', $searchGroup);
+
+         $this->assign('complainTypes', D("CustomerComplain")->getType());
          $this->display();
     }
 

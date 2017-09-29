@@ -1,0 +1,445 @@
+<extend name="Common:base"/>
+<block name="head">
+
+</block>
+<block name="body">
+<div id="app" class="container">
+    <div class="wrapp" id="app1" v-show="show" style="display:none;">
+        <div class="a" id="app2">
+            <el-row>
+              <el-col :span="24">
+                <!-- 客户姓名，
+                  联系方式，
+                  销售员工的部门、
+                  小队，
+                  员工，
+                  时间区间，
+                  审核状态 -->
+              <el-form :inline="true" ref="searchForm" :model="searchForm">
+                      <el-form-item prop="name" style="width:170px">
+                        <el-input v-model="searchForm.name" size="small" placeholder="客户姓名"></el-input>
+                      </el-form-item>
+                      <el-form-item prop="contact" style="width:170px">
+                        <el-input v-model="searchForm.contact" size="small" placeholder="手机|qq|微信号"></el-input>
+                      </el-form-item>
+                      <el-form-item>
+                        <el-select 
+                        clearable
+                        size="small" 
+                        placeholder="销售部门"
+                        v-model="searchForm.department_id" 
+                        @change="departChange">
+                          <el-option v-for="depart in departments" :value="depart.id" :label="depart.name"></el-option>
+                        </el-select>
+                      </el-form-item>
+                      <el-form-item>
+                        <el-select 
+                        clearable
+                        size="small" 
+                        placeholder="销售团队"
+                        v-model="searchForm.group_id" 
+                        @change="groupChange">
+                          <el-option v-for="group in groups" :value="group.id" :label="group.name"></el-option>
+                        </el-select>
+                      </el-form-item>
+                      <el-form-item>
+                        <el-select 
+                        clearable
+                        size="small" 
+                        placeholder="销售员工"
+                        v-model="searchForm.user_id" >
+                          <el-option v-for="user in users" :value="user.id" :label="user.name"></el-option>
+                        </el-select>
+                      </el-form-item>
+                      <el-form-item>
+                        <el-date-picker
+                          size="small"
+                          v-model="range"
+                          type="daterange"
+                          placeholder="选择日期范围"
+                          :picker-options="pickerOptions"
+                          @change="rangeChange">
+                        </el-date-picker>
+                      </el-form-item>
+                      <el-form-item>
+                        <el-select size="small" v-model="searchForm.state" placeholder="审核状态">
+                          <el-option value="0" label="待审核"></el-option>
+                          <el-option value="1" label="通过"></el-option>
+                          <el-option value="-1" label="未通过"></el-option>
+                        </el-select>
+                      </el-form-item>
+                      <?php if($is_buser):?>
+                      <el-form-item >
+                        <el-select v-model="searchForm.ch_id" size="small">
+                          <el-option v-for="user in buser" :value="user.id" :label="user.name"></el-option>
+                        </el-select>
+                      </el-form-item>
+                    <?php endif;?>
+
+                    <el-form-item prop="field" v-show="false">
+                      <input type="hidden" size="small" v-model="searchForm.field">
+                    </el-form-item>
+
+                    <el-form-item>
+                      <el-button type="info" size="small" icon="search" @click="dataReload">查询</el-button> 
+                      
+                      <!-- <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
+                        <el-button  size="small" @click="searchReset">重置</el-button>
+                      </el-tooltip>
+
+                      <el-tooltip content="已经审核通过的客户" placement="bottom-start" style="margin-left:10px;">
+                        <el-button size="small" type="primary" @click="setField('already')">已审核</el-button>
+                      </el-tooltip>
+
+                      <el-tooltip content="等待审核的客户" placement="bottom-start" style="margin-left:15px;">
+                        <el-button type="info" size="small" @click="setField('yet')">待审核</el-button>
+                      </el-tooltip> -->
+
+                      <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:15px;">
+                        <el-button @click="refresh" size="small" type="danger">刷新</el-button>
+                      </el-tooltip>
+
+                      </el-form-item>
+                </el-form>
+              </el-col>
+          </el-row>
+          <br>
+      <el-row>
+        <el-col :span="24">
+          <el-table 
+              border 
+              :data="dataList" 
+              v-loading="dataLoad" 
+              element-loading-text="{:L('DATA_LOGIN')}"
+              empty-text="暂无数据,销售妹子正在努力中！"
+              highlight-current-row  
+              @current-change="handleCurrentChange"
+              @row-click="trackLog">
+
+                <el-table-column label="{:L('INDEX')}" type="index" width="65"  ></el-table-column>
+
+                <el-table-column width="100"  prop="name" label="客户姓名"></el-table-column>
+            
+                <el-table-column width="100" align="center" prop="ctype" label="客户类型">
+                </el-table-column>
+                <el-table-column width="150" align="center"   label="手机">
+                    <template scope="scope">
+                      {{ scope.row.contact[0].phone }}
+                  </template>
+                </el-table-column>
+                <el-table-column width="120" align="center"   label="QQ">
+                    <template scope="scope">
+                      {{ scope.row.contact[0].qq }}
+                  </template>
+                </el-table-column>
+
+                <el-table-column width="160"   label="微信">
+                    <template scope="scope">
+                      {{ scope.row.contact[0].weixin }}
+                  </template>
+                </el-table-column>
+
+                <el-table-column width="200"   label="地址">
+                  <template scope="scope">
+                      {{ scope.row.address }}
+                  </template>
+                </el-table-column>
+                <el-table-column width="200" align="center"  prop="id_card" label="身份证">
+                </el-table-column>
+                <!-- 部门小组 -->
+                <el-table-column width="200"  prop="user" label="跟踪员工">
+                </el-table-column>
+
+                <el-table-column label="审核状态" width="100" prop="{$state_text}">
+                  <template scope="scope">
+                      <el-tag v-if="scope.row.{$state_text}==-1">未通过</el-tag>
+                      <el-tag v-else-if="scope.row.{$state_text}==1">通过</el-tag>
+                      <el-tag v-else="scope.row.{$state_text}==0">待审核</el-tag>
+                  </template>
+                </el-table-column>
+                <el-table-column label="购买/续费" width="110">
+                  <template scope="scope">
+                      <el-tag v-if="scope.row.type==0" type="primary">购买</el-tag>
+                      <el-tag v-else-if="scope.row.type==1" type="primary">升级</el-tag>
+                      <el-tag v-else type="primary">续费</el-tag>
+                  </template>
+                </el-table-column>
+                <el-table-column width="190" label="商品" prop="product_name"></el-table-column>
+                <el-table-column width="120" label="费用" prop="product_money"></el-table-column>
+                <el-table-column width="130" align="center" label="购买时间" prop="buy_time"></el-table-column>
+
+                
+          </el-table>
+        </el-col>
+      </el-row>
+          <!-- toolbar -->
+          <br>
+          <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
+            <el-col :span="12">
+              <div class="grid-content bg-purple">
+                <span class="wrapper"> 
+                  <el-tooltip content="选择客户录入跟踪信息" placement="right" >
+                    <el-button size="small" @click="openDialog('addTrack')" type="primary">录入跟踪</el-button>
+                  </el-tooltip>
+                  <el-tooltip content="选择客户录入投诉意见" placement="right">
+                    <el-button size="small" @click="openDialog('complain')" type="primary" >客户投诉</el-button>
+                  </el-tooltip>
+                  <el-button size="small" @click="openDialog('check')" type="primary">审核</el-button>
+                  </span>
+              </div>
+            </el-col>
+            <el-col :span="12">
+              <div class="grid-content bg-purple-light pull-right">
+                <!-- page -->
+                <include file="Common:_pagination" />
+                <!-- / page -->
+              </div>
+            </el-col>
+          </el-row>
+        </div>
+        <br>
+      <div id="app3" class="b" style="margin:5px -10px 5px;">
+        <el-row>
+         <el-col :span="24">
+            <el-tabs  type="border-card">
+              <el-tab-pane label="跟踪记录">
+                <el-table :data="tableData" empty-text="请点击客户显示跟踪信息" border style="width: 100%"  
+                 @row-click="viewLog">
+                  <el-table-column prop="user" label="操作员工" header-align="center">
+                  </el-table-column>
+                  <el-table-column label="内容" header-align="center">
+                    <template scope="scope">
+                      {{scope.row.content | handleString}}
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column prop="created_at" label="跟踪时间" width="180" align="center">
+                  </el-table-column>
+
+                  <el-table-column prop="track_text" label="跟踪类型" header-align="center">
+                  </el-table-column>
+
+<!--                 <el-table-column prop="step" label="跟踪步骤" header-align="center">
+                </el-table-column> -->
+
+                </el-table>
+              </el-tab-pane>
+              <el-tab-pane label="购买纪录">
+                <el-table :data="tableDataOne" empty-text="请点击客户显示其客户资料" border style="width: 100%">
+                <el-table-column label="产品金额" prop="product_money" header-align="center">
+                </el-table-column>
+                <el-table-column label="产品名称" prop="product_name" header-align="center">
+                </el-table-column>
+                <el-table-column label="产品周期" prop="product_t" header-align="center">
+                </el-table-column>
+                <el-table-column label="购买时间" prop="buy_time" align="center">
+                </el-table-column>
+                </el-table>
+              </el-tab-pane>
+            <el-tab-pane label="投诉记录">
+              <el-table :data="tableDataTwo"  empty-text="请点击客户显示跟踪信息" border style="width: 100%"   
+              @row-click="viewComplain">
+                <el-table-column prop="user" label="操作员工" header-align="center">
+                </el-table-column>
+                
+                <el-table-column label="投诉内容" header-align="center">
+                  <template scope="scope">
+                    {{scope.row.content | handleString}}
+                  </template>
+                </el-table-column>
+
+                <el-table-column prop="created_at" label="投诉时间" width="180" align="center">
+                </el-table-column>
+
+                <el-table-column prop="type_text" label="投诉类型" align="center">
+                </el-table-column>
+              </el-table>
+            </el-tab-pane>
+            </el-tabs>
+         </el-col>
+        </el-row>
+      </div>
+    </div>
+
+    <div class="dialogWrapper" v-show="show" style="display: none">
+
+      <include file="RiskCheck::_check" />
+      <include file="RiskCheck::_track" />
+      <include file="RiskCheck::_viewLog" />
+      <include file="RiskCheck::_complainContent" />
+      <include file="CustomerComplain::_add" />
+
+
+    </div>
+
+</div>
+</block>
+<block name="scripts">
+<script>
+
+page.setCheckUrl = "{:U('check')}";
+page.addComplainFormUrl = "{:U('CommonHandleLogic/addComplain')}";
+
+window.defaultOption.setDatas({
+    range:"",
+    tableDataOne:[],
+    tableData:[],
+    tableDataTwo: [],
+    departments:[],
+    groups:[],
+    users:[],
+    customerType:{:json_encode($customerType)},
+    steps:{:json_encode($steps)},
+    logType:{:json_encode($logType)},
+    complainTypes:{:json_encode($complainTypes)},
+    buser:{:json_encode($buser)},
+    pickerOptions: {
+      disabledDate:function(time) {
+        return time.getTime() > Date.now();
+      }
+    },
+  }).setForm('search',{
+    name:'',
+    contact:'',
+    field: '',
+    department_id:"",
+    group_id:"",
+    user_id:"",
+    range:"",
+    state:"",
+    ch_id:"{:session("uid")}"
+  }).setForm('addTrack',{
+    cus_id:"",
+    next_datetime:'',
+    track_type:'',
+    to_type:"",
+    content:'',
+    name:"",
+    step:"",
+  },true).setForm("traceContent",{
+    content:""
+  },true).setForm("complainContent",{
+    content:""
+  },true).setForm("complain",{
+    cus_id:'',
+    type:0,
+    name:'',
+    content:'',
+  },true).setForm("check",{
+    state:"1",
+    mark:"",
+    ch_id:{:session("uid")},
+    id:""
+  },true).setMethod('refresh',function(){
+    window.location.reload();
+  }).setVueHook('mounted', function(){
+    var vmThis = this;
+    //省份、城市
+    this.$http.get('{:U("getDepartms")}').then(function(response){
+      vmThis.$set(vmThis, 'departments', response.body);
+    });
+    // this.dialogLabelWidth = "100px";
+  }).setMethod('departChange', function(v){
+    this.searchForm.group_id = "";
+    this.searchForm.user_id = "";
+    this.setGroups(v);
+
+  }).setMethod('groupChange', function(v){
+    this.searchForm.user_id = "";
+    this.setUsers(v);
+
+  }).setMethod('setGroups', function(v){
+    var vmThis = this;
+    if ( v == "") {
+      this.groups = [];
+      return;
+    }
+    this.$http.get('{:U("getGroups")}', {params:{id:v}}).then(function(response){
+      vmThis.groups = response.body;
+    });
+  }).setMethod('setUsers', function(v){
+    var vmThis = this;
+    if (v == "") {
+      this.users = [];
+      return;
+    }
+    this.$http.get('{:U("getUsers")}', {params:{id:v}}).then(function(response){
+      vmThis.users = response.body;
+    });
+  }).setMethod('rangeChange', function(v){
+    // console.log(v);
+    this.searchForm.range = v;
+  }).setMethod('checkCurrentRow', function(){
+     if (!this.currentRow) {
+      this.$message.error("请选择一位客户")
+      return false;
+     }
+     return true;
+  }).setMethod('beforeCheck',function(){
+    if (!this.checkCurrentRow()) {
+      this.checkFormDialog = false;
+      return;
+    }
+    if (this.currentRow.{$state_text}!=0) {
+      this.$message.error("已审核");
+      this.checkFormDialog = false;
+      return;
+    }
+    this.checkForm.id= this.currentRow.id;
+  }).setMethod('beforeAddTrack', function(){
+    if (!this.checkCurrentRow()) {
+      this.checkFormDialog = false;
+      return;
+    }
+    this[FormName.getForm('addTrack')].name = this.currentRow.name;
+    this[FormName.getForm('addTrack')].cus_id = this.currentRow.cus_id;
+    // this[FormName.getForm('addTrack')].to_type = this.currentRow.type;
+  }).setMethod('beforeAddComplain', function(){
+    if (!this.checkCurrentRow()) {
+      this.checkFormDialog = false;
+      return;
+    }
+
+    this[FormName.getForm('complain')].name = this.currentRow.name;
+    this[FormName.getForm('complain')].cus_id = this.currentRow.cus_id;
+
+  }).setMethod('complainSubmit', function(url){
+    var  vmThis   = this;
+    this.complainFormSubmitStatus = true;
+    this.$http.post(url,this.complainForm).then(function(response){
+      vmThis.$message({message: '操作成功',type: 'success'});
+      setTimeout(function(){
+        vmThis.complainFormDialog = false;
+        vmThis.complainFormSubmitStatus = false;
+        vmThis.$refs.complainForm.resetFields(); 
+        vmThis.dataReload();
+      }, 2000);  
+   })
+  }).setMethod('trackLog', function(row){
+    this.$http.get("{:U('CommonFindDetail/customerLog')}", {params:{id:row.cus_id}} ).then(function(response){
+      this.tableData = response.body;
+    },function(response){
+      console.log("操作失败");
+    });
+
+    this.$http.post("{:U('CommonFindDetail/findDealInfo')}",{user_id:row.cus_id}).then(function(response){
+      this.tableDataOne = response.body;
+    },function(response){
+      this.$message.error("查询出错啦");
+    });
+
+    this.$http.post("{:U('CommonFindDetail/complainInfo')}",{id:row.cus_id}).then(function(response){
+      this.tableDataTwo = response.body;
+    },function(response){
+      console.log("操作失败");
+    });
+  }).setMethod('viewLog', function(row){
+    this.traceContentFormDialog = true;
+    this.traceContentForm.content = row.content;
+  }).setMethod('viewComplain', function(row){
+    console.log(row);
+    this.complainContentFormDialog = true;
+    this.complainContentForm.content = row.content;
+  });
+</script>
+</block>

@@ -223,12 +223,6 @@
             <el-table :data="tableDataOne"  empty-text="请点击客户显示跟踪信息" border style="width: 100%"  @row-dblclick="viewComplainContents">
               <el-table-column prop="user" label="操作员工" header-align="center">
               </el-table-column>
-
-              <el-table-column prop="type" label="客户类型(当前)" header-align="center">
-              </el-table-column>
-
-              <el-table-column prop="name" label="客户姓名" header-align="center" >
-              </el-table-column>
               
               <el-table-column label="投诉内容" header-align="center">
                 <template scope="scope">
@@ -239,7 +233,7 @@
               <el-table-column prop="created_at" label="投诉时间" width="180" align="center">
               </el-table-column>
 
-              <el-table-column prop="track_text" label="投诉类型" align="center">
+              <el-table-column prop="type_text" label="投诉类型" align="center">
               </el-table-column>
             </el-table>
           </el-tab-pane>
@@ -450,7 +444,7 @@ Vue.filter("handleString", function(v) {
         console.log("操作失败");
       });
 
-      this.$http.post("{:U('CommonFindDetail/complainInfo')}",row).then(function(response){
+      this.$http.post("{:U('CommonFindDetail/complainInfo')}",{id:row.id}).then(function(response){
         this.tableDataOne = response.body;
       },function(response){
         console.log("操作失败");

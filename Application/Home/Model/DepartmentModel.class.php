@@ -37,7 +37,8 @@ class DepartmentModel extends Model {
         1=>'客服部',
         2=>'风控部',
         3=>'人事部',
-        4=>'推广部'
+        4=>'推广部',
+        5=>'投顾部'
 	);
 
 

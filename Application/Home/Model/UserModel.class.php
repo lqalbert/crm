@@ -174,6 +174,21 @@ class UserModel extends  Model{
         }
     }
 
+    public function getDataStaff($field="id,realname"){
+        $roleId = D('Role')->getIdByEname(RoleModel::DATASTAFF);
+        if ($roleId) {
+
+                $where['role_id']  = $roleId;
+                $where['rbac_user.status']  = array('GT', RbacUserModel::DELETE_SATUS);
+                return $this->cache('callback', 300)->m->join('user_info on rbac_user.id = user_info.user_id')
+                        ->where($where)
+                        ->field($field)
+                        ->select();
+        } else {
+            return array();
+        }
+    }
+
     public function getSpreadCommEmployee($spread_id, $field="user_id, realname"){
         $roleModel = new RoleModel;
 

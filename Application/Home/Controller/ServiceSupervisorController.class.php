@@ -44,6 +44,8 @@ class ServiceSupervisorController extends CommonController{
     $this->assign('logType',      D('CustomerLog')->getType());
 		$this->assign('sexType',      D('Customer')->getSexType());
     $this->assign('GenServiceMan',$this->getGenServiceMan());
+
+    $this->assign('complainTypes', D("CustomerComplain")->getType());
 		$this->display();
 	}
 
@@ -79,7 +81,11 @@ class ServiceSupervisorController extends CommonController{
 
     $gen = I('get.gen',0);
     if ($gen!=0) {
-      $this->M->where(array("customers_basic.gen_id"=>array('neq', 0)));
+      if (I("get.gen_id")) {
+        $this->M->where(array("customers_basic.gen_id"=>I("get.gen_id")));
+      } else {
+        $this->M->where(array("customers_basic.gen_id"=>array('neq', 0)));
+      }
     } else{
       $this->M->where(array("customers_basic.gen_id"=>0));
     }
@@ -105,6 +111,51 @@ class ServiceSupervisorController extends CommonController{
 
     $this->M->join("customers_contacts as cc on customers_basic.id = cc.cus_id and cc.is_main = 1 ");
 
+
+    //时间区间
+      $buys = array();
+      $range = I("get.range");
+      if ($range) {
+          $dates = explode(" - ", $range);
+          $buys = D('CustomerBuy')->where(array('buy_time'=>array(array('EGT', $dates[0]), array("ELT", $dates[1]))))->getField("user_id", true);
+          
+      }
+
+      //销售部 团队 员工参数
+      $user_id = I("get.user_id");
+      if ($user_id) {
+          $buys[] = $user_id;
+          $buys = array_unique($buys);
+          // $this->M->where(array('customers_basic.salesman_id'=>$user_id));
+          $this->M->where(array('customers_basic.salesman_id'=>array('IN', $buys)));
+          return;
+      }
+
+      $group_id = I("get.group_id");
+      if ($group_id ) {
+          $user_id = D("User")->getGroupEmployee($group_id, 'id');
+          if ($user_id) {
+              $user_id = array_column($user_id, 'id');
+              $user_id = array_merge($buys, $user_id);
+              $this->M->where(array('customers_basic.salesman_id'=>array("IN", $user_id) ));
+          }  else {
+              $this->M->where(array('customers_basic.salesman_id'=>-1 ));
+          }
+          return;
+      }
+
+      $depart_id = I("get.department_id");
+      if ($depart_id) {
+          $user_id = D("User")->getDepartmentEmployee($depart_id, 'id');
+          if ($user_id) {
+              $user_id = array_column($user_id, 'id');
+              $user_id = array_merge($buys, $user_id);
+              $this->M->where(array('customers_basic.salesman_id'=>array("IN", $user_id) ));
+          }  else {
+              $this->M->where(array('customers_basic.salesman_id'=>-1 ));
+          }
+      }
+
 	}
 
 
@@ -118,12 +169,57 @@ class ServiceSupervisorController extends CommonController{
     
     $re  = $this->M->where(array('id'=>array('in', $cus_ids)))->data(array('gen_id'=>$user_id))->save();
     if($re!==false){
+
+
+      /**
+        * 生成弹窗消息
+        */
+      foreach ($cus_ids as $key => $cus_id) {
+        $cusRow = D("Customer")->where(array("id"=>$cus_id))->getField("name");
+        M('msg_alert')->data(
+            array('to_id'=>$user_id,
+                  'title'=>"您有一个新的客户",
+                  'content'=>"客户：".$cusRow)
+        )->add();
+      }
+        
+
+
       $this->success("分配成功");
     }else{
       $this->error($this->M->getError());
     }
   }
 
+
+   public function getDepartms(){
+        $re = D("Department")->getGoodSalesDepartments("id,name");
+        if ($re) {
+            $this->ajaxReturn($re);
+        } else {
+            $this->ajaxReturn(array());
+        }
+    }
+
+    public function getGroups(){
+        $depart_id = I("get.id");
+        $re = D("Group")->getAllGoups($depart_id, 'id,name');
+        if ($re) {
+            $this->ajaxReturn($re);
+        } else {
+            $this->ajaxReturn(array());
+        }
+    }
+
+    public function getUsers(){
+        $group_id = I("get.id");
+        $re = D("User")->getGroupEmployee($group_id, 'id,realname as name');
+        if ($re) {
+            $this->ajaxReturn($re);
+        } else {
+            $this->ajaxReturn(array());
+        }
+    }
 
 
 

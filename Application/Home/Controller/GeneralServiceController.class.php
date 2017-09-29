@@ -91,9 +91,83 @@ class GeneralServiceController extends CommonController{
             
         	  // $this->M->where(array('cc.qq|cc.phone|cc.weixin'=>array('LIKE',$val."%")));
         }
+
+
+        //时间区间
+      $buys = array();
+      $range = I("get.range");
+      if ($range) {
+          $dates = explode(" - ", $range);
+          $buys = D('CustomerBuy')->where(array('buy_time'=>array(array('EGT', $dates[0]), array("ELT", $dates[1]))))->getField("user_id", true);
+          
+      }
+
+      //销售部 团队 员工参数
+      $user_id = I("get.user_id");
+      if ($user_id) {
+          $buys[] = $user_id;
+          $buys = array_unique($buys);
+          // $this->M->where(array('customers_basic.salesman_id'=>$user_id));
+          $this->M->where(array('customers_basic.salesman_id'=>array('IN', $buys)));
+          return;
+      }
+
+      $group_id = I("get.group_id");
+      if ($group_id ) {
+          $user_id = D("User")->getGroupEmployee($group_id, 'id');
+          if ($user_id) {
+              $user_id = array_column($user_id, 'id');
+              $user_id = array_merge($buys, $user_id);
+              $this->M->where(array('customers_basic.salesman_id'=>array("IN", $user_id) ));
+          }  else {
+              $this->M->where(array('customers_basic.salesman_id'=>-1 ));
+          }
+          return;
+      }
+
+      $depart_id = I("get.department_id");
+      if ($depart_id) {
+          $user_id = D("User")->getDepartmentEmployee($depart_id, 'id');
+          if ($user_id) {
+              $user_id = array_column($user_id, 'id');
+              $user_id = array_merge($buys, $user_id);
+              $this->M->where(array('customers_basic.salesman_id'=>array("IN", $user_id) ));
+          }  else {
+              $this->M->where(array('customers_basic.salesman_id'=>-1 ));
+          }
+      }
         
 
 	}
+
+    public function getDepartms(){
+        $re = D("Department")->getGoodSalesDepartments("id,name");
+        if ($re) {
+            $this->ajaxReturn($re);
+        } else {
+            $this->ajaxReturn(array());
+        }
+    }
+
+    public function getGroups(){
+        $depart_id = I("get.id");
+        $re = D("Group")->getAllGoups($depart_id, 'id,name');
+        if ($re) {
+            $this->ajaxReturn($re);
+        } else {
+            $this->ajaxReturn(array());
+        }
+    }
+
+    public function getUsers(){
+        $group_id = I("get.id");
+        $re = D("User")->getGroupEmployee($group_id, 'id,realname as name');
+        if ($re) {
+            $this->ajaxReturn($re);
+        } else {
+            $this->ajaxReturn(array());
+        }
+    }
 
 
 

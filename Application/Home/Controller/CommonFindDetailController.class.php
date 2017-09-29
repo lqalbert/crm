@@ -34,7 +34,30 @@ class CommonFindDetailController extends CommonController{
 		}  else {
 			return $arr;
 		}
-  }    
+  }  
+
+
+
+
+  public function customerLog(){
+    $id = I("get.id");
+    $arr=M('customers_log')->where(" cus_id = ".$id." AND (`track_type` <> 11 or `track_type` is null) ")->order('id desc')->select();
+    foreach ($arr as $key => $value){
+      
+      $dep_user=M('user_info as ui')->join('left join department_basic as db on ui.department_id=db.id')
+               ->where(array('ui.user_id'=>$value['user_id']))->getField("IFNULL(concat(db.name,'-',ui.realname),ui.realname) as user");
+      foreach ($dep_user as $k => $v) {
+          $arr[$key]['user']=$v['user'];
+      }
+      $arr[$key]['track_type'] = $arr[$key]['track_type'] == null ? :D('CustomerLog')->getType((int)$arr[$key]['track_type']);
+      $arr[$key]['step'] = $arr[$key]['step'] == null ? :D('CustomerLog')->getSteps((int)$arr[$key]['step']);
+    }
+    if (IS_AJAX) {
+      $this->ajaxReturn($arr);
+    }  else {
+      return $arr;
+    }
+  }  
         
   /**
   *   获取客户资料
@@ -73,11 +96,28 @@ class CommonFindDetailController extends CommonController{
 		}
   }
 
+
+  public function complainInfo(){
+    $id  = I("post.id");
+    $all = D("CustomerComplain")->where(array("cus_id"=>$id))->order("created_at desc")->select();
+    foreach ($all as &$value) {
+      $creator = M("user_info")->where(array("user_id"=>$value['user_id']))->field("department_id,realname")->find();
+      $value['user'] = D("Department")->where(array("id"=>$creator['department_id']))->getField("name")." - ".$creator['realname'];
+      $value['type_text'] = D("CustomerComplain")->getType((int)$value['type']);
+    }
+    if (IS_AJAX) {
+      $this->ajaxReturn($all);
+    } else {
+      $this->$all;
+    }
+  }
+
+
   /**
   *   获取投诉信息
   *
   */
-  public function complainInfo(){
+  public function complainInfo_del(){
     $cus_id = empty(I('post.condition')) ? I('post.id') : I('post.cus_id');
     $type=D('Customer')->getType(I('post.type'));
     $arr=M('customers_log')->where(array('cus_id'=>$cus_id,'track_type'=>array('EQ',11)))->order('id desc')->select();

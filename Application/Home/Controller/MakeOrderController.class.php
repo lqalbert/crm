@@ -24,11 +24,82 @@ class MakeOrderController extends CommonController {
     public function setQeuryCondition(){
 
         $this->dCondition['customers_buy.status'] = I('get.status');
+
+
+        $name = I("get.name");
+        if ($name) {
+           $this->M->where(array("cb.name"=>array('LIKE', $name.'%')));
+        }
+
+        $contact = I("get.contact");
+        if ($contact) {
+            $cus_ids = M("customers_contacts")->where(array("phone|qq|weixin"=>array('like', $contact.'%')))->getField("cus_id");
+            if ($cus_ids) {
+                $this->M->where( array("cb.id"=>array("IN", $cus_ids)));
+            } else {
+                $this->M->where( array("cb.id"=>-1));
+            }
+        }
+
+        //时间区间
+        $range = I("get.range");
+        if ($range) {
+            $dates = explode(" - ", $range);
+            $this->M->where(array('buy_time'=>array(array('EGT', $dates[0]), array("ELT", $dates[1]))));
+        }
+
+        $type = I("get.type");
+        if (in_array($type, array("0", "1", "2"))) {
+            $this->M->where(array('customers_buy.type'=>$type));
+        }
+
+        $account = I("get.account");
+        if ($account) {
+            $user = M("software_account")->where(array('account_id'=>array('like', $account."%")))->getField('cus_id',true);
+            if ($user) {
+                $this->M->where(array('customers_buy.cus_id'=>array('IN', $user)));
+            } else {
+                $this->M->where(array('customers_buy.cus_id'=>-1 ));
+            }
+        }
+
         $this->M->join('user_info as ui on customers_buy.user_id=ui.user_id')
                 ->join('customers_basic as cb on cb.id = customers_buy.cus_id','LEFT')
                 ->join('department_basic as db on ui.department_id = db.id', 'left')
                 ->field('customers_buy.* , ui.realname, db.name as department_name,cb.name as cus_name')
                 ->where($this->dCondition);
+
+        //销售部 团队 员工参数
+        $user_id = I("get.user_id");
+        if ($user_id) {
+            $this->M->where(array('cb.salesman_id'=>$user_id));
+            return;
+        }
+
+        $group_id = I("get.group_id");
+        if ($group_id ) {
+            $user_id = D("User")->getGroupEmployee($group_id, 'id');
+            if ($user_id) {
+                $user_id = array_column($user_id, 'id');
+                $this->M->where(array('cb.salesman_id'=>array("IN", $user_id) ));
+            }  else {
+                $this->M->where(array('cb.salesman_id'=>-1 ));
+            }
+            return;
+        }
+
+        $depart_id = I("get.department_id");
+        if ($depart_id) {
+            $user_id = D("User")->getDepartmentEmployee($depart_id, 'id');
+            if ($user_id) {
+                $user_id = array_column($user_id, 'id');
+                $this->M->where(array('cb.salesman_id'=>array("IN", $user_id) ));
+            }  else {
+                $this->M->where(array('cb.salesman_id'=>-1 ));
+            }
+        }
+
+        
     }
 
 
@@ -212,7 +283,6 @@ class MakeOrderController extends CommonController {
 
     private function _addAccount(){
         $_POST['account']['open_id'] = session('uid');
-        // $_POST['account']['user_id'] = I('post.account.user_id');
 
         $data = M('software_account')->create($_POST['account']);
         if (!$data) {
@@ -255,6 +325,17 @@ class MakeOrderController extends CommonController {
         
 
         if ($saveRe !== false) {
+
+            /**
+            * 生成弹窗消息
+            */
+            $cusRow = D("Customer")->where(array("id"=>$id))->getField("name");
+            M('msg_alert')->data(
+                array('to_id'=>$semaster_id,
+                      'title'=>"您有一个新的客户",
+                      'content'=>"客户：".$cusRow)
+            )->add();
+
             return true;
         } else {
             $this->error=D("Customer")->getError();
@@ -306,6 +387,36 @@ class MakeOrderController extends CommonController {
             $this->ajaxReturn(array("account_id"=>$account['account_id']));
         } else {
             $this->error();
+        }
+    }
+
+
+    public function getDepartms(){
+        $re = D("Department")->getGoodSalesDepartments("id,name");
+        if ($re) {
+            $this->ajaxReturn($re);
+        } else {
+            $this->ajaxReturn(array());
+        }
+    }
+
+    public function getGroups(){
+        $depart_id = I("get.id");
+        $re = D("Group")->getAllGoups($depart_id, 'id,name');
+        if ($re) {
+            $this->ajaxReturn($re);
+        } else {
+            $this->ajaxReturn(array());
+        }
+    }
+
+    public function getUsers(){
+        $group_id = I("get.id");
+        $re = D("User")->getGroupEmployee($group_id, 'id,realname as name');
+        if ($re) {
+            $this->ajaxReturn($re);
+        } else {
+            $this->ajaxReturn(array());
         }
     }
 

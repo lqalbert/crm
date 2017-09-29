@@ -51,6 +51,8 @@ class CustomerController extends CommonController {
         $this->assign('uid',  I('get.id', session('uid') ));
 
         $this->assign('isDepartment', $this->getRoleEname() != RoleModel::DEPARTMENTMASTER);
+
+        $this->assign('complainTypes', D("CustomerComplain")->getType());
         
        
 
