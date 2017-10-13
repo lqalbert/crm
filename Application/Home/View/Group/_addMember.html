@@ -1,26 +1,19 @@
-<el-dialog title="添加小组成员" v-model="addMemberFormDialog" @open="beforeAddMember" >
-<!-- <el-form :model="form"> -->
-<el-form :model="addMemberForm"  ref="addMemberForm" :label-width="dialogLabelWidth">
-<input type="hidden" v-model="addMemberForm.id">
+<el-dialog title="添加团队成员" v-model="addMemberFormDialog" @open="beforeAddMember">
+<el-form :model="addMemberForm" ref="addMember" :label-width="dialogLabelWidth">
   <el-row>
-    <el-col :span="10">
-      <el-form-item label="团队小组名称" prop="name">
-        <el-input  auto-complete="off" v-model="addMemberForm.name" :disabled="true"></el-input>
-      </el-form-item>
+    
+    <el-col :span="12">
+        <el-form-item label="备选"  prop="user_ids">
+          <el-select multiple  placeholder="请选择" v-model="addMemberForm.user_ids">
+            <el-option v-for="member in memberList" :label="member.realname" :value="member.user_id">
+              <span style="float: left">{{ member.realname }}</span>
+              <span style="float: right; color: #8492a6; font-size: 13px">{{ member.group_name }}</span>
+            </el-option>
+          </el-input>
+        </el-form-item>
     </el-col>
   </el-row>
-  <el-row>
-    <el-col :span="14">
-      <el-form-item label="选择成员" prop="user_ids">
-        <el-select  placeholder="请选择成员" multiple  filterable v-model="addMemberForm.user_ids">
-          <el-option v-for="org in memberList"  :label="org.realname" :value="org.user_id">
-            <span style="float: left">{{ org.realname }}</span>
-            <span style="float: right; color: #8492a6; font-size: 13px">{{ org.group_name }}</span>
-          </el-option>
-        </el-select>
-      </el-form-item>
-    </el-col>
-  </el-row>
+  
   </el-form>
   <div slot="footer" class="dialog-footer">
     <el-button @click="closeDialog('addMember')">取 消</el-button>

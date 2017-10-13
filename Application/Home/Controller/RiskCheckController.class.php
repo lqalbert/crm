@@ -57,8 +57,8 @@ class RiskCheckController extends CommonController{
     protected function setChPer(){
         $this->M->where(array("risk_id"=>I("get.ch_id")));
 
-        $state = I("get.state");
-        if ($state !="") {
+        $state = I("get.state","");
+        if ($state !=="") {
             $this->M->where(array('risk_state'=>$state));
         }
     }

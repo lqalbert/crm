@@ -186,7 +186,7 @@ class CustomerCountServiceModel extends \Think\Model{
     * 统计 指定时间 的成交量
     */
     private function setVCount(){
-        $sql = "select count(cus_id) as c, user_id from customers_order where created_at > '".$this->date['start']."' and created_at <'".$this->date['end']."' group by user_id";
+        $sql = "select count(cus_id) as c, salesman_id as user_id from customers_order where created_at > '".$this->date['start']."' and created_at <'".$this->date['end']."' group by salesman_id";
 
         $re = M()->query($sql);
         foreach ($re as  $value) {

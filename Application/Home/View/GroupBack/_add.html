@@ -1,0 +1,59 @@
+<el-dialog title="添加团队小组" v-model="addFormDialog" @open="beforeOpen">
+<!-- <el-form :model="form"> -->
+<el-form :model="addForm" :rules="rules" ref="addForm" :label-width="dialogLabelWidth">
+ <input type="hidden" name="img" v-model="addForm.img"/>
+  <el-row>
+    <el-col :span="12">
+      <el-form-item label="团队小组名称" prop="name">
+        <el-input  auto-complete="off" v-model="addForm.name" placeholder="请填写团队小组名"></el-input>
+      </el-form-item>
+    </el-col>
+    <el-col :span="12">
+      <el-form-item label="上级部门组织" prop="department_id">
+        <el-select  placeholder="请选择上级组织" v-model="addForm.department_id">
+          <el-option v-for="org in namelist"  :label="org.name" :value="org.id"></el-option>
+        </el-select>
+      </el-form-item>
+    </el-col>
+  </el-row>
+   <el-row>
+    <el-col :span="12">
+        <el-form-item label="联系人(负责人)"  prop="user_id">
+          <el-select   placeholder="请选择联系人" v-model="addForm.user_id">
+            <el-option v-for="contact in contactList" :label="contact.realname" :value="contact.user_id"></el-option>
+          </el-input>
+        </el-form-item>
+    </el-col>
+    <el-col :span="12">
+        <el-form-item label="是否启用" prop="status">
+         <el-radio-group v-model="addForm.status">
+           <el-radio :label="1">启用</el-radio>
+           <el-radio :label="0">禁用</el-radio>
+         </el-radio-group>
+       </el-form-item>
+    </el-col>
+   </el-row>
+
+    <el-row>
+     <el-col :span="12">
+        <el-upload action="{:U('Upload/index')}" :data="pathInfo" :on-success="uploadImg" :thumbnail-mode="true" type="drag" :multiple="false" style="margin-left:30%;">
+          <i class="el-icon-upload" style="margin:10px 0 16px;"></i>
+          <div class="el-dragger__text">将<em>形象照片</em>拖到此处，或<em>点击上传</em></div>
+          <div class="el-upload__tip" slot="tip" style="margin-right:115px;">只能上传jpg/png/gif文件，且不超过2M</div>
+        </el-upload>
+     </el-col>
+     <el-col :span="12">
+        <el-form-item label="备注说明" prop="remark">
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 2, maxRows: 4}"
+            placeholder="请输入内容" v-model="addForm.remark">
+          </el-input>
+        </el-form-item>
+     </el-col>
+    </el-row>
+  </el-form>
+  <div slot="footer" class="dialog-footer">
+    <include file="Common:_add" />
+  </div>
+</el-dialog>

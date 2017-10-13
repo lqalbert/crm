@@ -101,7 +101,7 @@ class PerformanceController extends CommonController {
       $depWhere = " and department_id = $department_id";
     }
 
-    $sql = "select department_id as id, department_name as name, sum(order_num) as order_num,sum(sale_amount) as sale_amount 
+    $sql = "select department_id as id, department_name as name, sum(order_num) as order_num,sum(sale_amount) as sale_amount , sum(self_amount) as self_amount, sum(spread_amount) as spread_amount
      from statistics_sale_achievement ".$this->dateWhere." $depWhere group by department_id ".$this->orderWhere;
      // var_dump($sql);
     $re = M()->cache(true,180)->query($sql);
@@ -121,7 +121,7 @@ class PerformanceController extends CommonController {
       $groupWhere = " and group_id = $group_id";
     }
 
-    $sql = "select group_id as id,department_id,department_name,concat(department_name,'-',group_name) as name, sum(order_num) as order_num,sum(sale_amount) as sale_amount 
+    $sql = "select group_id as id,department_id,department_name,concat(department_name,'-',group_name) as name, sum(order_num) as order_num,sum(sale_amount) as sale_amount  , sum(self_amount) as self_amount, sum(spread_amount) as spread_amount
      from statistics_sale_achievement ".$this->dateWhere." $depWhere $groupWhere group by group_id ".$this->orderWhere;
     $re = M()->cache(true,180)->query($sql);
     return $re;
@@ -142,7 +142,7 @@ class PerformanceController extends CommonController {
 
     $sql = "select saa.user_id as id,saa.department_id,saa.group_id,saa.department_name, saa.group_name ,
     concat(concat(saa.department_name,'-',saa.group_name),'-',ui.realname) as name,
-    sum(saa.order_num) as order_num,sum(saa.sale_amount) as sale_amount from statistics_sale_achievement as saa 
+    sum(saa.order_num) as order_num,sum(saa.sale_amount) as sale_amount , sum(self_amount) as self_amount, sum(spread_amount) as spread_amount from statistics_sale_achievement as saa 
     left join user_info as ui on ui.user_id=saa.user_id ".$this->dateWhere." $depWhere $groupWhere group by saa.user_id ".$this->orderWhere;
     $re = M()->cache(true,180)->query($sql);
     return $re;
@@ -201,14 +201,42 @@ class PerformanceController extends CommonController {
   public function getOrderInfo($user_id,$department_id,$start,$end){
     $startDate = $start." 00:00:00";
     $endDate  = Date('Y-m-d H:i:s', strtotime($end) + 86400);
-
+    //原
   	$re = M('customers_order as co')->where(array('salesman_id'=>$user_id,'created_at'=>array(array('EGT',$startDate),array('LT',$endDate))))
   	->field("co.salesman_id,co.user_id,co.product_id,co.created_at as date,co.paid_in as money,
   		p.name as production,co.customer_name as cus_name,ui.realname as create_name,co.user_name,co.sale_name")
   	->join("left join products as p on p.id=co.product_id")
   	->join("left join user_info as ui on ui.user_id=co.creater_id")->select();
+
+    //自锁
+    $re2 = M('customers_order as co')->where(array('salesman_id'=>$user_id,'created_at'=>array(array('EGT',$startDate),array('LT',$endDate)), 'co.source_type'=>1))
+    ->field("co.salesman_id,co.user_id,co.product_id,co.created_at as date,co.paid_in as money,
+      p.name as production,co.customer_name as cus_name,ui.realname as create_name,co.user_name,co.sale_name")
+    ->join("left join products as p on p.id=co.product_id")
+    ->join("left join user_info as ui on ui.user_id=co.creater_id")->select();
+
+    //推广 
+
+
+    $re3 = M("customers_order")->where(array(
+            'customers_order.salesman_id'=> $user_id, 
+            'customers_order.created_at'=>array(array('EGT', $startDate), array('LT', $endDate))))->join("customers_buy on customers_order.buy_id = customers_buy.id")
+                            ->field("customers_order.* ,customers_buy.product_name, customers_buy.buy_time");
+
+    foreach ($re3 as &$value) {
+          $user = M("user_info")->where(array('user_id'=>$value['user_id']))->field('group_id,mphone')->find();
+          $value['mphone']  = $user['mphone'];
+          if (!empty($value['user_name'])) {
+              $tmp = explode(" ", $value['user_name']);
+              $groupName = D("Group")->where(array("id"=>$user['group_id']))->getField('name');
+              $value['user_name'] = $tmp[0]."-".$groupName."-".$tmp[1];
+          }
+          
+      }
+
+
     
-  	foreach ($re as $k => $v) {
+  	/*foreach ($re as $k => $v) {
   		if($v['salesman_id'] != $v['user_id']){
   			$re[$k]['info'] = "跟踪员工:".$v['sale_name']." 锁定员工:".$v['user_name'];
   		}else{
@@ -216,7 +244,15 @@ class PerformanceController extends CommonController {
   		}
   	}
 
-  	$this->ajaxReturn($re);
+    foreach ($re as $k => $v) {
+      if($v['salesman_id'] != $v['user_id']){
+        $re[$k]['info'] = "跟踪员工:".$v['sale_name']." 锁定员工:".$v['user_name'];
+      }else{
+        $re[$k]['info'] = "此客户为自锁自跟！";
+      }
+    }*/
+
+  	$this->ajaxReturn(array('list1'=>$re, 'list2'=>$re2, 'list3'=>$re3 ));
 
   }
 

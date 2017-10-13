@@ -1,0 +1,381 @@
+<extend name="Common:base" />
+<block name="head">
+  <style>
+    .el-tabs__header{
+      border-top:2px solid #ea4b4b;
+      border-bottom: 1px solid #c51f1f;
+    }
+    .el-dialog .el-tabs__header{
+      border-top:none;
+    }
+    .el-tabs--border-card .el-tabs__item{
+      border-left: none;
+    }
+    .el-tabs--border-card .el-tabs__item.is-active {
+      background-color: #fff;
+      border-right-color: #d3dce6;
+      background: #544b8f;
+      color: #fff;
+    }
+    .el-tabs--border-card .el-tabs__header {
+      background-color: #fff;
+      margin: 0;
+    }
+    .container > .wrapp > .a > .el-row {
+      margin-bottom: 6px;
+    }
+    .el-tabs--border-card .el-tabs__content{
+      padding:0 9px 5px 9px;
+    }
+    .el-card, .el-menu--horizontal .el-submenu>.el-menu, .el-tabs--border-card{
+      box-shadow: none;
+    }
+    .el-tabs--border-card{
+      border: none;
+    }
+    .el-table__body tr.current-row>td{
+      background: rgba(157, 195, 232, 0.7);
+    }
+  </style>
+</block>
+<block name="body">
+  
+
+<div id="app" class="container">
+
+<div class="wrapp" id="appx" v-show="show" style="display: none;">
+  <!-- <div class="a" style="border:1px solid red;"> -->
+  <div class="a" id="app3">
+
+  <el-row>
+    <el-col :span="24">
+      <el-form :inline="true" ref="searchForm" :model="searchForm">
+        <el-form-item prop="start">
+          <el-date-picker size="small" v-model="searchForm.start" 
+            placeholder="请选择起日期" :picker-options="setPicker"
+            @change="startDateChange" :clearable="false">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item prop="end">
+          <el-date-picker size="small" 
+            v-model="searchForm.end" 
+            placeholder="请选择止日期" :picker-options="setPicker"
+            @change="endDateChange" :clearable="false">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item>
+          <el-button size="small" @click="setField('lastWeek')">上周</el-button>
+          <el-button size="small" @click="setField('lastMonth')">上月</el-button>
+          <el-button size="small" @click="setField('week')">本周</el-button>
+          <el-button size="small" @click="setField('month')">本月</el-button>
+        </el-form-item>
+
+        <el-form-item prop="type">
+          <el-select size="small" style="width:120px;" v-model="searchForm.type" placeholder="查询类型" @change="allTypeChange">
+            <el-option v-for="item in searchGroup" :label="item.key" :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item prop="department_id">
+          <el-tooltip content="选择某个部门后点击查询或者继续选择下属小组再查询" placement="bottom-start">
+            <el-select size="small" style="width:120px;" clearable :disabled="ctrlDepart" v-model="searchForm.department_id" placeholder="请选择部门" @change="depChange">
+              <el-option v-for="dep in Alldeps" :value="dep.id" :label="dep.name"></el-option>
+            </el-select>
+          </el-tooltip>
+        </el-form-item>
+
+        <el-form-item prop="group_id">
+          <el-tooltip content="必须先选择部门方可选择团组后点击查询或者继续选择下属队员再查询" placement="bottom-start">
+            <el-select size="small" style="width:120px;" :disabled="ctrlSelect" clearable  v-model="searchForm.group_id" @change="groupChange" placeholder="请选择小组">
+              <el-option v-for="group in groups" :value="group.id" :label="group.name"></el-option>
+            </el-select>
+          </el-tooltip>
+        </el-form-item>
+
+        <el-form-item>
+          <el-button type="info" size="small" icon="search"  @click="search" >查询</el-button> 
+          <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start">
+            <el-button size="small" @click="resetBack" style="margin-left:10px;">重置</el-button>
+          </el-tooltip>
+        </el-form-item>
+        
+      </el-form>
+    </el-col>
+  </el-row>
+  <!-- max-height="500" -->
+
+  <el-row>
+    <el-col :span="24">
+      <el-table 
+      :data="dataList" 
+      border v-loading="dataLoad" 
+      element-loading-text="{:L('DATA_LOGIN')}" 
+      highlight-current-row empty-text="暂无数据" 
+      @row-click="orderInfo"
+      @sort-change="sortChange"
+       ref="select">
+        <el-table-column label="序号"  align="center" width="65" :formatter="handleIndex">
+        </el-table-column>
+        <el-table-column  prop="name" label="部门/小组/员工" width="200">
+        </el-table-column>
+        <el-table-column sortable="custom"  align="center" prop="order_num" label="业绩总数(个)">
+        </el-table-column>
+        <el-table-column sortable="custom"  align="center" prop="sale_amount" label="成交金额总数(元)">
+        </el-table-column>
+      </el-table>
+    </el-col>
+  </el-row>
+
+  <!-- toolbar -->
+  <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
+
+    <el-col :span="12" :offset="12">
+      <div class="grid-content bg-purple-light pull-right">
+
+        <!-- page -->
+        <include file="Common:_pagination" />
+        <!-- / page -->
+        
+      </div>
+    </el-col>
+
+  </el-row>
+  </div>
+  
+
+  <div id="app2" class="b" style="margin:5px -10px 5px;" >
+    <el-row>
+     <el-col :span="24">
+        <el-tabs  type="border-card">
+          <el-tab-pane label="成交信息">
+
+            <el-table :data="tableData"  empty-text="请点击员工显示员工订单信息" border style="width: 100%">
+              <el-table-column label="序号" align="center" width="65" type="index"></el-table-column>
+
+              <el-table-column prop="customer_name" label="客户姓名" align="left"></el-table-column>
+              <el-table-column prop="phone" label="联系方式" align="center"></el-table-column>
+              <el-table-column prop="product_name" label="产品类型" align="left"></el-table-column>
+              <el-table-column prop="paid_in" label="成交金额" header-align="center"></el-table-column>
+              <el-table-column prop="buy_time" label="成交时间" align="center"></el-table-column>
+              <el-table-column prop="created_at" label="开单时间" align="center"></el-table-column>
+              <el-table-column prop="sale_name" label="销售员工" header-align="center"></el-table-column>
+              <el-table-column prop="mphone" label="销售员工联系方式" header-align="left"></el-table-column>
+              
+              <!-- <el-table-column prop="cus_name" label="成交客户" header-align="center"></el-table-column>
+              <el-table-column prop="create_name" label="开单人员" header-align="center"></el-table-column>
+              <el-table-column prop="info" label="订单详情" header-align="center"></el-table-column> -->
+            </el-table>
+            <div class="pull-right">
+              <el-pagination
+                @current-change="detailCurrentPageChange"
+                :current-page="detailCPage"
+                layout="prev, pager, next"
+                :total="detailCount"
+                :page-size="10"
+                >
+              </el-pagination>
+            </div>
+            
+          </el-tab-pane>
+        </el-tabs>
+     </el-col>
+    </el-row>
+  </div>
+
+
+</div>
+
+<div class="dialogWrapper" v-show="show" style="display: none">
+</div>
+
+</div>
+</block>
+<block name="scripts">
+<script src="__PUBLIC__/js/calculate.js?ef=a"></script>
+<script>
+
+  window.defaultOption.setDatas({
+    setPicker:{
+      disabledDate:function(time) {
+        return time.getTime() > Date.now() - 8.64e7;
+      }
+    },
+    groups:[],
+    users:[],
+    sortMap:{
+      descending:'desc',
+      ascending:'asc'
+    },
+    Alldeps:{:json_encode($Alldeps)},
+    searchGroup:{:json_encode($searchGroup)},
+    tableData:[],
+    ctrlDepart:true,
+    depClearable:true,
+    ctrlSelect:true,
+    detailCPage:1,
+    detailCount:0,
+    detailQuery:{
+      start:"",
+      end:"",
+      type:"",
+      id:"",
+      p:0
+    }
+
+
+  }).setForm('search', {
+    type:'department',
+    start:'',
+    end:'',
+    department_id:"",
+    group_id:''
+  }).setMethod('setField', function(v){
+      if (v=='week') {
+        this.searchForm.start = showWeekFirstDay();
+        this.searchForm.end   = showWeekLastDay();
+      } else if(v=='month'){
+        this.searchForm.start = showMonthFirstDay();
+        this.searchForm.end   = showMonthLastDay();
+      } else if(v=='lastMonth'){
+        this.searchForm.start = showLastMonthFirstDay();
+        this.searchForm.end   = showLastMonthLastDay(); 
+      } else if(v=='lastWeek'){
+        this.searchForm.start = showLastWeekFirstDay();
+        this.searchForm.end   = showLastWeekLastDay(); 
+      }
+      this.dataLoad = true;
+      this.loadDatalist();
+  }).setMethod('startDateChange', function(v){
+      this.searchForm.start = v;
+  }).setMethod('endDateChange', function(v){
+      this.searchForm.end = v;
+  }).setMethod('resetBack', function(){
+     this.$refs['searchForm'].resetFields();
+  }).setMethod('allTypeChange', function(v){
+     if (v == 'user') {
+      this.ctrlSelect = false;
+      
+     } else {
+      this.searchForm.group_id = "";
+      this.ctrlSelect = true;
+      
+     }
+
+     if (v == 'department') {
+      this.searchForm.department_id = "";
+      this.ctrlDepart = true; 
+     } else {
+      
+      this.ctrlDepart = false;
+     }
+  }).setMethod('depChange', function(v){
+    this.searchForm.group_id = "";
+    this.groups = [];
+    if ( v!="" ) {
+
+      this.setGroups(v, 'groups');
+    }
+  }).setMethod('groupChange', function(v){
+
+
+  }).setMethod('orderInfo', function(row){
+    // console.log(row);
+    var par= this.detailQuery;
+    if (row.user_id) {
+        par['id'] = row.user_id;
+    }
+
+    if (row.group_id) {
+      par['id'] = row.group_id;
+    }
+
+    if (row.department_id) {
+      par['id'] = row.department_id;
+    }
+    var vmThis = this;
+    this.detailCPage = 1;
+    par['p'] = 0;
+
+    this.loadDetail(par);
+    
+
+
+
+  }).setMethod('sortChange', function(info){
+    if (info) {
+      this.searchForm.sort_field = info.prop;
+      this.searchForm.sort_order = this.sortMap[info.order];
+    } else {
+      delete this.searchForm.sort_field;
+      delete this.searchForm.sort_order;
+    }
+    
+    this.dataReload();
+  }).setVueHook('mounted', function(){
+    // this.searchForm.start = showWeekFirstDay();
+    // this.searchForm.end   = showWeekLastDay();
+  }).setMethod('setGroups', function(id, field){
+
+    this.$http.get("{:U('getGroups')}", {params:{department_id:id} }).then(function(response){
+      var groups = [];
+      response.body.forEach(function(currentValue,index){
+        groups.push({id: currentValue.id, name: currentValue.name});
+      })
+      this.$set(this, field, groups);
+    });
+  }).setMethod('search', function(){
+    if (this.searchForm.type =='user') {
+      if (this.searchForm.group_id == "") {
+        // this.$message.error("请选择小组");
+        this.$message({
+          showClose: true,
+          message:"请选择小组",
+          type:'error'
+        });
+        return;
+      }
+    } else if(this.searchForm.type =='group'){
+      if (this.searchForm.department_id == "") {
+        // this.$message.error("请选择部门");
+        this.$message({
+          showClose: true,
+          message:"请选择部门",
+          type:'error'
+        });
+        return;
+      }
+    }
+    this.detailQuery.start = this.searchForm.start;
+    this.detailQuery.end   = this.searchForm.end;
+    this.detailQuery.type  = this.searchForm.type;
+    this.loadDatalist();
+  }).setMethod('beforeList', function(data){
+    var h = {
+      'name' : '汇总',
+      'order_num' : 0,
+      'sale_amount': 0
+    }
+    for (var i = data.length - 1; i >= 0; i--) {
+      h['order_num']   += parseInt(data[i]['order_num']);
+      h['sale_amount'] += parseInt(data[i]['sale_amount']);
+    }
+    data.push(h);
+    return data;
+  }).setMethod('sortChange', function(obj){
+    // this.dataList
+  }).setMethod('detailCurrentPageChange', function(v){
+    var par = this.detailQuery;
+    par.p = v;
+    this.loadDetail(par);
+  }).setMethod('loadDetail', function(par){
+    var vmThis = this;
+    this.$http.get("{:U('getOrderInfo')}", {params:par}).then(function(response){
+        vmThis.tableData = response.body.list;
+        vmThis.detailCount = parseInt(response.body.count);
+      }, function(response){
+        this.$message.error('')
+      })
+  });
+</script>
+</block>

@@ -1,22 +1,13 @@
 <el-dialog title="编辑团队小组" v-model="editFormDialog" @open="beforeEdit">
 
-  <el-form ref="editForm" :rules="rules" :model="editForm" :label-width="dialogLabelWidth">
-  <input type="hidden" name="img" v-model="editForm.img"/>
+<el-form ref="editForm" :rules="rules" :model="editForm" :label-width="dialogLabelWidth">
   <el-row>
     <el-col :span="12">
       <el-form-item label="团队小组名称" prop="name">
         <el-input  auto-complete="off" v-model="editForm.name" placeholder="请填写团队小组名"></el-input>
       </el-form-item>
     </el-col>
-    <el-col :span="12">
-      <el-form-item label="上级部门组织" prop="department_id">
-        <el-select  placeholder="请选择上级组织" v-model="editForm.department_id">
-          <el-option v-for="org in namelist"  :label="org.name" :value="org.id"></el-option>
-        </el-select>
-      </el-form-item>
-    </el-col>
-  </el-row>
-  <el-row>
+    
     <el-col :span="12">
       <el-form-item label="联系人(负责人)"  prop="user_id">
           <el-select   placeholder="请选择联系人" v-model="editForm.user_id">
@@ -24,32 +15,9 @@
           </el-input>
         </el-form-item>
     </el-col>
-<!--     <el-col :span="12">
-      <el-form-item label="是否启用" prop="status">
-       <el-radio-group v-model="editForm.status">
-         <el-radio :label="1">启用</el-radio>
-         <el-radio :label="0">禁用</el-radio>
-       </el-radio-group>
-     </el-form-item>
-    </el-col> -->
   </el-row>
   
   <el-row>
-    <el-col :span="12">
-      <el-upload 
-      action="{:U('Upload/index')}" 
-      :data="pathInfo" 
-      :on-success="uploadImg_E" 
-      :thumbnail-mode="true" 
-      :default-file-list="fileList" 
-      type="drag" 
-      :multiple="false" 
-      style="margin-left:30%;">
-        <i class="el-icon-upload" style="margin:10px 0 16px;"></i>
-        <div class="el-dragger__text">将<em>形象照片</em>拖到此处，或<em>点击上传</em></div>
-        <div class="el-upload__tip" slot="tip" style="margin-right:115px;">只能上传jpg/png/gif文件，且不超过2M</div>
-      </el-upload>
-    </el-col>
     <el-col :span="12">
       <el-form-item label="备注说明" prop="remark">
         <el-input
@@ -58,7 +26,6 @@
           placeholder="请输入内容" v-model="editForm.remark">
         </el-input>
       </el-form-item>
-      <p style="color:red;margin-left:100px;">*ps:未修改任何数据提交则会提示“编辑失败”</p>
     </el-col>
   </el-row>
   </el-form>

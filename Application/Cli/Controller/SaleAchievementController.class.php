@@ -29,17 +29,17 @@ class SaleAchievementController extends \Think\Controller{
 
     //升级
     $sql = "select customers_order.salesman_id, count(customers_order.id) as order_num,sum(paid_in) as sale_amount from customers_order inner join customers_buy
-            where customers_buy.type=1 and  created_at >= '".$this->startDate."' and created_at <'".$this->endDate."' group by salesman_id";
+            where customers_buy.type=1 and  customers_order.created_at >= '".$this->startDate."' and customers_order.created_at <'".$this->endDate."' group by salesman_id";
     $getDataArr = M()->query($sql);
     foreach ($getDataArr as $key => $value) {
       if (isset($this->getAllData[$value['salesman_id']])) {
         $this->getAllData[$value['salesman_id']]['upgrade_num'] = $value['order_num'];
         $this->getAllData[$value['salesman_id']]['upgrade_amount'] = $value['sale_amount'];
-      }
+      } 
     }
     //续费
     $sql = "select customers_order.salesman_id, count(customers_order.id) as order_num,sum(paid_in) as sale_amount from customers_order inner join customers_buy
-            where customers_buy.type=2 and  created_at >= '".$this->startDate."' and created_at <'".$this->endDate."' group by salesman_id";
+            where customers_buy.type=2  and   customers_order.created_at >= '".$this->startDate."' and customers_order.created_at <'".$this->endDate."' group by salesman_id";
     $getDataArr = M()->query($sql);
     foreach ($getDataArr as $key => $value) {
       if (isset($this->getAllData[$value['salesman_id']])) {
@@ -73,11 +73,11 @@ class SaleAchievementController extends \Think\Controller{
         'order_num'=> isset($this->getAllData[$v['user_id']]) ? $this->getAllData[$v['user_id']]['order_num'] : 0,
         'sale_amount'=> isset($this->getAllData[$v['user_id']]) ? $this->getAllData[$v['user_id']]['sale_amount'] :0
 
-        'upgrade_num'=> isset($this->getAllData[$v['user_id']]) ? $this->getAllData[$v['user_id']]['upgrade_num'] : 0,
-        'upgrade_amount'=> isset($this->getAllData[$v['user_id']]) ? $this->getAllData[$v['user_id']]['upgrade_amount'] :0
+        // 'upgrade_num'=> isset($this->getAllData[$v['user_id']]) ? $this->getAllData[$v['user_id']]['upgrade_num'] : 0,
+        // 'upgrade_amount'=> isset($this->getAllData[$v['user_id']]) ? $this->getAllData[$v['user_id']]['upgrade_amount'] :0
 
-        'renew_num'=> isset($this->getAllData[$v['user_id']]) ? $this->getAllData[$v['user_id']]['renew_num'] : 0,
-        'renuew_amount'=> isset($this->getAllData[$v['user_id']]) ? $this->getAllData[$v['user_id']]['renuew_amount'] :0
+        // 'renew_num'=> isset($this->getAllData[$v['user_id']]) ? $this->getAllData[$v['user_id']]['renew_num'] : 0,
+        // 'renuew_amount'=> isset($this->getAllData[$v['user_id']]) ? $this->getAllData[$v['user_id']]['renuew_amount'] :0
     	);
 
       $insertData[] = $tmp_row;

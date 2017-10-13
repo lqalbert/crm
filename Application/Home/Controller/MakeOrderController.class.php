@@ -272,6 +272,19 @@ class MakeOrderController extends CommonController {
         }
         
         $data['creater_id'] = session('uid');
+
+        //判断是自锁 还是 推广部
+        //这个逻辑可以放在 自动完成里面 但是修改这里是并没有定义 对应的模型
+        //就先放在这里了
+        $spId = D("Customer")->where(array('id'=>$data['cus_id']))->getField('spread_id');
+        if ( $spId == 0 ) {
+            $data['source_type'] = 1;
+        }  else {
+            $data['source_type'] = 2;
+        }
+
+
+
         $re = M('customers_order')->data($data)->add();
         if ($re) {
             return true;

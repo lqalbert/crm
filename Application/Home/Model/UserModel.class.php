@@ -199,4 +199,38 @@ class UserModel extends  Model{
              ->select();
     }
 
+    public function getMaster($field="id,account"){
+        //有 父级为 master的 角色的员工
+        $masterId = M('rbac_role')->where(array('ename'=>RoleModel::MASTER))->find();
+        $roleIds = M('rbac_role')->where(array('pid'=>$masterId['id']))->getField('id', true);
+        if ($roleIds) {
+            $user_ids = M('rbac_role_user')->where(array('role_id'=>array("IN", $roleIds)))->getField("user_id",true);
+            if ($user_ids) {
+                return $this->m->join('user_info on rbac_user.id = user_info.user_id')
+                    ->where(array('id'=>array('IN', $user_ids), 'rbac_user.status'=>array('NEQ', RbacUserModel::DELETE_SATUS)))
+                    ->field($field)
+                    ->select();
+            }
+            
+        }
+        return array();
+    }
+
+    public function getGrouper($departId, $field="id,realname as name"){
+        //父级为 groupCaptian
+        $captianId = M('rbac_role')->where(array('ename'=>RoleModel::GROUPCAPTIAN))->find();
+        $roleIds = M('rbac_role')->where(array('pid'=>$captianId['id']))->getField('id', true);
+        if ($roleIds) {
+            $user_ids = M('rbac_role_user')->where(array('role_id'=>array("IN", $roleIds)))->getField("user_id",true);
+            if ($user_ids) {
+                return $this->m->join('user_info on rbac_user.id = user_info.user_id')
+                    ->where(array('department_id'=>$departId,  'id'=>array('IN', $user_ids), 'rbac_user.status'=>array('NEQ', RbacUserModel::DELETE_SATUS)))
+                    ->field($field)
+                    ->select();
+            }
+            
+        }
+        return array();
+    }
+
 }

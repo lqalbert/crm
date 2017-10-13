@@ -24,6 +24,7 @@ class DepartmentModel extends Model {
     const RISK_DEPARTMENT  = 2 ;
     const HR_DEPARTMENT    = 3;
     const SPREAD_DEPARTMENT = 4;
+    const COUNSEL_DEPARTMENT = 5;
 
 	protected $tableName = 'department_basic';
 
@@ -205,15 +206,20 @@ BUTTON;
                 $re = D("Role")->where(array('ename'=>array(
                     array('eq',RoleModel::SUP_SERVICE),
                     array('eq',RoleModel::GEN_SERVICE), 
-                    array('eq',RoleModel::RISK_ONE),
-                    array('eq',RoleModel::CALL_BACK),
-                    array('eq',RoleModel::DATASTAFF),
+                    
                     'or')))->select();
                 break;
             case 2:
                 //风控部
                 $re = D("Role")->where(array('ename'=>array(
-                    array('eq',RoleModel::RISK_ONE),array('eq',RoleModel::CALL_BACK),array('eq',RoleModel::DATASTAFF), 'or')))->select();
+                    array('eq',RoleModel::RISK_ONE),
+                    array('eq',RoleModel::CALL_BACK),
+                    array('eq',RoleModel::DATASTAFF), 
+                    array('eq',RoleModel::RISKGROUP), 
+                    array('eq',RoleModel::DATASTAFF),
+                    array('eq',RoleModel::DATACAPTAIN),
+                    array('eq',RoleModel::CALLBACKCAPTAIN),
+                    'or')))->select();
                 break;
             case 3:
                 //人事部
@@ -226,6 +232,13 @@ BUTTON;
                         array('eq', RoleModel::SP_STAFF),
                         'or'
                     )))->select();
+                break;
+            case 5:
+                //投顾部
+                $re = D("Role")->where(array('ename'=>array(
+                    array('eq',RoleModel::COUNSELORCAPTAIN),
+                    array('eq',RoleModel::COUNSELOR),
+                    'or')))->select();
                 break;
             default:
                 //销售部

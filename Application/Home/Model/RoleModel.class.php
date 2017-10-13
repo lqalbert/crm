@@ -25,6 +25,18 @@ class RoleModel extends Model {
 	const SP_STAFF = 'spreadStaff';
 	const COUNSELOR = 'counselor';
 
+	const COUNSELORCAPTAIN = 'counselorCaptain';
+	const CALLBACKCAPTAIN = 'callBackCaptain';
+	const DATACAPTAIN = 'dataCaptain';
+	const RISKGROUP = 'riskGroup';
+
+	//不可见的
+	const MASTER = 'master';
+	const GROUPCAPTIAN = 'GROUPCAPTIAN';
+	
+	//end of不可见的
+
+
 	protected $tableName = 'rbac_role';
 
 
@@ -47,7 +59,11 @@ class RoleModel extends Model {
 		'spreadMaster', // 推广部经理
 		'spreadCaptain', //推广部主管
 		'spreadStaff', //推广部员工
-		'counselor'// 投资顾问
+		'counselor',// 投资顾问,
+		'riskGroup', //审查组长
+		'counselorCaptain', //投顾组长
+		'dataCaptain', //材料组长
+		'callBackCaptain', //回访组长
 	);
 
 	public function getEnames(){

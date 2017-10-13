@@ -10,11 +10,20 @@
             <el-row>
                 <el-col :span="24">
                     <el-form :inline="true" ref="searchForm" :model="searchForm">
-                        <!-- <el-form-item prop="group_id" style="width: 120px">
+                        <el-form-item prop="department_id" style="width: 120px">
+                            <el-select 
+                              v-model="searchForm.department_id" 
+                              @change="departmentChange" 
+                              size="small" 
+                              clearable placeholder="部门">
+                                <el-option v-for="item in departments" :label="item.name" :value="item.id"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item prop="group_id" style="width: 120px">
                             <el-select v-model="searchForm.group_id" size="small" clearable placeholder="团队小组">
                                 <el-option v-for="item in groups" :label="item.name" :value="item.id"></el-option>
                             </el-select>
-                        </el-form-item> -->
+                        </el-form-item>
                         <el-form-item prop="realname" style="width: 120px">
                             <el-input v-model="searchForm.realname" size="small"  placeholder="输入负责人姓名" >
                             </el-input>
@@ -46,6 +55,8 @@
                         
                         <el-table-column type="index" :formatter="handleIndex" width="65" align="center" label="序号" >
                         </el-table-column>
+                        <el-table-column label="部门" align="left" prop="dbname">
+                        </el-table-column>
                         
                         <el-table-column label="团队小组名称" align="left" prop="name">
                         </el-table-column>
@@ -68,14 +79,7 @@
                         </el-table-column>
                         <el-table-column label="说明备注" align="left" prop="remark">
                         </el-table-column>
-                        <el-table-column :context="_self"  fixed="right"  label="操作" align="center" width="155" >
-                         <template scope="scope">
-                          <span>
-                            <el-button @click="handleEdit(scope.$index, scope.row)" type="info" size="small">编辑</el-button>
-                            <el-button @click="handleDelete(scope.$index,scope.row)"  type="danger" size="small">删除</el-button>
-                          </span>
-                         </template>
-                        </el-table-column>
+                        
                     </el-table>
                 </el-col>
             </el-row>
@@ -86,17 +90,7 @@
             <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
               <el-col :span="12">
                   <div class="grid-content bg-purple">
-                    <span class="wrapper">
-                      <el-tooltip content="添加新的团队小组" placement="right">
-                        <el-button size="small" @click="openDialog('add')" icon="plus" type="primary">添加
-                        </el-button>
-                      </el-tooltip>
-
-                      <el-tooltip content="添加新的成员" placement="right">
-                        <el-button size="small" @click="openDialog('addMember')" icon="plus" type="primary">添加成员
-                        </el-button>
-                      </el-tooltip>
-                    </span>
+                    
                   </div>
               </el-col>
               <el-col :span="12">
@@ -119,8 +113,7 @@
                         border
                         @selection-change="delSelect"
                          >
-                          <el-table-column type="selection"  width="50" :selectable="selectable">
-                          </el-table-column>
+                         
                           <el-table-column prop="user_id" label="员工ID" width="180" align="center">
                           </el-table-column>
                           <el-table-column prop="realname" label="员工姓名" width="180" align="center">
@@ -143,31 +136,11 @@
                     </el-tabs>
                 </el-col>
             </el-row>
-            <el-row>
-                <el-col :span="24">
-                    <el-button type="primary" size="small" @click="removeMember">移除成员</el-button>
-                </el-col>
-            </el-row>
+            
         </div>
 
         <div class="dialogWrapper" v-show="show" style="display: none">
-            <!-- 高级查询 -->
-            
-            <!-- / 高级查询 -->
-
-            <!-- 添加 -->
-            <include file="_add" />
-            <!-- / 添加 -->
-
-            <!-- 编辑 -->
-            <include file="_edit" />
-            <!-- / 编辑 -->
-            
-            <!-- 终止小组(暂时去掉) -->
-            <include file="_stop" />
-            <!-- / stop -->
-
-            <include file="_addMember" />
+           
         </div>
         
     </div>
@@ -203,12 +176,12 @@
      tableData:[],
      multipleSelection:[],
      secondSelection:[],
-     departments:{:json_encode($departments['list'])},
-     groups:{:json_encode($departments['group'])}
+     departments:{:json_encode($departments)},
+     groups:[]
   }).setForm('add',{
     name:"",
     user_id:"",
-    department_id:"{$departmentId}",
+    department_id:"",
     status:1,
     remark:"",
   }).setForm('edit',{
@@ -223,27 +196,14 @@
       realname:"",
       phone:"",
       sortFiled:"id",
-      department_id:{$departmentId},
+      department_id:"",
       sortWay:"asc" // desc
-  }).setForm('addMember',{
-    id:0,
-    name:"",
-    user_ids:[]
-  }, true ).setMethod('departmentChange',function () {
+  }).setMethod('departmentChange',function () {
       var vmThis=this
       vmThis.$http.get('{:U("getGroups")}',{params:{department_id:vmThis.searchForm.department_id}}).then(function (response) {
           vmThis.groups=response.body
           vmThis.searchForm.group_id=''
       })
-
-  }).setMethod('handleEdit',function(index,row){
-    //将此行数据赋给editForm
-    var type='edit';
-    this.initObject(this[FormName.getFormName(type)] , row); 
-    //设置显示的图片
-    // this.fileList = [{name:row.img, url: this.imgUrl(row.img)}];
-    this.editIndex = index;
-    this.openDialog(type);
 
   }).setMethod('beforeList',function(dataList){
     dataList.forEach(function(currentValue,index){
@@ -298,81 +258,6 @@
       this.row = row;
       return row;
     }
-  }).setMethod('beforeAddMember', function(){
-    var type = 'addMember';
-    var row = this.commonSelect(type);
-    var vmThis = this;
-    if ( row !== false) {
-        this[FormName.getFormName(type)].id = row.id;
-        this[FormName.getFormName(type)].name = row.name;
-        this[FormName.getFormName(type)].user_ids = [];
-        
-    }
-    // this.resetForm(type);
-    // memberList
-    vmThis.$http.get(page.getMemberUrl).then(function(response){
-                
-                vmThis.memberList = response.body;
-            }, function(response){
-                vmThis.$message({
-                  message: '获取备选队员失败',
-                  type: 'error'
-                });
-            });
-
-
-  }).setMethod('removeMember', function(){
-    var vmThis  =this;
-    var ids = [];
-    var captain = false;
-    vmThis.secondSelection.forEach(function(current){
-         
-          if (current.type == '主管') {
-            captain = true;
-          }
-          ids.push(current.user_id);
-
-      })
-
-    if (captain) {
-      vmThis.$message({
-          message: '不能把主管删了',
-          type:    'error'
-        });
-      return;
-    }
-
-
-    this.$confirm('确定移除选中的成员?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(function(){
-            
-
-            vmThis.$http.post(page.removeMemberUrl, {user_ids:ids}).then(function(response){
-                vmThis.$message({
-                  message: '操作成功',
-                  type: 'success'
-                });
-                // vmThis.tableData = [];
-                // vmThis.choseRow(vmThis.row);
-            }, function(response){
-                vmThis.$message({
-                  message: '操作失败',
-                  type: 'error'
-                });
-            });
-          /*vmThis.$message({
-            type: 'success',
-            message: '移除成功!'
-          });*/
-        }).catch(function(){
-          vmThis.$message({
-            type: 'info',
-            message: '已取消删除'
-          }); 
-        })  
   }).setMethod('delSelect', function(v){
 
     this.secondSelection = v;
@@ -383,10 +268,6 @@
     }, function(response){
 
     });
-  }).setMethod('beforeOpen', function(){
-    this.getUsers(0);
-  }).setMethod('beforeEdit', function(){
-    this.getUsers(this.dataList[this.editIndex].user_id);
   }).setMethod('selectable', function(row, index){
      return row.type=="主管" ? false : true;
   });

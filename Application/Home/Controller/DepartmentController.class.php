@@ -20,7 +20,7 @@ class DepartmentController extends CommonController {
 		$ename = $this->getRoleEname();
 
     	$this->assign('viewDecorator', $this->M->decoratorView($ename));
-		$this->assign('departments',$this->M->getAllDepartments('id,name'));
+		$this->assign('departments',   $this->M->getAllDepartments('id,name'));
 		$this->display();
 	}
 
@@ -104,28 +104,10 @@ class DepartmentController extends CommonController {
     /**
     * 获取区域/部门 对应的备选负责人
     *
-    * 销售部 部门经理
-    * 客服部 客服经理
-    * 风控部 风控经理
-    *  人事部 人事经理
+
     */
 	public function getUsers(){
-		$type = I('get.type', 0);
-		$id   = I("get.id",   0);
-		$RoleModle = D('Role');
-		$roleId = $RoleModle->getIdByEname($RoleModle->getEnameByType($type));
-		
-		switch ($type) {
-			case '0':
-				$sql = "select user_id,mid(realname, 1, 5) as realname from user_info where (role_id=$roleId and user_id not in(select user_id from department_basic where user_id is not null) ) or user_id=$id";
-				break;
-
-			default:
-				$sql = "select user_id,mid(realname, 1, 5) as realname from user_info where (role_id=$roleId ) or user_id=$id";
-				break;
-		}
-		
-		$result = $this->M->query($sql);
+		$result = D("User")->getMaster("user_id,realname ");
 		$this->ajaxReturn($result);
 	}
 

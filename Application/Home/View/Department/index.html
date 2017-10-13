@@ -36,29 +36,29 @@
 					    </el-input>
 					  </el-form-item>
 
-            <el-form-item prop="type">
-              <el-dropdown trigger="click" menu-align="start" @command="depTypeChange">
-                <el-button type="primary" size="small">
-                  {{depTypeName}}<i class="el-icon-caret-bottom el-icon--right"></i>
-                </el-button>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item v-for="(key,index) in typeList" :command="index.toString()">{{key}}</el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
-            </el-form-item>
+                        <el-form-item prop="type">
+                          <el-dropdown trigger="click" menu-align="start" @command="depTypeChange">
+                            <el-button type="primary" size="small">
+                              {{depTypeName}}<i class="el-icon-caret-bottom el-icon--right"></i>
+                            </el-button>
+                            <el-dropdown-menu slot="dropdown">
+                              <el-dropdown-item v-for="(key,index) in typeList" :command="index.toString()">{{key}}</el-dropdown-item>
+                            </el-dropdown-menu>
+                          </el-dropdown>
+                        </el-form-item>
 
 					  <el-form-item>
 					    <el-button size="small" type="primary" icon="search" @click="loadDatalist" >查询</el-button> 
 					    <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start">
 					      <el-button size="small" @click="resetBack" style="margin-left:10px;">重置</el-button>
-              </el-tooltip>
+                        </el-tooltip>
 			        	<!-- <el-button  @click="openDialog('advancedSearch')" icon="search">高级查询</el-button>  -->
 					  </el-form-item>
-            <el-form-item>
-              <el-tooltip content="点击刷新当前页面" placement="right">
-                <el-button @click="refresh" size="small" type="danger">刷新</el-button>
-              </el-tooltip>
-            </el-form-item>
+                        <el-form-item>
+                          <el-tooltip content="点击刷新当前页面" placement="right">
+                            <el-button @click="refresh" size="small" type="danger">刷新</el-button>
+                          </el-tooltip>
+                        </el-form-item>
 					</el-form>
 				</el-col>
 				<el-col :span="12">
@@ -290,11 +290,7 @@
 
 	}).setMethod('organization', function(){
 
-	    /*var vmThis = this;
-	    this.$http.get("{:U('getDivision')}").then(function(response){
-	    	vmThis.topO = response.body;
-	    })
-        this.getUsers(0);*/
+        this.getUsers(0);
 	}).setMethod('beforeList',function(dataList){
 		var vmThis = this;
 		dataList.forEach(function(currentValue, index){
@@ -315,7 +311,7 @@
 	    	vmThis.topO = response.body;
 	    });*/
 		// this.computedusers = this.userList;
-        this.getUsers(this.dataList[this.editIndex].type,  this.dataList[this.editIndex].user_id);
+        // this.getUsers(this.dataList[this.editIndex].type,  this.dataList[this.editIndex].user_id);
 	}).setMethod('switchHandle',function(index,row){
 	    row.status=row.switch?'1':'0';
 	    this.initObject(this.statusForm, row);
@@ -338,12 +334,8 @@
             id = 0;
         }
 
-        if (!type) {
-            type = 0;
-        }
         this.$http.get(page.getUsersUrl, {params:{id:id, type:type}}).then(function(response){
             this.computedusers = response.body;
-            console.log(this.computedusers);
         }, function(response){
             vmThis.$message({
                 message:'获取失败',
@@ -354,7 +346,7 @@
     }).setMethod('outPut', function(id){
         window.location.href="{:U('outPutExecle')}?id=" + id;
     }).setMethod('typeChange', function(v){
-        this.getUsers(v,0)
+        // this.getUsers(v,0)
     }).setMethod('hrBeforeOpen', function(){
         
         if (!this.isSingle()) {

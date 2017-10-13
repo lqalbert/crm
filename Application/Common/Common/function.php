@@ -270,5 +270,25 @@ function outPutExcel($object){
 
     $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
     $objWriter->save('php://output');
+    // $objWriter->save(dirname(__FILE__)."\\".$objPHPExcel->getProperties()->getTitle().'.xls');
     exit;
+}
+
+
+function outPutExcel2($object, $path){
+    import('Common.Vender.PhpExcel.PHPExcel',APP_PATH,'.php');
+    $objPHPExcel = new PHPExcel();
+
+    // Set document properties
+
+    $object->setPHPExcel($objPHPExcel);
+
+    $object->run();
+
+    $objPHPExcel->setActiveSheetIndex(0);
+
+    $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+    // $objWriter->save('php://output');
+    $objWriter->save($path.DIRECTORY_SEPARATOR. $objPHPExcel->getProperties()->getTitle().'.xls');
+    // exit;
 }

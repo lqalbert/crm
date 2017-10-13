@@ -31,7 +31,7 @@ class SpreadCustomerForSaleController extends CommonController{
         }
 
         if ($created_at) {
-            $this->M->where(array('customers_basic.created_at'=>$created_at ));
+            $this->M->where(array('customers_basic.dis_time'=>$created_at ));
         }
 
 

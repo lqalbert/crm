@@ -33,6 +33,72 @@ class KfController  extends \Think\Controller{
         M()->execute($sql);
     }
 
+    public function table2(){
+        $sql ="CREATE TABLE `statistics_spread_achievement` (
+                `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id自增',
+                `user_id` INT(10) UNSIGNED NOT NULL COMMENT '用户id',
+                `group_id` INT(10) UNSIGNED NOT NULL COMMENT '小组id',
+                `group_name` VARCHAR(20) NULL DEFAULT NULL COMMENT '小组名称',
+                `department_id` INT(10) UNSIGNED NOT NULL COMMENT '部门id',
+                `department_name` VARCHAR(20) NULL DEFAULT NULL COMMENT '部门名称',
+                `date` CHAR(10) NULL DEFAULT NULL COMMENT '时间',
+                `order_num` MEDIUMINT(9) NOT NULL DEFAULT '0' COMMENT '当日订单个数',
+                `sale_amount` MEDIUMINT(9) NOT NULL DEFAULT '0' COMMENT '当日销售金额',
+                `upgrade_num` MEDIUMINT(9) NOT NULL DEFAULT '0',
+                `upgrade_amount` MEDIUMINT(9) NOT NULL DEFAULT '0',
+                `renew_num` MEDIUMINT(9) NOT NULL DEFAULT '0',
+                `renuew_amount` MEDIUMINT(9) NOT NULL DEFAULT '0',
+                PRIMARY KEY (`id`)
+            )
+            COLLATE='utf8_general_ci'
+            ENGINE=InnoDB;";
+        M()->execute($sql);
+    }
+
+    public function table3(){
+        die('done');
+        $sql = "alter table `customers_order` add column source_type tinyint unsigned not null default '1' comment '1 自锁 2推广';";
+        M()->execute($sql);
+    }
+
+    public function fixSourceType(){
+        die('done');
+        $re = M('customers_order')->where(array('user_id'=>array('NEQ',0)))->select();
+        foreach ($re as $order) {
+            $spId = D("Home/Customer")->where(array('id'=>$order['cus_id']))->getField('spread_id');
+            if ( $spId != 0 ) {
+                $sql =" update customers_order set source_type=2 where id=".$order['id'];
+                echo $order['id']," ",M()->execute($sql);
+            }  
+        }
+    }
+
+    public function fixAchiev(){
+        die('done');
+        $re = M('customers_order')->where(array('user_id'=>array('NEQ',0)))->select();
+        foreach ($re as $order) {
+            $tmp = explode(" ", $order['created_at']);
+            var_dump($order);
+            if ($order['source_type'] == 1) {
+                $sql = " update statistics_sale_achievement set self_num=self_num+1 ,self_amount=self_amount+".intval($order['paid_in'])." where `date`= '".$tmp[0]."' and user_id= ".$order['salesman_id'];
+            } else {
+                $sql = " update statistics_sale_achievement set spread_num=spread_num+1 ,spread_amount=spread_amount+".intval($order['paid_in'])." where `date`= '".$tmp[0]."' and user_id=".$order['salesman_id'];
+            }
+            M()->execute($sql);
+            
+        }
+    }
+
+
+    public function table4(){
+        die('done');
+        $sql = "alter table `statistics_sale_achievement` add column self_num mediumint  not null default '0' comment '自锁成交数';".
+               "alter table `statistics_sale_achievement` add column self_amount mediumint not null default '0' comment '自锁成交金额';".
+               "alter table `statistics_sale_achievement` add column spread_num mediumint not null default '0' comment '推广成交数';".
+               "alter table `statistics_sale_achievement` add column spread_amount mediumint not null default '0' comment '推广成交金额'";
+        M()->execute($sql);
+    }
+
 
     //角色的修改
     public function role(){
@@ -59,6 +125,154 @@ class KfController  extends \Think\Controller{
         $sql = "update rbac_role set pid=$rId where ename='departmentMaster' or ename='serviceMaster' or ename='riskMaster' ";
         M()->execute($sql);
 
+    }
+
+    //小组主管 单独设立一个角色 叫 "groupCaptian" 
+    //所有的 “主管” 角色的 pid 就是这个
+    //还有后面添加的 材料组长 回访组长 审查组长
+    public function role2(){
+        $rId = M("rbac_role")->add(
+            array('name'=>"小组主管",
+                  'ename'=>'groupCaptian',
+                  'pid'=>0,
+                  'status'=>1,
+                  'remark'=>'所有的小组主管')
+        );
+
+        $sql = "update rbac_role set pid=$rId where ename='captain' or ename='supService' or ename='spreadCaptain' ";
+        M()->execute($sql);
+    }
+
+    public function role3(){
+        $rId = M("rbac_role")->add(
+            array('name'=>"审查组长",
+                  'ename'=>'riskGroup',
+                  'pid'=>26,
+                  'status'=>1,
+                  'remark'=>'审查组长')
+        );
+    }
+
+    public function role4(){
+        
+        $rId = M("rbac_role")->add(
+            array('name'=>"回访组长",
+                  'ename'=>'callBackCaptain',
+                  'pid'=>26,
+                  'status'=>1,
+                  'remark'=>'回访组长')
+        );
+
+        $rId = M("rbac_role")->add(
+            array('name'=>"材料组长",
+                  'ename'=>'dataCaptain',
+                  'pid'=>26,
+                  'status'=>1,
+                  'remark'=>'材料组长')
+        );
+
+        $rId = M("rbac_role")->add(
+            array('name'=>"投顾组长",
+                  'ename'=>'counselorCaptain',
+                  'pid'=>26,
+                  'status'=>1,
+                  'remark'=>'投顾组长')
+        );
+        
+    }
+
+    
+
+    public function rights(){
+        $rights = array(
+            array(
+                'name' => 'GodGroup',
+                'pid'  => '1',
+                'remark' => '',
+                'sort'  => '0',
+                'status' => 1,
+                'title' => '客户分配',
+                'level' => 2,
+                'children' => array(
+                        array('name'=>'index', 'pid'=>0, 'sort'=>0, 'level'=>3, 'status'=>1, 'title'=>'列表页', 'roles'=>array(1)),
+                        array('name'=>'getGroups', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'获取小组', 'roles'=>array(1)),
+                        array('name'=>'getEmployeesByGroupId', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'获取成员', 'roles'=>array(1)),
+                        
+                    ),
+                'roles' => array(1),
+            )
+        );
+
+        $this->deal($rights,1);
+
+    }
+
+    public function rights2(){
+        $rights = array(
+            array(
+                'name' => 'PerformanceForSpread',
+                'pid'  => '1',
+                'remark' => '',
+                'sort'  => '0',
+                'status' => 1,
+                'title' => '业绩报表-推广',
+                'level' => 2,
+                'children' => array(
+                        array('name'=>'index', 'pid'=>0, 'sort'=>0, 'level'=>3, 'status'=>1, 'title'=>'列表页', 'roles'=>array(1,20,21)),
+                        array('name'=>'getGroups', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'获取小组', 'roles'=>array(1,20,21)),
+                        array('name'=>'getOrderInfo', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'获取订单', 'roles'=>array(1,20,21)),
+                        
+                    ),
+                'roles' => array(1,20,21),
+            )
+        );
+
+        $this->deal($rights,1);
+
+    }
+
+
+
+    private function deal($rights, $pid=1){
+        foreach ($rights as $value) {
+
+            $nodeM = M("rbac_node");
+            $value['pid'] = $pid;
+            $node = $nodeM->create($value);
+            if (!$node) {
+                // var_dump($value);
+                echo "fail";
+                echo "\n";
+                return;
+            }
+            $node_id = $nodeM->add();
+            if (!$node_id) {
+                echo "insert into fail";
+                var_dump($node);
+                echo "\n";
+                return ;
+            }
+            if ($value['children']) {
+                $this->deal($value['children'], $node_id);
+            }
+
+            $this->dealRole($node_id, $value['roles'], $value['name'], $value['level']);
+        }
+
+    }
+
+    private function dealRole($nodeId, $roles, $module, $level){
+        $accessM = M("rbac_access");
+        foreach ($roles as $roleId) {
+            $data = array(
+                'role_id'=>$roleId,
+                'node_id'=>$nodeId,
+                'level'  => $level,
+                'module' => $module
+            );
+            $accessM->add($data);
+        }
+        
 
     }
 }

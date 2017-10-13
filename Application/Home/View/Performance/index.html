@@ -127,6 +127,15 @@
         </el-table-column>
         <el-table-column header-align="center" prop="name" label="部门/小组/员工" width="200">
         </el-table-column>
+
+        <el-table-column  prop="sale_amount" label="自锁成交金额" width="200">
+        </el-table-column>
+
+        <el-table-column  prop="spread_amount" label="推广成交金额" width="200">
+        </el-table-column>
+
+        
+        
         <el-table-column sortable="custom"  align="center" prop="order_num" label="业绩总数(个)">
         </el-table-column>
         <el-table-column sortable="custom"  align="center" prop="sale_amount" label="成交金额总数(元)">
@@ -165,6 +174,31 @@
               <el-table-column prop="cus_name" label="成交客户" header-align="center"></el-table-column>
               <el-table-column prop="create_name" label="开单人员" header-align="center"></el-table-column>
               <el-table-column prop="info" label="订单详情" header-align="center"></el-table-column>
+            </el-table>
+          </el-tab-pane>
+          <el-tab-pane label="自锁明细">
+            <el-table :data="tableData2"  empty-text="请点击员工显示员工订单信息" border style="width: 100%">
+              <el-table-column label="序号" align="center" width="65" type="index"></el-table-column>
+              <el-table-column prop="date" label="订单日期" align="center"></el-table-column>
+              <el-table-column prop="money" label="成交金额" header-align="center"></el-table-column>
+              <el-table-column prop="production" label="成交产品" header-align="center"></el-table-column>
+              <el-table-column prop="cus_name" label="成交客户" header-align="center"></el-table-column>
+              <el-table-column prop="create_name" label="开单人员" header-align="center"></el-table-column>
+              <el-table-column prop="info" label="订单详情" header-align="center"></el-table-column>
+            </el-table>
+          </el-tab-pane>
+          <el-tab-pane label="推广明细">
+            <el-table :data="tableData3"  empty-text="请点击员工显示员工订单信息" border style="width: 100%">
+              <el-table-column label="序号" align="center" width="65" type="index"></el-table-column>
+
+              <el-table-column prop="customer_name" label="客户姓名" align="left"></el-table-column>
+              <el-table-column prop="phone" label="联系方式" align="center"></el-table-column>
+              <el-table-column prop="product_name" label="产品类型" align="left"></el-table-column>
+              <el-table-column prop="paid_in" label="成交金额" header-align="center"></el-table-column>
+              <el-table-column prop="buy_time" label="成交时间" align="center"></el-table-column>
+              <el-table-column prop="created_at" label="开单时间" align="center"></el-table-column>
+              <el-table-column prop="user_name" label="推广员工" header-align="center"></el-table-column>
+              <el-table-column prop="mphone" label="推广员工联系方式" header-align="left"></el-table-column>
             </el-table>
           </el-tab-pane>
         </el-tabs>
@@ -212,7 +246,8 @@ function toInt(v){
     oldDepValue:'',
     oldGroupValue:'',
     tableData:[],
-    
+    tableData2:[],
+    tableData3:[],
 
   }).setForm('search', {
     type:'',
@@ -356,7 +391,9 @@ function toInt(v){
         end:end
       };
       this.$http.get("{:U('getOrderInfo')}",{params:data}).then(function(response){
-        this.tableData = response.body;
+        this.tableData = response.body.list1;
+        this.tableData2 = response.body.list2;
+        this.tableData3 = response.body.list3;
       },function(response){
         console.log("查询失败");
       });

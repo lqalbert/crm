@@ -193,6 +193,11 @@ class EmployeeController extends CommonController {
 		$this->setDepartmentEmployee();
 	}
 
+	//推广部经理
+	private function counselorMasterCondition(){
+		$this->setDepartmentEmployee();
+	}
+
 
 	public function setRoleCondition(){
 		$this->roleEname = $this->getRoleEname();
