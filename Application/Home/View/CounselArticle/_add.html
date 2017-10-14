@@ -1,0 +1,39 @@
+<el-dialog title="发布" v-model="addFormDialog" @open="addBeforeOpen">
+<el-form ref="addForm" :rules="addRules" :model="addForm"  :label-width="dialogLabelWidth">
+ <el-row>
+   <el-col :span="10">
+      <el-form-item label="标题" prop="title">
+        <el-input v-model="addForm.title" placeholder="请填写标题"></el-input>
+      </el-form-item>
+   </el-col>
+   <el-col :span="12">
+      <el-form-item label="类型" prop="type">
+        <el-select v-model="addForm.type" placeholder="请选择类型">
+          <el-option v-for="(value,key) in types" :label="value" :value="key"></el-option>
+        </el-select>
+      </el-form-item>
+   </el-col>
+ </el-row>
+ <el-row>
+   <el-col :span="24">
+     <el-form-item label="内容" prop="content">
+      <el-row>
+        <!--style给定宽度可以影响编辑器的最终宽度-->
+        <el-col :span="24">
+        <script type="text/plain" v-model="addForm.content" id="myEditor" style="width:500px">
+        </script>
+        </el-col>
+      </el-row>
+        
+       <!-- <el-input v-model="addForm.content" id="myEditor" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请填写公告内容"></el-input> -->
+     </el-form-item>
+   </el-col>
+ </el-row>
+</el-form>
+  <div slot="footer" class="dialog-footer">
+   <el-button @click="closeDialog('add')">取 消</el-button>
+   <el-button type="primary" v-show="!addFormSubmitStatus" @click="articleAdd" >确 定</el-button>
+   <el-button type="primary" v-show="addFormSubmitStatus" :loading="true" >添加中</el-button>
+  </div>
+</el-dialog>
+

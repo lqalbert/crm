@@ -1,0 +1,7 @@
+<el-dialog title="内容" v-model="detailFormDialog">
+<div v-html="detailContent"></div>
+  <div slot="footer" class="dialog-footer">
+    <el-button type="primary" @click="closeDialog('detail')">确 定</el-button>
+  </div>
+</el-dialog>
+

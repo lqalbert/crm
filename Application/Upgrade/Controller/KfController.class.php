@@ -99,6 +99,19 @@ class KfController  extends \Think\Controller{
         M()->execute($sql);
     }
 
+    public function table5(){
+        $sql = "create table `counsel_article`(
+            `id` int unsigned not null primary key auto_increment,
+            `title` varchar(50) not null comment '标题',
+            `type` tinyint unsigned not null default '0',
+            `content` mediumtext ,
+            `creator` varchar(30),
+            `creator_id` int unsigned ,
+            `created_at` timestamp not null default CURRENT_TIMESTAMP
+        )comment '投顾部的对股市的分析，股票推荐';";
+        M()->execute();
+    }
+
 
     //角色的修改
     public function role(){
@@ -233,6 +246,77 @@ class KfController  extends \Think\Controller{
 
 
 
+    public function rights3(){
+        $rights = array(
+            array(
+                'name' => 'CounselArticle',
+                'pid'  => '1',
+                'remark' => '',
+                'sort'  => '0',
+                'status' => 1,
+                'title' => '行情资讯',
+                'level' => 2,
+                'children' => array(
+                        array('name'=>'index', 'pid'=>0, 'sort'=>0, 'level'=>3, 'status'=>1, 'title'=>'列表页', 'roles'=>array(1,23,25,31)),
+                        array('name'=>'add', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'添加', 'roles'=>array(1,23,25,31)),
+                        array('name'=>'edit', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'编辑', 'roles'=>array(1,23,25,31)),
+                        array('name'=>'delete', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'删除', 'roles'=>array(1,23,25,31)),
+                        
+                    ),
+                'roles' => array(1,23,25,31),
+            )
+        );
+
+        $this->deal($rights,1);
+
+    }
+
+
+    public function rights3(){
+        $rights = array(
+            array(
+                'name' => 'CounselArticleView',
+                'pid'  => '1',
+                'remark' => '',
+                'sort'  => '0',
+                'status' => 1,
+                'title' => '行情资讯-查看',
+                'level' => 2,
+                'children' => array(
+                        array('name'=>'index', 'pid'=>0, 'sort'=>0, 'level'=>3, 'status'=>1, 'title'=>'列表页', 'roles'=>array())   
+                    ),
+                'roles' => array(),
+            )
+        );
+
+        $this->deal($rights,1);
+
+    }
+
+
+    public function menu(){
+        M('menu_basic')->add(array(
+            'pid' => 25,
+            'icon' => '&#xe655',
+            'title' => '行情资讯',
+            'href' => 'CounseArticle/index';
+            'node_id'=>0,
+            'sort' => 0
+        ));
+    }
+
+    public function menu2(){
+        M('menu_basic')->add(array(
+            'pid' => 25,
+            'icon' => '&#xe655',
+            'title' => '行情资讯-查看',
+            'href' => 'CounselArticleView/index';
+            'node_id'=>0,
+            'sort' => 0
+        ));
+    }
+
+
     private function deal($rights, $pid=1){
         foreach ($rights as $value) {
 
@@ -272,7 +356,6 @@ class KfController  extends \Think\Controller{
             );
             $accessM->add($data);
         }
-        
-
     }
+
 }

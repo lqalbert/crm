@@ -1,0 +1,36 @@
+<el-dialog title="编辑" v-model="editFormDialog" @open="editBeforeOpen">
+<el-form ref="editForm" :rules="addRules" :model="editForm"  :label-width="dialogLabelWidth">
+ <el-row>
+   <el-col :span="10">
+      <el-form-item label="标题" prop="title">
+        <el-input v-model="editForm.title" placeholder="请填写标题"></el-input>
+      </el-form-item>
+   </el-col>
+   <el-col :span="12">
+      <el-form-item label="类型" prop="type">
+        <el-select v-model="editForm.type" placeholder="请选择类型">
+          <el-option v-for="(value,key) in types" :label="value" :value="key"></el-option>
+        </el-select>
+      </el-form-item>
+   </el-col>
+ </el-row>
+ <el-row>
+   <el-col :span="20">
+     <el-form-item label="公告内容" prop="content">
+       <el-row>
+        <el-col :span="24">
+          <script type="text/plain"  id="editEditor" style="width:500px">
+          </script>
+        </el-col>
+      </el-row>
+     </el-form-item>
+   </el-col>
+ </el-row>
+</el-form>
+  <div slot="footer" class="dialog-footer">
+    <el-button @click="closeDialog('edit')">取 消</el-button>
+    <el-button type="primary" v-show="!editFormSubmitStatus" @click="articleEdit" >确 定</el-button>
+    <el-button type="primary" v-show="editFormSubmitStatus" :loading="true" >修改中</el-button>
+  </div>
+</el-dialog>
+

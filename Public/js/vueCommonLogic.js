@@ -351,3 +351,8 @@ Vue.filter("handleString", function(v) {
   	return v;
   }
 });
+
+//过滤器
+Vue.filter("delHtmlTag", function(v) {
+  return v.replace(/<[^>]+>/g,"");//去掉所有的html标记
+});

@@ -135,14 +135,15 @@ etpl.config({
      * 配置项主体。注意，此处所有涉及到路径的配置别遗漏URL变量。
      */
     window.UMEDITOR_CONFIG = {
+        scaleEnabled :true,
 
         //为编辑器实例添加一个路径，这个不能被注释
         UMEDITOR_HOME_URL : URL
 
         //图片上传配置区
-        ,imageUrl:"/index.php/Upload/uploadUM"             //图片上传提交地址
-        ,imagePath:"/"                    //图片修正地址，引用了fixedImagePath,如有特殊需求，可自行配置
-        ,imageFieldName:"upfile"                   //图片数据的key,若此处修改，需要在后台对应文件修改对应参数
+        //,imageUrl:"/index.php/Upload/uploadUM"             //图片上传提交地址
+       // ,imagePath:"/"                    //图片修正地址，引用了fixedImagePath,如有特殊需求，可自行配置
+       // ,imageFieldName:"upfile"                   //图片数据的key,若此处修改，需要在后台对应文件修改对应参数
 
 
         //工具栏上的所有的功能按钮和下拉框，可以在new编辑器的实例时选择自己需要的从新定义
@@ -150,8 +151,8 @@ etpl.config({
             'source | undo redo | bold italic underline strikethrough | superscript subscript | forecolor backcolor | removeformat |',
             'insertorderedlist insertunorderedlist | selectall cleardoc paragraph | fontfamily fontsize' ,
             '| justifyleft justifycenter justifyright justifyjustify |',
-            'link unlink | emotion image',
-            '| horizontal preview', 'drafts', 'formula'
+            'link unlink | emotion',
+            '| horizontal', 'formula'
         ]
 
         //语言配置项,默认是zh-cn。有需要的话也可以使用如下这样的方式来自动多语言切换，当然，前提条件是lang文件夹下存在对应的语言文件：
