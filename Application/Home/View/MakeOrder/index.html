@@ -23,7 +23,7 @@
                 成交的时间区间
              -->
             <el-row>
-                <el-col :span="12">
+                <el-col :span="13">
                     <el-form :inline="true"  ref="searchForm" :model="searchForm">
 
                       <el-form-item prop="name" style="width:170px">
@@ -42,6 +42,12 @@
                         </el-select>
                       </el-form-item>
 
+
+                    <el-form-item prop="semaster_id" style="width: 170px">
+                      <el-select v-model="searchForm.semaster_id" size="small" placeholder="客服主管"></el-select>
+                    </el-form-item>
+
+
                     <!-- 开单账号 -->
                       <el-form-item prop="account" style="width:170px">
                         <el-input v-model="searchForm.account" size="small" placeholder="开单账号"></el-input>
@@ -50,8 +56,8 @@
                       <el-form-item prop="type" style="width:170px">
                           <el-select v-model="searchForm.type" placeholder="购买类型" size="small">
                               <el-option label="购买" value="0"></el-option>
-                              <el-option label="续费" value="2"></el-option>
-                              <el-option label="升级" value="1"></el-option>
+                              <el-option label="升级" value="2"></el-option>
+                              <el-option label="续费" value="1"></el-option>
                           </el-select>
                       </el-form-item>
 
@@ -131,33 +137,38 @@
                         <el-table-column label="序号"  align="center" width="65" :formatter="handleIndex"  >
                         </el-table-column>
                          
-                        <el-table-column label="客户姓名" header-align="center" prop="cus_name" width="180">
+                        <el-table-column label="客户姓名" prop="cus_name" width="100">
                         </el-table-column>
 
                         <el-table-column label="类型" >
                           <template scope="scope">
-                                <el-tag v-if="scope.row.type==0" type="primary">购买</el-tag>
-                                  <el-tag v-else-if="scope.row.type==1" type="primary">升级</el-tag>
-                                <el-tag v-else type="primary">续费</el-tag>
+                              <span v-if="scope.row.type==0" type="primary">购买</span>
+                              <span v-else-if="scope.row.type==1" type="primary">升级</span>
+                              <span v-else type="primary">续费</span>
                             </template>
                         </el-table-column>
-
                         <el-table-column   label="操作员工" header-align="center" width="180">
                         <template scope="scope">
                             {{scope.row.department_name}} {{scope.row.realname}}
                         </template>
                         </el-table-column>
+                        
+                        <el-table-column label="客服主管" header-align="left" width="100"></el-table-column>
+                        <el-table-column label="主管分配时间" header-align="left" width="100"></el-table-column>
+                        <el-table-column label="材料专员分配时间" header-align="left" width="100"></el-table-column>
+                        <el-table-column label="开单时间" header-align="left" width="100"></el-table-column>
+                        <el-table-column label="客户成交时间" header-align="left" width="100"></el-table-column>
+                        <el-table-column label="开单时间" header-align="left" width="100"></el-table-column>
+
+                        <el-table-column label="销售人员手机" header-align="left" width="100"></el-table-column>
+
+
                         <el-table-column label="商品" header-align="center" prop="product_name" >
                         </el-table-column>
                         <el-table-column label="操作" width="280" header-align="center" >
                             <template scope="scope">
                                 <el-button size="small" type="info" @click="checkCustomer(scope.row.cus_id)">查看客户</el-button>
                                 <el-button v-show="scope.row.buttons.length==3" size="small" type="primary" @click="openOneStep(scope.row)">开单</el-button>
-                                <!-- <span v-for="button in scope.row.buttons">
-                                    <el-button v-show="button=='order'" style="margin-left:8px;" size="small" type="primary" @click="setOrders(scope.row)">开单</el-button>
-                                    <el-button v-show="button=='distribute'" size="small" type="primary" @click="setDistrute(scope.row)">分配</el-button>
-                                    <el-button v-show="button=='account'" size="small" type="primary" @click="setAccount(scope.row)">账号</el-button>
-                                </span> -->
                                 <el-button size="small" type="info" v-show="scope.row.status == 1" @click="orderInfo(scope.row)">订单详情</el-button>
                             </template>
                         </el-table-column>
@@ -280,6 +291,7 @@
         group_id:"",
         user_id:"",
         range:"",
+        semaster_id:""
     }).setForm('order',{
         buy_id:null,
         product_id:null,

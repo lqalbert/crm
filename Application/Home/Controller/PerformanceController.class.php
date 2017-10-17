@@ -219,9 +219,10 @@ class PerformanceController extends CommonController {
 
 
     $re3 = M("customers_order")->where(array(
+            'customers_order.source_type'=> 2, 
             'customers_order.salesman_id'=> $user_id, 
             'customers_order.created_at'=>array(array('EGT', $startDate), array('LT', $endDate))))->join("customers_buy on customers_order.buy_id = customers_buy.id")
-                            ->field("customers_order.* ,customers_buy.product_name, customers_buy.buy_time");
+                            ->field("customers_order.* ,customers_buy.product_name, customers_buy.buy_time")->select();
 
     foreach ($re3 as &$value) {
           $user = M("user_info")->where(array('user_id'=>$value['user_id']))->field('group_id,mphone')->find();
@@ -232,8 +233,9 @@ class PerformanceController extends CommonController {
               $value['user_name'] = $tmp[0]."-".$groupName."-".$tmp[1];
           }
           
-      }
+    }
 
+    
 
     
   	/*foreach ($re as $k => $v) {

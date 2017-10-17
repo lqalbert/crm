@@ -112,6 +112,26 @@ class KfController  extends \Think\Controller{
         M()->execute();
     }
 
+    public function table6(){
+        $sql = "alter table `customers_buy` add column deal_time timestamp  null   comment '处理时间';";
+        M()->execute($sql);
+    }
+
+    public function table7(){
+        $sql = "alter table `customers_buy` add column dis_time timestamp  null   comment '分配时间';";
+        M()->execute($sql);
+    }
+
+    public function table8(){
+        $sql = "alter table `customers_buy` add column pay_info text  null   comment '支付信息';";
+        M()->execute($sql);
+    }
+
+    public function table9(){
+        $sql = "alter table `customers_buy` add column  text  null   comment '支付信息';";
+        M()->execute($sql);
+    }
+
 
     //角色的修改
     public function role(){
@@ -272,7 +292,7 @@ class KfController  extends \Think\Controller{
     }
 
 
-    public function rights3(){
+    public function rights4(){
         $rights = array(
             array(
                 'name' => 'CounselArticleView',
@@ -299,7 +319,7 @@ class KfController  extends \Think\Controller{
             'pid' => 25,
             'icon' => '&#xe655',
             'title' => '行情资讯',
-            'href' => 'CounseArticle/index';
+            'href' => 'CounseArticle/index',
             'node_id'=>0,
             'sort' => 0
         ));
@@ -310,7 +330,7 @@ class KfController  extends \Think\Controller{
             'pid' => 25,
             'icon' => '&#xe655',
             'title' => '行情资讯-查看',
-            'href' => 'CounselArticleView/index';
+            'href' => 'CounselArticleView/index',
             'node_id'=>0,
             'sort' => 0
         ));

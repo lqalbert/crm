@@ -39,10 +39,11 @@ class RiskCheckController extends CommonController{
         $this->setField();
         $list = $this->M->page(I('get.p',0). ','. $this->pageSize)->select();
         foreach ($list as &$value) {
-            $user = M("user_info")->where(array("user_id"=>$value['salesman_id']))->field("department_id,group_id,realname")->find();
+            $user = M("user_info")->where(array("user_id"=>$value['salesman_id']))->field("department_id,group_id,realname,mphone")->find();
             $depart = D("Department")->where(array("id"=>$user['department_id']))->getField("name");
             $group = D("Group")->where(array("id"=>$user['group_id']))->getField("name");
             $value['user'] = $depart."-".$group."-".$user['realname'];
+            $value['user_phone'] = $user['mphone'];
             $value['contact'] = M("customers_contacts")->where(array('cus_id'=>$value['cus_id']))->order("is_main desc")->select();
         }
         $result = array('list'=>$list, 'count'=>$count);

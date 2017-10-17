@@ -28,5 +28,11 @@ return array(
     'DB_DSN' => 'mysql:host=139.224.40.238;dbname=run_gaocrm;charset=utf8',*/
 
 
+    /* 'DB_TYPE' => 'mysql',
+    'DB_USER' => 'root',
+    'DB_PWD' =>'',
+    'DB_DSN' => 'mysql:host=localhost;dbname=crm_zhongz;charset=utf8',  */ 
+
+
     
 );

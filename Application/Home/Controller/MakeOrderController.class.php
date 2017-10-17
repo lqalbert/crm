@@ -108,6 +108,27 @@ class MakeOrderController extends CommonController {
         // echo $this->M->getLastSql();
         if (IS_AJAX) {
             $result['list'] = $this->M->decoratorButtons($result['list']);
+            /*客服主管及分配的时间，
+            分配到材料的时间，
+            材料开单时间，
+            客户成交时间，
+            销售人员联系方式*/
+            $list = &$result['list'];
+            foreach ($list as &$value) {
+                if ($value['semaster_id']) {
+                    $semaster = M("user_info")->field("realname")->where(array('user_id'=>$value['semaster_id']))->find();
+                    if ($semaster) {
+                        $value['semaster'] = $semaster['realname'];
+                    }  else {
+                        $value['semaster'] = "";
+                    }
+                } else {
+                    $value['semaster'] = "";
+                }
+
+                
+                
+            }
 
             $this->ajaxReturn($result);
             // $this->ajaxReturn($this->M->getLastSql());

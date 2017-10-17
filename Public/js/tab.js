@@ -76,7 +76,7 @@ layui.config({
 	 * @param {Object} data
 	 */
 	Tab.prototype.tabAdd = function(data) {
-		console.log(data);
+		// console.log(data);
 		var that = this;
 		var tabIndex = that.exists(data.title);
 		if(tabIndex === -1) {

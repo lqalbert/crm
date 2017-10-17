@@ -6,6 +6,11 @@ class CustomerBuyModel extends Model{
 
     protected $tableName = 'customers_buy';
 
+
+
+
+
+
     private $todo_list = array(
             'order' =>'<el-button v-show="searchForm.status==0" size="small" type="primary" @click="setOrders(scope.row)">开单</el-button>',
             'account'=>'<el-button v-show="searchForm.status==1" size="small" type="primary" @click="setDistrute(scope.row)">分配</el-button>',
@@ -14,8 +19,14 @@ class CustomerBuyModel extends Model{
 
 
     protected  $_auto = array(
-            array('todo_list', 'getToList', 1, 'callback')
+            array('todo_list', 'getToList', 1, 'callback'),
+            array('deal_time', 'getDateTime', 2, 'callback'),
      );
+
+
+    public function getDateTime(){
+        return Date("Y-m-d H:i:s");
+    }
 
                                 
                                 

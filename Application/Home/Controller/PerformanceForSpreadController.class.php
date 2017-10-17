@@ -6,7 +6,7 @@ use Home\Model\RoleModel;
 class PerformanceForSpreadController extends CommonController {
 
     protected $table = 'statistics_spread_achievement';
-    protected $pageSize = 30;
+    protected $pageSize = 15;
 
     protected $searchGroup = array(
                                 array('value'=>'user','key'=>"显示队员" ),
@@ -62,6 +62,12 @@ class PerformanceForSpreadController extends CommonController {
                 break;
         }
 
+        $this->setCondition();
+        
+    }
+
+
+    private function setCondition(){
         $start = I('get.start', date("Y-m-d", time()-86400));
         $end   = I('get.end',   date("Y-m-d", time()-86400));
 
@@ -78,12 +84,20 @@ class PerformanceForSpreadController extends CommonController {
         }
     }
 
+
     protected function _getList(){
 
-        // $this->setQeuryCondition();
-        $this->setQeuryCondition();
+        
 
-        $list = $this->M->order(I('get.sort_field','order_num'), I('get.sort_order', 'desc'))->select();
+        $this->setQeuryCondition();
+        $count = $this->M->field('id')->select();
+        $count = count($count);
+        
+
+        $this->setQeuryCondition();
+        $list = $this->M->page(I('get.p',0). ','. $this->pageSize)
+                        ->order(I('get.sort_field','order_num') ." ". I('get.sort_order', 'desc'))
+                        ->select();
         foreach ($list as &$value) {
             $value['name'] = $value['department_name'];
             if (isset($value['group_name'])) {
@@ -93,9 +107,16 @@ class PerformanceForSpreadController extends CommonController {
                 $value['name'] = $value['name'] . "-". M("user_info")->where(array("user_id"=>$value['user_id']))->getField('realname');
             }
         }
-        $result = array('list'=>$list, 'count'=>count($list));
+        $result = array('list'=>$list, 'count'=>$count);
         
         return $result;
+    }
+
+
+    public function setHz(){
+        $this->setCondition();
+        $hz = $this->M->field("sum(order_num) as order_num, sum(sale_amount) as sale_amount")->find();
+        $this->ajaxReturn($hz);
     }
 
     public function getGroups(){
@@ -136,6 +157,7 @@ class PerformanceForSpreadController extends CommonController {
         // $this->M->page(I('get.p',0). ','. $this->pageSize)->order('id desc')->select();
         $this->setDetailCondition();
         $count = M("customers_order")->count();
+
         $this->setDetailCondition();
         $re    = M("customers_order")->page(I('get.p',0). ','. $pageSize)->select();
 

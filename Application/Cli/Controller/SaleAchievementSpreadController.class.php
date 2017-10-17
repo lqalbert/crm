@@ -11,17 +11,18 @@ class SaleAchievementSpreadController extends Controller {
     private $dateTpl = '';
     private $users = array();
 
-    public function index($date='2017-10-10'){
+    public function index($date='2017-10-13'){
         $this->init($date);
         $this->seedRecord();
     }
 
-    private function init(){
-        $this->$date = $date;
+    private function init($date){
+        $this->date = $date;
     }
 
     private function seedRecord(){
-        $user = $this->users;
+        
+        $users = $this->getUsers();
         foreach ($users as &$value) {
             $value['date'] = $this->date;
 
@@ -30,23 +31,27 @@ class SaleAchievementSpreadController extends Controller {
                                                 'user_id'   => $value['user_id']))
                                              ->field('paid_in,user_id')
                                              ->select();
+            
             foreach ($orders as $order) {
                 $value['order_num'] +=1;
                 $value['sale_amount'] += intval($order['paid_in']);
             }
 
         }
+        
         M('statistics_spread_achievement')->addAll($users);
         
     }
 
     private function getUsers(){
-        if (!$this->users) {
+        if (empty($this->users)) {
             $departs = D('Home/Department')->getSpreadDepartments('id,name');
+           
             foreach ($departs as  $depart) {
                 $groups = D('Home/Group')->getAllGoups($depart['id'], 'id,name');
                 foreach ($groups as $group) {
                     $users = D("Home/User")->getGroupEmployee($group['id'], "id");
+                    
                     foreach ($users as $user) {
                         $tmp = array(
                             'user_id'    => $user['id'],
@@ -64,6 +69,7 @@ class SaleAchievementSpreadController extends Controller {
                 }
             }
         } 
+
         return $this->users;
     }
 

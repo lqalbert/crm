@@ -149,6 +149,8 @@
                 <!-- 部门小组 -->
                 <el-table-column width="200"  prop="user" label="跟踪员工">
                 </el-table-column>
+                <el-table-column width="200"  prop="user_phone" label="员工手机">
+                </el-table-column>
 
                 <el-table-column label="审核状态" width="100" prop="{$state_text}">
                   <template scope="scope">
@@ -157,11 +159,15 @@
                       <el-tag v-else="scope.row.{$state_text}==0">待审核</el-tag>
                   </template>
                 </el-table-column>
-                <el-table-column label="购买/续费" width="110">
+
+                <el-table-column width="200"  prop="deal_time" label="处理时间">
+                </el-table-column>
+                
+                <el-table-column label="购买类型" width="110">
                   <template scope="scope">
-                      <el-tag v-if="scope.row.type==0" type="primary">购买</el-tag>
-                      <el-tag v-else-if="scope.row.type==1" type="primary">升级</el-tag>
-                      <el-tag v-else type="primary">续费</el-tag>
+                      <span v-if="scope.row.type==0" >购买</span>
+                      <span v-else-if="scope.row.type==1" >升级</span>
+                      <span v-else >续费</span>
                   </template>
                 </el-table-column>
                 <el-table-column width="190" label="商品" prop="product_name"></el-table-column>
@@ -380,11 +386,11 @@ window.defaultOption.setDatas({
       this.checkFormDialog = false;
       return;
     }
-    if (this.currentRow.{$state_text}!=0) {
+    /*if (this.currentRow.{$state_text}!=0) {
       this.$message.error("已审核");
       this.checkFormDialog = false;
       return;
-    }
+    }*/
     this.checkForm.id= this.currentRow.id;
   }).setMethod('beforeAddTrack', function(){
     if (!this.checkCurrentRow()) {

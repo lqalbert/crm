@@ -79,7 +79,8 @@
 
         <el-form-item prop="department_id">
           <el-tooltip content="选择某个部门后点击查询或者继续选择下属小组再查询" placement="bottom-start">
-            <el-select size="small" style="width:120px;" clearable :disabled="ctrlDepart" v-model="searchForm.department_id" placeholder="请选择部门" @change="depChange">
+            <!-- :disabled="ctrlDepart" -->
+            <el-select size="small" style="width:120px;" clearable  v-model="searchForm.department_id" placeholder="请选择部门" @change="depChange">
               <el-option v-for="dep in Alldeps" :value="dep.id" :label="dep.name"></el-option>
             </el-select>
           </el-tooltip>
@@ -87,7 +88,8 @@
 
         <el-form-item prop="group_id">
           <el-tooltip content="必须先选择部门方可选择团组后点击查询或者继续选择下属队员再查询" placement="bottom-start">
-            <el-select size="small" style="width:120px;" :disabled="ctrlSelect" clearable  v-model="searchForm.group_id" @change="groupChange" placeholder="请选择小组">
+            <!-- :disabled="ctrlSelect" -->
+            <el-select size="small" style="width:120px;"  clearable  v-model="searchForm.group_id" @change="groupChange" placeholder="请选择小组">
               <el-option v-for="group in groups" :value="group.id" :label="group.name"></el-option>
             </el-select>
           </el-tooltip>
@@ -109,42 +111,67 @@
     <el-col :span="24">
       <el-table 
       :data="dataList" 
-      border v-loading="dataLoad" 
+      border 
+      v-loading="dataLoad" 
+      
+      :default-sort="{prop:'order_num', order: 'descending'}"
       element-loading-text="{:L('DATA_LOGIN')}" 
-      highlight-current-row empty-text="暂无数据" 
-      @row-click="orderInfo"
+      highlight-current-row 
+      empty-text="暂无数据" 
       @sort-change="sortChange"
-       ref="select">
-        <el-table-column label="序号"  align="center" width="65" :formatter="handleIndex">
-        </el-table-column>
+      @row-click="orderInfo"
+      >
+        <!-- <el-table-column label="序号"  align="center" width="65" :formatter="handleIndex">
+        </el-table-column> -->
+
         <el-table-column  prop="name" label="部门/小组/员工" width="200">
         </el-table-column>
-        <el-table-column sortable="custom"  align="center" prop="order_num" label="业绩总数(个)">
+
+        <el-table-column sortable="custom"  align="center"  prop="order_num" label="业绩总数">
         </el-table-column>
-        <el-table-column sortable="custom"  align="center" prop="sale_amount" label="成交金额总数(元)">
+
+        <el-table-column sortable="custom"  align="center"  prop="sale_amount" label="成交金额总数">
         </el-table-column>
       </el-table>
+
+
+     
     </el-col>
   </el-row>
 
   <!-- toolbar -->
   <el-row type="type"  justify="space-between" align="middle"  class="row-bg">
-
     <el-col :span="12" :offset="12">
       <div class="grid-content bg-purple-light pull-right">
-
         <!-- page -->
         <include file="Common:_pagination" />
         <!-- / page -->
-        
       </div>
     </el-col>
-
   </el-row>
+
+<!--   <el-row>
+    <el-col :span="24">
+      <el-table 
+      :data="hz" 
+      :show-header="false"
+      border 
+       >
+        <el-table-column label="序号"  align="center" width="65" type="index">
+        </el-table-column>
+        <el-table-column  prop="name"  width="200">
+        </el-table-column>
+        <el-table-column    align="center" prop="order_num" >
+        </el-table-column>
+        <el-table-column    align="center" prop="sale_amount" >
+        </el-table-column>
+      </el-table>
+    </el-col>
+  </el-row> -->
   </div>
   
 
-  <div id="app2" class="b" style="margin:5px -10px 5px;" >
+  <div id="app2" class="b" style="margin:5px -10px 5px; display: none;" >
     <el-row>
      <el-col :span="24">
         <el-tabs  type="border-card">
@@ -194,7 +221,7 @@
 <block name="scripts">
 <script src="__PUBLIC__/js/calculate.js?ef=a"></script>
 <script>
-
+  window.notListPage = true;
   window.defaultOption.setDatas({
     setPicker:{
       disabledDate:function(time) {
@@ -210,6 +237,7 @@
     Alldeps:{:json_encode($Alldeps)},
     searchGroup:{:json_encode($searchGroup)},
     tableData:[],
+    hz:[],
     ctrlDepart:true,
     depClearable:true,
     ctrlSelect:true,
@@ -244,8 +272,9 @@
         this.searchForm.start = showLastWeekFirstDay();
         this.searchForm.end   = showLastWeekLastDay(); 
       }
-      this.dataLoad = true;
-      this.loadDatalist();
+      // this.dataLoad = true;
+      // this.loadDatalist();
+      this.search();
   }).setMethod('startDateChange', function(v){
       this.searchForm.start = v;
   }).setMethod('endDateChange', function(v){
@@ -254,20 +283,20 @@
      this.$refs['searchForm'].resetFields();
   }).setMethod('allTypeChange', function(v){
      if (v == 'user') {
-      this.ctrlSelect = false;
+      // this.ctrlSelect = false;
       
      } else {
       this.searchForm.group_id = "";
-      this.ctrlSelect = true;
+      // this.ctrlSelect = true;
       
      }
 
      if (v == 'department') {
       this.searchForm.department_id = "";
-      this.ctrlDepart = true; 
+      // this.ctrlDepart = true; 
      } else {
       
-      this.ctrlDepart = false;
+      // this.ctrlDepart = false;
      }
   }).setMethod('depChange', function(v){
     this.searchForm.group_id = "";
@@ -281,7 +310,18 @@
 
   }).setMethod('orderInfo', function(row){
     // console.log(row);
+
     var par= this.detailQuery;
+
+
+    // fix 第一次加载时 自动触发分页引起的bug
+    if (par.start.length == 0) {
+      par.start = this.searchForm.start;
+      par.end   = this.searchForm.end;
+      par.type  = this.searchForm.type;
+    }
+
+
     if (row.user_id) {
         par['id'] = row.user_id;
     }
@@ -298,11 +338,10 @@
     par['p'] = 0;
 
     this.loadDetail(par);
-    
-
-
+  
 
   }).setMethod('sortChange', function(info){
+    console.log(info);
     if (info) {
       this.searchForm.sort_field = info.prop;
       this.searchForm.sort_order = this.sortMap[info.order];
@@ -313,8 +352,11 @@
     
     this.dataReload();
   }).setVueHook('mounted', function(){
-    // this.searchForm.start = showWeekFirstDay();
-    // this.searchForm.end   = showWeekLastDay();
+    this.searchForm.start = showWeekFirstDay();
+    this.searchForm.end   = showWeekLastDay();
+
+    this.$refs.pagination.$emit("current-change", 1);
+    this.loadHz();
   }).setMethod('setGroups', function(id, field){
 
     this.$http.get("{:U('getGroups')}", {params:{department_id:id} }).then(function(response){
@@ -325,43 +367,34 @@
       this.$set(this, field, groups);
     });
   }).setMethod('search', function(){
-    if (this.searchForm.type =='user') {
-      if (this.searchForm.group_id == "") {
-        // this.$message.error("请选择小组");
-        this.$message({
-          showClose: true,
-          message:"请选择小组",
-          type:'error'
-        });
-        return;
-      }
-    } else if(this.searchForm.type =='group'){
-      if (this.searchForm.department_id == "") {
-        // this.$message.error("请选择部门");
-        this.$message({
-          showClose: true,
-          message:"请选择部门",
-          type:'error'
-        });
-        return;
-      }
-    }
+    // if (this.searchForm.type =='user') {
+    //   if (this.searchForm.group_id == "") {
+    //     // this.$message.error("请选择小组");
+    //     this.$message({
+    //       showClose: true,
+    //       message:"请选择小组",
+    //       type:'error'
+    //     });
+    //     return;
+    //   }
+    // } else if(this.searchForm.type =='group'){
+    //   if (this.searchForm.department_id == "") {
+    //     // this.$message.error("请选择部门");
+    //     this.$message({
+    //       showClose: true,
+    //       message:"请选择部门",
+    //       type:'error'
+    //     });
+    //     return;
+    //   }
+    // }
     this.detailQuery.start = this.searchForm.start;
     this.detailQuery.end   = this.searchForm.end;
     this.detailQuery.type  = this.searchForm.type;
     this.loadDatalist();
-  }).setMethod('beforeList', function(data){
-    var h = {
-      'name' : '汇总',
-      'order_num' : 0,
-      'sale_amount': 0
-    }
-    for (var i = data.length - 1; i >= 0; i--) {
-      h['order_num']   += parseInt(data[i]['order_num']);
-      h['sale_amount'] += parseInt(data[i]['sale_amount']);
-    }
-    data.push(h);
-    return data;
+
+    this.loadHz();
+
   }).setMethod('sortChange', function(obj){
     // this.dataList
   }).setMethod('detailCurrentPageChange', function(v){
@@ -376,6 +409,12 @@
       }, function(response){
         this.$message.error('')
       })
+  }).setMethod('loadHz', function(){
+    this.$http.get("{:U('setHz')}",{params:this.searchForm}).then(function(response){
+      var data =response.body;
+      data['name'] = '汇总'
+      this.hz = [data];
+    })
   });
 </script>
 </block>

@@ -62,7 +62,8 @@ class disBuyCustomerBehavior extends \Think\Behavior {
 
         $data = array(
             'risk_id'=>$riskUsers[$risk_i]['id'],
-            'callback_id'=>$callUsers[$call_i]['id']
+            'callback_id'=>$callUsers[$call_i]['id'],
+            'dis_time' => Date('Y-m-d H:i:s')
         );
         
         $this->setMsg($riskUsers[$risk_i]['id'], $param['cus_id'], $param['product_name']);

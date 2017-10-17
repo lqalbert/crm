@@ -226,8 +226,9 @@
         this.searchForm.start = showLastWeekFirstDay();
         this.searchForm.end   = showLastWeekLastDay(); 
       }
-      this.dataLoad = true;
-      this.loadDatalist();
+      // this.dataLoad = true;
+      // this.loadDatalist();
+      this.search();
   }).setMethod('startDateChange', function(v){
       this.searchForm.start = v;
   }).setMethod('endDateChange', function(v){
@@ -244,6 +245,15 @@
   }).setMethod('orderInfo', function(row){
     // console.log(row);
     var par= this.detailQuery;
+
+    // fix 第一次加载时 自动触发分页引起的bug
+    if (par.start.length == 0) {
+      par.start = this.searchForm.start;
+      par.end   = this.searchForm.end;
+      par.type  = this.searchForm.type;
+    }
+
+
     if (row.user_id) {
         par['id'] = row.user_id;
     }
@@ -273,8 +283,8 @@
     
     this.dataReload();
   }).setVueHook('mounted', function(){
-    // this.searchForm.start = showWeekFirstDay();
-    // this.searchForm.end   = showWeekLastDay();
+    this.searchForm.start = showWeekFirstDay();
+    this.searchForm.end   = showWeekLastDay();
   }).setMethod('search', function(){
     if (this.searchForm.type =='user') {
       if (this.searchForm.group_id == "") {

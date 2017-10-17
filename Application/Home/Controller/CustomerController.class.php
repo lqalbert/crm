@@ -136,7 +136,7 @@ class CustomerController extends CommonController {
         }
 
         if (I('get.type')) {
-            $this->M->where(array("type"=> I('get.type')));
+            $this->M->where(array("customers_basic.type"=> I('get.type')));
         }
 
         $this->M->setTimeDiv('created_at', I('get.start'), I('get.end'));

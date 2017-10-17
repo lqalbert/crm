@@ -897,6 +897,7 @@
     product_t:"",
     name:"",
     buy_time:"",
+    pay_info:""
   },true).setForm('renewal',{
     product_id:null,
     product_index:null,
@@ -905,7 +906,8 @@
     product_t:"",
     cus_id:"",
     buy_time:"",
-    address:""
+    address:"",
+    pay_info:""
   },true).setMethod('getType', function(type, field){
       return this[field][type];
   }).setMethod('searchCustomer', function(){
