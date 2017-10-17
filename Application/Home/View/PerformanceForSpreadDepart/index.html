@@ -50,13 +50,13 @@
   <el-row>
     <el-col :span="24">
       <el-form :inline="true" ref="searchForm" :model="searchForm">
-        <el-form-item prop="start">
+        <el-form-item >
           <el-date-picker size="small" v-model="searchForm.start" 
             placeholder="请选择起日期" :picker-options="setPicker"
             @change="startDateChange" :clearable="false">
           </el-date-picker>
         </el-form-item>
-        <el-form-item prop="end">
+        <el-form-item >
           <el-date-picker size="small" 
             v-model="searchForm.end" 
             placeholder="请选择止日期" :picker-options="setPicker"
@@ -79,7 +79,7 @@
 
         <el-form-item prop="group_id">
           <el-tooltip content="必须先选择部门方可选择团组后点击查询或者继续选择下属队员再查询" placement="bottom-start">
-            <el-select size="small" style="width:120px;" :disabled="ctrlSelect" clearable  v-model="searchForm.group_id" @change="groupChange" placeholder="请选择小组">
+            <el-select size="small" style="width:120px;"  clearable  v-model="searchForm.group_id" @change="groupChange" placeholder="请选择小组">
               <el-option v-for="group in groups" :value="group.id" :label="group.name"></el-option>
             </el-select>
           </el-tooltip>
@@ -132,6 +132,25 @@
       </div>
     </el-col>
 
+  </el-row>
+
+   <el-row>
+    <el-col :span="24">
+      <el-table 
+      :data="hz" 
+      :show-header="false"
+      border 
+       >
+        <el-table-column label="序号"  align="center" width="65" type="index">
+        </el-table-column>
+        <el-table-column  prop="name"  width="200">
+        </el-table-column>
+        <el-table-column    align="center" prop="order_num" >
+        </el-table-column>
+        <el-table-column    align="center" prop="sale_amount" >
+        </el-table-column>
+      </el-table>
+    </el-col>
   </el-row>
   </div>
   
@@ -186,7 +205,7 @@
 <block name="scripts">
 <script src="__PUBLIC__/js/calculate.js?ef=a"></script>
 <script>
-
+  window.notListPage = true;
   window.defaultOption.setDatas({
     setPicker:{
       disabledDate:function(time) {
@@ -201,6 +220,7 @@
     },
     searchGroup:{:json_encode($searchGroup)},
     tableData:[],
+    hz:[],
     ctrlDepart:true,
     depClearable:true,
     ctrlSelect:true,
@@ -235,6 +255,7 @@
         this.searchForm.start = showLastWeekFirstDay();
         this.searchForm.end   = showLastWeekLastDay(); 
       }
+
       this.search();
   }).setMethod('startDateChange', function(v){
       this.searchForm.start = v;
@@ -244,17 +265,17 @@
      this.$refs['searchForm'].resetFields();
   }).setMethod('allTypeChange', function(v){
      if (v == 'user') {
-      this.ctrlSelect = false;
+      // this.ctrlSelect = false;
       
      } else {
       this.searchForm.group_id = "";
-      this.ctrlSelect = true;
+      // sssssthis.ctrlSelect = true;
       
      }
 
      if (v == 'department') {
       this.searchForm.department_id = "";
-      this.ctrlDepart = true; 
+      // this.ctrlDepart = true; 
      } else {
       
       this.ctrlDepart = false;
@@ -303,6 +324,9 @@
   }).setVueHook('mounted', function(){
     this.searchForm.start = showWeekFirstDay();
     this.searchForm.end   = showWeekLastDay();
+
+    this.$refs.pagination.$emit("current-change", 1);
+    this.loadHz();
   }).setMethod('setGroups', function(id, field){
 
     this.$http.get("{:U('getGroups')}", {params:{department_id:id} }).then(function(response){
@@ -313,45 +337,34 @@
       this.$set(this, field, groups);
     });
   }).setMethod('search', function(){
-    if (this.searchForm.type =='user') {
-      if (this.searchForm.group_id == "") {
-        // this.$message.error("请选择小组");
-        this.$message({
-          showClose: true,
-          message:"请选择小组",
-          type:'error'
-        });
-        return;
-      }
-    } else if(this.searchForm.type =='group'){
-      if (this.searchForm.department_id == "") {
-        // this.$message.error("请选择部门");
-        this.$message({
-          showClose: true,
-          message:"请选择部门",
-          type:'error'
-        });
-        return;
-      }
-    }
+    // if (this.searchForm.type =='user') {
+    //   if (this.searchForm.group_id == "") {
+    //     // this.$message.error("请选择小组");
+    //     this.$message({
+    //       showClose: true,
+    //       message:"请选择小组",
+    //       type:'error'
+    //     });
+    //     return;
+    //   }
+    // } else if(this.searchForm.type =='group'){
+    //   if (this.searchForm.department_id == "") {
+    //     // this.$message.error("请选择部门");
+    //     this.$message({
+    //       showClose: true,
+    //       message:"请选择部门",
+    //       type:'error'
+    //     });
+    //     return;
+    //   }
+    // }
     this.detailQuery.start = this.searchForm.start;
     this.detailQuery.end   = this.searchForm.end;
     this.detailQuery.type  = this.searchForm.type;
     this.loadDatalist();
-  }).setMethod('beforeList', function(data){
-    var h = {
-      'name' : '汇总',
-      'order_num' : 0,
-      'sale_amount': 0
-    }
-    for (var i = data.length - 1; i >= 0; i--) {
-      h['order_num']   += parseInt(data[i]['order_num']);
-      h['sale_amount'] += parseInt(data[i]['sale_amount']);
-    }
-    data.push(h);
-    return data;
-  }).setMethod('sortChange', function(obj){
-    // this.dataList
+
+    this.loadHz();
+
   }).setMethod('detailCurrentPageChange', function(v){
     var par = this.detailQuery;
     par.p = v;
@@ -364,6 +377,12 @@
       }, function(response){
         this.$message.error('')
       })
+  }).setMethod('loadHz', function(){
+    this.$http.get("{:U('PerformanceForSpread/setHz')}",{params:this.searchForm}).then(function(response){
+      var data =response.body;
+      data['name'] = '汇总'
+      this.hz = [data];
+    })
   });
 </script>
 </block>

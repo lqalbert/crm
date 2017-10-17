@@ -36,7 +36,7 @@ class TreeController extends CommonController{
 
 	  D('Group')->cache(true)->where(array('status'=>array('NEQ', GroupModel::DELETE_STATUS)));
 	  
-	  return D('Group')->cache(true)->select();
+	  return D('Group')->cache(true, 180)->select();
   }
 
   //获取员工

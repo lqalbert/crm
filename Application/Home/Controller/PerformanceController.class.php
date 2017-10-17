@@ -123,6 +123,7 @@ class PerformanceController extends CommonController {
 
     $sql = "select group_id as id,department_id,department_name,concat(department_name,'-',group_name) as name, sum(order_num) as order_num,sum(sale_amount) as sale_amount  , sum(self_amount) as self_amount, sum(spread_amount) as spread_amount
      from statistics_sale_achievement ".$this->dateWhere." $depWhere $groupWhere group by group_id ".$this->orderWhere;
+     var_dump($sql);
     $re = M()->cache(true,180)->query($sql);
     return $re;
   }

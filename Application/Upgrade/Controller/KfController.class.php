@@ -254,6 +254,7 @@ class KfController  extends \Think\Controller{
                         array('name'=>'index', 'pid'=>0, 'sort'=>0, 'level'=>3, 'status'=>1, 'title'=>'列表页', 'roles'=>array(1,20,21)),
                         array('name'=>'getGroups', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'获取小组', 'roles'=>array(1,20,21)),
                         array('name'=>'getOrderInfo', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'获取订单', 'roles'=>array(1,20,21)),
+                        array('name'=>'setHz', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'获取汇总', 'roles'=>array(1,20,21)),
                         
                     ),
                 'roles' => array(1,20,21),
@@ -281,6 +282,7 @@ class KfController  extends \Think\Controller{
                         array('name'=>'add', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'添加', 'roles'=>array(1,23,25,31)),
                         array('name'=>'edit', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'编辑', 'roles'=>array(1,23,25,31)),
                         array('name'=>'delete', 'pid'=>0, 'sort'=>0, 'status'=>1, 'level'=>3,'title'=>'删除', 'roles'=>array(1,23,25,31)),
+                        
                         
                     ),
                 'roles' => array(1,23,25,31),

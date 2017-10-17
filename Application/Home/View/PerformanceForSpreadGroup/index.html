@@ -50,13 +50,13 @@
   <el-row>
     <el-col :span="24">
       <el-form :inline="true" ref="searchForm" :model="searchForm">
-        <el-form-item prop="start">
+        <el-form-item>
           <el-date-picker size="small" v-model="searchForm.start" 
             placeholder="请选择起日期" :picker-options="setPicker"
             @change="startDateChange" :clearable="false">
           </el-date-picker>
         </el-form-item>
-        <el-form-item prop="end">
+        <el-form-item>
           <el-date-picker size="small" 
             v-model="searchForm.end" 
             placeholder="请选择止日期" :picker-options="setPicker"
