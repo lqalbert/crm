@@ -126,12 +126,26 @@ class KfController  extends \Think\Controller{
         $sql = "alter table `customers_buy` add column pay_info text  null   comment '支付信息';";
         M()->execute($sql);
     }
-
+    ///// 10-18
     public function table9(){
-        // $sql = "alter table `customers_buy` add column  text  null   comment '支付信息';";
+        $sql = "alter table `customers_buy` add  column datastaff_id  int unsigned  null   comment '材料专员';";
         M()->execute($sql);
     }
 
+    public function table10(){
+        //保存任务
+        $sql = "CREATE TABLE `redis_job` (
+            `id` CHAR(64) NOT NULL,
+            `params` TEXT NULL,
+            `status` SMALLINT(6) NOT NULL DEFAULT '1',
+            PRIMARY KEY (`id`)
+        )
+        COLLATE='utf8_general_ci'
+        ENGINE=InnoDB;";
+        // $sql = "alter table `customers_buy` add  column datastaff_id  int unsigned  null   comment '材料专员';";
+        M()->execute($sql);
+    }
+     ///// end of 10-18
 
     //角色的修改
     public function role(){

@@ -30,7 +30,7 @@ class CommonController extends Controller {
 		    }
 	    }
     
-		Rbac::AccessDecision() || $this->error(L('NO_AUTHORIZED'));
+		// Rbac::AccessDecision() || $this->error(L('NO_AUTHORIZED'));
 
 		$this->parseJsonParams();
 
@@ -40,6 +40,7 @@ class CommonController extends Controller {
 		\Think\Hook::add(HOOK_ADDCONTACT,'Home\\Behaviors\\checkContactBehavior');
 		\Think\Hook::add(HOOK_DISTRIBUTE_BUY_CUSTOMER,'Home\\Behaviors\\disBuyCustomerBehavior');
 		\Think\Hook::add(HOOK_CHECK,'Home\\Behaviors\\checkBehavior');
+		\Think\Hook::add(HOOK_QUEUE,'Home\\Behaviors\\queueBehavior');
 
 		
 	}

@@ -180,12 +180,18 @@ class RiskCheckController extends CommonController{
             }
             //是否要给材料专员一个弹窗消息
             // $buys = array();
-            $stuffs = D("User")->getDataStaff("id");
+            //有两个任务 一个是 分配给某个人 一个是 发消息
+            //两个任务合在一个job里 
+            
+
+            // $stuffs = D("User")->getDataStaff("id");
             $row=$this->M->where(array("id"=>$id, 'risk_state'=>1, 'callback_state'=>1))->find();
             if ($row) {
-                foreach ($stuffs as  $stuff) {
-                    $this->setMsg($stuff['id'], $row['cus_id'], $row['product_name']);
-                }
+                $param = array('job'=>'DisDataStaffJob', 'arg'=>array('id'=>$id));
+                tag(HOOK_QUEUE , $param);
+                // foreach ($stuffs as  $stuff) {
+                //     $this->setMsg($stuff['id'], $row['cus_id'], $row['product_name']);
+                // }
             }
             
           $this->success('成功');

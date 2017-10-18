@@ -1,0 +1,32 @@
+#!/usr/bin/env php
+<?php
+
+//说明在这里  http://www.thinkphp.cn/extend/888.html
+ini_set('display_erros', true);
+error_reporting(E_ERROR);
+set_time_limit(0);
+
+
+define('APP_DEBUG',True);
+
+// 定义应用目录
+define('APP_PATH','./Application/');
+
+
+define('MODE_NAME', 'cli'); //cli模式
+define('BIND_MODULE', 'Queue');
+define('BIND_CONTROLLER', 'Queue');
+define('BIND_ACTION', 'index');
+
+
+define('DEFALT_QUEUE', 'queue1'); //默认的队列名称
+
+chdir(dirname(__FILE__));
+
+
+//处理自定义参数
+$act = isset($argv[1]) ? $argv[1] :'start';
+putenv("Q_ACTION={$act}");
+putenv("Q_ARGV=" . json_encode($argv));
+
+require './ThinkPHP/ThinkPHP.php';
