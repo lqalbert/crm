@@ -140,7 +140,7 @@
                         <el-table-column label="客户姓名" prop="cus_name" width="100">
                         </el-table-column>
 
-                        <el-table-column label="类型" >
+                        <el-table-column label="类型"  >
                           <template scope="scope">
                               <span v-if="scope.row.type==0" type="primary">购买</span>
                               <span v-else-if="scope.row.type==1" type="primary">升级</span>
@@ -162,9 +162,12 @@
 
                         <el-table-column label="销售人员手机" header-align="left" width="100"></el-table-column>
 
-
-                        <el-table-column label="商品" header-align="center" prop="product_name" >
+                        <el-table-column label="购买版本" header-align="center" prop="product_name" >
                         </el-table-column>
+                        
+                        <el-table-column label="付款信息" header-align="center" prop="buy_info" >
+                        </el-table-column>
+
                         <el-table-column label="操作" width="280" header-align="center" >
                             <template scope="scope">
                                 <el-button size="small" type="info" @click="checkCustomer(scope.row.cus_id)">查看客户</el-button>
@@ -209,11 +212,8 @@
         <include file="_distribute" />
         <include file="_account" />
         <include file="_orderInfo" />
-        
 
-
-        <include file="BuyCheck::_customerInfo" />
-
+        <include file="_info" />
         </div>
 
 
@@ -322,7 +322,11 @@
         name:"",
         id_card:"",
         address:"",
-        contacts:[]
+        contacts:[],
+        money_text:"",
+        year_text:"",
+        profession_text:"",
+        remark:"什么都没有"
     },true).setForm('oneStep',{
          account_id:"",
          semaster_id:null,
@@ -438,6 +442,14 @@
         this.oneStepForm.order.buy_id = row.id;
         this.oneStepForm.order.product_id = row.product_id;
         this.oneStepForm.order.phone = "";
+
+        //重置 以避免出错 
+        this.oneStepForm.order.customer_name = "";
+        this.oneStepForm.order.user_id = "";
+        this.oneStepForm.order.user_name = "";
+        this.oneStepForm.order.sale_name = "";
+        this.bphone = [];
+
         var param = {cus_id:row.cus_id};
         this.$http.get(page.getBuyDetailUrl, {params: param}).then(function(response){
             var body = response.body;
@@ -445,6 +457,7 @@
             this.oneStepForm.order.user_id = body.user.user_id;
             this.oneStepForm.order.user_name = body.user.name +' '+ body.user.realname;
             this.oneStepForm.order.sale_name = body.sale.name +' '+ body.sale.realname;
+            // this.oneStepForm.order.salesman_id = body.sale.user_id ;
             this.bphone = body.phones;
         }, function(response){
             this.$message.error("出错了");
@@ -481,6 +494,9 @@
         this.oneStepForm.distribute.semaster_id = this.oneStepForm.semaster_id;
 
         this.oneStepFormSubmit(page.setOneStepUrl, 'oneStep');
+
+
+
     }).setMethod('departChange', function(v){
     this.searchForm.group_id = "";
     this.searchForm.user_id = "";

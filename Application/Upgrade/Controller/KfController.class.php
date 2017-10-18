@@ -74,8 +74,8 @@ class KfController  extends \Think\Controller{
     }
 
     public function fixAchiev(){
-        die('done');
-        $re = M('customers_order')->where(array('user_id'=>array('NEQ',0)))->select();
+        // die('done');
+        $re = M('customers_order')->where(array('user_id'=>array('NEQ',0), 'created_at'=>array( array('EGT', '2017-10-01'), array('ELT', '2017-10-14') )  ))->select();
         foreach ($re as $order) {
             $tmp = explode(" ", $order['created_at']);
             var_dump($order);
@@ -128,7 +128,7 @@ class KfController  extends \Think\Controller{
     }
 
     public function table9(){
-        $sql = "alter table `customers_buy` add column  text  null   comment '支付信息';";
+        // $sql = "alter table `customers_buy` add column  text  null   comment '支付信息';";
         M()->execute($sql);
     }
 

@@ -1,0 +1,56 @@
+<el-dialog title="编辑客户资料" v-model="infoFormDialog" >
+<!-- <el-form :model="form"> -->
+<el-form ref="infoForm"  :model="infoForm" v-model="infoForm" >
+
+    <el-form-item label="客户姓名" >
+      {{infoForm.name}}
+    </el-form-item>
+
+    <el-form-item label="身份证" >
+      {{infoForm.id_card}}
+    </el-form-item>
+
+    <el-form-item label="详细地址" >
+      {{infoForm.address}}
+    </el-form-item>
+
+    <div v-for="contact in infoForm.contacts">
+      <el-form-item label="手机" >
+        {{contact.phone}}
+      </el-form-item>
+
+      <el-form-item label="QQ" >
+        号：{{contact.qq}}  昵称：{{contact.qq_nickname}}  
+      </el-form-item>
+
+      <el-form-item label="微信" >
+        号：{{contact.weixin}} 昵称：{{contact.weixin_nickname}}  
+      </el-form-item>
+      
+      <el-form-item label="资金量(万元)：">
+        {{infoForm.money_text}}
+      </el-form-item>
+
+      <el-form-item label="投资经验(股龄)：">
+        {{infoForm.year_text}}
+      </el-form-item>
+
+      <el-form-item label="职业：">
+        {{infoForm.profession_text}}
+      </el-form-item>
+
+      <el-form-item label="备注：">
+        {{infoForm.remark}}
+      </el-form-item>
+
+    </div>
+
+
+   
+      
+  </el-form>
+  <div slot="footer" class="dialog-footer">
+    <el-button @click="closeDialog('info')">取 消</el-button>
+    
+  </div>
+</el-dialog>

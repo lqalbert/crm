@@ -278,8 +278,8 @@ class CustomerModel extends Model {
     * @return string|array
     */
     public function getQuality($index){
-      if (is_int($index)) {
-        return $this->quality[$index];
+      if (is_numeric($index)) {
+        return isset($this->quality[$index]) ? $this->quality[$index] : '未定义';
       } else {
         return $this->quality;
       }
@@ -290,8 +290,8 @@ class CustomerModel extends Model {
     * @return string|array
     */
     public function getYear($index){
-      if (is_int($index)) {
-        return $this->year[$index];
+      if (is_numeric($index)) {
+        return isset($this->year[$index]) ? $this->year[$index] : '未定义';
       } else {
         return $this->year;
       }
@@ -302,7 +302,7 @@ class CustomerModel extends Model {
     * @return string|array
     */
     public function getIncome($index){
-      if (is_int($index)) {
+      if (is_numeric($index)) {
         return $this->income[$index];
       } else {
         return $this->income;
@@ -314,7 +314,7 @@ class CustomerModel extends Model {
     * @return string|array
     */
     public function getStyle($index){
-      if (is_int($index)) {
+      if (is_numeric($index)) {
         return $this->style[$index];
       } else {
         return $this->style;
@@ -326,8 +326,8 @@ class CustomerModel extends Model {
     * @return string|array
     */
     public function getMoney($index){
-      if (is_int($index)) {
-        return $this->money[$index];
+      if (is_numeric($index)) {
+        return isset($this->money[$index]) ? $this->money[$index] : '未定义';
       } else {
         return $this->money;
       }
@@ -338,8 +338,8 @@ class CustomerModel extends Model {
     * @return string|array
     */
     public function getEnergy($index){
-      if (is_int($index)) {
-        return $this->energy[$index];
+      if (is_numeric($index)) {
+        return isset($this->energy[$index]) ? $this->energy[$index] : '未定义';
       } else {
         return $this->energy;
       }
@@ -350,8 +350,8 @@ class CustomerModel extends Model {
     * @return string|array
     */
     public function getProblem($index){
-      if (is_int($index)) {
-        return $this->problem[$index];
+      if (is_numeric($index)) {
+        return isset($this->problem[$index]) ? $this->problem[$index] : '未定义';
       } else {
         return $this->problem;
       }
@@ -362,8 +362,8 @@ class CustomerModel extends Model {
     * @return string|array
     */
     public function getMode($index){
-      if (is_int($index)) {
-        return $this->mode[$index];
+      if (is_numeric($index)) {
+        return isset($this->mode[$index]) ? $this->mode[$index] : '未定义';
       } else {
         return $this->mode;
       }
@@ -374,8 +374,8 @@ class CustomerModel extends Model {
     * @return string|array
     */
     public function getAttitude($index){
-      if (is_int($index)) {
-        return $this->attitude[$index];
+      if (is_numeric($index)) {
+        return isset($this->attitude[$index]) ? $this->attitude[$index] : '未定义';
       } else {
         return $this->attitude;
       }
@@ -386,8 +386,8 @@ class CustomerModel extends Model {
     * @return string|array
     */
     public function getProfession($index){
-      if (is_int($index)) {
-        return $this->profession[$index];
+      if (is_numeric($index)) {
+        return isset($this->profession[$index]) ? $this->profession[$index] : '未定义';
       } else {
         return $this->profession;
       }
@@ -398,8 +398,8 @@ class CustomerModel extends Model {
     * @return string|array
     */
     public function getIntention($index){
-      if (is_int($index)) {
-        return $this->intention[$index];
+      if (is_numeric($index)) {
+        return isset($this->intention[$index]) ? $this->intention[$index] : '未定义';
       } else {
         return $this->intention;
       }
@@ -410,8 +410,8 @@ class CustomerModel extends Model {
     * @return string|array
     */
     public function getSource($index){
-      if (is_int($index)) {
-        return $this->source[$index];
+      if (is_numeric($index)) {
+        return isset($this->source[$index]) ? $this->source[$index] : '未定义';
       } else {
         return $this->source;
       }

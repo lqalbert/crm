@@ -78,7 +78,7 @@ class SaleAchievementController extends \Think\Controller{
     	db.name as department_name, db.id as department_id from rbac_user inner join 
     	user_info as ui on rbac_user.id = ui.user_id  left join group_basic as gb on ui.group_id=gb.id 
     	left join department_basic as db on ui.department_id=db.id where rbac_user.status>=0 
-    	and ui.group_id<>0 and ui.department_id<>0 and role_id in (".
+    	and ui.group_id<>0 and ui.department_id<>0 and db.type=0 and role_id in (".
         $roleM->getIdByEname(RoleModel::CAPTAIN).",". 
         $roleM->getIdByEname(RoleModel::STAFF) .",".
         $roleM->getIdByEname(RoleModel::DEPARTMENTMASTER).") "); 

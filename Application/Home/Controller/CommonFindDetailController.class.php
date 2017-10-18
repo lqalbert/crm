@@ -148,6 +148,9 @@ class CommonFindDetailController extends CommonController{
     if (!$row) {
       $this->error("未找到对应的客户");
     }
+    $row['money_text'] = D('Customer')->getMoney($row['money']);
+    $row['year_text']  = D('Customer')->getYear($row['year']);
+    $row['profession_text'] = D('Customer')->getProfession($row['profession']);
     $row['contacts'] = D('customerContact')->where(array('cus_id'=>$row['id']))->select();
     $this->ajaxReturn($row);
   }   

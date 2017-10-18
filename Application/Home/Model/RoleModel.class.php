@@ -30,6 +30,8 @@ class RoleModel extends Model {
 	const DATACAPTAIN = 'dataCaptain';
 	const RISKGROUP = 'riskGroup';
 
+	const STATISTICIAN = 'statistician';
+
 	//不可见的
 	const MASTER = 'master';
 	const GROUPCAPTIAN = 'GROUPCAPTIAN';
@@ -63,7 +65,9 @@ class RoleModel extends Model {
 		'riskGroup', //审查组长
 		'counselorCaptain', //投顾组长
 		'dataCaptain', //材料组长
-		'callBackCaptain', //回访组长
+		'callBackCaptain', //回访组长,
+
+		'statistician', //查看统计报表的
 	);
 
 	public function getEnames(){

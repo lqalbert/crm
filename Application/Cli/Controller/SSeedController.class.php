@@ -9,25 +9,27 @@ class SSeedController extends Controller {
     private $users = array();
 
     public function index(){
+        die();
         $this->init();
         $this->seedRecord();
     }
 
     private function init(){
         $tmp = strtotime('2017-10-01');
-        $this->days = 12;
+        $this->days = 15;
         $this->dateTpl = '2017-10-';
     }
 
     private function seedRecord(){
-        for ($i=1; $i <= $this->days ; $i++) { 
-             $dateTpl = $this->dateTpl. sprintf("%02d", $i);
+        // for ($i=1; $i <= $this->days ; $i++) { 
+        //      $dateTpl = $this->dateTpl. sprintf("%02d", $i);
              
-             $this->setRecord($dateTpl);
+        //      $this->setRecord($dateTpl);
              
-             $this->updateRecord();
+        //      $this->updateRecord();
              
-        }
+        // }
+        $this->updateRecord();
     }
 
     private function getUsers(){
@@ -70,30 +72,31 @@ class SSeedController extends Controller {
 
     private function updateRecord(){
         $orders = $this->getOrders();
-        
+        echo 'all orders';
+        echo "\n";
+        // var_dump($orders);
         foreach ($orders as $order) {
-            if ($this->check($order)) {
-                $record = $this->getAchievementRecord($order);
-                if (is_array($record)) {
-                    $amount = intval($order['paid_in']);
-                    $sql = "update statistics_spread_achievement set order_num = order_num +1 ,sale_amount=sale_amount+".$amount." where id = ".$record['id'];
-                    M()->execute($sql);
-                }
+            $record = $this->getAchievementRecord($order);
+            var_dump($record);
+            if (is_array($record)) {
+                $amount = intval($order['paid_in']);
+                $sql = "update statistics_spread_achievement set order_num = order_num +1 ,sale_amount=sale_amount+".$amount." where id = ".$record['id'];
+                M()->execute($sql);
             }
         }
     }
 
     private function getOrders(){
         return M('customers_order')->where(array(
-            'created_at'=> array(array('EGT', '2017-10-01'), array('ELT', '2017-10-12 23:59:59')), 
-            'user_id'   => array('NEQ', 'salesman_id')))
-                                 ->field('paid_in,user_id,salesman_id,created_at,cus_id')
+            'source_type'=>2,
+            'created_at'=> array(array('EGT', '2017-10-01'), array('ELT', '2017-10-15 23:59:59'))
+            ))->field('paid_in,user_id,salesman_id,created_at,cus_id')
                                  ->select();
     }
 
     //检查是不是推广部分配给销售的
     private function check($order){
-        $row = M("customers_basic")->where(array('id'=>$order['id'], 'spread_id'=>array('NEQ', '0')))->find();
+        $row = M("customers_basic")->where(array('id'=>$order['cus_id'], 'spread_id'=>array('NEQ', '0')))->find();
         if ($row) {
             return true;
         }
