@@ -37,7 +37,7 @@ class UploadController extends CommonController {
 
   //对layui上传的图片单独处理
 	public function index3($folder,$authSub=true){
-		  $upload = new \Think\Upload();// 实例化上传类
+		$upload = new \Think\Upload();// 实例化上传类
 	    $upload->maxSize   =     3145728 ;// 设置附件上传大小3M
 	    $upload->exts      =     array('jpg', 'gif', 'png', 'jpeg');// 设置附件上传类型
 	    $upload->rootPath  =     './Upload/'.$folder.'/'; // 设置附件上传根目录
@@ -91,6 +91,8 @@ class UploadController extends CommonController {
         	}
         }
     }
+
+    
 
 
 

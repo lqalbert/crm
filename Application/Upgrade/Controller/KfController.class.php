@@ -118,14 +118,17 @@ class KfController  extends \Think\Controller{
     }
 
     public function table7(){
-        $sql = "alter table `customers_buy` add column dis_time timestamp  null   comment '分配时间';";
-        M()->execute($sql);
+        // $sql = "alter table `customers_buy` add column dis_time timestamp  null   comment '分配时间';";
+        // M()->execute($sql);
     }
 
     public function table8(){
         $sql = "alter table `customers_buy` add column pay_info text  null   comment '支付信息';";
         M()->execute($sql);
     }
+
+
+
     ///// 10-18
     public function table9(){
         $sql = "alter table `customers_buy` add  column datastaff_id  int unsigned  null   comment '材料专员';";
@@ -146,6 +149,51 @@ class KfController  extends \Think\Controller{
         M()->execute($sql);
     }
      ///// end of 10-18
+
+
+    public function table11(){
+        $sql = "alter table `customers_buy` add  column disstaff_time  timestamp  null   comment '分配给材料专员的时间';";
+        M()->execute($sql);
+    }
+
+    public function table12(){
+        $sql = "alter table `customers_buy` add  column order_time  timestamp  null   comment '材料专员的开单时间';";
+        M()->execute($sql);
+    }
+
+    public function table13(){
+        $sql = "alter table `customers_basic` add  column semaster_time  timestamp  null   comment '分配给客服主管的时间';";
+        M()->execute($sql);
+    }
+
+    public function table14(){
+        $sql = "alter table `customers_buy` add  column call_time  timestamp  null   comment '回访处理时间';
+               alter table `customers_buy` add  column risk_time  timestamp  null   comment '风控处理时间';";
+        M()->execute($sql);
+    }
+
+    public function table15(){
+        $sql = "alter table `customers_basic` add  column gen_time  timestamp  null   comment '分配给客服的时间';";
+        M()->execute($sql);
+    }
+
+    public function table16(){
+        $sql = "alter table `customers_basic` add  column kf_time  timestamp  null   comment '客服的最后跟踪时间';";
+        M()->execute($sql);
+    }
+
+    public function table17(){
+        $sql = "create table `customers_tracks`(
+                `id` int unsigned not null primary key auto_increment,
+                `cus_id` int unsigned not null,
+                `creator_id` int unsigned not null,
+                `path` varchar(256),
+                `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+            )comment '客户的聊天记录';";
+        M()->execute($sql);
+    }
+
+
 
     //角色的修改
     public function role(){

@@ -156,6 +156,7 @@ class DistributeCustomerBController extends CommonController{
 
     public function recommend(){
         $_POST['track_text'] = '推荐';
+        $_POST['content'] = "主题:".$_POST['title']."\n 内容:".$_POST['content'];
         $data = M("customers_log")->create($_POST);
         if (!$data) {
 

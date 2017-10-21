@@ -10,6 +10,12 @@ class RiskCheckController extends CommonController{
         return 'risk_state';
     }
 
+    protected function getTimeState(){
+        return 'risk_time';
+    }
+
+
+
     protected function getBUser(){
         return D("User")->getRisk('id,realname as name');
     }
@@ -25,6 +31,7 @@ class RiskCheckController extends CommonController{
         $this->assign('complainTypes',      D("CustomerComplain")->getType());
 
         $this->assign('state_text', $this->getRoleState());
+        $this->assign('time_text', $this->getTimeState());
         $this->assign('is_buser',   $this->isBuser());
         $this->assign('buser', $this->getBUser());
 
@@ -45,6 +52,7 @@ class RiskCheckController extends CommonController{
             $value['user'] = $depart."-".$group."-".$user['realname'];
             $value['user_phone'] = $user['mphone'];
             $value['contact'] = M("customers_contacts")->where(array('cus_id'=>$value['cus_id']))->order("is_main desc")->select();
+            $value['type_text'] = D('Customer')->getType($value['ctype']);
         }
         $result = array('list'=>$list, 'count'=>$count);
         return $result;
@@ -154,7 +162,7 @@ class RiskCheckController extends CommonController{
     }
 
     protected function setCheckField($ch_id, $state){
-        $this->M->where(array('risk_id'=>$ch_id, 'risk_state'=>0))->data(array('risk_state'=>$state));
+        $this->M->where(array('risk_id'=>$ch_id))->data(array('risk_state'=>$state,'risk_time'=>Date("Y-m-d H:i:s")));
     }
 
     public function check(){
@@ -187,7 +195,8 @@ class RiskCheckController extends CommonController{
             // $stuffs = D("User")->getDataStaff("id");
             $row=$this->M->where(array("id"=>$id, 'risk_state'=>1, 'callback_state'=>1))->find();
             if ($row) {
-                $param = array('job'=>'DisDataStaffJob', 'arg'=>array('id'=>$id));
+                $cus_name = D("Customer")->where(array('id'=>$row['cus_id']))->getField('name');
+                $param = array('job'=>'DisDataStaffJob', 'arg'=>array('id'=>$id, 'product_name'=>$row['product_name'], 'cus_name'=>$cus_name));
                 tag(HOOK_QUEUE , $param);
                 // foreach ($stuffs as  $stuff) {
                 //     $this->setMsg($stuff['id'], $row['cus_id'], $row['product_name']);

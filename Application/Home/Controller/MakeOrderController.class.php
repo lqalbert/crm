@@ -24,6 +24,7 @@ class MakeOrderController extends CommonController {
     public function setQeuryCondition(){
 
         $this->dCondition['customers_buy.status'] = I('get.status');
+        $this->dCondition['datastaff_id'] = array( array('EQ', session('uid')), array('exp', 'IS NULL'), 'OR' );
 
 
         $name = I("get.name");
@@ -66,7 +67,7 @@ class MakeOrderController extends CommonController {
         $this->M->join('user_info as ui on customers_buy.user_id=ui.user_id')
                 ->join('customers_basic as cb on cb.id = customers_buy.cus_id','LEFT')
                 ->join('department_basic as db on ui.department_id = db.id', 'left')
-                ->field('customers_buy.* , ui.realname, db.name as department_name,cb.name as cus_name')
+                ->field('customers_buy.* , ui.realname, db.name as department_name,cb.name as cus_name,cb.semaster_time,cb.semaster_id')
                 ->where($this->dCondition);
 
         //销售部 团队 员工参数
@@ -102,6 +103,20 @@ class MakeOrderController extends CommonController {
         
     }
 
+    protected function _getList(){
+
+        $this->setQeuryCondition();
+
+        $count = (int)$this->M->count();
+        $this->setQeuryCondition();
+
+        $list = $this->M->page(I('get.p',0). ','. $this->pageSize)->order('disstaff_time desc')->select();
+        // var_dump($this->M->getlastsql());die();
+        $result = array('list'=>$list, 'count'=>$count);
+        
+        return $result;
+    }
+
 
     public function getList(){
         $result = $this->_getList();
@@ -126,8 +141,12 @@ class MakeOrderController extends CommonController {
                     $value['semaster'] = "";
                 }
 
-                
-                
+                $salesman = M("user_info")->field("mphone")->where(array('user_id'=>$value['salesman_id']))->find();
+                if ($salesman) {
+                    $value['mphone'] = $salesman['mphone'];
+                }  else {
+                    $value['mphone'] = "";
+                } 
             }
 
             $this->ajaxReturn($result);
@@ -285,7 +304,10 @@ class MakeOrderController extends CommonController {
         $buyRow = $this->M->find($data['buy_id']);
 
         $saveRe = $this->M->where(array('id'=>$data['buy_id']))
-                                    ->data(array('status'=>1, 'todo_list'=>$this->delToList( $buyRow['todo_list'], 'order') ))
+                                    ->data(array(
+                                        'status'=>1, 
+                                        'todo_list'=>$this->delToList( $buyRow['todo_list'], 'order'),
+                                        'order_time'=> Date('Y-m-d H:i:s') ))
                                     ->save();
         if ($saveRe === false) {
             $this->error = M('customers_buy')->getError();
@@ -347,7 +369,7 @@ class MakeOrderController extends CommonController {
         $id = $_POST['distribute']['cus_id']; //I('post.distribute.cus_id');
         $semaster_id = $_POST['distribute']['semaster_id'];// I('post.distribute.semaster_id');
        
-        $data = array('semaster_id'=>$semaster_id);
+        $data = array('semaster_id'=>$semaster_id, 'semaster_time'=>Date('Y-m-d H:i:s'));
         
         $re   = D("Customer")->where(array('id'=>$id))->data($data)->save();
 

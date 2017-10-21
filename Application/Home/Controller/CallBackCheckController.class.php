@@ -7,6 +7,10 @@ class CallBackCheckController extends RiskCheckController{
         return 'callback_state';
     }
 
+    protected function getTimeState(){
+        return 'callback_time';
+    }
+
     protected function getBUser(){
         return D("User")->getCallback('id,realname as name');
     }
@@ -22,7 +26,7 @@ class CallBackCheckController extends RiskCheckController{
 
 
     protected function setCheckField($ch_id, $state){
-        $this->M->where(array('callback_id'=>$ch_id, 'callback_state'=>0))->data(array('callback_state'=>$state));
+        $this->M->where(array('callback_id'=>$ch_id))->data(array('callback_state'=>$state,'call_time'=>Date("Y-m-d H:i:s")));
     }
 
 

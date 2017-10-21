@@ -317,7 +317,8 @@
   },true).setForm("recommend",{
     cus_id:"",
     user_id:"{:session('uid')}",
-    content:""
+    content:"",
+    title:""
   },true).setMethod('getType', function(type, field){
       return this[field][type];
   }).setMethod('searchCustomer', function(){

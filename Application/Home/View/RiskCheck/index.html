@@ -120,7 +120,7 @@
 
                 <el-table-column width="100"  prop="name" label="客户姓名"></el-table-column>
             
-                <el-table-column width="100" align="center" prop="ctype" label="客户类型">
+                <el-table-column width="130" align="left" prop="type_text" label="客户类型">
                 </el-table-column>
                 <el-table-column width="150" align="center"   label="手机">
                     <template scope="scope">
@@ -160,7 +160,7 @@
                   </template>
                 </el-table-column>
 
-                <el-table-column width="200"  prop="deal_time" label="处理时间">
+                <el-table-column width="200"  prop="{$time_text}" label="处理时间">
                 </el-table-column>
                 
                 <el-table-column label="购买类型" width="110">

@@ -2,6 +2,19 @@
 <el-form ref="recommendForm"  :model="recommendForm" size="small" label-width="140px">
     <el-row>
       <el-col :span="20">
+        <el-form-item prop="title" >
+            <el-input
+              placeholder="请输入主题"
+              v-model="recommendForm.title">
+            </el-input>
+           
+        </el-form-item>
+      </el-col>
+      
+    </el-row>
+
+    <el-row>
+      <el-col :span="20">
         <el-form-item prop="content" >
             <el-input
 

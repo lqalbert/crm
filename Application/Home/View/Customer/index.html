@@ -315,6 +315,10 @@
           <el-tooltip content="编辑客户资料" placement="bottom-start" style="margin-left:10px;">
               <el-button  @click="beforeOpenEdit" size="small" type="primary">修改客户</el-button>
           </el-tooltip>
+              <el-tooltip content="编辑客户资料" placement="bottom-start" style="margin-left:10px;">
+              <el-button  @click="openDialog('uploadr')" size="small" type="primary">聊天记录</el-button>
+              </el-tooltip>
+
         </el-col>
       </el-row>
       <el-row>
@@ -473,6 +477,10 @@
   <include file="_renewal" />
   <!-- /续费 -->
 
+  <!-- 上传聊天记录 -->
+  <include file="_upload" />
+  <!-- / 上传聊天记录 -->
+
 </div>
 
 </div>
@@ -628,7 +636,12 @@
 
 
   window.defaultOption.setDatas({
-
+    userBigFile:false,
+    bigprogress:0,
+    uploadrFormDialog:false,
+    changeContact: true,
+    changeChecking:false,
+    talkRecords: [],
     setPicker:{
       disabledDate:function(time) {
         return time.getTime() < Date.now() - 8.64e7;
@@ -897,7 +910,10 @@
     product_t:"",
     name:"",
     buy_time:"",
-    pay_info:""
+    pay_info:"",
+    phone:"",
+    weixin:"",
+    qq:""
   },true).setForm('renewal',{
     product_id:null,
     product_index:null,
@@ -908,7 +924,9 @@
     buy_time:"",
     address:"",
     pay_info:""
-  },true).setMethod('getType', function(type, field){
+  },true).setForm('uploadr',{
+    cus_id:""
+  }).setMethod('getType', function(type, field){
       return this[field][type];
   }).setMethod('searchCustomer', function(){
     var vmThis = this;
@@ -1302,6 +1320,11 @@
     this.buyForm.id_card = row.id_card;
     this.buyForm.address = row.address;
     this.buyForm.name = row.name;
+    this.buyForm.phone = row.phone;
+    this.buyForm.qq = row.qq;
+    this.buyForm.weixin = row.weixin;
+    this.changeContact = true;
+    this.checkChangeContact(row.id);
     this.openDialog('buy')
   }).setMethod('setBuyTime',function(v){
     this.buyForm.buy_time = v;
@@ -1404,6 +1427,92 @@
         // 'width':d1.width(),
         'overflow':"hidden"
       })  
+  }).setMethod('checkChangeContact', function(cus_id){
+     this.changeChecking = true;
+     this.$http.get("{:U('history')}", {params:{cus_id:cus_id}}).then(function(response){
+       this.changeChecking = false;
+       if (response.body.length ==0 ) {
+        this.changeContact = false;
+       } else {
+        this.changeContact = true;
+       }
+     }, function(response){
+      this.changeChecking = false;
+     })
+  }).setMethod("handleBeforeUpload", function(file){
+     // console.log(file.size);
+     var max_size = 2*1024*1024;
+     if (file.size < max_size ) {
+      // console.log('true');
+      return true;
+     } else {
+      // console.log('false');
+
+      this.bigprogress= 0;
+      this.userBigFile = true;
+      this.uploadBigFile(file, max_size, this.uploadrForm.cus_id);
+      // this.$message.error("启用大文件上传");
+      return false;
+     }
+  }).setMethod('beforeUploadR', function(){
+      if (this.multipleSelection.length ==0 ||  this.multipleSelection.length>1) {
+        this.closeDialog('uploadr');
+        this.$message.error('请先选择一位客户');
+        return false;
+      } else {
+        var  row = this.multipleSelection[0];
+        this.uploadrForm.cus_id = row.id;
+
+        //加载聊天记录
+        this.loadRecords(row.id);
+
+      }
+  }).setMethod('loadRecords', function(id){
+     this.$http.get("{:U('talkRecords/getList')}", {params:{id:id}}).then(function(response){
+      this.talkRecords = response.body.list;
+     }, function(response){
+
+     })
+  }).setMethod('handleSucess', function(response, file, fileList){
+    // console.log(response);
+    
+    this.talkRecords.push(response);
+  }).setMethod('deleteRecords', function(id, index){
+    this.$http.post("{:U('talkRecords/delete')}", {id:id}).then(function(response){
+      this.talkRecords.splice(index, 1);
+    })
+  }).setMethod('uploadBigFile', function(file, max_size, cus_id){
+
+
+    var myWorker = new Worker('__PUBLIC__/js/upLoadBig.js');
+    var vmThis = this;
+    var record = null;
+    myWorker.onmessage = function(e) {
+      // console.log(e);
+        switch (e.data.type) {
+          case 'work':
+              // work(e.data);
+              vmThis.$message.error('好像出错了');
+              break;
+          case 'progress':
+              vmThis.bigprogress = e.data.progress;
+              if (vmThis.bigprogress == 100) {
+                myWorker.terminate();
+                myWorker = null;
+                vmThis.talkRecords.push(record);
+                vmThis.userBigFile = false;
+              }
+              break;
+          case 'setRecord':
+               record = e.data.record;
+            break;
+          default:
+              console.log(e);
+      }
+    }
+    
+    myWorker.postMessage({type:'init', file:file, max_size: max_size, cus_id:cus_id });
+    myWorker.postMessage({type:'start', url:"{:U('talkRecords/uploadBigFile')}" });
   });
 </script>
 

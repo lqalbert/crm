@@ -52,12 +52,21 @@ class GeneralServiceController extends CommonController{
         $this->setQeuryCondition();
         $list =  $this->M->join('left join user_info as ui on customers_basic.salesman_id=ui.user_id')
                          ->join('left join user_info as usi on customers_basic.gen_id = usi.user_id')
-                         ->field('ui.realname,usi.realname as gen_name,customers_basic.*,cc.*')
+                         ->field('ui.realname,ui.mphone,usi.realname as gen_name,customers_basic.*,cc.*')
                          ->order("customers_basic.id desc")
                          ->limit($this->getOffset().','.$this->pageSize)
                          ->select();
     
-        $result = array('list'=>$list, 'count'=>$count);
+        
+        foreach ($list as &$value) {
+           
+           $buyRow = D("CustomerBuy")->where(array('cus_id'=>$value['id'], 'status'=>1))
+                                     ->order('id desc')
+                                     ->field('buy_time')
+                                     ->find();
+           $value['buy_time'] = $buyRow['buy_time'];
+        }
+    $result = array('list'=>$list, 'count'=>$count);
 		$this->ajaxReturn($result);
 	}
  
@@ -91,6 +100,10 @@ class GeneralServiceController extends CommonController{
             
         	  // $this->M->where(array('cc.qq|cc.phone|cc.weixin'=>array('LIKE',$val."%")));
         }
+
+        if (isset($_GET['vt'])) {
+      $this->M->where(array('type'=>'VT'));
+    }
 
 
         //时间区间

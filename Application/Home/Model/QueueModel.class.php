@@ -1,7 +1,7 @@
 <?php
 namespace Home\Model;
 
-class QueueModel extends Think\Model{
+class QueueModel extends \Think\Model{
 
     protected $tableName = 'redis_job';
 

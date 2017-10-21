@@ -175,7 +175,8 @@ class UserModel extends  Model{
     }
 
     public function getDataStaff($field="id,realname"){
-        $roleId = D('Role')->getIdByEname(RoleModel::DATASTAFF);
+        // D("Role") ==> D("Home/Role") 队列job报错了
+        $roleId = D('Home/Role')->getIdByEname(RoleModel::DATASTAFF);
         if ($roleId) {
 
                 $where['role_id']  = $roleId;

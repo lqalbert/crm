@@ -2,10 +2,11 @@
 namespace Common\Job;
 
 class CommonJob {
-
+    protected $id = "";
 
     public function setUp(){
-        echo "setUp: ", D("Queue")->setRunning($this->id);
+        $this->id = $this->job->payload['id'];
+        echo "setUp: ", D("Home/Queue")->setRunning($this->id);
         echo "\n";
     }
 
@@ -24,7 +25,7 @@ class CommonJob {
 
 
     public function tearDown(){
-        echo "tearDown: ", D("Queue")->setComplete($this->id);
+        echo "tearDown: ", D("Home/Queue")->setComplete($this->id);
         echo "\n";
     }
 }

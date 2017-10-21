@@ -153,22 +153,20 @@
                         </template>
                         </el-table-column>
                         
-                        <el-table-column label="客服主管" header-align="left" width="100"></el-table-column>
-                        <el-table-column label="主管分配时间" header-align="left" width="100"></el-table-column>
-                        <el-table-column label="材料专员分配时间" header-align="left" width="100"></el-table-column>
-                        <el-table-column label="开单时间" header-align="left" width="100"></el-table-column>
-                        <el-table-column label="客户成交时间" header-align="left" width="100"></el-table-column>
-                        <el-table-column label="开单时间" header-align="left" width="100"></el-table-column>
+                        <el-table-column prop="semaster" label="客服主管" header-align="left" width="100"></el-table-column>
+                        <el-table-column prop="semaster_time" label="分配给主管时间" header-align="center" width="140"></el-table-column>
+                        <el-table-column prop="disstaff_time" label="分配材料专员时间" header-align="center"  width="180"></el-table-column>
+                        <el-table-column prop="order_time" label="开单时间" header-align="left" width="130"></el-table-column>
+                        <el-table-column prop="buy_time" label="客户成交时间" header-align="left" width="130"></el-table-column>
+                        <el-table-column prop="mphone" label="销售人员手机" header-align="left" width="100"></el-table-column>
 
-                        <el-table-column label="销售人员手机" header-align="left" width="100"></el-table-column>
-
-                        <el-table-column label="购买版本" header-align="center" prop="product_name" >
+                        <el-table-column label="购买版本" header-align="center" prop="product_name" width="200" >
                         </el-table-column>
                         
-                        <el-table-column label="付款信息" header-align="center" prop="buy_info" >
+                        <el-table-column label="付款信息" header-align="center" prop="buy_info" width="200" >
                         </el-table-column>
 
-                        <el-table-column label="操作" width="280" header-align="center" >
+                        <el-table-column label="操作" width="240" header-align="center" >
                             <template scope="scope">
                                 <el-button size="small" type="info" @click="checkCustomer(scope.row.cus_id)">查看客户</el-button>
                                 <el-button v-show="scope.row.buttons.length==3" size="small" type="primary" @click="openOneStep(scope.row)">开单</el-button>

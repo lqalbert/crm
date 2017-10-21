@@ -26,18 +26,18 @@ class ServiceSupervisorController extends CommonController{
       return $map;
   }
 
-  private function getRoleVal(){
-    foreach ($this->getRoleState() as $k => $v) {
-      if($this->getRoleEname() == $v){
-        $roleType = $k;
-      }
-    }
-    return $roleType;
-  }
+  // private function getRoleVal(){
+  //   foreach ($this->getRoleState() as $k => $v) {
+  //     if($this->getRoleEname() == $v){
+  //       $roleType = $k;
+  //     }
+  //   }
+  //   return $roleType;
+  // }
 
 	public function index(){
     $Products= D('Product')->where( array('status'=>array('NEQ', ProductModel::DELETE_STATUS)))->select();
-    $this->assign('roleTypeVal',  $this->getRoleVal());
+    // $this->assign('roleTypeVal',  $this->getRoleVal());
     $this->assign('Products', $Products);
 		$this->assign('customerType', D('Customer')->getType());
     $this->assign('steps',        D('CustomerLog')->getSteps());
@@ -61,11 +61,26 @@ class ServiceSupervisorController extends CommonController{
     $this->setQeuryCondition();
   	$list = $this->M->join('left join user_info as ui on customers_basic.salesman_id=ui.user_id')
                    ->join('left join user_info as usi on customers_basic.semaster_id = usi.user_id')
-                   ->field('ui.realname,usi.realname as semaster_name,customers_basic.*,cc.*')
+                   ->field('ui.realname,ui.mphone,usi.realname as semaster_name,customers_basic.*,cc.*')
                    ->order("customers_basic.id desc")
                    ->limit($this->getOffset().','.$this->pageSize)
                    ->select();
     
+    foreach ($list as &$value) {
+       $gen= M("user_info")->where(array('user_id'=>$value['gen_id']))->field('realname')->find();
+       if ($gen) {
+          $value['gen_name'] = $gen['realname'];
+       } else {
+          $value['gen_name'] ="";
+       }
+       $buyRow = D("CustomerBuy")->where(array('cus_id'=>$value['id'], 'status'=>1))
+                                 ->order('id desc')
+                                 ->field('buy_time')
+                                 ->find();
+       $value['buy_time'] = $buyRow['buy_time'];
+    }
+
+
 	  $result = array('list'=>$list, 'count'=>$count);
     $this->ajaxReturn($result);
   }
@@ -98,6 +113,10 @@ class ServiceSupervisorController extends CommonController{
     if(I('get.contact')){
     	  $val=I('get.contact');
     	  $this->M->where(array('cc.qq|cc.phone|cc.weixin'=>array('LIKE',$val."%")));
+    }
+
+    if (isset($_GET['vt'])) {
+      $this->M->where(array('type'=>'VT'));
     }
 
     $roleEname = $this->getRoleEname();
@@ -167,10 +186,8 @@ class ServiceSupervisorController extends CommonController{
     $user_id = I('post.user_id');
     $cus_ids = I("post.cus_ids");
     
-    $re  = $this->M->where(array('id'=>array('in', $cus_ids)))->data(array('gen_id'=>$user_id))->save();
+    $re  = $this->M->where(array('id'=>array('in', $cus_ids)))->data(array('gen_id'=>$user_id, 'gen_time'=>Date('Y-m-d H:i:s')))->save();
     if($re!==false){
-
-
       /**
         * 生成弹窗消息
         */

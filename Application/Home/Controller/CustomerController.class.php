@@ -626,6 +626,21 @@ class CustomerController extends CommonController {
         }
         
        // $data['user_id'] = session("uid");
+        $contact = D("CustomerContact")->where(array('cus_id'=>$data['cus_id'], 'is_main'=>1))->find();
+        if ($contact['phone'] != I("post.phone")) {
+            $contact['phone'] = I("post.phone");
+        }
+
+        if ($contact['qq'] != I("post.qq")) {
+            $contact['qq'] = I("post.qq");
+        }
+
+        if ($contact['weixin'] != I("post.weixin")) {
+            $contact['weixin'] = I("post.weixin");
+        }
+
+        D("CustomerContact")->save($contact);
+
        
         $id = $this->addBuy($data);
         
@@ -757,5 +772,14 @@ class CustomerController extends CommonController {
         $re = M("customers_buy")->where(array('cus_id'=>$cus_id, "status"=>1))->select();
         $this->ajaxReturn($re);
     }
+
+   /* public function loadRecords(){
+        $cus_id = I("get.id");
+        $re = M("customers_tracks")->where(array('cus_id'=>$cus_id))->select();
+        $this->ajaxReturn($re);
+    }*/
+
+
+
 
 }
