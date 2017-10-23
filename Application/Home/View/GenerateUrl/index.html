@@ -1,0 +1,516 @@
+<extend name="Common:base" />
+<block name="head">
+  <style>
+    .el-table__body tr.current-row>td{background: rgba(157, 195, 232, 0.7);}
+    .container > .wrapp > .el-row {margin-bottom: 6px;}
+    .el-tabs__item {font-size: 16px;}
+    .time {font-size: 13px;color: #999;}
+    .bottom {margin-top: 13px;line-height: 12px;}
+    .button {padding: 0;float: right;}
+    .image {width: 100%;height:158px;display: block;cursor: pointer;}
+    .clearfix:before,.clearfix:after {display: table;content: "";}
+    .clearfix:after {clear: both}
+    .right-tool{margin: 10px 0 0 20px;}
+    .el-message-box {
+      -moz-user-select: text;
+      -webkit-user-select: text;
+      -ms-user-select: text;
+      -o-user-select: text;
+      user-select: text;
+    }
+    .el-message-box__message p {font-size:18px;margin: 0;line-height: 1.4;}
+  </style>
+</block>
+<block name="body">
+<div id="app" class="container">
+  <div class="wrapp" id="appx" v-show="show" style="display:none;">
+    <el-tabs @tab-click="handleClick">
+      <el-tab-pane label="文字素材" name="text">
+        <el-row>
+          <el-col :span="24">
+            <el-form :inline="true" ref="searchForm" :model="searchForm">
+              <el-form-item prop="content">
+                <el-input v-model="searchForm.content" size="small" placeholder="内容关键字"></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="info" size="small" icon="search"  @click="loadDatalist" >查询</el-button>
+                <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
+                  <el-button  size="small" @click="searchReset"  >重置</el-button>
+                </el-tooltip>
+                <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:10px;">
+                  <el-button  size="small" type="danger" @click="refresh" >刷新</el-button>
+                </el-tooltip>
+              </el-form-item>
+            </el-form>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="18">
+            <el-table :data="dataList" border v-loading="dataLoad"
+             element-loading-text="{:L('DATA_LOGIN')}" highlight-current-row
+             empty-text="暂无统计数据！" ref="select" @sort-change="sortChange" 
+             @selection-change="handleSelectionChange">
+              
+              <el-table-column type="selection"  align="center" width="50"></el-table-column>
+
+              <el-table-column prop="content" label="文字内容" header-align="center" show-overflow-tooltip>
+              </el-table-column>
+              
+              <el-table-column sortable="custom" prop="y_num" label="素材被引用次数" align="center">
+              </el-table-column>
+
+              <el-table-column prop="ct_time" label="素材创建时间" align="center"></el-table-column>
+
+            </el-table>
+          </el-col>
+        </el-row>
+        <el-row type="flex"  align="middle" class="row-bg">
+          <el-col :span="9">
+            <div class="grid-content bg-purple">
+              <span class="wrapper">
+                <el-tooltip content="选择素材插入编辑框" placement="right">
+                  <el-button size="small" @click="useContent" type="primary">插入</el-button>
+                </el-tooltip>
+              </span>
+            </div>
+          </el-col>
+          <el-col :span="9">
+
+            <div class="grid-content bg-purple-light pull-right">
+              <!-- page -->
+              <include file="Common:_pagination" />
+              <!-- / page -->
+            </div>
+
+          </el-col>
+        </el-row>
+      </el-tab-pane>
+      <el-tab-pane label="图片素材" name="img">
+        <el-row>
+          <el-col :span="24">
+            <el-form :inline="true" ref="searchImgForm" :model="searchImgForm">
+              <el-form-item>
+                <el-tooltip content="重新刷新数据" placement="right" style="margin-left:10px;">
+                  <el-button  size="small" @click="imgSearchReset" type="warning" style="background-color: #e07721;border-color: #e07721">刷新数据</el-button>
+                </el-tooltip>
+              </el-form-item>
+            </el-form>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col v-for="(obj, index) in imglist" style="width: 215px;height:235px;margin: 10px 0 0 10px;">
+            <el-card :body-style="{ padding: '0px'}">
+              <img :src="imgUrl(obj.content)" class="image" @click="showImg(obj)">
+              <div style="padding: 14px;">
+                <span>{{obj.user}}</span>
+                <div class="bottom clearfix">
+                  <time class="time">{{ obj.user.ct_time }}</time>
+                  <span><el-button type="text" class="button" @click="useImg(obj)">插入</el-button></span>
+                </div>
+              </div>
+            </el-card>
+          </el-col> 
+        </el-row>
+        <el-row type="flex"  align="middle" class="row-bg">
+          <el-col :span="24">
+
+            <div class="grid-content bg-purple-light pull-right">
+              <!-- page -->
+              <el-pagination
+                @current-change="imgPageChange"
+                :current-page="imgStartPage"
+                layout="total, prev, pager, next, jumper"
+                :total="imgCount"
+                :page-size="imgPageSize"
+                >
+              </el-pagination>
+              <!-- / page -->
+            </div>
+
+          </el-col>
+        </el-row>
+
+      </el-tab-pane>
+      <el-tab-pane label="图文素材" name="vedio">
+        <el-row>
+          <el-col :span="24">
+            <el-form :inline="true" ref="searchImgTextForm" :model="searchImgTextForm">
+              <el-form-item prop="content">
+                <el-input v-model="searchImgTextForm.content" size="small" placeholder="内容关键字"></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="info" size="small" icon="search"  @click="getImgTextList" >查询</el-button>
+                <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
+                  <el-button  size="small"  @click="imgTextSearchReset"  >刷新数据</el-button>
+                </el-tooltip>
+                <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:10px;">
+                  <el-button  size="small" type="danger" @click="refresh" >刷新页面</el-button>
+                </el-tooltip>
+              </el-form-item>
+            </el-form>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="18">
+            <el-table :data="imgTextDataList" border v-loading="dataLoad"
+             element-loading-text="{:L('DATA_LOGIN')}" highlight-current-row
+             empty-text="暂无统计数据！" ref="select" @sort-change="imgTextSortChange" 
+             @selection-change="imgTextSelectionChange">
+              
+              <!-- <el-table-column type="selection"  align="center" width="50"></el-table-column> -->
+
+              <el-table-column prop="content" label="图文内容" header-align="center" show-overflow-tooltip>
+                <template scope="scope">
+                  <a v-if="scope.row.content==''">这是一张图片请点击‘查看’按钮</a>
+                  <a v-else>{{scope.row.content}}</a>
+                </template>
+              </el-table-column>
+              
+              <el-table-column sortable="custom" prop="y_num" label="图文被引用次数" align="center">
+              </el-table-column>
+
+              <el-table-column prop="ct_time" label="图文创建时间" align="center"></el-table-column>
+
+              <el-table-column label="操作" align="center" width="100">
+                <template scope="scope">
+                  <el-button size="small" @click="showImgTextContent(scope.row)" type="info">查看</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-col>
+        </el-row>
+        <el-row type="flex"  align="middle" class="row-bg">
+          <el-col :span="9">
+            <div class="grid-content bg-purple">
+              <span class="wrapper">
+                <el-tooltip content="选择图文插入编辑框" placement="right">
+                  <!-- <el-button size="small" @click="useImgTextContent" type="primary">插入</el-button> -->
+                </el-tooltip>
+              </span>
+            </div>
+          </el-col>
+          <el-col :span="9">
+
+            <div class="grid-content bg-purple-light pull-right">
+              <!-- page -->
+              <el-pagination
+                @current-change="imgTextPageChange"
+                :current-page="imgTextStartPage"
+                layout="total, prev, pager, next, jumper"
+                :total="imgTextCount"
+                :page-size="imgTextPageSize"
+                >
+              </el-pagination>
+              <!-- / page -->
+            </div>
+
+          </el-col>
+        </el-row>
+      </el-tab-pane>
+      <!-- <el-tab-pane label="语音素材" name="voice">语音素材</el-tab-pane> -->
+    </el-tabs>
+
+    <!-- uedtior -->
+    <el-row id="footer" style="float: left;">
+      <!-- 加载编辑器的容器 -->
+      <textarea name="info" id="container" style="margin-top:10px;">
+      </textarea>
+    </el-row>
+    <div class="right-tool" style="float: left;">
+      <el-button :disabled="editor1" type="info" icon="menu" style="font-size: 16px;" onclick="return $EDITORUI['edui161']._onClick(event, this);">选择模板</el-button><br>
+      <el-tooltip content="预览页面" placement="right" style="margin-top: 10px">
+        <el-button type="info" icon="picture" style="font-size: 16px;width: 117px;" @click="preview">预&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;览</el-button>
+      </el-tooltip><br>
+      <el-tooltip content="只对编辑好的内容进行保存" placement="right" style="margin-top: 10px">
+        <el-button :disabled="editor2" type="info" icon="upload" style="font-size: 16px;width: 117px;" @click="saveImgText">保&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;存</el-button>
+      </el-tooltip><br>
+      <el-tooltip content="对内容进行保存并生成链接" placement="right" style="margin-top: 10px">
+        <el-button type="info" icon="share" style="font-size: 16px;" @click="makeUrl">生成链接</el-button>
+      </el-tooltip>
+    </div>
+  </div>
+</div>
+</block>
+<block name="scripts">
+<script type="text/javascript" src="__PUBLIC__/plugins/ueditor/third-party/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/plugins/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" src="__PUBLIC__/plugins/ueditor/ueditor.all.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/plugins/ueditor/dialogs/template/config.js"></script>
+<script type="text/javascript" src="__PUBLIC__/plugins/layer/layer.js"></script>
+<script>
+  UE.Editor.prototype.placeholder = function (justPlainText) {
+    var _editor = this;
+    _editor.addListener("focus", function () {
+      var localHtml = _editor.getPlainTxt();
+      if ($.trim(localHtml) === $.trim(justPlainText)) {
+        _editor.setContent(" ");
+      }
+    });
+    _editor.addListener("blur", function () {
+      var localHtml = _editor.getContent();
+      if (!localHtml) {
+        _editor.setContent(justPlainText);
+      }
+    });
+    _editor.ready(function () {
+      _editor.fireEvent("blur");
+    });
+  };
+</script>
+<script>
+  window.defaultOption.setDatas({
+    editor1:false,
+    editor2:false,
+    dialogLabelWidth:"100px",
+    imgPageSize:"{$imgPageSize}",
+    imgTextPageSize:"{$imgTextPageSize}",
+    mainUrl:"{$mainUrl}",
+    Test1Url:"{$Test1Url}",
+    BetaPreview:"{$BetaPreview}",
+    imglist:[],
+    imgTextlist:[],
+    imgCount:0,
+    imgTextCount:0,
+    imgStartPage:1,
+    imgTextStartPage:1,
+    multipleSelection:[],
+    ImgTextSelection:[],
+    imgTextDataList:[],
+    sortMap:{
+      descending:'desc',
+      ascending:'asc'
+    },
+    PlainText:"请选择您的素材再点击使用后会显示对应的内容！",
+    ue:{},
+    title:"",
+    promotionUrl:"当前没有创建生成推广链接！",
+
+  }).setForm('search',{
+    content:""
+  }).setForm('searchImg',{
+    user_name:"",
+  },true).setForm('searchImgText',{
+    content:""
+  },true).setVueHook('mounted',function(){
+    var vmThis = this;
+    UE.plugin.register("autosave",function(){
+      return false;
+    })
+
+    window.UEDITOR_HOME_URL = "__PUBLIC__/plugins/ueditor/";
+
+    this.ue = UE.getEditor('container',{
+      initialFrameHeight: 580,  
+      initialFrameWidth: 1000,
+      autoHeightEnabled: false,
+      elementPathEnabled : false,
+      enableAutoSave:false,
+      serverUrl: "{:U('Upload/handleUeditorUpload?folder=material')}",
+      toolbars: [[ 'fullscreen', 'source', '|', 'undo', 'redo', '|',
+          'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc', '|',
+          'rowspacingtop', 'rowspacingbottom', 'lineheight', '|',
+          'customstyle', 'paragraph', 'fontfamily', 'fontsize', '|',
+          'directionalityltr', 'directionalityrtl', 'indent', '|',
+          'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|', 'touppercase', 'tolowercase', '|',
+          'link', 'unlink', 'anchor', '|', 'imagenone', 'imageleft', 'imageright', 'imagecenter', '|',
+          'simpleupload', 'insertimage', 'emotion', 'pagebreak', 'template', 'background', '|',
+          'horizontal', 'date', 'time', 'spechars', '|',
+          'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol', 'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', '|',
+          'searchreplace', 'help'
+      ]]
+    });
+
+    this.ue.ready(function() {
+      vmThis.ue.placeholder(vmThis.PlainText);
+      var obj = {
+          html:templates[0] && templates[0].html
+      };
+      vmThis.ue.execCommand( "cleardoc" );
+      vmThis.ue.execCommand( "template", obj );
+      
+    });
+
+  }).setMethod('refresh',function(){
+  	window.location.reload();
+  }).setMethod('sortChange', function(info){
+    console.log(info);
+    if (info) {
+      this.searchForm.sort_field = info.prop;
+      this.searchForm.sort_order = this.sortMap[info.order];
+    } else {
+      delete this.searchForm.sort_field;
+      delete this.searchForm.sort_order;
+    }
+    this.dataReload();
+  }).setMethod('imgTextSortChange', function(info){
+    console.log(info);
+    if (info) {
+      this.searchImgTextForm.sort_field = info.prop;
+      this.searchImgTextForm.sort_order = this.sortMap[info.order];
+    } else {
+      delete this.searchImgTextForm.sort_field;
+      delete this.searchImgTextForm.sort_order;
+    }
+    this.getImgTextList();
+  }).setMethod('handleSelectionChange',function(val){
+    this.multipleSelection = val;
+    //console.log(this.multipleSelection);
+  }).setMethod('imgTextSelectionChange',function(val){
+    this.ImgTextSelection = val;
+    //console.log(this.multipleSelection);
+  }).setMethod('useContent',function(){
+    if (this.multipleSelection.length == 0) {
+      this.$message.error("请至少选择一条素材");
+      return ;
+    }
+    
+    for(var i = 0;i<this.multipleSelection.length;i++){
+      this.ue.focus(true);
+      this.ue.execCommand('inserthtml',this.multipleSelection[i].content); 
+    }
+    
+    this.deleteArrAllItem('multipleSelection');
+ 
+  }).setMethod('useImg',function(obj){
+    if(typeof(obj) == 'undefined'){
+      console.log(obj);
+    }else{
+      //this.ue.focus(true);
+      this.ue.execCommand( 'insertimage', {
+        src:"__ROOT__/"+obj.content,
+        width:'500',
+        height:'500'
+      });
+    }
+    
+  }).setMethod('useImgTextContent',function(){
+    if (this.ImgTextSelection.length == 0) {
+      this.$message.error("请至少选择一条素材");
+      return ;
+    }
+    
+    for(var i = 0;i<this.ImgTextSelection.length;i++){
+      this.ue.focus(true);
+      this.ue.execCommand('inserthtml',this.ImgTextSelection[i].content); 
+    }
+    
+    this.deleteArrAllItem('ImgTextSelection');
+ 
+  }).setMethod('showImgTextContent',function(row){
+    this.ue.setEnabled();
+    this.$http.get("{:U('showImgTextRow')}",{params:{id:row.id}}).then(function(response){
+      this.ue.execCommand( "cleardoc" );
+      this.ue.focus(true);
+      alert(response.body.content);
+      this.ue.execCommand('inserthtml',response.body.content); 
+      this.ue.setDisabled();
+    });
+
+  }).setMethod('showUrl',function(row){
+    var url = this.mainUrl+'?uid='+row.user_id+'&pmid='+row.id;
+    this.$alert("请复制："+url,"推广链接",{
+      confirmButtonText:'已复制',
+    });
+  }).setMethod('handleClick',function(tab, event){
+    console.log(tab.index);
+    if(tab.index == 2){
+      this.ue.setDisabled();
+      this.editor1 = true;
+      this.editor2 = true;
+    }else{
+      this.ue.setEnabled();
+      this.editor1 = false;
+      this.editor2 = false;
+    }
+  }).setMethod('getImgList',function(){
+    var params = {p:this.imgStartPage};
+    for (var x in this.searchImgForm ){
+      if (this.searchImgForm[x]!="") {
+        params[x] = this.searchImgForm[x];
+      }
+    }
+    this.$http.get("{:U('getImgList')}",{params:params}).then(function(response){
+      this.imglist = response.body.list;
+      this.imgCount = response.body.count;
+    })
+  }).setMethod('getImgTextList',function(){
+    var params = {p:this.imgTextStartPage};
+    for (var x in this.searchImgTextForm ){
+      if (this.searchImgTextForm[x]!="") {
+        params[x] = this.searchImgTextForm[x];
+      }
+    }
+    this.$http.get("{:U('getImgTextList')}",{params:params}).then(function(response){
+      this.imgTextDataList = response.body.list;
+      this.imgTextCount = response.body.count;
+    })
+  }).setVueHook('mounted', function(){
+    this.getImgList();
+    this.getImgTextList();
+  }).setMethod('imgPageChange',function(v){
+    this.imgStartPage = v;
+    this.getImgList();
+  }).setMethod('imgTextPageChange',function(v){
+    this.imgTextStartPage = v;
+    this.getImgTextList();
+  }).setMethod('imgSearchReset',function(){
+    this.$refs.searchImgForm.resetFields();
+    this.getImgList();
+  }).setMethod('imgTextSearchReset',function(){
+    this.$refs.searchImgTextForm.resetFields();
+    this.getImgTextList();
+  }).setMethod('imgUrl',function(url){
+    return "__ROOT__/"+url;
+  }).setMethod('showImg',function(obj){
+    //alert(url);
+    layer.photos({
+      photos:{"data": [ { "src": "__ROOT__/"+obj.content,}]},
+      resize:false,
+      move: false,
+      shade:0.3
+    });
+
+  }).setMethod('preview',function(){
+    //window.parent.open("https://www.baidu.com");
+    var new_window = window.parent.open();
+    var data = {
+      content:this.ue.getContent()
+    }
+    console.log(data);
+    this.$http.post("{:U('setPreviewSave')}",data).then(function(response){
+      this.deleteArrAllItem('multipleSelection');
+      var pid = response.body.p;
+      new_window.location = this.BetaPreview+pid;
+      console.log(response);
+    },function(response){
+      this.$message.error(response.body.info);
+    });
+
+  }).setMethod('saveImgText',function(){
+    var data = {
+      content:this.ue.getContent()
+    }
+    this.$http.post("{:U('setPreviewSave')}",data).then(function(response){
+      this.deleteArrAllItem('multipleSelection');
+      this.$message.success("保存成功");
+    },function(response){
+      this.$message.error(response.body.info);
+    });
+  }).setMethod('makeUrl',function(){
+    //var vmThis = this;
+    var data = {
+      content:this.ue.getContent()
+    }
+    this.$http.post("{:U('setPreviewSave')}",data).then(function(response){
+      console.log(response);
+      this.deleteArrAllItem('multipleSelection');
+      var url = this.Test1Url+response.body.p;
+      this.$alert("请复制："+url,"推广链接",{
+        confirmButtonText:'已复制',
+      });
+    },function(response){
+      this.$message.error("生成链接失败");
+    });
+  });
+</script>
+</block>

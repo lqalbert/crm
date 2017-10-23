@@ -1,0 +1,260 @@
+<extend name="Common:base" />
+<block name="head">
+  <style>
+    .el-table__body tr.current-row>td{background: rgba(157, 195, 232, 0.7);}
+    .container > .wrapp > .el-row {margin-bottom: 6px;}
+    .el-tabs__item {font-size: 16px;}
+    .time {font-size: 13px;color: #999;}
+    .bottom {margin-top: 13px;line-height: 12px;}
+    .button {padding: 0;float: right;}
+    .image {width: 100%;height:158px;display: block;cursor: pointer;}
+    .clearfix:before,.clearfix:after {display: table;content: "";}
+    .clearfix:after {clear: both}
+    .el-table__header .el-table_1_column_1 .cell{display:none;}
+  </style>
+</block>
+<block name="body">
+<div id="app" class="container">
+  <div class="wrapp" id="appx" v-show="show" style="display:none;">
+
+    <el-tabs @tab-click="handleClick">
+      <el-tab-pane label="文字素材" name="text">
+        <el-row>
+          <el-col :span="24">
+            <el-form :inline="true" ref="searchForm" :model="searchForm">
+              <el-form-item prop="content">
+                <el-input v-model="searchForm.content" size="small" placeholder="内容关键字"></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="info" size="small" icon="search"  @click="loadDatalist" >查询</el-button>
+                <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
+                  <el-button  size="small" @click="searchReset"  >重置</el-button>
+                </el-tooltip>
+                <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:10px;">
+                  <el-button  size="small" type="danger" @click="refresh" >刷新</el-button>
+                </el-tooltip>
+              </el-form-item>
+            </el-form>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="18">
+            <el-table :data="dataList" border v-loading="dataLoad"
+             element-loading-text="{:L('DATA_LOGIN')}" highlight-current-row
+             empty-text="暂无统计数据！" ref="select" @sort-change="sortChange" 
+             @selection-change="handleSelectionChange">
+              
+              <el-table-column type="selection"  align="center" width="50"></el-table-column>
+
+              <el-table-column prop="content" label="文字内容" header-align="center" show-overflow-tooltip>
+              </el-table-column>
+              
+              <el-table-column sortable="custom" prop="y_num" label="素材被引用次数" align="center">
+              </el-table-column>
+
+              <el-table-column prop="ct_time" label="素材创建时间" align="center"></el-table-column>
+
+            </el-table>
+          </el-col>
+        </el-row>
+        <el-row type="flex"  align="middle" class="row-bg">
+          <el-col :span="9">
+            <div class="grid-content bg-purple">
+              <span class="wrapper">
+                <el-tooltip content="选择素材对其修改" placement="right">
+                  <el-button size="small" @click="editContent" type="primary">修改</el-button>
+                </el-tooltip>
+              </span>
+            </div>
+          </el-col>
+          <el-col :span="9">
+
+            <div class="grid-content bg-purple-light pull-right">
+              <!-- page -->
+              <include file="Common:_pagination" />
+              <!-- / page -->
+            </div>
+
+          </el-col>
+        </el-row>
+      </el-tab-pane>
+      <el-tab-pane label="图片素材" name="img">
+        <el-row>
+          <el-col :span="24">
+            <el-form :inline="true" ref="searchImgForm" :model="searchImgForm">
+              <el-form-item>
+                <el-tooltip content="重新刷新数据" placement="right" style="margin-left:10px;">
+                  <el-button  size="small" @click="imgSearchReset" type="warning" style="background-color: #e07721;border-color: #e07721">刷新数据</el-button>
+                </el-tooltip>
+              </el-form-item>
+            </el-form>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col v-for="(obj, index) in imglist" style="width: 215px;height:235px;margin: 10px 0 0 10px;">
+            <el-card :body-style="{ padding: '0px'}">
+              <img :src="imgUrl(obj.content)" class="image" @click="showImg(obj)">
+              <div style="padding: 14px;">
+                <span>{{obj.user}}</span>
+                <div class="bottom clearfix">
+                  <time class="time">{{ obj.ct_time }}</time>
+                  <span><el-button type="text" class="button" @click="delImg(obj)">删除</el-button></span>
+                </div>
+              </div>
+            </el-card>
+          </el-col> 
+        </el-row>
+        <el-row type="flex"  align="middle" class="row-bg">
+          <el-col :span="24">
+
+            <div class="grid-content bg-purple-light pull-right">
+              <!-- page -->
+              <el-pagination
+                @current-change="imgPageChange"
+                :current-page="imgStartPage"
+                layout="total, prev, pager, next, jumper"
+                :total="imgCount"
+                :page-size="imgPageSize"
+                >
+              </el-pagination>
+              <!-- / page -->
+            </div>
+
+          </el-col>
+        </el-row>
+
+      </el-tab-pane>
+<!--       <el-tab-pane label="视频素材" name="vedio">视频素材</el-tab-pane>
+      <el-tab-pane label="语音素材" name="voice">语音素材</el-tab-pane> -->
+    </el-tabs>
+
+  </div>
+
+  <div class="dialogWrapper" v-show="show" style="display: none">
+
+    <!-- 修改文字素材 -->
+    <include file="_editTxt" />
+    <!-- / 修改文字素材 -->
+  </div>
+</div>
+</block>
+<block name="scripts">
+<script src="__PUBLIC__/plugins/ueditor/third-party/jquery-1.12.4.min.js"></script>
+<script src="__PUBLIC__/plugins/layer/layer.js"></script>
+<script>
+  page.editTxtFormUrl = "{:U('saveEdit')}";
+  window.defaultOption.setDatas({
+    dialogLabelWidth:"100px",
+    imgPageSize:"{$imgPageSize}",
+    mainUrl:"{$mainUrl}",
+    imglist:[],
+    imgCount:0,
+    imgStartPage:1,
+    multipleSelection:[],
+    sortMap:{
+      descending:'desc',
+      ascending:'asc'
+    },
+  }).setForm('search',{
+    content:""
+  }).setForm('searchImg',{
+    user_name:"",
+  },true).setForm('editTxt',{
+    content:"",
+    id:""
+  },true).setMethod('refresh',function(){
+    window.location.reload();
+  }).setMethod('sortChange', function(info){
+    console.log(info);
+    if (info) {
+      this.searchForm.sort_field = info.prop;
+      this.searchForm.sort_order = this.sortMap[info.order];
+    } else {
+      delete this.searchForm.sort_field;
+      delete this.searchForm.sort_order;
+    }
+    this.dataReload();
+  }).setMethod('handleSelectionChange',function(val){
+    this.multipleSelection = [];
+    if(val.length >= 2){
+      if(val.length == this.dataList.length){
+        val.splice(0,val.length);
+      }else{
+        this.multipleSelection.push(val[val.length-1]);
+        val.shift();
+      }
+    } else {
+      this.multipleSelection = val;
+    }
+    //console.log(this.multipleSelection);
+  }).setMethod('handleClick',function(tab, event){
+    console.log(tab, event);
+  }).setMethod('getImgList',function(){
+    var params = {p:this.imgStartPage};
+    for (var x in this.searchImgForm ){
+      if (this.searchImgForm[x]!="") {
+        params[x] = this.searchImgForm[x];
+      }
+    }
+    this.$http.get("{:U('getImgList')}",{params:params}).then(function(response){
+      this.imglist = response.body.list;
+      this.imgCount = response.body.count;
+    })
+  }).setVueHook('mounted', function(){
+    this.getImgList();
+  }).setMethod('imgPageChange',function(v){
+    this.imgStartPage = v;
+    this.getImgList();
+  }).setMethod('imgSearchReset',function(){
+    this.$refs.searchImgForm.resetFields();
+    this.getImgList();
+  }).setMethod('imgUrl',function(url){
+    return "__ROOT__/"+url;
+  }).setMethod('showImg',function(obj){
+    //alert(url);
+    layer.photos({
+      photos:{"data": [ { "src": "__ROOT__/"+obj.content,}]},
+      resize:false,
+      move: false,
+      shade:0.3
+    });
+
+  }).setMethod('editContent',function(){
+    if (this.multipleSelection.length == 0) {
+      this.$message.error("请只选择一条素材");
+      return ;
+    }
+    this.editTxtForm.content = this.multipleSelection[0].content;
+    this.editTxtForm.id = this.multipleSelection[0].id;
+    this.openDialog("editTxt"); 
+ 
+  }).setMethod('delImg',function(obj){
+    var vmThis = this;
+    var id = obj.id;
+
+    this.$confirm('此操作将删除该图片, 是否继续?', '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }).then(function(){
+      vmThis.$http.get("{:U('delImg')}",{params:{id:id}}).then(function(response){
+        vmThis.imgSearchReset();
+        vmThis.$message.success(response.body.info); 
+      },function(response){
+        vmThis.$message.error(response.body.info);
+      });
+    }).catch(function(){
+      vmThis.$message({
+        type: 'info',
+        message: '已取消删除'
+      });          
+    });
+
+
+
+
+
+
+  });
+</script>
+</block>
