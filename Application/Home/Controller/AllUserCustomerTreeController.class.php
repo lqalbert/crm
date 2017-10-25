@@ -57,7 +57,7 @@ class AllUserCustomerTreeController extends CommonController{
   private function checkLikeField(){
       //改造成复合查询
       if (I('get.name')) {
-          $this->M->where(array('name'=>array('like', I('get.name')."%")));
+          $this->M->where(array('customers_basic.name'=>array('like', I('get.name')."%")));
       }
 
       $complexWhere = array('_logic'=>'OR');

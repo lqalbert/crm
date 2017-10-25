@@ -18,7 +18,6 @@ class SpreadCustomerSortController extends CommonController{
         } 
         
         
-
         $this->assign('searchGroup', array(array("name"=>"个人", "value"=>"user_id"), array("name"=>"小组", "value"=>"to_gid"), array("name"=>"部门", "value"=>"spread_id")));
 
         $this->assign("allDeparts", $this->getSpreadDepartment());
@@ -292,7 +291,7 @@ class SpreadCustomerSortController extends CommonController{
                         ->group("customers_basic.$searchgroup");
                 if (empty($this->group_id)) {
                     if (empty($this->spread_id)) {
-                    $this->M->where(array("spread_id"=>array("NEQ", $this->spread_id)));
+                        $this->M->where(array("spread_id"=>array("NEQ", $this->spread_id)));
                     } else {
                         $this->M->where(array("spread_id"=>$this->spread_id));
                     }

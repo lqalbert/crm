@@ -58,7 +58,7 @@ function WxValidata(rule, value, callback){
     }
 
     if(!reg.test(value)){
-      return callback('仅支持数字、下划线、字母或减号，');
+      return callback('仅支持数字、下划线、字母或减号');
     }
 
     Vue.http.get(page.checContactUrl, {params:{value:value, type:'weixin'}}).then(function(response){

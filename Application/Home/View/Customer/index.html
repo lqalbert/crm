@@ -380,7 +380,7 @@
               
               <el-table-column label="内容" header-align="center">
                 <template scope="scope">
-                  {{scope.row.content | handleString}}
+                  {{scope.row.content | handleString(8)}}
                 </template>
               </el-table-column>
 
@@ -739,7 +739,16 @@
       ],
       buy_time:[
         { type: 'date',required: true, message:"请选择购买时间", trigger:'change'}
-      ] 
+      ],
+      phone:[
+        { pattern:/^1[34578]\d{9}$/, message: '手机号格式不正确',trigger:'blur'}
+      ],
+      weixin:[
+        { pattern:/^[a-zA-Z0-9\_\-]{6,20}$/, message: '仅支持数字、下划线、字母或减号',trigger:'blur'}
+      ],
+      qq:[
+        { pattern:/^\d+$/, message: 'QQ号必须为数字',trigger:'blur'}
+      ]
 
     },
     stepActive:0,

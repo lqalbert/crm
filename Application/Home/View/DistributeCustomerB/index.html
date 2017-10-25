@@ -538,8 +538,8 @@
           this.$message.error('只能选择一个员工');
           return;
       }
-      var  formName    =  FormName.getFormName(); 
-      this[formName].cus_id = this.multipleSelection[0].id;
+      var row = this.multipleSelection.pop();
+      this.recommendForm.cus_id = row.id;
   });
 </script>
 

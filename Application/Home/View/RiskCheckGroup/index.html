@@ -22,7 +22,13 @@
                       <el-form-item prop="contact" style="width:170px">
                         <el-input v-model="searchForm.contact" size="small" placeholder="手机|qq|微信号"></el-input>
                       </el-form-item>
-                      <el-form-item>
+                      <el-form-item style="width:170px">
+                        <el-select v-model="searchForm.ch_id" size="small">
+                          <el-option v-for="user in buser" :value="user.id" :label="user.realname"></el-option>
+                        </el-select>
+                      </el-form-item>
+                      <br>
+                      <el-form-item style="width:170px">
                         <el-select 
                         clearable
                         size="small" 
@@ -32,7 +38,7 @@
                           <el-option v-for="depart in departments" :value="depart.id" :label="depart.name"></el-option>
                         </el-select>
                       </el-form-item>
-                      <el-form-item>
+                      <el-form-item style="width:170px">
                         <el-select 
                         clearable
                         size="small" 
@@ -42,7 +48,7 @@
                           <el-option v-for="group in groups" :value="group.id" :label="group.name"></el-option>
                         </el-select>
                       </el-form-item>
-                      <el-form-item>
+                      <el-form-item style="width:170px">
                         <el-select 
                         clearable
                         size="small" 
@@ -51,7 +57,8 @@
                           <el-option v-for="user in users" :value="user.id" :label="user.name"></el-option>
                         </el-select>
                       </el-form-item>
-                      <el-form-item>
+                      <br>
+                      <el-form-item style="width:170px">
                         <el-date-picker
                           size="small"
                           v-model="range"
@@ -61,14 +68,16 @@
                           @change="rangeChange">
                         </el-date-picker>
                       </el-form-item>
-                      <el-form-item>
+                      <el-form-item style="width:170px">
                         <el-select size="small" v-model="searchForm.state" placeholder="审核状态">
                           <el-option value="0" label="待审核"></el-option>
                           <el-option value="1" label="通过"></el-option>
                           <el-option value="-1" label="未通过"></el-option>
                         </el-select>
                       </el-form-item>
+                     
                       
+
 
                     <el-form-item prop="field" v-show="false">
                       <input type="hidden" size="small" v-model="searchForm.field">
@@ -304,7 +313,7 @@ window.defaultOption.setDatas({
     steps:{:json_encode($steps)},
     logType:{:json_encode($logType)},
     complainTypes:{:json_encode($complainTypes)},
-    
+    buser:{:json_encode($employee)},
     pickerOptions: {
       disabledDate:function(time) {
         return time.getTime() > Date.now();

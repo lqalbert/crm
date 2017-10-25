@@ -50,12 +50,18 @@ class TalkRecordsController extends CommonController{
         if (I("post.index") == 0) {
             // rename("/tmp/tmp_file.txt", "/home/user/login/docs/my_file.txt");
             $extension = pathinfo(I("post.filename"), PATHINFO_EXTENSION );
+            //realpath 在 win 与 linux 下结果有点不一至
+            //win 下
+            //  /tmp/tmp_file. 返回 /tmp/tmp_file
+            // linux下
+            // /tmp/tmp_file. 返回 /tmp/tmp_file.
             $fullPath = realpath(DIRROOT. $path);
-            rename($fullPath, $fullPath.".".$extension);
+            rename($fullPath, trim($fullPath,".").".".$extension);
+
             $data = array(
                 'cus_id' => I('post.cus_id'),
                 'creator_id' => session('uid'),
-                'path' => $path.$extension,
+                'path' => trim($path,".").".".$extension,
                 // 'path' => $path 
             );
             $data['id'] = M('customers_tracks')->add($data);
@@ -66,10 +72,11 @@ class TalkRecordsController extends CommonController{
             $partContent = file_get_contents(realpath(DIRROOT. $path));
             // var_dump(realpath(DIRROOT. $path));
             if ($partContent) {
+
                 $size = file_put_contents(realpath(DIRROOT.$filePath), $partContent, FILE_APPEND);
                 
                 if ($size) {
-                    unlink(DIRROOT. $path);
+                    unlink(realpath(DIRROOT. $path));
                     $re = array(
                         'path' => $filePath
                     );

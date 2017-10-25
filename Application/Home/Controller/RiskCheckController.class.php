@@ -24,7 +24,7 @@ class RiskCheckController extends CommonController{
         return $this->getRoleEname() == RoleModel::GOLD;
     }
 
-    public function index(){
+    protected function setViewVar(){
         $this->assign('customerType', D('Customer')->getType());
         $this->assign('steps',        D('CustomerLog')->getSteps());
         $this->assign('logType',      D('CustomerLog')->getType());
@@ -32,9 +32,21 @@ class RiskCheckController extends CommonController{
 
         $this->assign('state_text', $this->getRoleState());
         $this->assign('time_text', $this->getTimeState());
-        $this->assign('is_buser',   $this->isBuser());
-        $this->assign('buser', $this->getBUser());
+        // $this->assign('is_buser',   $this->isBuser());
+        // $this->assign('buser', $this->getBUser());
+    }
 
+    public function index(){
+
+        $ename = $this->getRoleEname();
+        if ($ename == RoleModel::RISKGROUP) {
+            redirect(U("RiskCheckGroup/index"));
+        } else if($ename == RoleModel::CALLBACKCAPTAIN){
+            redirect(U("CallBackCheckGroup/index"));
+        }
+
+
+        $this->setViewVar();
         $this->display('RiskCheck::index');
     }
 
@@ -45,6 +57,7 @@ class RiskCheckController extends CommonController{
         $this->setQeuryCondition();
         $this->setField();
         $list = $this->M->page(I('get.p',0). ','. $this->pageSize)->select();
+
         foreach ($list as &$value) {
             $user = M("user_info")->where(array("user_id"=>$value['salesman_id']))->field("department_id,group_id,realname,mphone")->find();
             $depart = D("Department")->where(array("id"=>$user['department_id']))->getField("name");
@@ -64,7 +77,22 @@ class RiskCheckController extends CommonController{
 
 
     protected function setChPer(){
-        $this->M->where(array("risk_id"=>I("get.ch_id")));
+        $ch_id = I("get.ch_id");
+        if ($ch_id != 0) {
+            $this->M->where(array("risk_id"=>$ch_id));
+        } else if($ch_id==0){
+            //小组
+            $group_id = $this->getUserGroupId();
+            if ($group_id) {
+                $users = D("User")->getGroupEmployee($group_id, 'id');
+                $this->M->where(array('risk_id'=> array('IN', array_column($users, 'id'))));
+            } else {
+                $this->M->where(array('risk_id'=> -1 ));
+            }
+            
+        }
+
+        
 
         $state = I("get.state","");
         if ($state !=="") {
@@ -165,15 +193,25 @@ class RiskCheckController extends CommonController{
         $this->M->where(array('risk_id'=>$ch_id))->data(array('risk_state'=>$state,'risk_time'=>Date("Y-m-d H:i:s")));
     }
 
+    protected function stateCheck($ch_id, $state, $id){
+        return $this->M->where(array('id'=>$id, 'risk_id'=>$ch_id, 'state'=>1))->find();
+    }
+
     public function check(){
         $id  = I("post.id");
         $state = I("post.state");
         $ch_id = I('post.ch_id');
 
-        $this->M->where(array('id'=>$id));
-                // ->data(array('risk_state'=>$state))->save();
-        $this->setCheckField($ch_id, $state);
+        //同时 如果是已 审核通过了 就不能再 改为不通过
+        if ($state == -1) {
+            if ($this->stateCheck()) {
+                $this->error("已审核通过");
+            }
+        }
 
+
+        $this->M->where(array('id'=>$id));
+        $this->setCheckField($ch_id, $state);
         $re = $this->M->save();
         if ($re !== false) {
             if ($state==-1) {
@@ -195,12 +233,13 @@ class RiskCheckController extends CommonController{
             // $stuffs = D("User")->getDataStaff("id");
             $row=$this->M->where(array("id"=>$id, 'risk_state'=>1, 'callback_state'=>1))->find();
             if ($row) {
-                $cus_name = D("Customer")->where(array('id'=>$row['cus_id']))->getField('name');
-                $param = array('job'=>'DisDataStaffJob', 'arg'=>array('id'=>$id, 'product_name'=>$row['product_name'], 'cus_name'=>$cus_name));
+                $cusRow = D("Customer")->where(array('id'=>$row['cus_id']))->field('name,type')->find();
+                $param = array('job'=>'DisDataStaffJob', 'arg'=>array('id'=>$id, 'product_name'=>$row['product_name'], 'cus_name'=>$cusRow['name']));
                 tag(HOOK_QUEUE , $param);
-                // foreach ($stuffs as  $stuff) {
-                //     $this->setMsg($stuff['id'], $row['cus_id'], $row['product_name']);
-                // }
+                if ($cusRow['type'] == 'VX') {
+                    $param2 = array('job'=>'CustomerTypeJob', 'arg'=>array('id'=>$row['cus_id'], 'type'=>'V'));
+                    tag(HOOK_QUEUE , $param2);
+                }
             }
             
           $this->success('成功');

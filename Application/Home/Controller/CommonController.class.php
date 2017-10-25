@@ -155,7 +155,7 @@ class CommonController extends Controller {
 	 * 
 	 **/
 	public function getList(){
-
+		
 		$result = $this->_getList();
 	  	
 		if (IS_AJAX) {

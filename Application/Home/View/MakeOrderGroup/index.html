@@ -93,6 +93,16 @@
                       </el-form-item>
                       <!-- / 销售员工 -->
 
+                      <el-form-item style="width:170px" prop="datastaff_id">
+                        <el-select 
+                        clearable
+                        size="small" 
+                        placeholder="材料"
+                        v-model="searchForm.datastaff_id" >
+                          <el-option v-for="user in datastaffs" :value="user.id" :label="user.realname"></el-option>
+                        </el-select>
+                      </el-form-item>
+
                       <el-form-item style="width:170px" prop="range">
                         <el-date-picker
                           size="small"
@@ -253,6 +263,7 @@
             ],
         },
         seMaster:{:json_encode($seMaster)},
+        datastaffs:{:json_encode($datastaffs)},
 
         OrderInfoDialog:false,
         orderInfoDetail:{

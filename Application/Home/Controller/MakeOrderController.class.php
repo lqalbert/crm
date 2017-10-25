@@ -1,6 +1,8 @@
 <?php
 namespace Home\Controller;
 
+use Home\Model\RoleModel;
+
 class MakeOrderController extends CommonController {
     protected $pageSize = 15;
     protected $table  = 'CustomerBuy';
@@ -16,15 +18,40 @@ class MakeOrderController extends CommonController {
 
     public function index(){
 
+        $ename = $this->getRoleEname();
+        if ($ename == RoleModel::DATACAPTAIN) {
+            redirect(U("MakeOrderGroup/index"));
+        } 
+
         $this->assign('seMaster', D('User')->getSupService());
+        $this->assign('uid', session('uid'));
         $this->display();
+    }
+
+
+    protected function setDatastaffIdQueryCondition(){
+        $datastaff_id = I("get.datastaff_id");
+        if ($datastaff_id!=0) {
+            $this->dCondition['datastaff_id'] = $datastaff_id;
+        } else if($datastaff_id==0){
+            //小组
+            $group_id = $this->getUserGroupId();
+            if ($group_id) {
+                $users = D("User")->getGroupEmployee($group_id, 'id');
+                $this->dCondition['datastaff_id'] = array('IN', array_column($users, 'id'));
+            } else {
+                $this->dCondition['datastaff_id'] = -1;
+            }
+            // $this->dCondition['datastaff_id'] = array( array('EQ', ), array('exp', 'IS NULL'), 'OR' );
+        }
     }
 
 
     public function setQeuryCondition(){
 
         $this->dCondition['customers_buy.status'] = I('get.status');
-        $this->dCondition['datastaff_id'] = array( array('EQ', session('uid')), array('exp', 'IS NULL'), 'OR' );
+
+        
 
 
         $name = I("get.name");

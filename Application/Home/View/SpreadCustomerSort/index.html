@@ -5,7 +5,16 @@
 <block name="body">
   <div id="app" class="container">
     <div class="wrapp" v-show="show" style="display:none;">
-
+      <el-row>
+        <el-col :span="24">
+           <el-alert
+            title="消息提示 "
+            type="info"
+            description="成交数是指定时间段内录入的客户数中现在的成交数"
+            show-icon>
+          </el-alert>
+        </el-col>
+      </el-row>
       <el-row>
         <el-col :span="24">
           <el-form :inline="true" ref="searchForm" :model="searchForm">
@@ -89,7 +98,7 @@
                     <el-table-column label="序号"  align="center" width="65" :formatter="handleIndex"  >
                     </el-table-column>
 
-                    <el-table-column  align="center" prop="name"  label="名称"   width="150">
+                    <el-table-column   prop="name"  label="名称"   width="150">
                     </el-table-column>
 
                     <el-table-column sortable="custom"  align="center" prop="c" label="录入总数"  >

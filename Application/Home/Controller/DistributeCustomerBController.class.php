@@ -160,15 +160,20 @@ class DistributeCustomerBController extends CommonController{
         $data = M("customers_log")->create($_POST);
         if (!$data) {
 
-            $this->error(M("customers_log")->getError);
+            $this->error(M("customers_log")->getError());
         }
 
         $re = M("customers_log")->add();
         if ($re) {
-            $this->M->data(array('recommend'=>1))->where(array("id"=>I("post.cus_id")))->save();
-            $this->success("操作成功");
+            $saveRe = $this->M->data(array('recommend'=>1))->where(array("id"=>I("post.cus_id")))->save();
+            if ($saveRe!==false) {
+                $this->success("操作成功".$this->M->getlastsql());
+            } else {
+                $this->error($this->M->getError());
+            }
+            
         } else {
-            $this->error(M("customers_log")->getError);
+            $this->error(M("customers_log")->getError());
         }
     }
 
