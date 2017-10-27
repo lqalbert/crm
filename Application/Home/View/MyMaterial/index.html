@@ -11,6 +11,7 @@
     .clearfix:before,.clearfix:after {display: table;content: "";}
     .clearfix:after {clear: both}
     .el-table__header .el-table_1_column_1 .cell{display:none;}
+    .el-tabs__header {position: relative;border-bottom: 1px solid rgb(211, 220, 230);padding: 0px;margin: 0px 0px 8px;}
   </style>
 </block>
 <block name="body">
@@ -22,9 +23,19 @@
         <el-row>
           <el-col :span="24">
             <el-form :inline="true" ref="searchForm" :model="searchForm">
+              <el-form-item prop="title">
+                <el-input v-model="searchForm.title" size="small" placeholder="标题关键字"></el-input>
+              </el-form-item>
+
               <el-form-item prop="content">
                 <el-input v-model="searchForm.content" size="small" placeholder="内容关键字"></el-input>
               </el-form-item>
+
+              <el-form-item prop="dist">  
+                <el-date-picker v-model="searchForm.dist" type="daterange" style="max-width: 210px;width:210px;" size="small" placeholder="选择日期范围" :picker-options="pickerOptions" @change="DateChange" :clearable="false">
+                </el-date-picker>
+              </el-form-item>
+
               <el-form-item>
                 <el-button type="info" size="small" icon="search"  @click="loadDatalist" >查询</el-button>
                 <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
@@ -42,11 +53,17 @@
             <el-table :data="dataList" border v-loading="dataLoad"
              element-loading-text="{:L('DATA_LOGIN')}" highlight-current-row
              empty-text="暂无统计数据！" ref="select" @sort-change="sortChange" 
-             @selection-change="handleSelectionChange">
+             @selection-change="handleSelectionChange" @row-dblclick="showTextContent">
               
               <el-table-column type="selection"  align="center" width="50"></el-table-column>
 
-              <el-table-column prop="content" label="文字内容" header-align="center" show-overflow-tooltip>
+              <el-table-column prop="title" label="文字素材标题" header-align="center" width="220" show-overflow-tooltip>
+              </el-table-column>
+
+              <el-table-column prop="content" label="文字内容(双击查看)" header-align="center">
+                <template scope="scope">
+                  {{scope.row.content | handleString}}
+                </template>
               </el-table-column>
               
               <el-table-column sortable="custom" prop="y_num" label="素材被引用次数" align="center">
@@ -82,9 +99,19 @@
         <el-row>
           <el-col :span="24">
             <el-form :inline="true" ref="searchImgForm" :model="searchImgForm">
+              <el-form-item prop="title">
+                <el-input v-model="searchImgForm.title" size="small" placeholder="标题关键字"></el-input>
+              </el-form-item>
+
+              <el-form-item prop="dist">  
+                <el-date-picker v-model="searchImgForm.dist" type="daterange" style="max-width: 210px;width:210px;" size="small" placeholder="选择日期范围" :picker-options="pickerOptions" @change="imgDateChange" :clearable="false">
+                </el-date-picker>
+              </el-form-item>
+
               <el-form-item>
+                <el-button type="info" size="small" icon="search"  @click="getImgList" >查询</el-button>
                 <el-tooltip content="重新刷新数据" placement="right" style="margin-left:10px;">
-                  <el-button  size="small" @click="imgSearchReset" type="warning" style="background-color: #e07721;border-color: #e07721">刷新数据</el-button>
+                  <el-button  size="small" @click="imgSearchReset" type="warning" style="background-color: #e07721;border-color: #e07721">重置</el-button>
                 </el-tooltip>
               </el-form-item>
             </el-form>
@@ -97,15 +124,17 @@
               <div style="padding: 14px;">
                 <span>{{obj.user}}</span>
                 <div class="bottom clearfix">
-                  <time class="time">{{ obj.ct_time }}</time>
+                  <el-tooltip :content="obj.title" placement="right">
+                    <time class="time">{{obj.title  | handleImgTitle}}</time>
+                  </el-tooltip>
                   <span><el-button type="text" class="button" @click="delImg(obj)">删除</el-button></span>
                 </div>
               </div>
             </el-card>
           </el-col> 
         </el-row>
-        <el-row type="flex"  align="middle" class="row-bg">
-          <el-col :span="24">
+        <el-row type="flex"  align="middle" class="row-bg" style="margin-top: 15px;">
+          <el-col :span="0">
 
             <div class="grid-content bg-purple-light pull-right">
               <!-- page -->
@@ -135,6 +164,9 @@
     <!-- 修改文字素材 -->
     <include file="_editTxt" />
     <!-- / 修改文字素材 -->
+    <!-- 修改文字素材 -->
+    <include file="_showTextContent" />
+    <!-- / 修改文字素材 -->
   </div>
 </div>
 </block>
@@ -142,9 +174,25 @@
 <script src="__PUBLIC__/plugins/ueditor/third-party/jquery-1.12.4.min.js"></script>
 <script src="__PUBLIC__/plugins/layer/layer.js"></script>
 <script>
+  Vue.filter('handleString',function(v){
+    if(v.length > 16){
+      return cnt=v.substring(0,16)+'......';   
+    }else{
+      return v;
+    }
+  });
+  Vue.filter('handleImgTitle',function(v){
+    if(v.length > 12){
+      return cnt=v.substring(0,10)+'......';   
+    }else{
+      return v;
+    }
+  });
   page.editTxtFormUrl = "{:U('saveEdit')}";
   window.defaultOption.setDatas({
-    dialogLabelWidth:"100px",
+    showTextContentDialog:false,
+    Textcontent:"",
+    dialogLabelWidth:"120px",
     imgPageSize:"{$imgPageSize}",
     mainUrl:"{$mainUrl}",
     imglist:[],
@@ -155,15 +203,78 @@
       descending:'desc',
       ascending:'asc'
     },
+    pickerOptions: {
+      shortcuts: [{
+        text: '上一周',
+        onClick:function(picker) {
+          var start = showLastWeekFirstDay();
+          var end = showLastWeekLastDay();
+          picker.$emit('pick', [start, end]);
+        }
+      }, {
+        text: '上个月',
+        onClick:function(picker) {
+          var start = showLastMonthFirstDay();
+          var end = showLastMonthLastDay();
+          picker.$emit('pick', [start, end]);
+        }
+      }, {
+        text: '本周',
+        onClick:function(picker) {
+          var start = showWeekFirstDay();
+          var end = showWeekLastDay();
+          picker.$emit('pick', [start, end]);
+        }
+      }, {
+        text: '本月',
+        onClick:function(picker) {
+          var start = showMonthFirstDay();
+          var end = showMonthLastDay();
+          picker.$emit('pick', [start, end]);
+        }
+      }],
+      disabledDate:function(time) {
+        return time.getTime() > Date.now();// - 8.64e7
+      }
+    },
+    editTxtRules:{
+      content:[{required: true, message: '素材内容不能为空', trigger: 'blur' }]
+    }
   }).setForm('search',{
-    content:""
+    content:"",
+    dist:[],
+    title:"",
+    start:'',
+    end:''
   }).setForm('searchImg',{
-    user_name:"",
+    dist:[],
+    title:"",
+    start:'',
+    end:''
   },true).setForm('editTxt',{
     content:"",
     id:""
   },true).setMethod('refresh',function(){
     window.location.reload();
+  }).setMethod('searchReset',function(){
+    this.$refs.searchForm.resetFields();
+    delete this.searchForm.start;
+    delete this.searchForm.end;
+    this.dataLoad = true;
+    this.loadDatalist();
+
+    delete this.searchForm.sort_field;
+    delete this.searchForm.sort_order;
+
+  }).setMethod('DateChange',function(v){
+    console.log(v);
+    var dateArr = v.split(" - ");
+    this.searchForm.start = dateArr[0];
+    this.searchForm.end = dateArr[1];
+  }).setMethod('imgDateChange',function(v){
+    var dateArr = v.split(" - ");
+    this.searchImgForm.start = dateArr[0];
+    this.searchImgForm.end = dateArr[1];
   }).setMethod('sortChange', function(info){
     console.log(info);
     if (info) {
@@ -207,6 +318,8 @@
     this.getImgList();
   }).setMethod('imgSearchReset',function(){
     this.$refs.searchImgForm.resetFields();
+    delete this.searchImgForm.start;
+    delete this.searchImgForm.end;
     this.getImgList();
   }).setMethod('imgUrl',function(url){
     return "__ROOT__/"+url;
@@ -249,12 +362,9 @@
         message: '已取消删除'
       });          
     });
-
-
-
-
-
-
+  }).setMethod('showTextContent',function(row, event){
+    this.Textcontent = row.content;
+    this.showTextContentDialog = true;
   });
 </script>
 </block>

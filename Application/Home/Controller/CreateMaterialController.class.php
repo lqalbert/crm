@@ -28,11 +28,13 @@ class CreateMaterialController extends CommonController{
       $this->error($upload->getError());
     }else{// 上传成功
       $user_id=session('uid');
+      $title = I('post.title');
       $content = substr($upload->rootPath, 1 ) . $info["file"]["savepath"] . $info["file"]['savename'];
       $dataArr = array(
           "type" => 1,
+          "title" =>$title,
           "content" => $content,
-          "user_id" => $user_id,
+          "user_id" => $user_id
         );
       $res=$this->M->add($dataArr);
       if($res){
@@ -47,10 +49,12 @@ class CreateMaterialController extends CommonController{
   public function addText(){
     $user_id = session('uid');
     $content = I('post.content');
+    $title = I('post.title');
     $dataArr = array(
         "type" => 0,
+        "title" =>$title,
         "content" => $content,
-        "user_id" => $user_id,
+        "user_id" => $user_id
       );
     $data = $this->M->create($dataArr);
 

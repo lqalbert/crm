@@ -19,6 +19,8 @@
       user-select: text;
     }
     .el-message-box__message p {font-size:18px;margin: 0;line-height: 1.4;}
+    .el-tabs__header {position: relative;border-bottom: 1px solid rgb(211, 220, 230);padding: 0px;margin: 0px 0px 8px;}
+    hr{height: 1px;border: 0;background-color: #1E9FFF;clear: both;display: block;unicode-bidi: isolate;-webkit-margin-before: 0.5em;-webkit-margin-after: 0.5em;-webkit-margin-start: auto;-webkit-margin-end: auto;overflow: hidden;border-width: 1px;}
   </style>
 </block>
 <block name="body">
@@ -29,9 +31,19 @@
         <el-row>
           <el-col :span="24">
             <el-form :inline="true" ref="searchForm" :model="searchForm">
+              <el-form-item prop="title">
+                <el-input v-model="searchForm.title" size="small" placeholder="标题关键字"></el-input>
+              </el-form-item>
+
               <el-form-item prop="content">
                 <el-input v-model="searchForm.content" size="small" placeholder="内容关键字"></el-input>
               </el-form-item>
+
+              <el-form-item prop="dist">  
+                <el-date-picker v-model="searchForm.dist" type="daterange" style="max-width: 210px;width:210px;" size="small" placeholder="选择日期范围" :picker-options="pickerOptions" @change="DateChange" :clearable="false">
+                </el-date-picker>
+              </el-form-item>
+
               <el-form-item>
                 <el-button type="info" size="small" icon="search"  @click="loadDatalist" >查询</el-button>
                 <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
@@ -49,11 +61,17 @@
             <el-table :data="dataList" border v-loading="dataLoad"
              element-loading-text="{:L('DATA_LOGIN')}" highlight-current-row
              empty-text="暂无统计数据！" ref="select" @sort-change="sortChange" 
-             @selection-change="handleSelectionChange">
+             @selection-change="handleSelectionChange" @row-dblclick="showTextContent">
               
               <el-table-column type="selection"  align="center" width="50"></el-table-column>
 
-              <el-table-column prop="content" label="文字内容" header-align="center" show-overflow-tooltip>
+              <el-table-column prop="title" label="文字素材标题" header-align="center" width="220" show-overflow-tooltip>
+              </el-table-column>
+
+              <el-table-column prop="content" label="文字内容(双击查看)" header-align="center">
+                <template scope="scope">
+                  {{scope.row.content | handleString}}
+                </template>
               </el-table-column>
               
               <el-table-column sortable="custom" prop="y_num" label="素材被引用次数" align="center">
@@ -89,9 +107,19 @@
         <el-row>
           <el-col :span="24">
             <el-form :inline="true" ref="searchImgForm" :model="searchImgForm">
+              <el-form-item prop="title">
+                <el-input v-model="searchImgForm.title" size="small" placeholder="标题关键字"></el-input>
+              </el-form-item>
+
+              <el-form-item prop="dist">  
+                <el-date-picker v-model="searchImgForm.dist" type="daterange" style="max-width: 210px;width:210px;" size="small" placeholder="选择日期范围" :picker-options="pickerOptions" @change="imgDateChange" :clearable="false">
+                </el-date-picker>
+              </el-form-item>
+
               <el-form-item>
+                <el-button type="info" size="small" icon="search"  @click="getImgList" >查询</el-button>
                 <el-tooltip content="重新刷新数据" placement="right" style="margin-left:10px;">
-                  <el-button  size="small" @click="imgSearchReset" type="warning" style="background-color: #e07721;border-color: #e07721">刷新数据</el-button>
+                  <el-button  size="small" @click="imgSearchReset" type="warning" style="background-color: #e07721;border-color: #e07721">重置</el-button>
                 </el-tooltip>
               </el-form-item>
             </el-form>
@@ -104,15 +132,17 @@
               <div style="padding: 14px;">
                 <span>{{obj.user}}</span>
                 <div class="bottom clearfix">
-                  <time class="time">{{ obj.user.ct_time }}</time>
+                  <el-tooltip :content="obj.title" placement="right">
+                    <time class="time">{{obj.title  | handleImgTitle}}</time>
+                  </el-tooltip>
                   <span><el-button type="text" class="button" @click="useImg(obj)">插入</el-button></span>
                 </div>
               </div>
             </el-card>
           </el-col> 
         </el-row>
-        <el-row type="flex"  align="middle" class="row-bg">
-          <el-col :span="24">
+        <el-row type="flex"  align="middle" class="row-bg" style="margin-top: 15px;">
+          <el-col :span="0">
 
             <div class="grid-content bg-purple-light pull-right">
               <!-- page -->
@@ -138,13 +168,19 @@
               <el-form-item prop="content">
                 <el-input v-model="searchImgTextForm.content" size="small" placeholder="内容关键字"></el-input>
               </el-form-item>
+
+              <el-form-item prop="dist">  
+                <el-date-picker v-model="searchImgTextForm.dist" type="daterange" style="max-width: 210px;width:210px;" size="small" placeholder="选择日期范围" :picker-options="pickerOptions" @change="imgTextDateChange" :clearable="false">
+                </el-date-picker>
+              </el-form-item>
+
               <el-form-item>
-                <el-button type="info" size="small" icon="search"  @click="getImgTextList" >查询</el-button>
+                <el-button type="info" size="small" icon="search"  @click="getImgTextList">查询</el-button>
                 <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
-                  <el-button  size="small"  @click="imgTextSearchReset"  >刷新数据</el-button>
+                  <el-button  size="small"  @click="imgTextSearchReset">重置</el-button>
                 </el-tooltip>
                 <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:10px;">
-                  <el-button  size="small" type="danger" @click="refresh" >刷新页面</el-button>
+                  <el-button  size="small" type="danger" @click="refresh">刷新页面</el-button>
                 </el-tooltip>
               </el-form-item>
             </el-form>
@@ -166,10 +202,10 @@
                 </template>
               </el-table-column>
               
-              <el-table-column sortable="custom" prop="y_num" label="图文被引用次数" align="center">
+              <el-table-column sortable="custom" prop="y_num" label="图文被引用次数" align="center" width="160">
               </el-table-column>
 
-              <el-table-column prop="ct_time" label="图文创建时间" align="center"></el-table-column>
+              <el-table-column prop="ct_time" label="图文创建时间" align="center" width="200"></el-table-column>
 
               <el-table-column label="操作" align="center" width="100">
                 <template scope="scope">
@@ -209,7 +245,8 @@
       </el-tab-pane>
       <!-- <el-tab-pane label="语音素材" name="voice">语音素材</el-tab-pane> -->
     </el-tabs>
-
+    <!-- 蓝色分割线 -->
+    <hr>
     <!-- uedtior -->
     <el-row id="footer" style="float: left;">
       <!-- 加载编辑器的容器 -->
@@ -218,6 +255,7 @@
     </el-row>
     <div class="right-tool" style="float: left;">
       <el-button :disabled="editor1" type="info" icon="menu" style="font-size: 16px;" onclick="return $EDITORUI['edui161']._onClick(event, this);">选择模板</el-button><br>
+      <el-button :disabled="editor1" type="info" icon="document" style="font-size: 16px;margin-top: 10px;" onclick="return $EDITORUI['edui51']._onClick(event, this);">清空文档</el-button><br>
       <el-tooltip content="预览页面" placement="right" style="margin-top: 10px">
         <el-button type="info" icon="picture" style="font-size: 16px;width: 117px;" @click="preview">预&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;览</el-button>
       </el-tooltip><br>
@@ -229,6 +267,14 @@
       </el-tooltip>
     </div>
   </div>
+
+  <div class="dialogWrapper" v-show="show" style="display: none">
+
+    <!-- 修改文字素材 -->
+    <include file="_showTextContent" />
+    <!-- / 修改文字素材 -->
+  </div>
+
 </div>
 </block>
 <block name="scripts">
@@ -258,7 +304,23 @@
   };
 </script>
 <script>
+  Vue.filter('handleString',function(v){
+    if(v.length > 16){
+      return cnt=v.substring(0,16)+'......';   
+    }else{
+      return v;
+    }
+  });
+  Vue.filter('handleImgTitle',function(v){
+    if(v.length > 12){
+      return cnt=v.substring(0,10)+'......';   
+    }else{
+      return v;
+    }
+  });
   window.defaultOption.setDatas({
+    showTextContentDialog:false,
+    Textcontent:"",
     editor1:false,
     editor2:false,
     dialogLabelWidth:"100px",
@@ -280,17 +342,62 @@
       descending:'desc',
       ascending:'asc'
     },
+    pickerOptions: {
+      shortcuts: [{
+        text: '上一周',
+        onClick:function(picker) {
+          var start = showLastWeekFirstDay();
+          var end = showLastWeekLastDay();
+          picker.$emit('pick', [start, end]);
+        }
+      }, {
+        text: '上个月',
+        onClick:function(picker) {
+          var start = showLastMonthFirstDay();
+          var end = showLastMonthLastDay();
+          picker.$emit('pick', [start, end]);
+        }
+      }, {
+        text: '本周',
+        onClick:function(picker) {
+          var start = showWeekFirstDay();
+          var end = showWeekLastDay();
+          picker.$emit('pick', [start, end]);
+        }
+      }, {
+        text: '本月',
+        onClick:function(picker) {
+          var start = showMonthFirstDay();
+          var end = showMonthLastDay();
+          picker.$emit('pick', [start, end]);
+        }
+      }],
+      disabledDate:function(time) {
+        return time.getTime() > Date.now();// - 8.64e7
+      }
+    },
     PlainText:"请选择您的素材再点击使用后会显示对应的内容！",
     ue:{},
     title:"",
     promotionUrl:"当前没有创建生成推广链接！",
 
   }).setForm('search',{
-    content:""
+    content:"",
+    dist:[],
+    title:"",
+    start:'',
+    end:''
   }).setForm('searchImg',{
-    user_name:"",
+    dist:[],
+    title:"",
+    start:'',
+    end:''
   },true).setForm('searchImgText',{
-    content:""
+    content:"",
+    dist:[],
+    title:"",
+    start:'',
+    end:''
   },true).setVueHook('mounted',function(){
     var vmThis = this;
     UE.plugin.register("autosave",function(){
@@ -300,7 +407,7 @@
     window.UEDITOR_HOME_URL = "__PUBLIC__/plugins/ueditor/";
 
     this.ue = UE.getEditor('container',{
-      initialFrameHeight: 580,  
+      initialFrameHeight: 680,  
       initialFrameWidth: 1000,
       autoHeightEnabled: false,
       elementPathEnabled : false,
@@ -332,6 +439,29 @@
 
   }).setMethod('refresh',function(){
   	window.location.reload();
+  }).setMethod('searchReset',function(){
+    this.$refs.searchForm.resetFields();
+    delete this.searchForm.start;
+    delete this.searchForm.end;
+    this.dataLoad = true;
+    this.loadDatalist();
+
+    delete this.searchForm.sort_field;
+    delete this.searchForm.sort_order;
+
+  }).setMethod('DateChange',function(v){
+    console.log(v);
+    var dateArr = v.split(" - ");
+    this.searchForm.start = dateArr[0];
+    this.searchForm.end = dateArr[1];
+  }).setMethod('imgDateChange',function(v){
+    var dateArr = v.split(" - ");
+    this.searchImgForm.start = dateArr[0];
+    this.searchImgForm.end = dateArr[1];
+  }).setMethod('imgTextDateChange',function(v){
+    var dateArr = v.split(" - ");
+    this.searchImgTextForm.start = dateArr[0];
+    this.searchImgTextForm.end = dateArr[1];
   }).setMethod('sortChange', function(info){
     console.log(info);
     if (info) {
@@ -455,9 +585,13 @@
     this.getImgTextList();
   }).setMethod('imgSearchReset',function(){
     this.$refs.searchImgForm.resetFields();
+    delete this.searchImgForm.start;
+    delete this.searchImgForm.end;
     this.getImgList();
   }).setMethod('imgTextSearchReset',function(){
     this.$refs.searchImgTextForm.resetFields();
+    delete this.searchImgTextForm.start;
+    delete this.searchImgTextForm.end;
     this.getImgTextList();
   }).setMethod('imgUrl',function(url){
     return "__ROOT__/"+url;
@@ -511,6 +645,9 @@
     },function(response){
       this.$message.error("生成链接失败");
     });
+  }).setMethod('showTextContent',function(row, event){
+    this.Textcontent = row.content;
+    this.showTextContentDialog = true;
   });
 </script>
 </block>

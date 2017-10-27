@@ -1,47 +1,20 @@
 <extend name="Common:base" />
 <block name="head">
 	<style>
-    .el-table__body tr.current-row>td{
-      background: rgba(157, 195, 232, 0.7);
-    }
-    .container > .wrapp > .el-row {
-      margin-bottom: 6px;
-    }
-    .el-tabs__item {
-      font-size: 16px;
-    }
-
-
-  .time {
-    font-size: 13px;
-    color: #999;
-  }
-  
-  .bottom {
-    margin-top: 13px;
-    line-height: 12px;
-  }
-
-  .button {
-    padding: 0;
-    float: right;
-  }
-
-  .image {
-    width: 100%;
-    height:158px;
-    display: block;
-    cursor: pointer;
-  }
-
-  .clearfix:before,.clearfix:after {
-      display: table;
-      content: "";
-  }
-  
-  .clearfix:after {
-      clear: both
-  }
+    .el-table__body tr.current-row>td{background: rgba(157, 195, 232, 0.7);}
+    .container > .wrapp > .el-row {margin-bottom: 6px;}
+    .el-tabs__item {font-size: 16px;}
+    .time {font-size: 13px;color: #999;}
+    .bottom {margin-top: 13px;line-height: 12px;}
+    .button {padding: 0;float: right;}
+    .image {width: 100%;height:158px;display: block;cursor: pointer;}
+    .clearfix:before,.clearfix:after {display: table;content: "";}
+    .clearfix:after {clear: both}
+    .el-card__body {padding: 0px;}
+    .el-card__header {padding: 0;border-bottom: 1px solid #D3DCE6;box-sizing: border-box;}
+    .el-alert {border-radius: 0;width: 101%;}
+    .el-alert__title {font-size: 16px;line-height: 18px;}
+    .el-tabs__header {position: relative;border-bottom: 1px solid rgb(211, 220, 230);padding: 0px;margin: 0px 0px 8px;}
 	</style>
 </block>
 <block name="body">
@@ -58,14 +31,23 @@
                 <el-input v-model="searchForm.user_name" size="small" placeholder="姓名关键字"></el-input>
               </el-form-item>
 
+              <el-form-item prop="title">
+                <el-input v-model="searchForm.title" size="small" placeholder="标题关键字"></el-input>
+              </el-form-item>
+
               <el-form-item prop="content">
                 <el-input v-model="searchForm.content" size="small" placeholder="内容关键字"></el-input>
+              </el-form-item>
+
+              <el-form-item prop="dist">  
+                <el-date-picker v-model="searchForm.dist" type="daterange" style="max-width: 210px;width:210px;" size="small" placeholder="选择日期范围" :picker-options="pickerOptions" @change="DateChange" :clearable="false">
+                </el-date-picker>
               </el-form-item>
 
               <el-form-item>
                 <el-button type="info" size="small" icon="search"  @click="loadDatalist" >查询</el-button>
                 <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
-                  <el-button  size="small" @click="searchReset"  >重置</el-button>
+                  <el-button  size="small" @click="searchReset">重置</el-button>
                 </el-tooltip>
                 <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:10px;">
                   <el-button  size="small" type="danger" @click="refresh" >刷新</el-button>
@@ -74,30 +56,61 @@
             </el-form>
           </el-col>
         </el-row>
-        <el-row>
-          <el-col :span="18">
+        <el-row :gutter="20">
+          <el-col :span="16">
             <el-table :data="dataList" border v-loading="dataLoad"
              element-loading-text="{:L('DATA_LOGIN')}" highlight-current-row
              empty-text="暂无统计数据！" ref="select" @sort-change="sortChange" 
-             @selection-change="handleSelectionChange">
+             @selection-change="handleSelectionChange" @row-dblclick="showTextContent">
               
               <el-table-column type="selection"  align="center" width="50"></el-table-column>
 
               <el-table-column prop="user" label="员工" width="150" header-align="center"></el-table-column>
 
-              <el-table-column prop="content" label="文字内容" header-align="center" show-overflow-tooltip>
+              <el-table-column prop="title" label="文字素材标题" header-align="center" width="220" show-overflow-tooltip>
+              </el-table-column>
+
+              <el-table-column prop="content" label="文字素材内容(双击查看)" header-align="center" width="280">
+                <template scope="scope">
+                  {{scope.row.content | handleString}}
+                </template>
               </el-table-column>
               
-              <el-table-column sortable="custom" prop="y_num" label="素材被引用次数" align="center">
+              <el-table-column sortable="custom" prop="y_num" label="素材被引用次数" align="center" width="180">
               </el-table-column>
 
-              <el-table-column prop="ct_time" label="素材创建时间" align="center"></el-table-column>
-
+              <el-table-column prop="ct_time" label="素材创建时间" align="center" min-width="180"></el-table-column>
             </el-table>
+          </el-col>
+          <el-col :span="8" style="position: absolute;right: 0px;">
+            <el-card class="box-card" style="border: 1px solid #ff4949;">
+              <div slot="header">
+                <el-alert :closable="false" title="文字素材引用排名(双击标题)" type="error">
+                  <el-button size="small" style="float: right" @click="resetTextRank">刷新排名</el-button>
+                </el-alert>
+              </div>
+              <div class="text item">
+                <el-table :data="textQuoteRank" highlight-current-row empty-text="暂无数据！" 
+                @row-dblclick="showTextContent" :show-header="false">
+                  <el-table-column label="序号" align="center" type="index" width="65"></el-table-column>
+                  <el-table-column label="标题" prop="title" show-overflow-tooltip></el-table-column>
+                  <el-table-column label="引用次数" prop="y_num" align="center" width="100">
+                    <template scope="scope">
+                      {{scope.row.y_num}}次引用
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="操作" align="center" width="70">
+                    <template scope="scope">
+                      <el-button size="small" @click="commonRankQuote(scope.row,'text')" type="info">引用</el-button>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
+            </el-card>
           </el-col>
         </el-row>
         <el-row type="flex"  align="middle" class="row-bg">
-          <el-col :span="9">
+          <el-col :span="8">
             <div class="grid-content bg-purple">
               <span class="wrapper">
                 <el-tooltip content="选择素材变为己有" placement="right">
@@ -106,7 +119,7 @@
               </span>
             </div>
           </el-col>
-          <el-col :span="9">
+          <el-col :span="8">
 
             <div class="grid-content bg-purple-light pull-right">
               <!-- page -->
@@ -117,12 +130,19 @@
           </el-col>
         </el-row>
       </el-tab-pane>
-      <el-tab-pane label="图片素材" name="img">
+      <el-tab-pane label="图片素材" name="img" style="min-height: 700px;">
         <el-row>
           <el-col :span="24">
             <el-form :inline="true" ref="searchImgForm" :model="searchImgForm">
               <el-form-item prop="user_name">
                 <el-input v-model="searchImgForm.user_name" size="small" placeholder="员工姓名"></el-input>
+              </el-form-item>
+              <el-form-item prop="title">
+                <el-input v-model="searchImgForm.title" size="small" placeholder="标题关键字"></el-input>
+              </el-form-item>
+              <el-form-item prop="dist">  
+                <el-date-picker v-model="searchImgForm.dist" type="daterange" style="max-width: 210px;width:210px;" size="small" placeholder="选择日期范围" :picker-options="pickerOptions" @change="imgDateChange" :clearable="false">
+                </el-date-picker>
               </el-form-item>
               <el-form-item>
                 <el-button type="info" size="small" icon="search"  @click="getImgList" >查询</el-button>
@@ -133,23 +153,50 @@
             </el-form>
           </el-col>
         </el-row>
-        <el-row>
+        <el-row style="max-width: 70%">
           <el-col v-for="(obj, index) in imglist" style="width: 215px;height:235px;margin: 10px 0 0 10px;">
             <el-card :body-style="{ padding: '0px'}">
               <img :src="imgUrl(obj.content)" class="image" @click="showImg(obj)">
               <div style="padding: 14px;">
                 <span>{{obj.user}}</span>
                 <div class="bottom clearfix">
-                  <time class="time">{{ obj.user.ct_time }}</time>
+                  <el-tooltip :content="obj.title" placement="right">
+                    <time class="time">{{obj.title  | handleImgTitle}}</time>
+                  </el-tooltip>
                   <span><el-button type="text" class="button" @click="quote(1,obj)">引用</el-button></span>
                 </div>
               </div>
             </el-card>
           </el-col> 
         </el-row>
-        <el-row type="flex"  align="middle" class="row-bg">
-          <el-col :span="24">
-
+        <div style="position: absolute;width: 30%;top:45px;right: 0px;">
+          <el-card class="box-card" style="border: 1px solid #ff4949;">
+            <div slot="header">
+              <el-alert :closable="false" title="图片素材引用排名(双击标题)" type="error">
+                <el-button size="small" style="float: right" @click="resetImgRank">刷新排名</el-button>
+              </el-alert>
+            </div>
+            <div class="text item">
+              <el-table :data="imgQuoteRank" highlight-current-row empty-text="暂无数据！" 
+              @row-dblclick="showRankImg" :show-header="false">
+                <el-table-column label="序号" align="center" type="index" width="65"></el-table-column>
+                <el-table-column label="标题" prop="title" show-overflow-tooltip></el-table-column>
+                <el-table-column label="引用次数" prop="y_num" align="center" width="100">
+                  <template scope="scope">
+                    {{scope.row.y_num}}次引用
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作" align="center" width="70">
+                  <template scope="scope">
+                    <el-button size="small" @click="commonRankQuote(scope.row,'img')" type="info">引用</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+          </el-card>
+        </div>
+        <el-row type="flex"  align="middle" class="row-bg" style="max-width:70%;margin-top: 15px;">
+          <el-col :span="0">
             <div class="grid-content bg-purple-light pull-right">
               <!-- page -->
               <el-pagination
@@ -162,7 +209,6 @@
               </el-pagination>
               <!-- / page -->
             </div>
-
           </el-col>
         </el-row>
 
@@ -170,8 +216,12 @@
 <!--       <el-tab-pane label="视频素材" name="vedio">视频素材</el-tab-pane>
       <el-tab-pane label="语音素材" name="voice">语音素材</el-tab-pane> -->
     </el-tabs>
+  </div>
+  <div class="dialogWrapper" v-show="show" style="display: none">
 
-
+    <!-- 修改文字素材 -->
+    <include file="_showTextContent" />
+    <!-- / 修改文字素材 -->
   </div>
 </div>
 </block>
@@ -179,7 +229,25 @@
 <script src="__PUBLIC__/plugins/ueditor/third-party/jquery-1.12.4.min.js"></script>
 <script src="__PUBLIC__/plugins/layer/layer.js"></script>
 <script>
+  Vue.filter('handleString',function(v){
+    if(v.length > 16){
+      return cnt=v.substring(0,16)+'......';   
+    }else{
+      return v;
+    }
+  });
+  Vue.filter('handleImgTitle',function(v){
+    if(v.length > 12){
+      return cnt=v.substring(0,10)+'......';   
+    }else{
+      return v;
+    }
+  });
   window.defaultOption.setDatas({
+    showTextContentDialog:false,
+    Textcontent:"",
+    textQuoteRank:[],
+    imgQuoteRank:[],
     imgPageSize:"{$imgPageSize}",
     mainUrl:"{$mainUrl}",
     imglist:[],
@@ -190,13 +258,65 @@
       descending:'desc',
       ascending:'asc'
     },
+    pickerOptions: {
+      shortcuts: [{
+        text: '上一周',
+        onClick:function(picker) {
+          var start = showLastWeekFirstDay();
+          var end = showLastWeekLastDay();
+          picker.$emit('pick', [start, end]);
+        }
+      }, {
+        text: '上个月',
+        onClick:function(picker) {
+          var start = showLastMonthFirstDay();
+          var end = showLastMonthLastDay();
+          picker.$emit('pick', [start, end]);
+        }
+      }, {
+        text: '本周',
+        onClick:function(picker) {
+          var start = showWeekFirstDay();
+          var end = showWeekLastDay();
+          picker.$emit('pick', [start, end]);
+        }
+      }, {
+        text: '本月',
+        onClick:function(picker) {
+          var start = showMonthFirstDay();
+          var end = showMonthLastDay();
+          picker.$emit('pick', [start, end]);
+        }
+      }],
+      disabledDate:function(time) {
+        return time.getTime() > Date.now();// - 8.64e7
+      }
+    },
   }).setForm('search',{
+    dist:[],
     user_name:"",
-    content:""
+    content:"",
+    title:"",
+    start:'',
+    end:''
   }).setForm('searchImg',{
+    dist:[],
     user_name:"",
+    title:"",
+    start:'',
+    end:''
   },true).setMethod('refresh',function(){
   	window.location.reload();
+  }).setMethod('searchReset',function(){
+    this.$refs.searchForm.resetFields();
+    delete this.searchForm.start;
+    delete this.searchForm.end;
+    this.dataLoad = true;
+    this.loadDatalist();
+
+    delete this.searchForm.sort_field;
+    delete this.searchForm.sort_order;
+
   }).setMethod('sortChange', function(info){
     console.log(info);
     if (info) {
@@ -207,10 +327,20 @@
       delete this.searchForm.sort_order;
     }
     this.dataReload();
+  }).setMethod('DateChange',function(v){
+    console.log(v);
+    var dateArr = v.split(" - ");
+    this.searchForm.start = dateArr[0];
+    this.searchForm.end = dateArr[1];
+  }).setMethod('imgDateChange',function(v){
+    var dateArr = v.split(" - ");
+    this.searchImgForm.start = dateArr[0];
+    this.searchImgForm.end = dateArr[1];
   }).setMethod('handleSelectionChange',function(val){
     this.multipleSelection = val;
     //console.log(this.multipleSelection);
   }).setMethod('quote',function(type,obj){
+    console.log(type);
     if(obj === undefined){
       if (this.multipleSelection.length == 0) {
         this.$message.error("请至少选择一条素材");
@@ -239,8 +369,10 @@
       this.$message.success(response.body.info);
       if(obj === undefined){
         this.loadDatalist();
+        this.getTextQuoteRank();
       }else{
         this.imgSearchReset();
+        this.getImgQuoteRank();
       }
         
     },function(response){
@@ -266,12 +398,16 @@
       this.imgCount = response.body.count;
     })
   }).setVueHook('mounted', function(){
+    this.getTextQuoteRank();
     this.getImgList();
+    this.getImgQuoteRank();
   }).setMethod('imgPageChange',function(v){
     this.imgStartPage = v;
     this.getImgList();
   }).setMethod('imgSearchReset',function(){
     this.$refs.searchImgForm.resetFields();
+    delete this.searchImgForm.start;
+    delete this.searchImgForm.end;
     this.getImgList();
   }).setMethod('imgUrl',function(url){
     return "__ROOT__/"+url;
@@ -284,6 +420,44 @@
       shade:0.3
     });
 
+  }).setMethod('commonRankQuote',function(row,tab){;
+    console.log(row);
+      var data = {
+            pm_id:row.id,
+            title:row.title,
+            content:row.content,
+          };
+      data.type = tab=='img' ? 1 : 0;
+    this.$http.post("{:U('commonRankQuote')}",data).then(function(response){
+      this.$message.success(response.body.info);
+      if(tab == 'text'){
+        this.loadDatalist();
+        this.getTextQuoteRank();
+      }else{
+        this.getImgList();
+        this.getImgQuoteRank();
+      }
+
+    },function(response){
+      this.$message.error(response.body.info);
+    });
+  }).setMethod('getTextQuoteRank',function(){
+    this.$http.get("{:U('getTextQuoteRank')}").then(function(response){
+      this.textQuoteRank = response.body.TextQuoteRank;
+    })
+  }).setMethod('resetTextRank',function(){
+    this.getTextQuoteRank();
+  }).setMethod('showTextContent',function(row, event){
+    this.Textcontent = row.content;
+    this.showTextContentDialog = true;
+  }).setMethod('getImgQuoteRank',function(){
+    this.$http.get("{:U('getImgQuoteRank')}").then(function(response){
+      this.imgQuoteRank = response.body.ImgQuoteRank;
+    })
+  }).setMethod('resetImgRank',function(){
+    this.getImgQuoteRank();
+  }).setMethod('showRankImg',function(row, event){
+    this.showImg(row);
   });
 </script>
 </block>

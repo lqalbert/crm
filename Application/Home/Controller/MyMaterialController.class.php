@@ -5,7 +5,7 @@ use Think\Controller;
 class MyMaterialController extends CommonController{
 
 	protected $pageSize = 14;
-	protected $imgPageSize = 18;
+	protected $imgPageSize = 15;
   protected $table='promotion_material';
 
 	public function index(){
@@ -47,8 +47,10 @@ class MyMaterialController extends CommonController{
     $sort_field = I('get.sort_field', 'y_num');
     $sort_order = I('get.sort_order', 'desc');
     $content = I('get.content');
-
-  //   $arr = M('quote_material')->where("user_id = $user_id")->group("pm_id")->getField("pm_id",true);
+    $title = I('get.title');
+    $start = I('get.start');
+    $end = I('get.end');
+  	// $arr = M('quote_material')->where("user_id = $user_id")->group("pm_id")->getField("pm_id",true);
 		// $condition['user_id'] = $user_id;
 		// $condition['id'] = array("IN", $arr);
 		// $condition['_logic'] = 'OR';
@@ -63,7 +65,15 @@ class MyMaterialController extends CommonController{
     if(I('get.content')){
     	$this->M->where(array('content'=>array('LIKE','%'.$content.'%')));
     }
- 
+
+    if(I('get.title')){
+      $this->M->where(array('title'=>array('LIKE','%'.$title.'%')));
+    }
+
+    if(I('get.start') && I('get.end')){
+      $this->M->where(array('ct_time'=>array(array('EGT',$start." 00:00:00"),array('ELT',$end." 23:59:59"))));
+    }
+
 	}
 
   public function saveEdit(){
@@ -110,9 +120,19 @@ class MyMaterialController extends CommonController{
   */
   public function ImgQeuryCondition(){
     $user_id = session('uid');
+    $title = I('get.title');
+    $start = I('get.start');
+    $end = I('get.end');
     $this->M->alias("pm")->join("user_info as ui on ui.user_id = pm.user_id")->where("pm.user_id = $user_id and pm.type=1")
             ->field("pm.*,ui.realname as user");
 
+    if(I('get.title')){
+      $this->M->where(array('pm.title'=>array('LIKE','%'.$title.'%')));
+    }
+
+    if(I('get.start') && I('get.end')){
+      $this->M->where(array('pm.ct_time'=>array(array('EGT',$start." 00:00:00"),array('ELT',$end." 23:59:59"))));
+    }
   }
 
   /**

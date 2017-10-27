@@ -143,19 +143,6 @@
   </style>
 </head>
 <body>
-  <div class="el-col-16">
-  	<div class="el-alert el-alert--error">
-  		<div class="el-alert__content">
-  			<span class="el-alert__title">以下为您的推广链接,请全选->右击复制(或ctrl+c)->右键粘贴(或ctrl+v)！</span>
-  		</div>
-  	</div>
-  </div>
-
-  <div class="el-col-16">
-  	<div class="el-input is-disabled">
-  		<input type="text" disabled="disabled" autocomplete="off" class="el-input__inner" value="{$res.urlRes}"/>
-  	</div>
-  </div>
   <div id="tips">请只截取中间二维码部分！！！</div>
   <div class="layui-form-item" style="margin-top:20px;">
     <label class="layui-form-label">微信二维码</label>
@@ -180,8 +167,8 @@
   </div>
  
 <script type="text/javascript" src="__PUBLIC__/js/jquery.1.11.min.js"></script>
-<script type="text/javascript" src="__PUBLIC__/js/Jcrop/jquery.Jcrop.min.js"></script>
-<script type="text/javascript" src="__PUBLIC__/js/Jcrop/imageCropperUpload.js"></script>
+<script type="text/javascript" src="__PUBLIC__/plugins/Jcrop/jquery.Jcrop.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/plugins/Jcrop/imageCropperUpload.js"></script>
 <script>
   var webRoot = "__ROOT__";
   var qqqrImg = "{$res.qqqrImg}";
@@ -190,7 +177,7 @@
     commonFileSuffixs:["jpg", "png", "jpeg","gif"],
     commonErrorText:"{0}",
     commonCropperParam: {
-      maxSize: [300, 300],//不要小于50，如maxSize:[40,24]
+      maxSize: [200, 200],//不要小于50，如maxSize:[40,24]
       minSize: [190, 190],//不要小于50，如minSize:[40,24]
       bgColor: "black",
       bgOpacity: .4,  
@@ -225,7 +212,7 @@
       //Jcrop参数设置，除onChange和onSelect不要使用，其他属性都可用
       cropperParam: commonConfig.commonCropperParam,  
       perviewImageElementId: "wx-fileList", //设置预览图片的元素id    
-      perviewImgStyle: commonConfig.commonPerviewImgStyle//设置预览图片的样式    
+      perviewImgStyle: commonConfig.commonPerviewImgStyle//设置预览图片的样式
     });  
 
     var upload = btn.data("uploadFileData");  

@@ -17,20 +17,7 @@
 	  *{font-family: microsoft YaHei;}
 		.layui-form-item {width: 750px;margin-bottom: 10px;/*clear: both;*/}
 		.layui-input-block, .layui-input-inline {position: relative;}
-		.layui-upload-file {
-	    position: relative;
-	    display: inline-block;
-	    vertical-align: middle;
-	    min-width: 100px;
-	    height: 38px;
-	    border: 1px solid #20a0ff;
-	    border-radius: 4px;
-	    overflow: hidden;
-	    color: #fff;
-	    background-color: #20a0ff;
-	    cursor:pointer;
-	    font-size:16px;
-		}
+		.layui-upload-file {position: relative;display: inline-block;vertical-align: middle;min-width: 100px;height: 38px;border: 1px solid #20a0ff;border-radius: 4px;overflow: hidden;color: #fff;background-color: #20a0ff;cursor:pointer;font-size:16px;}
 		.layui-upload-file {
 	    outline: 0;
 	    -webkit-transition: border-color .3s cubic-bezier(.65,.05,.35,.5);
@@ -39,66 +26,61 @@
 	    -moz-box-sizing: border-box!important;
 	    box-sizing: border-box!important;
 		}
-		.layui-upload-submit{
-	    position: relative;
-	    display: inline-block;
-	    vertical-align: middle;
-	    min-width: 60px;
-	    height: 38px;
-	    border: 1px solid #50bfff;
-	    border-radius: 4px;
-	    overflow: hidden;
-	    color: #fff;
-	    background-color: #50bfff;
-	    cursor:pointer;
-	    font-size:16px;
-		}
+		.layui-upload-submit{position: relative;display: inline-block;vertical-align: middle;min-width: 60px;height: 38px;border: 1px solid #50bfff;border-radius: 4px;overflow: hidden;color: #fff;background-color: #50bfff;cursor:pointer;font-size:16px;}
     .dd{width: 100%;height: auto;line-height: 24px;float: left;margin-bottom: 12px;}
     .dd .dd_left{display: block;width: 130px;line-height: 24px;float: left;text-align: right;font-weight: 900;color: #444;margin-right: 6px;}
     .dd .dd_right{display: block;width: auto;line-height: 24px;float: left;text-align: left;padding-left: 6px;}
     #t-material{width: 445px;height: 175px;line-height: 20px;border: 1px solid rgb(204, 204, 204);box-shadow: none;font-size: 16px;text-indent: 4px;color: #111;}
+    #t-title,#img-title{width: 450px;height: 30px;line-height: 20px;border: 1px solid rgb(204, 204, 204);box-shadow: none;font-size: 16px;text-indent: 4px;color: #111;}
     .dd .font{color: #777;margin-left: 10px;}
     .dd .font span{font-family: "Georgia";font-weight: 900;font-size: 22px;color: #444;}
-    #save,#refresh,#img-btn,#cancel{
-	    width: auto;
-	    height: 30px;
-	    border: none;
-	    padding: 0px 18px;
-	    background: #f60;
-	    color: #fff;
-	    font-size: 16px;
-	    text-align: center;
-	    cursor: pointer;
-	    margin-left: 20px;
-	    text-indent: 0;
-	    line-height: 30px;
-    }
+    #save,#refresh,#img-btn,#cancel{width: auto;height: 30px;border: none;padding: 0px 18px;background: #f60;color: #fff;font-size: 16px;text-align: center;cursor: pointer;margin-left: 20px;text-indent: 0;line-height: 30px;}
     #save:hover,#img-btn:hover,#cancel:hover{background: #dc6211;}
     #refresh:hover{background: #d63e3e;}
 		#refresh{background-color: #ff4949;border-color: #ff4949;}
 		#up-img{display: inline-block;cursor: pointer;color: rgb(255, 255, 255);text-align: center;background: rgb(0, 183, 238);overflow: hidden;height: 36px;line-height: 15px;}
 		.progress{padding: 0;margin: 0 0 5px 0;}
 		.progress span{display: block;height: 8px;border-radius: 4px;background: #1483d8;}
+		hr{height: 1px;border: 0;background-color: #e2e2e2;clear: both;display: block;unicode-bidi: isolate;-webkit-margin-before: 0.5em;-webkit-margin-after: 0.5em;-webkit-margin-start: auto;-webkit-margin-end: auto;overflow: hidden;border-width: 1px;}
   </style>
 </head>
 <body>
 
-  <!-- 创建文字素材 -->
+  <!-- 创建文字素材标题 -->
   <div class="dd" style="margin-top: 20px;">
-		<span class="dd_left">创建文字素材：</span>
+		<span class="dd_left">文字素材标题：</span>
     <span class="dd_right">
-    	<textarea id="t-material" class="textarea" name="material" maxlength="200" placeholder="请输入文字"></textarea>
+    	<input id="t-title" type="text" name="title" maxlength="100" placeholder="请输入文字标题">
     </span>
-	  <font class="font">* 你还可以输入<span>200</span>个字符</font>
+	  <font class="font">* 你还可以输入<span id="t-str1">100</span>个字符</font>
   </div>
 
-  <!-- 底部按钮 -->
-  <div>
+  <!-- 创建文字素材 -->
+  <div class="dd" style="margin-top: 10px;">
+		<span class="dd_left">文字素材内容：</span>
+    <span class="dd_right">
+    	<textarea id="t-material" class="textarea" name="material" maxlength="200" placeholder="请输入文字内容"></textarea>
+    </span>
+	  <font class="font">* 你还可以输入<span id="t-str2">200</span>个字符</font>
+  </div>
+
+  <!-- 文字底部按钮 -->
+  <div style="margin-left: 425px;">
 	  <input id="save" type="button" value="保存"/>
 	  <input id="refresh" type="button" style="margin-left:8px;" value="刷新"/>
   </div>
+
+  <hr>
+  <!-- 创建图片素材标题 -->
+  <div class="dd" style="margin-top: 10px;">
+		<span class="dd_left">图片素材标题：</span>
+    <span class="dd_right">
+    	<input id="img-title" type="text" name="title" maxlength="100" placeholder="请输入图片标题">
+    </span>
+	  <font class="font">* 你还可以输入<span id="img-str1">100</span>个字符</font>
+  </div>
   <!-- 创建图片素材 -->
-  <div class="dd" style="margin-top: 20px;">
+  <div class="dd" style="margin-top: 10px;">
 		<span class="dd_left">创建图片素材：</span>
     <span class="dd_right">
 		  <div id="up-img">选择图片</div>
@@ -136,6 +118,9 @@
     pick: '#up-img',
     //fileSizeLimit:102400000,
     // 只允许选择图片文件。
+    thumb:{
+    	crop: true
+    },
     accept: {
         title: 'Images',
         extensions: 'gif,jpg,jpeg,png',
@@ -204,6 +189,14 @@
 
   //点击上传
 	$('#img-btn').click(function(event) {
+		//formData
+		//console.log(uploader.options.formData);die();
+  	var title = $('#img-title').val();
+    if(title == "" || title == null){
+    	layer.msg("图片标题不能为空！");
+  		return false;
+    }
+    uploader.options.formData = {title:title};
 		uploader.upload();
 		// 文件上传过程中创建进度条实时显示。
 		uploader.on( 'uploadProgress', function( file, percentage ) {
@@ -228,10 +221,11 @@
 		    //$( '#'+file.id ).addClass('upload-state-done');
         layer.msg(response.info,{
         	time:3000,
-          success:function(layero, index){
-						uploader.removeFile( file );
+          success:function(layero, index){	uploader.removeFile( file );
 						$('#'+file.id).remove();
 						$('#pre-dd').hide();
+						$('#img-title').val("");
+						$('#img-str1').text(100);
           },
           end:function(){
           	//window.location.reload();
@@ -244,32 +238,47 @@
 	    $( '#'+file.id ).find('.progress').remove();
 			uploader.removeFile( file );
 			$('#'+file.id).remove();
+			$('#img-title').val("");
+			$('#img-str1').text(100);
       layer.msg('上传失败');
 	    //$error.text('上传失败');
 		});
 
 	});
+  
+  //公共字符限制方法
+  function commonStrLimit(obj,strObj,leth){
+		$(obj).keyup(function() {
+			le=$(this).val();
+			if (le.length>leth) {
+				$(this).val(le.substr(0,leth));
+				// $dldd.find('font span').eq(1).text(0);
+				$(strObj).text(0);
+			}else {
+				$(strObj).text(leth-le.length);
+			}
+		});
+  }
 
   //文字字符限制
-	$('#t-material').keyup(function() {
-		le=$(this).val();
-		if (le.length>200) {
-			$(this).val(le.substr(0,200));
-			// $dldd.find('font span').eq(1).text(0);
-			$('.font span').text(0);
-		}else {
-			$('.font span').text(200-le.length);
-		}
-	});
-  
-  //保持文字素材
+  commonStrLimit('#t-material','#t-str2',200);
+  commonStrLimit('#t-title','#t-str1',100);
+  commonStrLimit('#img-title','#img-str1',100);
+
+  //保持文字素材  t-title
   $('#save').click(function(event) {
   	var content = $('#t-material').val();
+  	var title = $('#t-title').val();
+    if(title == "" || title == null){
+    	layer.msg("素材标题不能为空！");
+  		return false;
+    }
   	if(content == "" || content == null){
   		layer.msg("文字素材不能为空！");
   		return false;
   	}
-  	$.post("{:U('addText')}", {content:content}, function(res) {
+
+  	$.post("{:U('addText')}", {title:title,content:content}, function(res) {
   		if(res.code !== 1){
         layer.msg("保存文字成功",{
         	time:2000,
@@ -278,7 +287,9 @@
           },
           end:function(){
           	$('#t-material').val("");
-          	$('.font span').text(200);
+          	$('#t-title').val("");
+          	$('#t-str2').text(200);
+          	$('#t-str1').text(100);
           	$("#save").removeAttr("disabled"); 
           }
         });

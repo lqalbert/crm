@@ -13,7 +13,7 @@
                                                                     fileSize为上传文件大小，单位KB[只有在isFileSize为true时，此参数才有值], 
                                                                      errorTxt为获取文件大小时的错误文本提示)  */  
             //alert(file);    
-        },  
+        },
         cropperParam: {}, //图片截取参数设置，此参数即为Jcrop插件参数  
         isFileSize: false,//是否获取文件大小  
         perviewImageElementId: "",//用于预览上传图片的元素id（请传入一个div元素的id）    
