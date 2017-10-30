@@ -1,0 +1,12 @@
+<el-dialog title="编辑/修改" v-model="editTxtFormDialog">
+   <el-form ref="editTxtForm" :model="editTxtForm" :rules="editTxtRules" :label-width="dialogLabelWidth">
+    <el-form-item label="修改文字素材:" prop="content">
+      <el-input v-model="editTxtForm.content" type="textarea" :rows="6" maxlength="200"></el-input>
+    </el-form-item> 
+   </el-form>
+  <div slot="footer" class="dialog-footer">
+    <el-button @click="closeDialog('editTxt')">取 消</el-button>
+    <el-button type="primary" v-show="!editTxtFormSubmitStatus" @click="editTxtFormSubmit(page.editTxtFormUrl, 'editTxt')" >确 定</el-button>
+    <el-button type="primary" v-show="editTxtFormSubmitStatus" :loading="true" >修改中</el-button>
+  </div>
+</el-dialog>

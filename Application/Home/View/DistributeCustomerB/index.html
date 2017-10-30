@@ -610,7 +610,7 @@
       this.recommendForm.cus_id = row.id;
   }).setMethod('trackLog',function(row,event,column){
       // this.$refs.select.toggleRowSelection(row);
-      this.$http.post("{:U('CommonFindDetail/trackInfo')}",{cus_id:row.id,type:row.type}).then(function(response){
+      this.$http.post("{:U('CommonFindDetail/trackInfo')}",{cus_id:row.id,type:row.type,name:row.name}).then(function(response){
         this.tableData = response.body;
       },function(response){
         console.log("操作失败");

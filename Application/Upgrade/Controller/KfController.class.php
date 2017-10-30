@@ -193,6 +193,11 @@ class KfController  extends \Think\Controller{
         M()->execute($sql);
     }
 
+    public function table18(){
+        $sql = "alter table `user_info` add  column cert_no  varchar(200)  null   comment '证书编号';";
+        M()->execute($sql);
+    }
+
 
 
     //角色的修改

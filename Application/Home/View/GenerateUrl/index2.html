@@ -1,0 +1,300 @@
+<extend name="Common:base" />
+<block name="head">
+	<style>
+    .el-table__body tr.current-row>td{
+      background: rgba(157, 195, 232, 0.7);
+    }
+    .container > .wrapp > .el-row {
+      margin-bottom: 6px;
+    }
+    #footer .el-input__inner {
+      display: block;
+      resize: vertical;
+      padding: 5px 7px;
+      margin-top: 16px;
+      line-height: 1.5;
+      box-sizing: border-box;
+      width: 750px;
+      max-height: 80px;
+      font-size: 16px;
+      color: #1f2d3d;
+      background-color: #fff;
+      background-image: none;
+      border: 1px solid #1f2d3d;
+      border-radius: 4px;
+      transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+    }
+    #url .el-input__inner{
+      max-width:750px;
+      -moz-appearance: none;
+      -webkit-appearance: none;
+      appearance: none;
+      background-color: #EFF2F7;
+      border-radius: 4px;
+      border: 1px solid #D3DCE6;
+      cursor: text;
+      color: #3a3636;
+      display: block;
+      font-size: 18px;
+      height: 36px;
+      line-height: 1;
+      padding: 3px 10px;
+      width: 100%;
+      background-image: none;
+      transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+      box-sizing: border-box;
+      outline: 0;
+    }
+    .el-message-box {
+      -moz-user-select: text;
+      -webkit-user-select: text;
+      -ms-user-select: text;
+      -o-user-select: text;
+      user-select: text;
+    }
+    .el-message-box__message p {
+      font-size:18px;
+      margin: 0;
+      line-height: 1.4;
+    }
+	</style>
+</block>
+<block name="body">
+<div id="app" class="container">
+  <div class="wrapp" id="appx" v-show="show" style="display:none;">
+    <el-row>
+      <el-col :span="24">
+        <el-form :inline="true" ref="searchForm" :model="searchForm">
+          <el-form-item prop="title">
+            <el-input v-model="searchForm.title" size="small" placeholder="素材标题关键字"></el-input>
+          </el-form-item>
+
+	        <el-form-item>
+	          <el-button type="info" size="small" icon="search"  @click="loadDatalist" >查询</el-button>
+	          <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
+	            <el-button  size="small" @click="searchReset"  >重置</el-button>
+	          </el-tooltip>
+	          <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:10px;">
+	            <el-button  size="small" type="danger" @click="refresh" >刷新</el-button>
+	          </el-tooltip>
+	        </el-form-item>
+        </el-form>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="18">
+        <el-table :data="dataList" border v-loading="dataLoad"
+         element-loading-text="{:L('DATA_LOGIN')}" highlight-current-row
+         empty-text="暂无统计数据！" ref="select" @sort-change="sortChange" 
+         @selection-change="handleSelectionChange" @cell-click="showPromotion">
+          
+          <el-table-column type="selection"  align="center" width="50"></el-table-column>
+
+          <el-table-column prop="title" label="素材标题(点击看内容)" header-align="center" show-overflow-tooltip>
+          </el-table-column>
+          
+          <el-table-column sortable="custom" prop="y_num" label="素材被引用次数" align="center">
+          </el-table-column>
+
+          <el-table-column sortable="custom" prop="r_num" label="素材页面访问次数" align="center">
+          </el-table-column>
+
+          <el-table-column prop="ct_time" label="素材创建时间" align="center"></el-table-column>
+
+          <el-table-column label="操作" align="center">
+            <template scope="scope">
+              <el-button size="small" @click="preview(scope.row)" type="info">预览</el-button>
+              <el-button size="small" @click="showUrl(scope.row)" type="info">链接</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-col>
+    </el-row>
+    <el-row type="flex"  align="middle" class="row-bg">
+      <el-col :span="9">
+        <div class="grid-content bg-purple">
+          <span class="wrapper">
+            <el-tooltip content="选择素材插入到编辑框" placement="right">
+              <el-button size="small" @click="useContent" type="primary">使用</el-button>
+            </el-tooltip>
+          </span>
+        </div>
+      </el-col>
+      <el-col :span="9">
+
+	      <div class="grid-content bg-purple-light pull-right">
+	        <!-- page -->
+	        <include file="Common:_pagination" />
+	        <!-- / page -->
+	      </div>
+
+      </el-col>
+    </el-row>
+    <!-- uedtior -->
+    <el-row id="footer">
+      
+      <!-- 标题 -->
+      <!-- <input id="title" class="el-title__inner" name="title" placeholder="请输入推广标题" autocomplete="off"/> -->
+      <el-input v-model="title" :disabled="handleTitle" placeholder="请选择素材再点击使用会出现相应的标题" autocomplete="off"></el-input>
+
+      <!-- 加载编辑器的容器 -->
+      <textarea name="info" id="container" style="margin-top:10px;">
+      </textarea>
+    </el-row>
+    <el-row>
+      <el-col :span="9">
+        <div class="grid-content bg-purple">
+          <span class="wrapper">
+            <el-tooltip content="保存内容并生成链接" placement="right">
+              <el-button size="small" @click="makeUrl" type="danger" :disabled="handleMakeUrl">生成链接</el-button>
+            </el-tooltip>
+          </span>
+        </div>
+      </el-col>
+    </el-row>
+    <el-row id="url">
+      <el-input v-model="promotionUrl" :disabled="true" autocomplete="off"></el-input>
+    </el-row>
+  </div>
+</div>
+</block>
+<block name="scripts">
+<script type="text/javascript" src="__PUBLIC__/plugins/ueditor/third-party/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/plugins/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" src="__PUBLIC__/plugins/ueditor/ueditor.all.min.js"></script>
+<script>
+  UE.Editor.prototype.placeholder = function (justPlainText) {
+    var _editor = this;
+    _editor.addListener("focus", function () {
+      var localHtml = _editor.getPlainTxt();
+      if ($.trim(localHtml) === $.trim(justPlainText)) {
+        _editor.setContent(" ");
+      }
+    });
+    _editor.addListener("blur", function () {
+      var localHtml = _editor.getContent();
+      if (!localHtml) {
+        _editor.setContent(justPlainText);
+      }
+    });
+    _editor.ready(function () {
+      _editor.fireEvent("blur");
+    });
+  };
+</script>
+<script>
+  window.defaultOption.setDatas({
+    mainUrl:"{$mainUrl}",
+    multipleSelection:[],
+    sortMap:{
+      descending:'desc',
+      ascending:'asc'
+    },
+    PlainText:"请选择您的素材再点击使用后会显示对应的内容！",
+    ue:{},
+    title:"",
+    promotionUrl:"当前没有创建生成推广链接！",
+    handleTitle:true,
+    handleMakeUrl:true,
+  }).setForm('search',{
+    title:""
+  }).setVueHook('mounted',function(){
+    var vmThis = this;
+    UE.plugin.register("autosave",function(){
+      return false;
+    })
+
+    window.UEDITOR_HOME_URL = "__PUBLIC__/plugins/ueditor/";
+
+    this.ue = UE.getEditor('container',{
+      initialFrameHeight: 580,  
+      initialFrameWidth: 750,
+      autoHeightEnabled: false,
+      elementPathEnabled : false,
+      enableAutoSave:false,
+      serverUrl: "{:U('Upload/handleUeditorUpload?folder=material')}",
+      toolbars: [[ 'fullscreen', 'source', '|', 'undo', 'redo', '|',
+          'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc', '|',
+          'rowspacingtop', 'rowspacingbottom', 'lineheight', '|',
+          'customstyle', 'paragraph', 'fontfamily', 'fontsize', '|',
+          'directionalityltr', 'directionalityrtl', 'indent', '|',
+          'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|', 'touppercase', 'tolowercase', '|',
+          'link', 'unlink', 'anchor', '|', 'imagenone', 'imageleft', 'imageright', 'imagecenter', '|',
+          'simpleupload', 'insertimage', 'emotion', 'pagebreak', 'template', 'background', '|',
+          'horizontal', 'date', 'time', 'spechars', '|',
+          'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol', 'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', '|',
+          'searchreplace', 'help'
+      ]]
+    });
+    this.ue.ready(function() {
+      vmThis.ue.placeholder(vmThis.PlainText);
+    });
+
+  }).setMethod('refresh',function(){
+  	window.location.reload();
+  }).setMethod('sortChange', function(info){
+    console.log(info);
+    if (info) {
+      this.searchForm.sort_field = info.prop;
+      this.searchForm.sort_order = this.sortMap[info.order];
+    } else {
+      delete this.searchForm.sort_field;
+      delete this.searchForm.sort_order;
+    }
+    this.dataReload();
+  }).setMethod('handleSelectionChange',function(val){
+    this.multipleSelection = val;
+    console.log(this.multipleSelection);
+  }).setMethod('useContent',function(){
+    if (this.multipleSelection.length == 0) {
+      this.$message.error("请至少选择一条素材");
+      return ;
+    }
+
+    this.handleTitle = false;
+    this.handleMakeUrl = false;
+
+    if(this.title==='' || this.title===null){
+      this.title = this.multipleSelection[0].title;
+    }
+
+    for(var i = 0;i<this.multipleSelection.length;i++){
+      this.ue.focus(true);
+      this.ue.execCommand('inserthtml',this.multipleSelection[i].content); 
+    }
+    
+    this.deleteArrAllItem('multipleSelection');
+ 
+  }).setMethod('showPromotion',function(row, column, cell, event){
+    if(column.label == "素材标题(点击看内容)"){
+      parent.window.open(this.mainUrl+'?uid='+row.user_id+'&pmid='+row.id);
+    }
+ 
+  }).setMethod('makeUrl',function(){
+    var data = {
+      title:this.title,
+      content:this.ue.getContent()
+    }
+    console.log(data);
+    this.$http.post("{:U('save')}",data).then(function(response){
+      this.deleteArrAllItem('multipleSelection');
+      //this.$message.success(response.body.info);
+      console.log(response);
+      this.loadDatalist();
+      this.ue.execCommand('cleardoc');
+      this.title = "";
+      this.promotionUrl = '地址为：'+this.mainUrl+'?uid='+response.body.uid+'&pmid='+response.body.pmid;
+    },function(response){
+      this.$message.error(response.body.info);
+    });
+
+  }).setMethod('preview',function(row){
+    parent.window.open(this.mainUrl+'?uid='+row.user_id+'&pmid='+row.id);
+  }).setMethod('showUrl',function(row){
+    var url = this.mainUrl+'?uid='+row.user_id+'&pmid='+row.id;
+    this.$alert("请复制："+url,"推广链接",{
+      confirmButtonText:'已复制',
+    });
+  });
+</script>
+</block>

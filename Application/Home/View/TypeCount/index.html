@@ -143,23 +143,12 @@
 <script src="__PUBLIC__/js/calculate.js?a=b"></script>
 <script>
   window.defaultOption.setDatas({
-    groups:[],
-    users:[],
     sortMap:{
       descending:'desc',
       ascending:'asc'
     },
-    Alldeps:{:json_encode($Alldeps)},
-    searchGroup:{:json_encode($searchGroup)},
-    ctrlSelect:false,
-    depClearable:true,
-    oldDepValue:'',
-    oldGroupValue:'',
-    pickerOption1:{
-          disabledDate: function(time){
-              return time.getTime() > Date.now();
-          }
-      },
+    multipleSelection: [],
+    
   }).setForm('search',{
       type:'',
       start:'',
