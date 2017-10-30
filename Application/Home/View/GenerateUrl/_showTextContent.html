@@ -1,0 +1,8 @@
+<el-dialog title="展示文字素材内容" v-model="showTextContentDialog">
+	<div style="word-wrap: break-word;">
+	  {{ Textcontent }}
+	</div>
+  <div slot="footer" class="dialog-footer">
+    <el-button type="primary" @click="showTextContentDialog = false">确 定</el-button>
+  </div>
+</el-dialog>
