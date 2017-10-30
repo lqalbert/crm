@@ -161,7 +161,7 @@
         </el-row>
 
       </el-tab-pane>
-      <el-tab-pane label="图文素材" name="vedio">
+      <el-tab-pane label="历史链接" name="vedio">
         <el-row>
           <el-col :span="24">
             <el-form :inline="true" ref="searchImgTextForm" :model="searchImgTextForm">
@@ -531,7 +531,7 @@
     this.$http.get("{:U('showImgTextRow')}",{params:{id:row.id}}).then(function(response){
       this.ue.execCommand( "cleardoc" );
       this.ue.focus(true);
-      alert(response.body.content);
+      //alert(response.body.content);
       this.ue.execCommand('inserthtml',response.body.content); 
       this.ue.setDisabled();
     });

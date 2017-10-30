@@ -1,7 +1,7 @@
 <?php
 namespace Home\Controller;
 
-class PromotionUrlController extends CommonController{
+class QrCodeManageController extends CommonController{
 
   public function index(){
   	$this->assign('res',$this->getRes());
