@@ -91,9 +91,7 @@ class UploadController extends CommonController {
         	}
         }
     }
-<<<<<<< HEAD
-=======
-  }
+
 
 
   //处理推广素材页Ueditor上传图片
@@ -172,7 +170,6 @@ class UploadController extends CommonController {
 
 
 
->>>>>>> origin/tuiguang
 
     
 
