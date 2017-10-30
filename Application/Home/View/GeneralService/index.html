@@ -1,44 +1,5 @@
 <extend name="Common:base"/>
 <block name="head">
-  <style>
-    .el-tabs__header{
-      border-top:2px solid #ea4b4b;
-      border-bottom: 1px solid #c51f1f;
-    }
-    .el-dialog .el-tabs__header{
-      border-top:none;
-    }
-    .el-tabs--border-card .el-tabs__item{
-      border-left: none;
-    }
-    .el-tabs--border-card .el-tabs__item.is-active {
-      background-color: #fff;
-      border-right-color: #d3dce6;
-      background: #544b8f;
-      color: #fff;
-    }
-    .el-tabs--border-card .el-tabs__header {
-      background-color: #fff;
-      margin: 0;
-    }
-    .container > .wrapp > .a > .el-row {
-      margin-bottom: 6px;
-    }
-    .el-tabs--border-card .el-tabs__content{
-      padding:0 9px 5px 9px;
-    }
-    .el-card, .el-menu--horizontal .el-submenu>.el-menu, .el-tabs--border-card{
-      box-shadow: none;
-    }
-    .el-tabs--border-card{
-      border: none;
-    }
-    .el-tabs__item{
-    	font-family: Microsoft YaHei;
-    	color:#0d0f10;
-    	font-size: 14px;
-    }
-  </style>
 </block>
 <block name="body">
 <div id="app" class="container">
@@ -128,8 +89,8 @@
               highlight-current-row ref="select">
 		  	    <el-table-column label="{:L('INDEX')}" type="index" width="65" ></el-table-column>
 
-            <el-table-column v-if="roleTypeVal == 1 || roleTypeVal == 2" prop="gen_name" label="普通客服" align="center" width="150">
-            </el-table-column>
+            <!-- <el-table-column v-if="roleTypeVal == 1 || roleTypeVal == 2" prop="gen_name" label="普通客服" align="center" width="150">
+            </el-table-column> -->
 
 		  	    <el-table-column  header-align="center" prop="name"  label="客户姓名" width="150"></el-table-column>
 
@@ -147,27 +108,45 @@
 
 	          <el-table-column  header-align="center" prop="qq" label="QQ号"  width="170">
 	            <template scope="scope">
-	              {{ scope.row.qq }}
-	              <a v-if="scope.row.qq" :href="getTenct(scope.row.qq)">
+                <span v-if="scope.row.contact[0]">
+                  {{ scope.row.contact[0].qq }}
+                </span>
+	              <!-- <a v-if="scope.row.qq" :href="getTenct(scope.row.qq)">
 	                <img width="25"  src="__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg" alt="">
-	              </a>
+	              </a> -->
 	            </template>
 	          </el-table-column>
 
-		        <el-table-column header-align="center" prop="qq_nickname" label="QQ昵称"  width="170"></el-table-column>
+		        <el-table-column  label="QQ昵称"  width="170">
+              <template scope="scope">
+                <span v-if="scope.row.contact[0]">
+                  {{ scope.row.contact[0].qq_nickname }}
+                </span>
+              </template>
+            </el-table-column>
 
-		  	    <el-table-column prop="phone" label="手机" align="center" width="130"></el-table-column>
+		  	    <el-table-column  label="手机" align="center" width="130">
+              <template scope="scope">
+                <span v-if="scope.row.contact[0]">
+                  {{ scope.row.contact[0].phone }}
+                </span>
+              </template>   
+            </el-table-column>
 
-		        <el-table-column  header-align="center" prop="weixin" label="微信号" align="left" width="170">
-	            <template scope="scope">
-	              {{ scope.row.weixin }}
-	            </template>
+		        <el-table-column label="微信号" align="left" width="170">
+              <template scope="scope">
+                <span v-if="scope.row.contact[0]">
+                  {{ scope.row.contact[0].weixin }}
+                </span>
+              </template>  
 		        </el-table-column>
 
-		        <el-table-column  header-align="center" prop="weixin_nickname" label="微信昵称" align="left" width="170">
-	            <template scope="scope">
-	              {{ scope.row.weixin_nickname }}
-	            </template>
+		        <el-table-column label="微信昵称" align="left" width="170">
+              <template scope="scope">
+                <span v-if="scope.row.contact[0]">
+                  {{ scope.row.contact[0].weixin_nickname }}
+                </span>
+              </template> 
 		        </el-table-column>
 
             <el-table-column  header-align="center"  prop="realname" label="跟踪员工"  width="190">
@@ -191,6 +170,53 @@
 		            {{ getType(scope.row.sex, 'sexType') }}
 		          </template>
 		        </el-table-column>
+
+            <!-- 第二套联系方式 -->
+
+            <el-table-column  header-align="center" prop="qq" label="QQ号2"  width="170">
+              <template scope="scope">
+                <span v-if="scope.row.contact[1]">
+                  {{ scope.row.contact[1].qq }}
+                </span>
+                <!-- <a v-if="scope.row.qq" :href="getTenct(scope.row.qq)">
+                  <img width="25"  src="__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg" alt="">
+                </a> -->
+              </template>
+            </el-table-column>
+
+            <el-table-column  label="QQ昵称2"  width="170">
+              <template scope="scope">
+                <span v-if="scope.row.contact[1]">
+                  {{ scope.row.contact[1].qq_nickname }}
+                </span>
+              </template>
+            </el-table-column>
+
+            <el-table-column  label="手机2" align="center" width="130">
+              <template scope="scope">
+                <span v-if="scope.row.contact[1]">
+                  {{ scope.row.contact[1].phone }}
+                </span>
+              </template>   
+            </el-table-column>
+
+            <el-table-column label="微信号2" align="left" width="170">
+              <template scope="scope">
+                <span v-if="scope.row.contact[1]">
+                  {{ scope.row.contact[1].weixin }}
+                </span>
+              </template>  
+            </el-table-column>
+
+            <el-table-column label="微信昵称2" align="left" width="170">
+              <template scope="scope">
+                <span v-if="scope.row.contact[1]">
+                  {{ scope.row.contact[1].weixin_nickname }}
+                </span>
+              </template> 
+            </el-table-column>
+
+
           </el-table>
         </el-col>
       </el-row>

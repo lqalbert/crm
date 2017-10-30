@@ -227,9 +227,10 @@
     this.leadInForm.reg_id = v.id;
     this.openDialog("leadIn");
   }).setMethod("submitLeadIn", function(){
+    var vmThis = this;
     this.$refs['leadInForm'].validate(function (valid) {
           if (valid) {
-            this.leadInPost(page.leadInUrl, this.leadInForm);
+            vmThis.leadInPost(page.leadInUrl, this.leadInForm);
           } else {
             
             return false;

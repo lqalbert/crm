@@ -193,7 +193,7 @@ class RiskCheckController extends CommonController{
         $this->M->where(array('risk_id'=>$ch_id))->data(array('risk_state'=>$state,'risk_time'=>Date("Y-m-d H:i:s")));
     }
 
-    protected function stateCheck($ch_id, $state, $id){
+    protected function stateCheck($ch_id, $id){
         return $this->M->where(array('id'=>$id, 'risk_id'=>$ch_id, 'state'=>1))->find();
     }
 
@@ -204,7 +204,7 @@ class RiskCheckController extends CommonController{
 
         //同时 如果是已 审核通过了 就不能再 改为不通过
         if ($state == -1) {
-            if ($this->stateCheck()) {
+            if ($this->stateCheck($ch_id, $id)) {
                 $this->error("已审核通过");
             }
         }
@@ -214,16 +214,12 @@ class RiskCheckController extends CommonController{
         $this->setCheckField($ch_id, $state);
         $re = $this->M->save();
         if ($re !== false) {
-            if ($state==-1) {
-                //跟踪纪录
-                //跟踪纪录
-                $cus_ids = $this->M->where(array('id'=>$id))->getField('cus_id', true);
+            $cus_ids = $this->M->where(array('id'=>$id))->getField('cus_id', true);
                 
-                $pa = array('ids'=>$cus_ids,
-                            'content'=>I("post.mark"),
-                            'user_id'=>$ch_id);
-                tag(HOOK_CHECK , $pa);
-            }
+            $pa = array('ids'=>$cus_ids,
+                        'content'=>I("post.mark"),
+                        'user_id'=>$ch_id);
+            tag(HOOK_CHECK , $pa);
             //是否要给材料专员一个弹窗消息
             // $buys = array();
             //有两个任务 一个是 分配给某个人 一个是 发消息
@@ -234,8 +230,8 @@ class RiskCheckController extends CommonController{
             $row=$this->M->where(array("id"=>$id, 'risk_state'=>1, 'callback_state'=>1))->find();
             if ($row) {
                 $cusRow = D("Customer")->where(array('id'=>$row['cus_id']))->field('name,type')->find();
-                $param = array('job'=>'DisDataStaffJob', 'arg'=>array('id'=>$id, 'product_name'=>$row['product_name'], 'cus_name'=>$cusRow['name']));
-                tag(HOOK_QUEUE , $param);
+                // $param = array('job'=>'DisDataStaffJob', 'arg'=>array('id'=>$id, 'product_name'=>$row['product_name'], 'cus_name'=>$cusRow['name']));
+                // tag(HOOK_QUEUE , $param);
                 if ($cusRow['type'] == 'VX') {
                     $param2 = array('job'=>'CustomerTypeJob', 'arg'=>array('id'=>$row['cus_id'], 'type'=>'V'));
                     tag(HOOK_QUEUE , $param2);

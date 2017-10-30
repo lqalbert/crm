@@ -380,7 +380,7 @@
               
               <el-table-column label="内容" header-align="center">
                 <template scope="scope">
-                  {{scope.row.content | handleString(8)}}
+                  {{scope.row.content | handleString(16)}}
                 </template>
               </el-table-column>
 
@@ -478,7 +478,7 @@
   <!-- /续费 -->
 
   <!-- 上传聊天记录 -->
-  <include file="_upload" />
+  <include file="TalkRecords::_upload" />
   <!-- / 上传聊天记录 -->
 
 </div>
@@ -739,15 +739,6 @@
       ],
       buy_time:[
         { type: 'date',required: true, message:"请选择购买时间", trigger:'change'}
-      ],
-      phone:[
-        { pattern:/^1[34578]\d{9}$/, message: '手机号格式不正确',trigger:'blur'}
-      ],
-      weixin:[
-        { pattern:/^[a-zA-Z0-9\_\-]{6,20}$/, message: '仅支持数字、下划线、字母或减号',trigger:'blur'}
-      ],
-      qq:[
-        { pattern:/^\d+$/, message: 'QQ号必须为数字',trigger:'blur'}
       ]
 
     },
@@ -1332,8 +1323,8 @@
     this.buyForm.phone = row.phone;
     this.buyForm.qq = row.qq;
     this.buyForm.weixin = row.weixin;
-    this.changeContact = true;
-    this.checkChangeContact(row.id);
+    // this.changeContact = true;
+    // this.checkChangeContact(row.id);
     this.openDialog('buy')
   }).setMethod('setBuyTime',function(v){
     this.buyForm.buy_time = v;
@@ -1436,18 +1427,6 @@
         // 'width':d1.width(),
         'overflow':"hidden"
       })  
-  }).setMethod('checkChangeContact', function(cus_id){
-     this.changeChecking = true;
-     this.$http.get("{:U('history')}", {params:{cus_id:cus_id}}).then(function(response){
-       this.changeChecking = false;
-       if (response.body.length ==0 ) {
-        this.changeContact = false;
-       } else {
-        this.changeContact = true;
-       }
-     }, function(response){
-      this.changeChecking = false;
-     })
   }).setMethod("handleBeforeUpload", function(file){
      // console.log(file.size);
      var max_size = 2*1024*1024;

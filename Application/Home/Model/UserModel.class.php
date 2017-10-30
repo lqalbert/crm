@@ -146,48 +146,38 @@ class UserModel extends  Model{
 
     public function getRisk($field="id,realname"){
         $roleId = D('Role')->getIdByEname(RoleModel::RISK_ONE);
-        if ($roleId) {
-
-                $where['role_id']  = $roleId;
-                $where['rbac_user.status']  = array('GT', RbacUserModel::DELETE_SATUS);
-                return $this->cache('callback', 300)->m->join('user_info on rbac_user.id = user_info.user_id')
-                        ->where($where)
-                        ->field($field)
-                        ->select();
-        } else {
-            return array();
-        }
+        $roleGId = D("Role")->getIdByEname(RoleModel::RISKGROUP);
+        
+        $where['role_id']  = array('IN', array($roleId, $roleGId) );//   $roleId;
+        $where['rbac_user.status']  = array('GT', RbacUserModel::DELETE_SATUS);
+        return $this->cache('risk', 300)->m->join('user_info on rbac_user.id = user_info.user_id')
+                ->where($where)
+                ->field($field)
+                ->select();
     }
 
     public function getCallback($field="id,realname"){
-        $roleId = D('Role')->getIdByEname(RoleModel::CALL_BACK);
-        if ($roleId) {
+        $roleId  = D('Role')->getIdByEname(RoleModel::CALL_BACK);
+        $roleGId = D('Role')->getIdByEname(RoleModel::CALLBACKCAPTAIN);
 
-                $where['role_id']  = $roleId;
-                $where['rbac_user.status']  = array('GT', RbacUserModel::DELETE_SATUS);
-                return $this->cache('callback', 300)->m->join('user_info on rbac_user.id = user_info.user_id')
-                        ->where($where)
-                        ->field($field)
-                        ->select();
-        } else {
-            return array();
-        }
+        $where['role_id']  = array('IN', array($roleId, $roleGId) ); 
+        $where['rbac_user.status']  = array('GT', RbacUserModel::DELETE_SATUS);
+        return $this->cache('callback', 300)->m->join('user_info on rbac_user.id = user_info.user_id')
+                ->where($where)
+                ->field($field)
+                ->select();
     }
 
     public function getDataStaff($field="id,realname"){
         // D("Role") ==> D("Home/Role") 队列job报错了
         $roleId = D('Home/Role')->getIdByEname(RoleModel::DATASTAFF);
-        if ($roleId) {
-
-                $where['role_id']  = $roleId;
-                $where['rbac_user.status']  = array('GT', RbacUserModel::DELETE_SATUS);
-                return $this->cache('callback', 300)->m->join('user_info on rbac_user.id = user_info.user_id')
-                        ->where($where)
-                        ->field($field)
-                        ->select();
-        } else {
-            return array();
-        }
+        $roleGId = D('Home/Role')->getIdByEname(RoleModel::DATACAPTAIN);
+        $where['role_id']  = array('IN', array($roleId, $roleGId) ); 
+        $where['rbac_user.status']  = array('GT', RbacUserModel::DELETE_SATUS);
+        return $this->cache('datastaff', 300)->m->join('user_info on rbac_user.id = user_info.user_id')
+                ->where($where)
+                ->field($field)
+                ->select();
     }
 
     public function getSpreadCommEmployee($spread_id, $field="user_id, realname"){

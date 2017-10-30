@@ -44,7 +44,9 @@
 
 
                     <el-form-item prop="semaster_id" style="width: 170px">
-                      <el-select v-model="searchForm.semaster_id" size="small" placeholder="客服主管"></el-select>
+                      <el-select v-model="searchForm.semaster_id" size="small" placeholder="客服主管">
+                        <el-option v-for="semaster in seMaster" :label="semaster.realname" :value="semaster.id"></el-option>
+                      </el-select>
                     </el-form-item>
 
 
@@ -217,7 +219,7 @@
 
         <include file="_info" />
          <!-- 上传聊天记录 -->
-        <include file="Customer::_upload" />
+        <include file="TalkRecords::_updown" />
         <!-- / 上传聊天记录 -->
         </div>
 
@@ -285,7 +287,7 @@
             return time.getTime() > Date.now();
           }
         },
-        accountDisabled:false,
+        accountDisabled:false
     }).setForm('add', {
        
     }).setForm('edit', {

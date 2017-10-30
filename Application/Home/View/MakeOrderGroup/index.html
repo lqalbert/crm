@@ -44,7 +44,9 @@
 
 
                     <el-form-item prop="semaster_id" style="width: 170px">
-                      <el-select v-model="searchForm.semaster_id" size="small" placeholder="客服主管"></el-select>
+                      <el-select v-model="searchForm.semaster_id" size="small" placeholder="客服主管">
+                        <el-option v-for="semaster in seMaster" :label="semaster.realname" :value="semaster.id"></el-option>
+                      </el-select>
                     </el-form-item>
 
 
@@ -219,13 +221,13 @@
 
         <div v-show="show" style="display: none">
             
-        <include file="_order" />
-        <include file="_oneStep" />
-        <include file="_distribute" />
-        <include file="_account" />
-        <include file="_orderInfo" />
+        <include file="MakeOrder::_order" />
+        <include file="MakeOrder::_oneStep" />
+        <include file="MakeOrder::_distribute" />
+        <include file="MakeOrder::_account" />
+        <include file="MakeOrder::_orderInfo" />
 
-        <include file="_info" />
+        <include file="MakeOrder::_info" />
          <!-- 上传聊天记录 -->
         <include file="Customer::_upload" />
         <!-- / 上传聊天记录 -->

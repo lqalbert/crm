@@ -9,12 +9,11 @@ use Home\Logic\CustomerLogic;
 use Home\Model\CustomerLogModel;
 use Home\Model\ProductModel;
 class ServiceSupervisorController extends CommonController{
-	protected $table = "customers_basic";
+	// protected $table = "customers_basic";
+  protected $table = "CustomerBuy";
 	protected $pageSize = 11;
 
-  private function getOffset(){
-      return (I('get.p',1)-1) * $this->pageSize;
-  }
+ 
 
   private function getRoleState(){
       $map = array(
@@ -55,34 +54,30 @@ class ServiceSupervisorController extends CommonController{
   }
 
   public function getList(){
-
     $this->setQeuryCondition();
     $count = $this->M->count();
     $this->setQeuryCondition();
-  	$list = $this->M->join('left join user_info as ui on customers_basic.salesman_id=ui.user_id')
-                   ->join('left join user_info as usi on customers_basic.semaster_id = usi.user_id')
-                   ->field('ui.realname,ui.mphone,usi.realname as semaster_name,customers_basic.*,cc.*')
-                   ->order("customers_basic.id desc")
-                   ->limit($this->getOffset().','.$this->pageSize)
-                   ->select();
-    
+    $list = $this->M->page(I('get.p',0). ','. $this->pageSize)->select();
     foreach ($list as &$value) {
-       $gen= M("user_info")->where(array('user_id'=>$value['gen_id']))->field('realname')->find();
-       if ($gen) {
-          $value['gen_name'] = $gen['realname'];
-       } else {
-          $value['gen_name'] ="";
-       }
-       $buyRow = D("CustomerBuy")->where(array('cus_id'=>$value['id'], 'status'=>1))
-                                 ->order('id desc')
-                                 ->field('buy_time')
-                                 ->find();
-       $value['buy_time'] = $buyRow['buy_time'];
+       //联系方式 两套
+      $value['contact'] = M('customers_contacts')->where(array('cus_id'=>$value['cus_id']))->order("is_main desc")->select();
+
+      // 跟踪员工
+      $sales = M("user_info")->where(array('user_id'=>$value['salesman_id']))->field('realname,mphone')->find();
+      $value['realname'] = $sales['realname'];
+      $value['mphone'] = $sales['mphone'];
+
     }
-
-
-	  $result = array('list'=>$list, 'count'=>$count);
+    $result = array('list'=>$list, 'count'=>$count);
     $this->ajaxReturn($result);
+  }
+
+  private function setTableJoin(){
+    $this->M->join("customers_basic on customers_buy.cus_id=customers_basic.id");
+  }
+
+  private function setField(){
+    $this->M->field("customers_basic.name,gen_time,customers_basic.type,customers_basic.salesman_id,kf_time,province_name,city_name,sex,semaster_time,customers_buy.buy_time,customers_buy.cus_id");
   }
 
 	/**
@@ -93,7 +88,7 @@ class ServiceSupervisorController extends CommonController{
 	public function setQeuryCondition() {
 	/*	$operator_id=session('account')['userInfo']['user_id'];
     $this->M->where(array('service_sup'=>'1','operator_id'=>$operator_id));*/
-
+    $this->setTableJoin();
     $gen = I('get.gen',0);
     if ($gen!=0) {
       if (I("get.gen_id")) {
@@ -110,13 +105,18 @@ class ServiceSupervisorController extends CommonController{
         $this->M->where(array("customers_basic.name"=> array('like', I('get.name')."%")));
     }
     
-    if(I('get.contact')){
-    	  $val=I('get.contact');
-    	  $this->M->where(array('cc.qq|cc.phone|cc.weixin'=>array('LIKE',$val."%")));
+    $contact = I('get.contact');
+    if ($contact) {
+       $ids = M("customers_contacts")->where(array('qq|phone|weixin'=>array('LIKE', $val."%")))->getField("cus_id", true);
+       if ($ids) {
+          $this->M->where(array("customers_basic.id"=>array("in", $ids)));
+        } else {
+          $this->M->where(array("customers_basic.id"=>-1));
+        }
     }
 
     if (isset($_GET['vt'])) {
-      $this->M->where(array('type'=>'VT'));
+      $this->M->where(array('customers_basic.type'=>'VT'));
     }
 
     $roleEname = $this->getRoleEname();
@@ -131,49 +131,37 @@ class ServiceSupervisorController extends CommonController{
     $this->M->join("customers_contacts as cc on customers_basic.id = cc.cus_id and cc.is_main = 1 ");
 
 
-    //时间区间
-      $buys = array();
+     //时间区间
+      
       $range = I("get.range");
       if ($range) {
           $dates = explode(" - ", $range);
-          $buys = D('CustomerBuy')->where(array('buy_time'=>array(array('EGT', $dates[0]), array("ELT", $dates[1]))))->getField("user_id", true);
-          
+          $this->M->where(array('buy_time'=>array(array('EGT', $dates[0]), array("ELT", $dates[1]))));  
       }
 
-      //销售部 团队 员工参数
       $user_id = I("get.user_id");
-      if ($user_id) {
-          $buys[] = $user_id;
-          $buys = array_unique($buys);
-          // $this->M->where(array('customers_basic.salesman_id'=>$user_id));
-          $this->M->where(array('customers_basic.salesman_id'=>array('IN', $buys)));
-          return;
-      }
-
       $group_id = I("get.group_id");
-      if ($group_id ) {
+      $depart_id = I("get.department_id");
+      if ($user_id) {
+          $this->M->where(array('customers_basic.salesman_id'=>$user_id));
+      } else if($group_id){
           $user_id = D("User")->getGroupEmployee($group_id, 'id');
+
           if ($user_id) {
-              $user_id = array_column($user_id, 'id');
-              $user_id = array_merge($buys, $user_id);
-              $this->M->where(array('customers_basic.salesman_id'=>array("IN", $user_id) ));
+              $this->M->where(array('customers_basic.salesman_id'=>array("IN", array_column($user_id, 'id')) ));
           }  else {
               $this->M->where(array('customers_basic.salesman_id'=>-1 ));
           }
-          return;
-      }
 
-      $depart_id = I("get.department_id");
-      if ($depart_id) {
+      } else if($depart_id){
           $user_id = D("User")->getDepartmentEmployee($depart_id, 'id');
           if ($user_id) {
               $user_id = array_column($user_id, 'id');
-              $user_id = array_merge($buys, $user_id);
               $this->M->where(array('customers_basic.salesman_id'=>array("IN", $user_id) ));
           }  else {
               $this->M->where(array('customers_basic.salesman_id'=>-1 ));
           }
-      }
+      } 
 
 	}
 

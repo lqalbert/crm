@@ -178,6 +178,49 @@
                 <el-table-column width="130" align="center" label="购买时间" prop="buy_time"></el-table-column>
                 <el-table-column width="130" align="center" label="分配时间" prop="dis_time"></el-table-column>
 
+                <el-table-column  header-align="center" prop="qq" label="QQ号2"  width="170">
+              <template scope="scope">
+                <span v-if="scope.row.contact[1]">
+                  {{ scope.row.contact[1].qq }}
+                </span>
+                <!-- <a v-if="scope.row.qq" :href="getTenct(scope.row.qq)">
+                  <img width="25"  src="__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg" alt="">
+                </a> -->
+              </template>
+            </el-table-column>
+
+            <el-table-column  label="QQ昵称2"  width="170">
+              <template scope="scope">
+                <span v-if="scope.row.contact[1]">
+                  {{ scope.row.contact[1].qq_nickname }}
+                </span>
+              </template>
+            </el-table-column>
+
+            <el-table-column  label="手机2" align="center" width="130">
+              <template scope="scope">
+                <span v-if="scope.row.contact[1]">
+                  {{ scope.row.contact[1].phone }}
+                </span>
+              </template>   
+            </el-table-column>
+
+            <el-table-column label="微信号2" align="left" width="170">
+              <template scope="scope">
+                <span v-if="scope.row.contact[1]">
+                  {{ scope.row.contact[1].weixin }}
+                </span>
+              </template>  
+            </el-table-column>
+
+            <el-table-column label="微信昵称2" align="left" width="170">
+              <template scope="scope">
+                <span v-if="scope.row.contact[1]">
+                  {{ scope.row.contact[1].weixin_nickname }}
+                </span>
+              </template> 
+            </el-table-column>
+
                 
           </el-table>
         </el-col>

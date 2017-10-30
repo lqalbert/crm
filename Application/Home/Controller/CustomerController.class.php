@@ -595,46 +595,6 @@ class CustomerController extends CommonController {
 
 
         // $data['user_id'] = session("uid");
-        $contact = D("CustomerContact")->where(array('cus_id'=>I("post.id"), 'is_main'=>1))->find();
-        $contactData = array(
-            'id'=>$contact['id']
-            // 'phone'=>I("post.phone")
-        );
-        $errorStrAf = "";
-        if ($contact['phone'] != I("post.phone")) {
-            $contactData['phone'] = I("post.phone");
-            $errorStrAf = "手机：".I("post.phone");
-        }
-
-        if ($contact['qq'] != I("post.qq") and !empty(I("post.qq"))) {
-            $contactData['qq'] = I("post.qq");
-            $errorStrAf = " qq：".I("post.qq");
-        }
-
-        if ($contact['weixin'] != I("post.weixin") and !empty(I("post.weixin"))) {
-            $contactData['weixin'] = I("post.weixin");
-            $errorStrAf = " weixin：".I("post.weixin");
-        }
-
-        if (!D("CustomerContact")->create($contactData)) {
-            //生成冲突
-            // cus_id user_id track_text content
-            $errorStr = D("CustomerContact")->getError();
-            $logData = array(
-                'cus_id'=>I("post.id"),
-                'user_id'=> session('uid'),
-                'track_text' => '购买冲突',
-                'content' =>$errorStr." ".$errorStrAf
-            );
-            D("CustomerLog")->add($logData);
-            $this->error($errorStr);
-        }
-        //先检查重复
-
-        if ( D("CustomerContact")->save() === false) {
-            $this->error('更新失败');
-        }
-        
 
 
         //UTC时间转化成本地时间日期
@@ -643,10 +603,18 @@ class CustomerController extends CommonController {
         //更新客户资料 如果不一样 id_card address
         //添加购买纪录
         $row = $this->M->find(I("post.id"));
-        
+
         if (!$row) {
             $this->error("没找到对应的数据");
         }
+
+        $buyRow = D("CustomerBuy")->where(array('cus_id'=>$row['id']))->find();
+        if ($buyRow) {
+            $this->error("已经有购买记录,请选择续费");
+        }
+
+
+
         $this->setVType($this->M);
         $this->setDetail($this->M, array('id_card'=>I("post.id_card"), 'address'=>I('post.address'), 'name'=>I('post.name')));
         $re = $this->M->save();

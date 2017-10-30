@@ -14,20 +14,7 @@
       {{infoForm.address}}
     </el-form-item>
 
-    <div v-for="contact in infoForm.contacts">
-      <el-form-item label="手机" >
-        {{contact.phone}}
-      </el-form-item>
-
-      <el-form-item label="QQ" >
-        号：{{contact.qq}}  昵称：{{contact.qq_nickname}}  
-      </el-form-item>
-
-      <el-form-item label="微信" >
-        号：{{contact.weixin}} 昵称：{{contact.weixin_nickname}}  
-      </el-form-item>
-      
-      <el-form-item label="资金量(万元)：">
+    <el-form-item label="资金量(万元)：">
         {{infoForm.money_text}}
       </el-form-item>
 
@@ -42,6 +29,21 @@
       <el-form-item label="备注：">
         {{infoForm.remark}}
       </el-form-item>
+
+    <div v-for="contact in infoForm.contacts">
+      <el-form-item label="手机" >
+        {{contact.phone}}
+      </el-form-item>
+
+      <el-form-item label="QQ" >
+        号：{{contact.qq}}  昵称：{{contact.qq_nickname}}  
+      </el-form-item>
+
+      <el-form-item label="微信" >
+        号：{{contact.weixin}} 昵称：{{contact.weixin_nickname}}  
+      </el-form-item>
+      
+      
 
     </div>
 

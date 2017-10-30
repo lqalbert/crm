@@ -18,10 +18,10 @@ class MakeOrderController extends CommonController {
 
     public function index(){
 
-        $ename = $this->getRoleEname();
-        if ($ename == RoleModel::DATACAPTAIN) {
-            redirect(U("MakeOrderGroup/index"));
-        } 
+        // $ename = $this->getRoleEname();
+        // if ($ename == RoleModel::DATACAPTAIN) {
+        //     redirect(U("MakeOrderGroup/index"));
+        // } 
 
         $this->assign('seMaster', D('User')->getSupService());
         $this->assign('uid', session('uid'));
@@ -91,10 +91,26 @@ class MakeOrderController extends CommonController {
             }
         }
 
+        
+
+
+
+        $semaster_id = I('get.semaster_id');
+        if ($semaster_id) {
+            $this->M->where(array('cb.semaster_id'=>$semaster_id));
+        }
+
+        // $datastaff_id = I('get.datastaff_id');
+        // if ($datastaff_id) {
+        //     $this->M->where(array('customers_buy.datastaff_id'=>$datastaff_id));
+        // }
+
+
+
         $this->M->join('user_info as ui on customers_buy.user_id=ui.user_id')
                 ->join('customers_basic as cb on cb.id = customers_buy.cus_id','LEFT')
                 ->join('department_basic as db on ui.department_id = db.id', 'left')
-                ->field('customers_buy.* , ui.realname, db.name as department_name,cb.name as cus_name,cb.semaster_time,cb.semaster_id')
+                ->field('customers_buy.* , ui.realname, ui.mphone, db.name as department_name,cb.name as cus_name,cb.semaster_time,cb.semaster_id')
                 ->where($this->dCondition);
 
         //销售部 团队 员工参数
@@ -167,13 +183,6 @@ class MakeOrderController extends CommonController {
                 } else {
                     $value['semaster'] = "";
                 }
-
-                $salesman = M("user_info")->field("mphone")->where(array('user_id'=>$value['salesman_id']))->find();
-                if ($salesman) {
-                    $value['mphone'] = $salesman['mphone'];
-                }  else {
-                    $value['mphone'] = "";
-                } 
             }
 
             $this->ajaxReturn($result);
@@ -334,7 +343,8 @@ class MakeOrderController extends CommonController {
                                     ->data(array(
                                         'status'=>1, 
                                         'todo_list'=>$this->delToList( $buyRow['todo_list'], 'order'),
-                                        'order_time'=> Date('Y-m-d H:i:s') ))
+                                        'order_time'=> Date('Y-m-d H:i:s'),
+                                        'datastaff_id'=>session('uid') ))
                                     ->save();
         if ($saveRe === false) {
             $this->error = M('customers_buy')->getError();

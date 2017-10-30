@@ -1,0 +1,94 @@
+<el-dialog  title="高级查询" v-model="advancedQueryFormDialog">
+<el-form ref="advancedQueryForm" :inline="true" :model="advancedQueryForm" size="small" label-width="140px">
+        <el-row>
+            <el-col :span="24">
+              <el-form-item  label="销售部" prop="department_id">
+                <el-select 
+                    v-model="searchForm.department_id" 
+                    size="small" 
+                    clearable
+                    @change="departChange">
+                    <el-option
+                      v-for="department in departments"
+                      :label="department.name"
+                      :value="department.id">
+                    </el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item  label="销售小组" prop="group_id">
+                <el-select 
+                    v-model="searchForm.group_id" 
+                    size="small" 
+                    clearable
+                    @change="groupChange">
+                    <el-option
+                      v-for="group in groups"
+                      :label="group.name"
+                      :value="group.id">
+                    </el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item  label="销售员工" prop="user_id">
+                <el-select v-model="searchForm.user_id" size="small" clearable>
+                    <el-option
+                      v-for="user in users"
+                      :label="user.name"
+                      :value="user.id">
+                    </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col :span='24'>
+                <!-- <el-form-item label="审查小组">
+                    暂时小组还无法区分
+                    <el-select size="small"></el-select>
+                </el-form-item> -->
+                <el-form-item label="审查员工" prop="risk_id">
+                    <el-select v-model="searchForm.risk_id" size="small" clearable>
+                        <el-option
+                          v-for="user in risks_users"
+                          :label="user.name"
+                          :value="user.id">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+
+                <el-form-item label="回访员工" prop="callback_id">
+                    <el-select v-model="searchForm.callback_id" size="small" clearable>
+                        <el-option
+                          v-for="user in callbacks_users"
+                          :label="user.name"
+                          :value="user.id">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col :span='24'>
+               <!--  <el-form-item label="回访小组">
+                暂时小组还无法区分
+                    <el-select size="small"></el-select>
+                </el-form-item> -->
+                <el-form-item label="材料员工" prop="datastaff_id">
+                    <el-select v-model="searchForm.datastaff_id" size="small" clearable>
+                        <el-option
+                          v-for="user in datastaff_users"
+                          :label="user.name"
+                          :value="user.id">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+            </el-col>
+        </el-row>
+        
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+        <el-button @click="advancedQueryReset">重置</el-button>
+        <el-button type="primary" v-show="!advancedQueryFormSubmitStatus" @click="advanceSearch" >查询</el-button>
+        <el-button type="primary" v-show="advancedQueryFormSubmitStatus" :loading="true" >查询中</el-button>
+    </div>
+    
+</el-dialog>
