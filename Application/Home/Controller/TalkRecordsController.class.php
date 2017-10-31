@@ -16,7 +16,15 @@ class TalkRecordsController extends CommonController{
             $this->M->where(array('cus_id'=>$id));
         }
 
-        $this->M->where(array('status'=>1));
+        //,all:1
+        if (I("get.all")) {
+            # code...
+            // $this->M->where(array('status'=>1));
+        } else {
+            $this->M->where(array('status'=>1));
+        }
+
+       
     }
 
 

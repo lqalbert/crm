@@ -580,7 +580,7 @@
 
       }
   }).setMethod('loadRecords', function(id){
-     this.$http.get("{:U('talkRecords/getList')}", {params:{id:id}}).then(function(response){
+     this.$http.get("{:U('talkRecords/getList')}", {params:{id:id,all:1}}).then(function(response){
       this.talkRecords = response.body.list;
      }, function(response){
 
