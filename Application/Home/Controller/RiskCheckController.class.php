@@ -215,10 +215,18 @@ class RiskCheckController extends CommonController{
         $re = $this->M->save();
         if ($re !== false) {
             $cus_ids = $this->M->where(array('id'=>$id))->getField('cus_id', true);
-                
+            
+
             $pa = array('ids'=>$cus_ids,
                         'content'=>I("post.mark"),
                         'user_id'=>$ch_id);
+
+            if ($state == -1) {
+                $pa['track_text'] = "审核未通过";
+            } else {
+                $pa['track_text'] = "审核通过";
+            }
+            
             tag(HOOK_CHECK , $pa);
             //是否要给材料专员一个弹窗消息
             // $buys = array();
