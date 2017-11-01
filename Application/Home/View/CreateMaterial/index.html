@@ -92,7 +92,6 @@
     <span class="dd_right">
 			<div id="preview"></div>
 			<div id="img-btn" style="margin-left:0px;width:98px;padding: 0px;">确定上传</div>
-
     </span>
     <input id="cancel" type="button" value="取消上传"/>
   </div>
@@ -133,8 +132,8 @@
 	// 当有文件添加进来的时候
 	uploader.on( 'fileQueued', function( file ) {
 	  var $list = $('#preview');
-	  var thumbnailWidth = 200;
-	  var thumbnailHeight = 200;
+	  var thumbnailWidth = 1;
+	  var thumbnailHeight = 1;
 	  $('#pre-dd').removeAttr("style"); 
     var $li = $(
             '<div id="' + file.id + '" class="file-item thumbnail">' +

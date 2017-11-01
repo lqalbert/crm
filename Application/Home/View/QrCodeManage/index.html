@@ -3,10 +3,12 @@
 <head>
 	<meta charset="UTF-8">
 	<title>推广页面Url</title>
+	<meta name="renderer" content="webkit|ie-comp|ie-stand">
 	<meta name="renderer" content="webkit">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-	<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/Jcrop/jquery.Jcrop.min.css"/>
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/plugins/Jcrop/css/jquery.Jcrop.min.css"/>
+	<link rel="stylesheet" type="text/css" href="__PUBLIC__/plugins/webuploader/webuploader.css">
 	<!-- 不支持IE9 及以下的浏览器 -->
 	<!--[if lte IE 9]> 
 	<script>
@@ -15,255 +17,260 @@
 	<![endif]-->
   <style>
 	  *{font-family: microsoft YaHei;}
-		.layui-form-item {
-			width: 33.33333333%;
-			float: left;
-			margin-bottom: 15px;
-			clear: both;
-		/*    line-height: 40px;*/
-		}
-		.layui-form .layui-form-item label.layui-form-label {
-	    width: 120px;
-	    font-family: "Microsoft YaHei";
-		}
-
-		.layui-form-label {
-	    float: left;
-	    display: block;
-	    padding: 9px 15px;
-	    width: 80px;
-	    font-weight: 400;
-	    text-align: right;
-		}
-
-		.layui-form-label, .layui-form-mid, .layui-textarea {
-	    line-height: 20px;
-	    position: relative;
-		}
-		.layui-input-block {
-	    margin-left: 160px;
-		}
-		.layui-input-block {
-	    margin-left: 110px;
-	    min-height: 36px;
-		}
-		.layui-input-block, .layui-input-inline {
-	    position: relative;
-		}
-		.layui-upload-file {
-	    position: relative;
-	    display: inline-block;
-	    vertical-align: middle;
-	    margin-left:10px;
-	    min-width: 120px;
-	    height: 38px;
-	    border: 1px solid #20a0ff;
-	    border-radius: 4px;
-	    overflow: hidden;
-	    color: #fff;
-	    background-color: #20a0ff;
-	    cursor:pointer;
-		}
-		.layui-upload-file {
-	    outline: 0;
-	    -webkit-transition: border-color .3s cubic-bezier(.65,.05,.35,.5);
-	    transition: border-color .3s cubic-bezier(.65,.05,.35,.5);
-	    -webkit-box-sizing: border-box!important;
-	    -moz-box-sizing: border-box!important;
-	    box-sizing: border-box!important;
-		}
-		.el-col-16 {
-	    width:800px;
-	    box-sizing: border-box;
-		}
-		.el-alert--error {
-		  background-color: #ff4949;
-		}
-		.el-alert {
-		  width: 100%;
-		  padding: 8px 0px;
-		  margin: 0;
-		  border-radius: 4px;
-		  position: relative;
-		  overflow: hidden;
-		  color: #fff;
-		  opacity: 1;
-		  display: table;
-		  transition: opacity .2s;
-		}
-		.el-alert__content {
-		  display: table-cell;
-		  padding: 0 8px;
-		}
-		.el-alert__title {
-		  font-size: 18px;
-		  line-height: 18px;
-		  font-weight: 600;
-		}
-		.el-input {
-		  position: relative;
-		  font-size: 14px;
-		  display: inline-block;
-		  width: 100%;
-		}
-		.el-input.is-disabled .el-input__inner {
-		  margin-top: 20px;
-		  background-color: #EFF2F7;
-		  border-color: #D3DCE6;
-		  color: #3a3636;
-		  cursor: text;
-		  font-size: 18px;
-		}
-		.el-input__inner {
-		  -moz-appearance: none;
-		  appearance: none;
-		  background-color: #fff;
-		  border-radius: 4px;
-		  border: 1px solid #c0ccda;
-		  color: #1f2d3d;
-		  display: block;
-		  font-size: inherit;
-		  height: 36px;
-		  line-height: 1;
-		  padding: 3px 10px;
-		  width: 100%;
-		}
-		.el-input__inner, .el-textarea__inner {
-		  background-image: none;
-		  transition: border-color .2s cubic-bezier(.645,.045,.355,1);
-		  box-sizing: border-box;
-		}
-		.el-button, .el-input__inner {
-		  -webkit-appearance: none;
-		  outline: 0;
-		}
-		#qq-fileList{margin-top:10px;margin-left:20px;font-size:16px;}
-		#tips{margin-top:10px;margin-left:20px;font-size:16px;font-weight:700;color:#ff4949;}
-		#wx-refresh,#qq-refresh{display:none;background-color: #ff4949;border-color: #ff4949;height: 30px;}
+    .dd{width: 100%;height: auto;line-height: 24px;float: left;margin-bottom: 12px;}
+    .dd .dd_left{display: block;width: 130px;line-height: 24px;float: left;text-align: right;font-weight: 900;color: #444;margin-right: 6px;}
+    .dd .dd_right{display: block;width: auto;line-height: 24px;float: left;text-align: left;padding-left: 6px;}
+    .dd .font{color: #777;margin-left: 10px;}
+    .dd .font span{font-family: "Georgia";font-weight: 900;font-size: 22px;color: #444;}
+    #img-btn,#cancel{float: left;width: auto;height: 30px;border: none;padding: 0px 18px;background: #f60;color: #fff;font-size: 16px;text-align: center;cursor: pointer;margin-left: 20px;text-indent: 0;line-height: 30px;}
+    #img-btn:hover,#cancel:hover{background: #dc6211;}
+    #refresh:hover{background: #d63e3e;}
+		#up-img{display: inline-block;cursor: pointer;color: rgb(255, 255, 255);text-align: center;background: rgb(0, 183, 238);overflow: hidden;height: 36px;line-height: 15px;}
+		#refresh{cursor: pointer;color: rgb(255, 255, 255);text-align: center;background: #ff4949;border-color: #ff4949;height: 36px;width: 100px;margin-left: 10px;line-height: 36px;margin-left: 305px;}
+		.progress{padding: 0;margin: 0 0 5px 0;}
+		.progress span{display: block;height: 8px;border-radius: 4px;background: #1483d8;}
+		hr{margin-top: 10px;height: 1px;border: 0;background-color: #e2e2e2;clear: both;display: block;unicode-bidi: isolate;-webkit-margin-before: 0.5em;-webkit-margin-after: 0.5em;-webkit-margin-start: auto;-webkit-margin-end: auto;overflow: hidden;border-width: 1px;}
+    .box3{float: left;width: 201px;height: 251px;border-bottom: 1px solid #D3DCE6;border-radius: 4px;background-color: #fff;overflow: hidden;text-align: center;box-shadow: 0 2px 4px 0 rgba(0,0,0,.12), 0 0 6px 0 rgba(0,0,0,.04);}
+    .image1{margin: 0 auto;display: block;cursor: pointer;}
+    .box4{padding: 14px;}
   </style>
 </head>
 <body>
-  <div id="tips">请只截取中间二维码部分！！！</div>
-  <div class="layui-form-item" style="margin-top:20px;">
-    <label class="layui-form-label">微信二维码</label>
-    <div class="layui-input-block">
-      <input id="wx-qr" type="button" class="layui-upload-file" value="选择微信二维码图"/>
-    </div>
-    <div id="wx-fileList" style="margin-top:10px;margin-left:20px;font-size:13px;"></div>  
-    <img  id="show-wxqr" alt="" src="{$res.wxqrImg}" style="margin:10px 20px;"/> 
-    <input id="wx-upload" type="button" class="layui-upload-file" value="确定截图" style="display:none;margin-left:20px;float: right;"/>
-    <input id="wx-refresh" type="button" class="layui-upload-file" value="如不满意点击刷新再传"/>
-  </div>
+	
+	<if condition="($res.qqqr neq '')"> 
+		<div class="box3">
+			<img id="qqqr" src="__ROOT__/{$res.qqqr}" class="image1">
+			<div class="box4">
+				<span>现有QQ二维码</span>
+			</div>
+		</div>
+	</if>
 
-  <div class="layui-form-item">
-    <label class="layui-form-label">QQ二维码</label>
-    <div class="layui-input-block">
-      <input id="qq-qr" type="button" class="layui-upload-file" value="选择QQ二维码图"/>
-    </div>
-    <div id="qq-fileList"></div>  
-    <img  id="show-qqqr" alt="" src="{$res.qqqrImg}" style="margin:10px 20px;"/>
-    <input id="qq-upload" type="button" class="layui-upload-file" value="确定截图" style="display:none;margin-left:20px;float: right;"/>
-    <input id="qq-refresh" type="button" class="layui-upload-file" value="如不满意点击刷新再传"/>
+	<if condition="($res.wxqr neq '')"> 
+		<div class="box3" style="margin-left: 20px;">
+			<img id="wxqr" src="__ROOT__/{$res.wxqr}" class="image1">
+			<div class="box4">
+				<span>现有微信二维码</span>
+			</div>
+		</div>
+	</if>
+
+  <!-- 上传二维码图片 -->
+  <div class="dd" style="margin-top: 10px;">
+		<span class="dd_left">上传二维码图片：</span>
+    <span class="dd_right">
+		  <div id="up-img">选择二维码图片</div>
+    </span>
+    <div id="refresh">刷新页面</div>
   </div>
- 
-<script type="text/javascript" src="__PUBLIC__/js/jquery.1.11.min.js"></script>
-<script type="text/javascript" src="__PUBLIC__/plugins/Jcrop/jquery.Jcrop.min.js"></script>
-<script type="text/javascript" src="__PUBLIC__/plugins/Jcrop/imageCropperUpload.js"></script>
+  <!-- 预览图片 -->
+  <div id="pre-dd" class="dd">
+		<span class="dd_left">裁剪/预览：</span>
+    <span class="dd_right">
+			<div id="preview"></div>
+			<div id="img-btn" style="margin-left:0px;width:98px;padding: 0px;">确定上传</div>
+			<input id="cancel" type="button" value="取消上传"/>
+    </span>
+  </div>
+  
+<script type="text/javascript" src="__PUBLIC__/plugins/ueditor/third-party/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/plugins/Jcrop/js/jquery.Jcrop.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/plugins/layer/layer.js"></script>
+<script type="text/javascript" src="__PUBLIC__/plugins/webuploader/webuploader.min.js"></script>
 <script>
-  var webRoot = "__ROOT__";
-  var qqqrImg = "{$res.qqqrImg}";
-  var wxqrImg = "{$res.wxqrImg}";
-  var commonConfig = {
-    commonFileSuffixs:["jpg", "png", "jpeg","gif"],
-    commonErrorText:"{0}",
-    commonCropperParam: {
+  window.BASE_URL = "__PUBLIC__/plugins/webuploader/";
+  var jcrop_api;
+	// 初始化Web Uploader
+	var uploader = WebUploader.create({
+    // 选完文件后，是否自动上传。
+    auto: false,
+    // swf文件路径
+    swf: BASE_URL + 'Uploader.swf',
+    // 文件接收服务端。
+    server: "{:U('Upload/imageCropperUpload?folder=wxqr')}",
+    // 选择文件的按钮。可选。
+    // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+    pick: '#up-img',
+    //fileSizeLimit:102400000,
+    // 只允许选择图片文件。
+    thumb:{
+    	crop: true
+    },
+    accept: {
+        title: 'Images',
+        extensions: 'gif,jpg,jpeg,png',
+        mimeTypes: 'image/jpg,image/jpeg,image/gif,image/png'
+    },
+    fileNumLimit:1,
+    fileSingleSizeLimit:3 *1024 * 1024 //3M
+	});
+
+  function updateCoords(c){
+  	//console.log(c);
+    uploader.options.formData = {h:c.h,w:c.w,x:c.x,y:c.y};
+  };
+
+	// 当有文件添加进来的时候
+	uploader.on( 'fileQueued', function( file ) {
+		console.log(file);
+	  var $list = $('#preview');
+	  var thumbnailWidth = 1;
+	  var thumbnailHeight = 1;
+	  $('#pre-dd').removeAttr("style"); 
+    var $li = $(
+            '<div id="' + file.id + '" class="file-item thumbnail">' +
+                '<img>' +
+                '<div class="info">' + file.name + '</div>' +
+            '</div>'
+            );
+    $img = $li.find('img');
+    $list.append( $li );
+
+	  //截图
+    $('#'+file.id+' img').Jcrop({
+      aspectRatio: 1,
       maxSize: [200, 200],//不要小于50，如maxSize:[40,24]
       minSize: [190, 190],//不要小于50，如minSize:[40,24]
       bgColor: "black",
       bgOpacity: .4,  
-      allowResize: true,  
-      allowSelect: false,
+      allowResize: true,
       animationDelay:10,
-      aspectRatio:1,
-    },
-    commonPerviewImgStyle:{width: '700px', height: '500px',border: '1px solid #ebebeb'}
-  };
-  $(function () {  
-    var btn = $("#wx-qr");
-    btn.click(function () {  
-      $("#wx-upload").show();
-    }); 
-    btn.cropperUpload({  
-      url: "{:U('Upload/imageCropperUpload?folder=wxqr')}",
-      fileSuffixs: commonConfig.commonFileSuffixs,  
-      errorText: commonConfig.commonErrorText,  
-      onComplete: function (msg) {  
-        $("#wx-fileList").hide();
-        $("#show-wxqr").attr("src", webRoot+msg);
-        if(wxqrImg == ""){
-        	window.location.reload();
-        }else{
-        	$('#wx-refresh').show();
-        	btn.attr('disabled',"true");
-        	btn.css({"background-color":"#c2c2c2","border-color":"#c2c2c2","color":"#ffffff","cursor":"not-allowed"});
-        }
-        $("#wx-upload").hide();
-      },
-      //Jcrop参数设置，除onChange和onSelect不要使用，其他属性都可用
-      cropperParam: commonConfig.commonCropperParam,  
-      perviewImageElementId: "wx-fileList", //设置预览图片的元素id    
-      perviewImgStyle: commonConfig.commonPerviewImgStyle//设置预览图片的样式
-    });  
-
-    var upload = btn.data("uploadFileData");  
-
-    $("#wx-upload").click(function () {  
-      upload.submitUpload();
-    });  
-
-    $('#wx-refresh').click(function() {
-    	window.location.reload();
+      onSelect: updateCoords,
+      onChange: updateCoords
+    },function(){
+    	jcrop_api = this;
+    	if($img.width()<190 || $img.height()<190){
+	  		uploader.removeFile( file );
+	  		$('#'+file.id).remove();
+	  		$('#pre-dd').hide();
+	  		jcrop_api.destroy();
+	  		jcrop_api.release();
+      	layer.msg("请选择图片尺寸大于190x190像素");
+    	}else{
+    		jcrop_api.animateTo([0,0,190,190]);
+    	}
     });
 
-  });  
-</script>
-<script>
-  $(function () {  
-    var btn = $("#qq-qr");
-    btn.click(function () {  
-      $("#qq-upload").show();
-    }); 
-    btn.cropperUpload({  
-      url: "{:U('Upload/imageCropperUpload?folder=qqqr')}",
-      fileSuffixs: commonConfig.commonFileSuffixs,  
-      errorText: commonConfig.commonErrorText,    
-      onComplete: function (msg) {   
-        $("#qq-fileList").hide();
-        $("#show-qqqr").attr("src", webRoot+msg);
-        if(qqqrImg == ""){
+  	//取消上传
+  	$('#cancel').click(function(event) {
+  		uploader.removeFile( file );
+  		jcrop_api.destroy();
+  		jcrop_api.release();
+  		$('#'+file.id).remove();
+  		$('#pre-dd').hide();
+  	});
+
+    // 创建缩略图
+    // 如果为非图片文件，可以不用调用此方法。
+    // thumbnailWidth x thumbnailHeight 为 100 x 100
+    uploader.makeThumb( file, function( error, src ) {
+      if ( error ) {
+        $img.replaceWith('<span>不能预览</span>');
+        return;
+      }
+      $img.attr( 'src', src );
+    }, thumbnailWidth, thumbnailHeight );
+
+
+	});
+  
+  //捕获上传错误
+  uploader.on('error',function(type){
+  	switch (type) {
+  		case 'F_EXCEED_NUM':
+  			layer.msg("一次只能上传一张图片");
+  			break;
+  		case 'F_EXCEED_SIZE':
+  			layer.msg("图片大小限制为3M");
+  			break;
+  		default:
+  			// statements_def
+  			break;
+  	}
+  });
+  
+  $(function(){
+  	$('#pre-dd').hide();
+  });
+
+  uploader.on('ready', function() {
+      window.uploader = uploader;
+  });
+
+  function imgUploadProgress(){
+		uploader.upload();
+		// 文件上传过程中创建进度条实时显示。
+		uploader.on( 'uploadProgress', function( file, percentage ) {
+		    var $li = $( '#'+file.id ),
+		        $percent = $li.find('.progress span');
+
+		    // 避免重复创建
+		    if ( !$percent.length ) {
+		    	  //alert(2);
+		        $percent = $('<p class="progress"><a></a><span></span></p>')
+		                .appendTo( $li )
+		                .find('span');
+		    }
+        
+		    $percent.css( 'width', percentage * 100 + '%' );
+		    $('.progress a').text('上传进度'+percentage * 100 + '%');
+		});
+
+		// 文件上传成功，给item添加成功class, 用样式标记上传成功。
+		uploader.on( 'uploadSuccess', function( file,response) {
+			console.log(response);
+	    //$( '#'+file.id ).addClass('upload-state-done');
+      layer.msg(response.info,{
+      	time:3000,
+        success:function(layero, index){	uploader.removeFile( file );
+					$('#'+file.id).remove();
+					$('#pre-dd').hide();
+					$('#img-title').val("");
+					$('#img-str1').text(100);
+        },
+        end:function(){
+        	// if(response.folder == 'qqqr'){
+        	// 	$("#qqqr").attr("src", "__ROOT__"+response.path);
+        	// }else {
+        	// 	$("#wxqr").attr("src", "__ROOT__"+response.path);
+        	// }
         	window.location.reload();
-        }else{
-        	$('#qq-refresh').show();
-        	btn.attr('disabled',"true");
-        	btn.css({"background-color":"#c2c2c2","border-color":"#c2c2c2","color":"#ffffff","cursor":"not-allowed"});
         }
-        $("#qq-upload").hide();
-      },
-      //Jcrop参数设置，除onChange和onSelect不要使用，其他属性都可用
-      cropperParam: commonConfig.commonCropperParam,   
-      perviewImageElementId: "qq-fileList", //设置预览图片的元素id    
-      perviewImgStyle: commonConfig.commonPerviewImgStyle//设置预览图片的样式    
-    });  
+      });
+		});
+    
+		// 文件上传失败，显示上传出错。
+		uploader.on( 'uploadError', function( file ,code) {
+	    $( '#'+file.id ).find('.progress').remove();
+			uploader.removeFile( file );
+			$('#'+file.id).remove();
+			$('#img-title').val("");
+			$('#img-str1').text(100);
+      layer.msg('上传失败');
+	    //$error.text('上传失败');
+		});
+  }
 
-    var upload = btn.data("uploadFileData");  
+  //点击上传
+	$('#img-btn').click(function(event) {
+		//console.log(uploader);die();
+		layer.confirm('请选择上传的二维码类型！', {
+		  title: '必择项',
+		  btn: ['QQ二维码','微信二维码'] //按钮
+		}, function(){
+		  uploader.options.server = "{:U('Upload/imageCropperUpload?folder=qqqr')}";
+      imgUploadProgress();
+		}, function(){
+      imgUploadProgress();
+		});
 
-    $("#qq-upload").click(function () {
-      upload.submitUpload();  
-    }); 
-    $('#qq-refresh').click(function() {
-    	window.location.reload();
-    });
-  });  
+	});
+  
+  //刷新页面
+ 	$('#refresh').click(function() {
+		window.location.reload();
+	});
+
 </script>
 </body>
 </html>
