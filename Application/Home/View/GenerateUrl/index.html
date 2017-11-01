@@ -40,7 +40,8 @@
               </el-form-item>
 
               <el-form-item prop="dist">  
-                <el-date-picker v-model="searchForm.dist" type="daterange" style="max-width: 210px;width:210px;" size="small" placeholder="选择日期范围" :picker-options="pickerOptions" @change="DateChange" :clearable="false">
+                <el-date-picker v-model="searchForm.dist" type="daterange" style="max-width: 210px;width:210px;" size="small" placeholder="选择日期范围" :picker-options="pickerOptions" @change="DateChange" 
+                :clearable="false" :editable="false">
                 </el-date-picker>
               </el-form-item>
 
@@ -112,7 +113,8 @@
               </el-form-item>
 
               <el-form-item prop="dist">  
-                <el-date-picker v-model="searchImgForm.dist" type="daterange" style="max-width: 210px;width:210px;" size="small" placeholder="选择日期范围" :picker-options="pickerOptions" @change="imgDateChange" :clearable="false">
+                <el-date-picker v-model="searchImgForm.dist" type="daterange" style="max-width: 210px;width:210px;" size="small" placeholder="选择日期范围" :picker-options="pickerOptions" @change="imgDateChange" 
+                :clearable="false" :editable="false">
                 </el-date-picker>
               </el-form-item>
 
@@ -170,7 +172,8 @@
               </el-form-item>
 
               <el-form-item prop="dist">  
-                <el-date-picker v-model="searchImgTextForm.dist" type="daterange" style="max-width: 210px;width:210px;" size="small" placeholder="选择日期范围" :picker-options="pickerOptions" @change="imgTextDateChange" :clearable="false">
+                <el-date-picker v-model="searchImgTextForm.dist" type="daterange" style="max-width: 210px;width:210px;" size="small" placeholder="选择日期范围" :picker-options="pickerOptions" @change="imgTextDateChange" 
+                :clearable="false" :editable="false">
                 </el-date-picker>
               </el-form-item>
 
@@ -207,9 +210,10 @@
 
               <el-table-column prop="ct_time" label="图文创建时间" align="center" width="200"></el-table-column>
 
-              <el-table-column label="操作" align="center" width="100">
+              <el-table-column label="操作" align="center" width="200">
                 <template scope="scope">
-                  <el-button size="small" @click="showImgTextContent(scope.row)" type="info">查看</el-button>
+                  <el-button size="small" @click="showImgTextContent(scope.row)" type="info">查看内容</el-button>
+                  <el-button size="small" @click="showUrl(scope.row)" type="info">查看链接</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -254,15 +258,15 @@
       </textarea>
     </el-row>
     <div class="right-tool" style="float: left;">
-      <el-button :disabled="editor1" type="info" icon="menu" style="font-size: 16px;" onclick="return $EDITORUI['edui161']._onClick(event, this);">选择模板</el-button><br>
-      <el-button :disabled="editor1" type="info" icon="document" style="font-size: 16px;margin-top: 10px;" onclick="return $EDITORUI['edui51']._onClick(event, this);">清空文档</el-button><br>
-      <el-tooltip content="预览页面" placement="right" style="margin-top: 10px">
+      <el-button v-show="showTplBtn" :disabled="editor1" type="info" icon="menu" style="font-size: 16px;" onclick="return $EDITORUI['edui161']._onClick(event, this);">选择模板</el-button><br>
+      <el-button v-show="showClearBtn" :disabled="editor1" type="info" icon="document" style="font-size: 16px;margin-top: 10px;" onclick="return $EDITORUI['edui51']._onClick(event, this);">清空文档</el-button><br>
+      <el-tooltip v-show="showPreviewBtn" content="预览页面" placement="right" style="margin-top: 10px">
         <el-button type="info" icon="picture" style="font-size: 16px;width: 117px;" @click="preview">预&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;览</el-button>
       </el-tooltip><br>
-      <el-tooltip content="只对编辑好的内容进行保存" placement="right" style="margin-top: 10px">
+      <el-tooltip v-show="showSavelBtn" content="只对编辑好的内容进行保存" placement="right" style="margin-top: 10px">
         <el-button :disabled="editor2" type="info" icon="upload" style="font-size: 16px;width: 117px;" @click="saveImgText">保&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;存</el-button>
       </el-tooltip><br>
-      <el-tooltip content="对内容进行保存并生成链接" placement="right" style="margin-top: 10px">
+      <el-tooltip v-show="showUrlBtn" content="对内容进行保存并生成链接" placement="right" style="margin-top: 10px">
         <el-button type="info" icon="share" style="font-size: 16px;" @click="makeUrl">生成链接</el-button>
       </el-tooltip>
     </div>
@@ -283,25 +287,26 @@
 <script type="text/javascript" src="__PUBLIC__/plugins/ueditor/ueditor.all.min.js"></script>
 <script type="text/javascript" src="__PUBLIC__/plugins/ueditor/dialogs/template/config.js"></script>
 <script type="text/javascript" src="__PUBLIC__/plugins/layer/layer.js"></script>
+<script src="__PUBLIC__/js/calculate.js"></script>
 <script>
-  UE.Editor.prototype.placeholder = function (justPlainText) {
-    var _editor = this;
-    _editor.addListener("focus", function () {
-      var localHtml = _editor.getPlainTxt();
-      if ($.trim(localHtml) === $.trim(justPlainText)) {
-        _editor.setContent(" ");
-      }
-    });
-    _editor.addListener("blur", function () {
-      var localHtml = _editor.getContent();
-      if (!localHtml) {
-        _editor.setContent(justPlainText);
-      }
-    });
-    _editor.ready(function () {
-      _editor.fireEvent("blur");
-    });
-  };
+  // UE.Editor.prototype.placeholder = function (justPlainText) {
+  //   var _editor = this;
+  //   _editor.addListener("focus", function () {
+  //     var localHtml = _editor.getPlainTxt();
+  //     if ($.trim(localHtml) === $.trim(justPlainText)) {
+  //       _editor.setContent(" ");
+  //     }
+  //   });
+  //   _editor.addListener("blur", function () {
+  //     var localHtml = _editor.getContent();
+  //     if (!localHtml) {
+  //       _editor.setContent(justPlainText);
+  //     }
+  //   });
+  //   _editor.ready(function () {
+  //     _editor.fireEvent("blur");
+  //   });
+  // };
 </script>
 <script>
   Vue.filter('handleString',function(v){
@@ -319,6 +324,11 @@
     }
   });
   window.defaultOption.setDatas({
+    showUrlBtn:true,
+    showTplBtn:true,
+    showClearBtn:true,
+    showPreviewBtn:true,
+    showSavelBtn:true,
     showTextContentDialog:false,
     Textcontent:"",
     editor1:false,
@@ -380,6 +390,7 @@
     ue:{},
     title:"",
     promotionUrl:"当前没有创建生成推广链接！",
+    text1:"请选择一条查看内容"
 
   }).setForm('search',{
     content:"",
@@ -428,7 +439,7 @@
     });
 
     this.ue.ready(function() {
-      vmThis.ue.placeholder(vmThis.PlainText);
+      //vmThis.ue.placeholder(vmThis.PlainText);
       var obj = {
           html:templates[0] && templates[0].html
       };
@@ -495,7 +506,7 @@
     }
     
     for(var i = 0;i<this.multipleSelection.length;i++){
-      this.ue.focus(true);
+      //this.ue.focus(true);
       this.ue.execCommand('inserthtml',this.multipleSelection[i].content); 
     }
     
@@ -535,22 +546,38 @@
       this.ue.execCommand('inserthtml',response.body.content); 
       this.ue.setDisabled();
     });
-
+  //--------------------------------------------------------------------------
   }).setMethod('showUrl',function(row){
-    var url = this.mainUrl+'?uid='+row.user_id+'&pmid='+row.id;
+    var url = this.Test1Url+row.id;
     this.$alert("请复制："+url,"推广链接",{
       confirmButtonText:'已复制',
     });
   }).setMethod('handleClick',function(tab, event){
     console.log(tab.index);
     if(tab.index == 2){
-      this.ue.setDisabled();
       this.editor1 = true;
       this.editor2 = true;
+      this.showUrlBtn = false;
+      this.showTplBtn = false;
+      this.showClearBtn = false;
+      this.showPreviewBtn = false;
+      this.showSavelBtn = false;
+      this.ue.execCommand( "cleardoc" );
+      this.ue.focus(true);
+      this.ue.setContent("请选择一条查看内容");
+      this.ue.setDisabled();
     }else{
       this.ue.setEnabled();
       this.editor1 = false;
       this.editor2 = false;
+      this.showUrlBtn = true;
+      this.showTplBtn = true;
+      this.showClearBtn = true;
+      this.showPreviewBtn = true;
+      this.showSavelBtn = true;
+      if(this.ue.getContentTxt() == this.text1){
+        this.ue.execCommand( "cleardoc" );
+      }
     }
   }).setMethod('getImgList',function(){
     var params = {p:this.imgStartPage};
@@ -601,15 +628,20 @@
       photos:{"data": [ { "src": "__ROOT__/"+obj.content,}]},
       resize:false,
       move: false,
-      shade:0.3
+      shade:0.3,
+      closeBtn:1
     });
 
   }).setMethod('preview',function(){
     //window.parent.open("https://www.baidu.com");
-    var new_window = window.parent.open();
     var data = {
       content:this.ue.getContent()
     }
+    if (data.content == "" || data.content == this.text1) {
+      this.$message.error("图文内容不能为空！");
+      return ;
+    }
+    var new_window = window.parent.open();
     console.log(data);
     this.$http.post("{:U('setPreviewSave')}",data).then(function(response){
       this.deleteArrAllItem('multipleSelection');
@@ -624,6 +656,10 @@
     var data = {
       content:this.ue.getContent()
     }
+    if (data.content == "" || data.content == this.text1) {
+      this.$message.error("图文内容不能为空！");
+      return ;
+    }
     this.$http.post("{:U('setPreviewSave')}",data).then(function(response){
       this.deleteArrAllItem('multipleSelection');
       this.$message.success("保存成功");
@@ -634,6 +670,10 @@
     //var vmThis = this;
     var data = {
       content:this.ue.getContent()
+    }
+    if (data.content == "" || data.content == this.text1) {
+      this.$message.error("图文内容不能为空！");
+      return ;
     }
     this.$http.post("{:U('setPreviewSave')}",data).then(function(response){
       console.log(response);
