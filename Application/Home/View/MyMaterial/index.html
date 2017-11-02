@@ -32,7 +32,8 @@
               </el-form-item>
 
               <el-form-item prop="dist">  
-                <el-date-picker v-model="searchForm.dist" type="daterange" style="max-width: 210px;width:210px;" size="small" placeholder="选择日期范围" :picker-options="pickerOptions" @change="DateChange" :clearable="false">
+                <el-date-picker v-model="searchForm.dist" type="daterange" style="max-width: 210px;width:210px;" size="small" placeholder="选择日期范围" :picker-options="pickerOptions" @change="DateChange"
+                 :clearable="false" :editable="false">
                 </el-date-picker>
               </el-form-item>
 
@@ -104,7 +105,8 @@
               </el-form-item>
 
               <el-form-item prop="dist">  
-                <el-date-picker v-model="searchImgForm.dist" type="daterange" style="max-width: 210px;width:210px;" size="small" placeholder="选择日期范围" :picker-options="pickerOptions" @change="imgDateChange" :clearable="false">
+                <el-date-picker v-model="searchImgForm.dist" type="daterange" style="max-width: 210px;width:210px;" size="small" placeholder="选择日期范围" :picker-options="pickerOptions" @change="imgDateChange" 
+                :clearable="false" :editable="false">
                 </el-date-picker>
               </el-form-item>
 
@@ -173,6 +175,7 @@
 <block name="scripts">
 <script src="__PUBLIC__/plugins/ueditor/third-party/jquery-1.12.4.min.js"></script>
 <script src="__PUBLIC__/plugins/layer/layer.js"></script>
+<script src="__PUBLIC__/js/calculate.js"></script>
 <script>
   Vue.filter('handleString',function(v){
     if(v.length > 16){
@@ -329,7 +332,8 @@
       photos:{"data": [ { "src": "__ROOT__/"+obj.content,}]},
       resize:false,
       move: false,
-      shade:0.3
+      shade:0.3,
+      closeBtn:1
     });
 
   }).setMethod('editContent',function(){
