@@ -67,7 +67,12 @@ class SearchMaterialController extends CommonController{
     
     if(I('get.user_name')){
     	$user_id = M('user_info')->where(array("realname"=>array("LIKE",'%'.$user_name.'%')))->getField("user_id",true);
-    	$this->M->where(array('pm.user_id'=>array('IN',$user_id)));
+      if($user_id){
+        $this->M->where(array('pm.user_id'=>array('IN',$user_id)));
+      }else{
+        $this->M->where(array('pm.user_id'=>$user_id));
+      }
+  	    
     }
     
     if(I('get.content')){
@@ -128,7 +133,12 @@ class SearchMaterialController extends CommonController{
     
     if(I('get.user_name')){
       $user_id = M('user_info')->where(array("realname"=>array("LIKE",'%'.$user_name.'%')))->getField("user_id",true);
-      $this->M->where(array('pm.user_id'=>array('IN',$user_id)));
+      if($user_id){
+        $this->M->where(array('pm.user_id'=>array('IN',$user_id)));
+      }else{
+        $this->M->where(array('pm.user_id'=>$user_id));
+      }
+
     }
     
     if(I('get.title')){
