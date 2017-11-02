@@ -26,7 +26,13 @@ class IndexController extends CommonController {
         }
         //先是风控衙回访 没问题了再是材料专员
 
-        if ($ename == RoleModel::CALL_BACK || $ename == RoleModel::RISK_ONE || $ename == RoleModel::DATASTAFF || $ename == RoleMOdel::SUP_SERVICE || $ename == RoleModel::GEN_SERVICE ) {
+        if ($ename == RoleModel::CALL_BACK || 
+            $ename == RoleModel::RISK_ONE || 
+            $ename == RoleModel::DATASTAFF || 
+            $ename == RoleMOdel::SUP_SERVICE || 
+            $ename == RoleModel::GEN_SERVICE ||
+            $ename == RoleModel::CALLBACKCAPTAIN ||
+            $ename == RoleModel::RISKGROUP ) {
             $this->assign("alert", true);
         } else {
             $this->assign("alert", false);

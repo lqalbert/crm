@@ -4,7 +4,38 @@ namespace Upgrade\Controller;
 class KfController  extends \Think\Controller{
 
     public function index(){
+        // $this->table();
+        // $this->table5();
+        // $this->table6();
+        // $this->table8();
+        // $this->table9();
+        // $this->table10();
+        // $this->table11();
+        // $this->table12();
+        // $this->table13();
+        // $this->table14();
+        // $this->table15();
+        // $this->table16();
+        // $this->table17();
+        // $this->table18();
 
+        // $this->role();
+        // $this->role2();
+        // $this->role3();
+        // $this->role4();
+        // $this->role5();
+
+
+        // $this->rights();
+        // $this->rights3();
+        // $this->rights4();
+        // $this->rights5();
+        // // $this->rights2();
+
+        // $this->menu();
+        // $this->menu2();
+        $this->menu3();
+        
     }
 
     public function table(){
@@ -308,6 +339,7 @@ class KfController  extends \Think\Controller{
     }
 
     public function rights2(){
+        die();
         $rights = array(
             array(
                 'name' => 'PerformanceForSpread',
@@ -383,6 +415,28 @@ class KfController  extends \Think\Controller{
     }
 
 
+    public function rights5(){
+        $rights = array(
+            array(
+                'name' => 'ServiceMaster',
+                'pid'  => '1',
+                'remark' => '',
+                'sort'  => '0',
+                'status' => 1,
+                'title' => '客服客户',
+                'level' => 2,
+                'children' => array(
+                        array('name'=>'index', 'pid'=>0, 'sort'=>0, 'level'=>3, 'status'=>1, 'title'=>'列表页', 'roles'=>array())   
+                    ),
+                'roles' => array(),
+            )
+        );
+
+        $this->deal($rights,1);
+
+    }
+
+
     public function menu(){
         M('menu_basic')->add(array(
             'pid' => 25,
@@ -400,6 +454,17 @@ class KfController  extends \Think\Controller{
             'icon' => '&#xe655',
             'title' => '行情资讯-查看',
             'href' => 'CounselArticleView/index',
+            'node_id'=>0,
+            'sort' => 0
+        ));
+    }
+
+    public function menu3(){
+        M('menu_basic')->add(array(
+            'pid' => 25,
+            'icon' => '&#xe655',
+            'title' => '客服客户',
+            'href' => 'ServiceMaster/index',
             'node_id'=>0,
             'sort' => 0
         ));

@@ -17,6 +17,6 @@ define('BETA_PROMATERIAL',   "http://beta.riign.cn/promaterial");//测试推广�
 define('BETA_CRM_URL',   "http://beta.riign.cn/testdiscrm");//本CRM网络地址
 define('BETA_PROMOTION_DB','mysql://beta_spread:beta2008beta@139.224.40.238:3306/beta_spread#utf8');
 
-define('DEFALT_QUEUE', 'queue1'); //默认的队列名称
+define('DEFALT_QUEUE', 'queue2'); //默认的队列名称
 
 define('DIRROOT', dirname(__FILE__));

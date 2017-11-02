@@ -123,4 +123,27 @@ class TalkRecordsController extends CommonController{
             return $path;
         }
     }
+
+
+    public function download(){
+        $id = I("get.id");
+
+        $path = M("customers_tracks")->where(array('id'=>$id))->getField("path");
+        
+        $fullPath = realpath(DIRROOT. $path);
+        //打开文件    
+        // $file = fopen ( $fullPath, "r" );    
+       
+        //输入文件标签     
+        Header ( "Content-type: application/octet-stream" );    
+        Header ( "Accept-Ranges: bytes" );    
+        Header ( "Accept-Length: " . filesize ( $fullPath ) );    
+        Header ( "Content-Disposition: attachment; filename=" . pathinfo($fullPath, PATHINFO_BASENAME ) );    
+        //输出文件内容     
+        //读取文件内容并直接输出到浏览器    
+        // echo fread ( $file, filesize ( $fullPath ) );    
+        // fclose ( $file );    
+        echo file_get_contents($fullPath);
+        exit ();    
+    }
 }

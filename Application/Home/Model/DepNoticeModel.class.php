@@ -95,6 +95,10 @@ class DepNoticeModel extends Model{
     return $this->departmentMasterGetView();
   }
 
+  private function riskMasterGetView(){
+    return $this->departmentMasterGetView();
+  }
+
   private function hrMasterGetView(){
     return $this->departmentMasterGetView();
   }

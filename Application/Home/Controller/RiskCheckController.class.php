@@ -240,10 +240,12 @@ class RiskCheckController extends CommonController{
                 $cusRow = D("Customer")->where(array('id'=>$row['cus_id']))->field('name,type')->find();
                 // $param = array('job'=>'DisDataStaffJob', 'arg'=>array('id'=>$id, 'product_name'=>$row['product_name'], 'cus_name'=>$cusRow['name']));
                 // tag(HOOK_QUEUE , $param);
-                if ($cusRow['type'] == 'VX') {
-                    $param2 = array('job'=>'CustomerTypeJob', 'arg'=>array('id'=>$row['cus_id'], 'type'=>'V'));
-                    tag(HOOK_QUEUE , $param2);
-                }
+                // if ($cusRow['type'] == 'VX') {
+                //     $param2 = array('job'=>'CustomerTypeJob', 'arg'=>array('id'=>$row['cus_id'], 'type'=>'V'));
+                //     tag(HOOK_QUEUE , $param2);
+                // }
+                $param2 = array('job'=>'CustomerTypeJob', 'arg'=>array('id'=>$row['cus_id'], 'type'=>'V'));
+                tag(HOOK_QUEUE , $param2);
             }
             
           $this->success('成功');

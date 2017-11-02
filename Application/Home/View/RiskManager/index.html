@@ -96,20 +96,20 @@
                               <span v-else type="primary">续费</span>
                           </template>
                         </el-table-column>
-                        <el-table-column   label="客户姓名" prop="cb_name" header-align="center">
+                        <el-table-column   label="客户姓名" width="120" prop="cb_name" header-align="center">
                         </el-table-column>
 
-                        <el-table-column prop="db_realname"  label="跟踪员工" header-align="center" width="150">
+                        <el-table-column prop="db_realname"  label="跟踪员工" header-align="center" width="180">
                            
                         </el-table-column>
 
                         <el-table-column label="商品名称"  prop="product_name" header-align="center" width="180">
                         </el-table-column>
 
-                        <el-table-column label="商品价格"  prop="product_money" header-align="center">
+                        <el-table-column label="商品价格" width="100"  prop="product_money" header-align="center">
                         </el-table-column>
 
-                        <el-table-column label="风控审核" align="center" prop="risk_state">
+                        <el-table-column label="风控审核" width="100" align="center" prop="risk_state">
                           <template scope="scope">
                               <el-tag v-if="scope.row.risk_state==-1">未通过</el-tag>
                               <el-tag v-else-if="scope.row.risk_state==1">通过</el-tag>
@@ -117,10 +117,10 @@
                           </template>
                         </el-table-column>
 
-                        <el-table-column label="审查专员" prop="risk_name" header-align="center">
+                        <el-table-column label="审查专员" width="100" prop="risk_name" header-align="center">
                         </el-table-column>
 
-                        <el-table-column label="回访审核" align="center" prop="callback_state">
+                        <el-table-column label="回访审核" width="100" align="center" prop="callback_state">
                           <template scope="scope">
                               <el-tag v-if="scope.row.callback_state==-1">未通过</el-tag>
                               <el-tag v-else-if="scope.row.callback_state==1">通过</el-tag>
@@ -128,15 +128,15 @@
                           </template>
                         </el-table-column>
 
-                        <el-table-column label="回访专员" prop="callback_name" header-align="center">
+                        <el-table-column label="回访专员" width="100" prop="callback_name" header-align="center">
                         </el-table-column>
 
-                        <el-table-column label="购买时间" prop="buy_time" align="center">
+                        <el-table-column label="购买时间" width="120" prop="buy_time" align="center">
                         </el-table-column>
                         
-                        <el-table-column label="材料专员"></el-table-column>
+                        <el-table-column prop="datastaff_name" width="100" label="材料专员"></el-table-column>
                         
-                        <el-table-column label="开单" prop="" align="center">
+                        <el-table-column label="开单"  align="center">
                           <template scope="scope">
                               <span v-if="scope.row.status==0" type="primary">未开单</span>
                               <span v-else type="primary">已开单</span>
@@ -322,7 +322,7 @@
     row.condition = 'service';
     row.name = row.cb_name;
     //delete row.cb_name;
-    this.$http.post("{:U('CommonFindDetail/complainInfo')}",row).then(function(response){
+    this.$http.post("{:U('CommonFindDetail/complainInfo')}",{id:row.cus_id}).then(function(response){
       this.tableDataTwo = response.body;
     },function(response){
       this.$message.error("查询出错啦");

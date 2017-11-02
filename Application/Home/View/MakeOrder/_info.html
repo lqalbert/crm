@@ -2,54 +2,97 @@
 <!-- <el-form :model="form"> -->
 <el-form ref="infoForm"  :model="infoForm" v-model="infoForm" >
 
-    <el-form-item label="客户姓名" >
-      {{infoForm.name}}
-    </el-form-item>
+  <el-row style="margin-bottom: 5px ;background-color: #d3dce6;">
+    <el-col :span="3">
+      客户姓名
+    </el-col>
+    <el-col :span="20"> {{infoForm.name}}</el-col>
+  </el-row>
+  
 
-    <el-form-item label="身份证" >
-      {{infoForm.id_card}}
-    </el-form-item>
+  <div v-for="contact in infoForm.contacts">
+    <el-row style="background-color: rgb(242, 244, 249)">
+      <el-col :span="3">
+        手机
+      </el-col>
+      <el-col :span="20"> {{contact.phone}} </el-col>
+    </el-row>
 
-    <el-form-item label="详细地址" >
-      {{infoForm.address}}
-    </el-form-item>
+    <el-row>
+      <el-col :span="3">
+        QQ
+      </el-col>
+      <el-col :span="9"> {{contact.qq}} </el-col>
+      <el-col :span="3">
+        昵称
+      </el-col>
+      <el-col :span="5"> {{contact.qq_nickname}}   </el-col>
 
-    <el-form-item label="资金量(万元)：">
-        {{infoForm.money_text}}
-      </el-form-item>
+    </el-row>
 
-      <el-form-item label="投资经验(股龄)：">
-        {{infoForm.year_text}}
-      </el-form-item>
+    <el-row style="background-color: rgb(242, 244, 249)">
+      <el-col :span="3">
+        微信
+      </el-col>
+      <el-col :span="9"> {{contact.weixin}} </el-col>
+      <el-col :span="3">
+        昵称
+      </el-col>
+      <el-col :span="5"> {{contact.weixin_nickname}}     </el-col>
 
-      <el-form-item label="职业：">
-        {{infoForm.profession_text}}
-      </el-form-item>
-
-      <el-form-item label="备注：">
-        {{infoForm.remark}}
-      </el-form-item>
-
-    <div v-for="contact in infoForm.contacts">
-      <el-form-item label="手机" >
-        {{contact.phone}}
-      </el-form-item>
-
-      <el-form-item label="QQ" >
-        号：{{contact.qq}}  昵称：{{contact.qq_nickname}}  
-      </el-form-item>
-
-      <el-form-item label="微信" >
-        号：{{contact.weixin}} 昵称：{{contact.weixin_nickname}}  
-      </el-form-item>
-      
-      
-
+    </el-row>
     </div>
 
+    <el-row style="margin-bottom: 5px ;background-color: #d3dce6;">
+      <el-col :span="3">
+        身份证
+      </el-col>
+      <el-col :span="20"> {{infoForm.id_card}}</el-col>
+    </el-row>
 
-   
-      
+     <el-row>
+      <el-col :span="3">
+        详细地址
+      </el-col>
+      <el-col :span="20"> {{infoForm.address}}</el-col>
+    </el-row>
+
+    <el-row style="margin-bottom: 5px ;background-color: #d3dce6;">
+      <el-col :span="3">
+        资金量
+      </el-col>
+      <el-col :span="20"> {{infoForm.money_text}} (万元)</el-col>
+    </el-row>
+
+    <el-row>
+      <el-col :span="3">
+        投资经验
+      </el-col>
+      <el-col :span="20">  {{infoForm.year_text}} (股龄)</el-col>
+    </el-row>
+
+    <el-row style="margin-bottom: 5px ;background-color: #d3dce6;">
+      <el-col :span="3">
+        职业
+      </el-col>
+      <el-col :span="20">  {{infoForm.profession_text}} </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="3">
+        备注
+      </el-col>
+      <el-col :span="20">  {{infoForm.remark}}</el-col>
+    </el-row>
+
+    <el-row>
+      <el-col :span="3">
+        付款方式
+      </el-col>
+      <el-col :span="20">  {{infoForm.pay_info}}</el-col>
+    </el-row>
+
+
+
   </el-form>
   <div slot="footer" class="dialog-footer">
     <el-button @click="closeDialog('info')">取 消</el-button>
