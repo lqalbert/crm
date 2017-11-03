@@ -1,0 +1,193 @@
+<extend name="Common:base" />
+<block name="head">
+	<style>
+    .container > .wrapp > .el-row {margin-bottom: 6px;}
+    .el-table__body tr.current-row>td{background: rgba(157, 195, 232, 0.7);}
+    .el-tabs__item {font-size: 16px;}
+    .el-tabs__header {position: relative;border-bottom: 1px solid rgb(211, 220, 230);padding: 0px;margin: 0px 0px 8px;}
+	</style>
+</block>
+<block name="body">
+<div id="app" class="container">
+  <div class="wrapp" id="appx" v-show="show" style="display:none;">
+    <el-row>
+      <el-col :span="24">
+        <el-form :inline="true" ref="searchForm" :model="searchForm">
+          <el-form-item prop="dist">  
+            <el-date-picker v-model="searchForm.dist" type="daterange" style="max-width: 210px;width:210px;" size="small" placeholder="选择日期范围" :picker-options="pickerOptions" @change="DateChange"
+             :clearable="false" :editable="false">
+            </el-date-picker>
+          </el-form-item>
+
+          <el-form-item>
+            <el-select size="small" style="width:120px;" v-model="searchForm.type" placeholder="查询类型" @change="queryType">
+              <el-option label="按队员查询" value="user"></el-option>
+              <el-option label="按团组查询" value="group"></el-option>
+              <el-option label="按部门查询" value="department"></el-option>
+            </el-select>
+          </el-form-item>
+          
+          <el-form-item prop="dep_id">
+            <el-tooltip content="选择某个部门后点击查询或者继续选择下属小组再查询" placement="bottom-start">
+              <el-select size="small" style="width:120px;" clearable filterable   v-model="searchForm.dep_id" @change="depChange" placeholder="请选择部门">
+              <el-option label="销售一部" value="1"></el-option>
+              <el-option label="销售二部" value="2"></el-option>
+              <el-option label="销售三部" value="3"></el-option>
+              </el-select>
+            </el-tooltip>
+          </el-form-item>
+
+          <el-form-item prop="group_id">
+            <el-tooltip content="必须先选择部门方可选择团组后点击查询或者继续选择下属队员再查询" placement="bottom-start">
+              <el-select size="small" style="width:120px;" :disabled="CtrlSelect" clearable filterable  v-model="searchForm.group_id" @change="groupChange" placeholder="请选择小组">
+              <el-option label="火箭一队" value="1"></el-option>
+              <el-option label="火箭二队" value="2"></el-option>
+              <el-option label="火箭三队" value="3"></el-option>
+              </el-select>
+            </el-tooltip>
+          </el-form-item>
+
+          <el-form-item>
+            <el-button type="info" size="small" icon="search"  @click="loadDatalist" >查询</el-button>
+            <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
+              <el-button  size="small" @click="searchReset"  >重置</el-button>
+            </el-tooltip>
+            <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:10px;">
+              <el-button  size="small" type="danger" @click="refresh" >刷新</el-button>
+            </el-tooltip>
+          </el-form-item>
+        </el-form>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="24">
+        <el-table :data="dataList_bak" border v-loading="dataLoad"
+         element-loading-text="{:L('DATA_LOGIN')}" highlight-current-row
+         empty-text="暂无统计数据！" ref="select" @sort-change="sortChange">
+          
+          <el-table-column label="序号"  align="center" width="65" :formatter_bak="handleIndex" type="index"></el-table-column>
+
+          <el-table-column prop="name" label="部门/小组/员工" header-align="center" width="200"></el-table-column>
+
+          <el-table-column sortable="custom" prop="cus_name" label="客户姓名" header-align="center"></el-table-column>
+          
+          <el-table-column sortable="custom" prop="cus_qq" label="QQ" header-align="center">
+          </el-table-column>
+
+          <el-table-column sortable="custom" prop="cus_wx" label="微信" header-align="center">
+          </el-table-column>
+
+          <el-table-column sortable="custom" prop="cus_tell" label="联系电话" header-align="center">
+          </el-table-column>
+
+          <el-table-column sortable="custom" prop="order_time" label="开单日期" header-align="center">
+          </el-table-column>
+
+        </el-table>
+      </el-col>
+    </el-row>
+    <el-row type="flex"  align="middle" class="row-bg" style="margin-top: 10px;">
+      <el-col :span="24">
+
+        <div class="grid-content bg-purple-light pull-right">
+          <!-- page -->
+          <include file="Common:_pagination" />
+          <!-- / page -->
+        </div>
+
+      </el-col>
+    </el-row>
+  </div>
+</div>
+</block>
+<block name="scripts">
+    <script src="__PUBLIC__/js/calculate.js"></script>
+<script>
+  window.defaultOption.setDatas({
+    CtrlSelect:false,
+    dataList_bak:[
+     {name:"张三1",self_lock:"100",self_lock_track:"100",assign:"100",assign_track:"100",trade:"100",get_cus:"100",assign_track_per:"100%",assign_trade_per:"100%"},
+     {name:"张三2",self_lock:"100",self_lock_track:"100",assign:"100",assign_track:"100",trade:"100",get_cus:"100",assign_track_per:"100%",assign_trade_per:"100%"},
+     {name:"张三3",self_lock:"100",self_lock_track:"100",assign:"100",assign_track:"100",trade:"100",get_cus:"100",assign_track_per:"100%",assign_trade_per:"100%"},
+     {name:"张三4",self_lock:"100",self_lock_track:"100",assign:"100",assign_track:"100",trade:"100",get_cus:"100",assign_track_per:"100%",assign_trade_per:"100%"},
+     {name:"张三5",self_lock:"100",self_lock_track:"100",assign:"100",assign_track:"100",trade:"100",get_cus:"100",assign_track_per:"100%",assign_trade_per:"100%"},
+     {name:"张三6",self_lock:"100",self_lock_track:"100",assign:"100",assign_track:"100",trade:"100",get_cus:"100",assign_track_per:"100%",assign_trade_per:"100%"},
+     {name:"张三7",self_lock:"100",self_lock_track:"100",assign:"100",assign_track:"100",trade:"100",get_cus:"100",assign_track_per:"100%",assign_trade_per:"100%"},
+     {name:"张三8",self_lock:"100",self_lock_track:"100",assign:"100",assign_track:"100",trade:"100",get_cus:"100",assign_track_per:"100%",assign_trade_per:"100%"},
+     {name:"张三9",self_lock:"100",self_lock_track:"100",assign:"100",assign_track:"100",trade:"100",get_cus:"100",assign_track_per:"100%",assign_trade_per:"100%"},
+     {name:"张三11",self_lock:"100",self_lock_track:"100",assign:"100",assign_track:"100",trade:"100",get_cus:"100",assign_track_per:"100%",assign_trade_per:"100%"},
+    ],
+
+    sortMap:{
+      descending:'desc',
+      ascending:'asc'
+    },
+    pickerOptions: {
+      shortcuts: [{
+        text: '上一周',
+        onClick:function(picker) {
+          var start = showLastWeekFirstDay();
+          var end = showLastWeekLastDay();
+          picker.$emit('pick', [start, end]);
+        }
+      }, {
+        text: '上个月',
+        onClick:function(picker) {
+          var start = showLastMonthFirstDay();
+          var end = showLastMonthLastDay();
+          picker.$emit('pick', [start, end]);
+        }
+      }, {
+        text: '本周',
+        onClick:function(picker) {
+          var start = showWeekFirstDay();
+          var end = showWeekLastDay();
+          picker.$emit('pick', [start, end]);
+        }
+      }, {
+        text: '本月',
+        onClick:function(picker) {
+          var start = showMonthFirstDay();
+          var end = showMonthLastDay();
+          picker.$emit('pick', [start, end]);
+        }
+      }],
+      disabledDate:function(time) {
+        return time.getTime() > Date.now();// - 8.64e7
+      }
+    },
+  }).setForm('search',{
+    dist:[showLastWeekFirstDay(),showLastWeekLastDay()],
+    start:'',
+    end:'',
+    type:'',
+    dep_id:'',
+    group_id:'',
+  }).setVueHook('mounted',function(){
+    this.searchForm.type   = 'department'; 
+  }).setMethod('refresh',function(){
+  	window.location.reload();
+  }).setMethod('DateChange',function(v){
+    console.log(v);
+    var dateArr = v.split(" - ");
+    this.searchForm.start = dateArr[0];
+    this.searchForm.end = dateArr[1];
+  }).setMethod('sortChange', function(info){
+    console.log(info);
+    if (info) {
+      this.searchForm.sort_field = info.prop;
+      this.searchForm.sort_order = this.sortMap[info.order];
+    } else {
+      delete this.searchForm.sort_field;
+      delete this.searchForm.sort_order;
+    }
+    this.dataReload();
+  }).setMethod('queryType',function(v){
+     this.CtrlSelect = v=="department" ? true : false;
+  }).setMethod('depChange',function(v){
+
+  }).setMethod('groupChange',function(v){
+
+  });
+</script>
+</block>
