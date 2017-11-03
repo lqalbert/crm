@@ -12,7 +12,7 @@ class checkBehavior extends \Think\Behavior {
 
         $ids= $param['ids'];
         foreach ($ids as $key => $value) {
-            D('CustomerLog')->data(array('cus_id'=>$value,'user_id'=>$param['user_id'], 'track_text'=>'审核未通过', 'content'=>$param['content']))->add();
+            D('CustomerLog')->data(array('cus_id'=>$value,'user_id'=>$param['user_id'], 'track_text'=>$param['track_text'], 'content'=>$param['content']))->add();
         }
 
 

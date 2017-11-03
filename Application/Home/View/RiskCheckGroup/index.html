@@ -454,7 +454,7 @@ window.defaultOption.setDatas({
     this.checkForm.id= this.currentRow.id;
   }).setMethod('beforeAddTrack', function(){
     if (!this.checkCurrentRow()) {
-      this.checkFormDialog = false;
+      this.addTrackFormDialog = false;
       return;
     }
     this[FormName.getForm('addTrack')].name = this.currentRow.name;
@@ -462,7 +462,7 @@ window.defaultOption.setDatas({
     // this[FormName.getForm('addTrack')].to_type = this.currentRow.type;
   }).setMethod('beforeAddComplain', function(){
     if (!this.checkCurrentRow()) {
-      this.checkFormDialog = false;
+      this.complainFormDialog = false;
       return;
     }
 

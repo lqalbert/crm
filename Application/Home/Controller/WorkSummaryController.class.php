@@ -21,6 +21,7 @@ class WorkSummaryController extends CommonController{
       1=>RoleModel::DEPARTMENTMASTER,
       2=>RoleModel::HR_MASTER,
       3=>RoleModel::SP_MASTER,
+      3=>RoleModel::RISKEMASTER,
     );
     return in_array($roleName , $showArr) ? true : false;
   }

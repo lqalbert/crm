@@ -38,7 +38,7 @@ class CallBackCheckController extends RiskCheckController{
 
         $state = I("get.state","");
         if ($state !=="") {
-            $this->M->where(array('risk_state'=>$state));
+            $this->M->where(array('callback_state'=>$state));
         }
     }
 

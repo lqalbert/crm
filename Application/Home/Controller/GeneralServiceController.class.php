@@ -8,9 +8,20 @@ use Home\Model\RealInfoModel;
 use Home\Logic\CustomerLogic;
 use Home\Model\CustomerLogModel;
 use Home\Model\ProductModel;
+
+/*
+  如果一个客户有购买多个
+  这里会出现多个相同的客户记录
+  因为有购买时间 ，如果买多次 当然有多个购买时间
+  这算是需求设计的问题
+
+  关键在 customer_buy.cus_id = customers_basic.id 
+
+*/
+
 class GeneralServiceController extends CommonController{
   // protected $table = "customers_basic";
-	protected $table = "CustomerBuy";
+	protected $table = "Customer";
 	protected $pageSize = 11;
 
   // private function getOffset(){
@@ -68,11 +79,11 @@ class GeneralServiceController extends CommonController{
 
 
   private function setTableJoin(){
-    $this->M->join("customers_basic on customers_buy.cus_id=customers_basic.id");
+    // $this->M->join("customers_basic on customers_buy.cus_id=customers_basic.id");
   }
 
   private function setField(){
-    $this->M->field("customers_basic.name,gen_time,customers_basic.type,customers_basic.salesman_id,kf_time,province_name,city_name,sex,customers_buy.buy_time,customers_buy.cus_id");
+    $this->M->field("customers_basic.name,gen_time,customers_basic.type,customers_basic.salesman_id,kf_time,province_name,city_name,sex,customers_buy.cus_id");
   }
  
 	/**
@@ -81,42 +92,53 @@ class GeneralServiceController extends CommonController{
 	* @return null
 	*/
 	public function setQeuryCondition() {
-        $this->setTableJoin();
-        $roleEname = $this->getRoleEname();
-        $map = $this->getRoleState();
-        if($roleEname != RoleModel::GEN_SERVICE){
-          $this->M->where(array('customers_basic.gen_id'=>array('GT',0)));
-        }else{
-          $this->M->where(array('customers_basic.gen_id'=>session('uid')));
-        }
+        // $this->setTableJoin();
+        // $roleEname = $this->getRoleEname();
+        // $map = $this->getRoleState();
+        // if($roleEname != RoleModel::GEN_SERVICE){
+        //   $this->M->where(array('customers_basic.gen_id'=>array('GT',0)));
+        // }else{
+        //   $this->M->where(array('customers_basic.gen_id'=>session('uid')));
+        // }
+        $this->M->where(array('customers_basic.gen_id'=>session('uid')));
 
         if (I('get.name')) {
             $this->M->where(array("customers_basic.name"=> array('like', I('get.name')."%")));
         }
 
         $contact = I('get.contact');
+        $ids = array();
         if ($contact) {
            $ids = M("customers_contacts")->where(array('qq|phone|weixin'=>array('LIKE', $val."%")))->getField("cus_id", true);
-           if ($ids) {
-              $this->M->where(array("customers_basic.id"=>array("in", $ids)));
-            } else {
-              $this->M->where(array("customers_basic.id"=>-1));
-            }
+           // if ($ids) {
+           //    $this->M->where(array("customers_basic.id"=>array("in", $ids)));
+           //  } else {
+           //    $this->M->where(array("customers_basic.id"=>-1));
+           //  }
         }
-        
-
-        if (isset($_GET['vt'])) {
-          $this->M->where(array('customers_basic.type'=>'VT'));
-        }
-
 
         //时间区间
       
       $range = I("get.range");
       if ($range) {
           $dates = explode(" - ", $range);
-          $this->M->where(array('buy_time'=>array(array('EGT', $dates[0]), array("ELT", $dates[1]))));  
+          // $this->M->where(array('buy_time'=>array(array('EGT', $dates[0]), array("ELT", $dates[1]))));  
+          $row = D("CustomerBuy")->where(array('buy_time'=>array(array('EGT', $dates[0]), array("ELT", $dates[1]))))->field("cus_id")->find();
+          if ($row) {
+            $ids = array_merge($ids, array_column($row, 'cus_id'));
+          }
       }
+
+      if ($ids) {
+        $this->M->where(array("customers_basic.id"=>array("in", $ids)));
+      } else {
+        $this->M->where(array("customers_basic.id"=>-1));
+      }
+
+
+      // if (isset($_GET['vt'])) {
+      //   $this->M->where(array('customers_basic.type'=>'VT'));
+      // }
 
       //销售部 团队 员工参数
       $user_id = I("get.user_id");
@@ -142,6 +164,8 @@ class GeneralServiceController extends CommonController{
               $this->M->where(array('customers_basic.salesman_id'=>-1 ));
           }
       }   
+
+      // $this->M->group('customers_basic.id'); 
 
 	}
 
