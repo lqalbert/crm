@@ -61,9 +61,9 @@
                   @change="rangeChange">
                 </el-date-picker>
               </el-form-item>
-            <el-form-item>
+            <!-- <el-form-item>
               <el-checkbox v-model="searchForm.vt">投诉客户</el-checkbox>
-            </el-form-item>
+            </el-form-item> -->
 		        <el-form-item>
 		          <el-button @click="dataReload" type="info" size="small" icon="search">查询</el-button> 
 
@@ -88,35 +88,20 @@
               empty-text="暂无数据,销售妹子正在努力中！"
               highlight-current-row ref="select">
 		  	    <el-table-column label="{:L('INDEX')}" type="index" width="65" ></el-table-column>
-
-            <!-- <el-table-column v-if="roleTypeVal == 1 || roleTypeVal == 2" prop="gen_name" label="普通客服" align="center" width="150">
-            </el-table-column> -->
-
 		  	    <el-table-column  header-align="center" prop="name"  label="客户姓名" width="150"></el-table-column>
-
-             <el-table-column prop="buy_time" width="140" label="成交时间"></el-table-column>
-            
             <el-table-column prop="gen_time" label="分配给客服的时间" width="160"></el-table-column>
-
 		  	    <el-table-column  header-align="center" prop="type" label="客户类型"  width="170">
 		          <template scope="scope">
 		            {{ getType(scope.row.type, 'customerType') }}
 		          </template>
 		  	    </el-table-column>
-
-		        
-
 	          <el-table-column  header-align="center" prop="qq" label="QQ号"  width="170">
 	            <template scope="scope">
                 <span v-if="scope.row.contact[0]">
                   {{ scope.row.contact[0].qq }}
                 </span>
-	              <!-- <a v-if="scope.row.qq" :href="getTenct(scope.row.qq)">
-	                <img width="25"  src="__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg" alt="">
-	              </a> -->
 	            </template>
 	          </el-table-column>
-
 		        <el-table-column  label="QQ昵称"  width="170">
               <template scope="scope">
                 <span v-if="scope.row.contact[0]">
@@ -124,7 +109,6 @@
                 </span>
               </template>
             </el-table-column>
-
 		  	    <el-table-column  label="手机" align="center" width="130">
               <template scope="scope">
                 <span v-if="scope.row.contact[0]">
@@ -132,7 +116,6 @@
                 </span>
               </template>   
             </el-table-column>
-
 		        <el-table-column label="微信号" align="left" width="170">
               <template scope="scope">
                 <span v-if="scope.row.contact[0]">
@@ -140,7 +123,6 @@
                 </span>
               </template>  
 		        </el-table-column>
-
 		        <el-table-column label="微信昵称" align="left" width="170">
               <template scope="scope">
                 <span v-if="scope.row.contact[0]">
@@ -148,42 +130,29 @@
                 </span>
               </template> 
 		        </el-table-column>
-
             <el-table-column  header-align="center"  prop="realname" label="跟踪员工"  width="190">
             </el-table-column>
             <el-table-column  align="center"  prop="mphone" label="跟踪员工手机"  width="190">
             </el-table-column>
-            <!-- sortable='customer' -->
 		        <el-table-column  prop="kf_time"  label="客服最后跟踪时间" align="center" width="175">
             </el-table-column>
-            
-		        
-		        
 		        <el-table-column  header-align="center"  label="地区" width="135">
 		          <template scope="scope">
 		            {{ scope.row.province_name+"-"+scope.row.city_name }}
 		          </template>
 		        </el-table-column>
-
 		        <el-table-column prop="sex"  label="性别" width="80"  header-align="center">
 		          <template scope="scope">
 		            {{ getType(scope.row.sex, 'sexType') }}
 		          </template>
 		        </el-table-column>
-
-            <!-- 第二套联系方式 -->
-
             <el-table-column  header-align="center" prop="qq" label="QQ号2"  width="170">
               <template scope="scope">
                 <span v-if="scope.row.contact[1]">
                   {{ scope.row.contact[1].qq }}
                 </span>
-                <!-- <a v-if="scope.row.qq" :href="getTenct(scope.row.qq)">
-                  <img width="25"  src="__PUBLIC__/images/0df431adcbef7609bca7d58a2adda3cc7cd99e73_r2_c2.jpg" alt="">
-                </a> -->
               </template>
             </el-table-column>
-
             <el-table-column  label="QQ昵称2"  width="170">
               <template scope="scope">
                 <span v-if="scope.row.contact[1]">
@@ -191,7 +160,6 @@
                 </span>
               </template>
             </el-table-column>
-
             <el-table-column  label="手机2" align="center" width="130">
               <template scope="scope">
                 <span v-if="scope.row.contact[1]">
@@ -199,7 +167,6 @@
                 </span>
               </template>   
             </el-table-column>
-
             <el-table-column label="微信号2" align="left" width="170">
               <template scope="scope">
                 <span v-if="scope.row.contact[1]">
@@ -207,7 +174,6 @@
                 </span>
               </template>  
             </el-table-column>
-
             <el-table-column label="微信昵称2" align="left" width="170">
               <template scope="scope">
                 <span v-if="scope.row.contact[1]">
@@ -215,8 +181,6 @@
                 </span>
               </template> 
             </el-table-column>
-
-
           </el-table>
         </el-col>
       </el-row>
@@ -334,14 +298,7 @@
                 <el-table-column label="购买时间" prop="buy_time" header-align="center">
                 </el-table-column>
 
-                <!-- <el-table-column label="身份证" prop="identity" align="center">
-                </el-table-column>
-                
-                <el-table-column label="通讯地址" prop="address" header-align="center">
-                </el-table-column> -->
 
-                <!-- <el-table-column label="创建时间" prop="time" align="center">
-                </el-table-column> -->
               </el-table>
 	          </el-tab-pane>
 	        </el-tabs>
@@ -530,12 +487,12 @@
       vmThis.$message.error("查询出错啦");
     });
   }).setMethod('trackLog',function(row,event,column){
-    this.commonFind("{:U('CommonFindDetail/trackInfo')}",'tableDataOne',row);
-    this.commonFind("{:U('CommonFindDetail/findDealInfo')}",'tableDataTwo',{user_id:row.cus_id});
-    this.commonFind("{:U('CommonFindDetail/softwareInfo')}",'tableDataThree',row);
+    this.commonFind("{:U('CommonFindDetail/trackInfo')}",'tableDataOne',{cus_id:row.id,type:row.type,name:row.name});
+    this.commonFind("{:U('CommonFindDetail/findDealInfo')}",'tableDataTwo',{user_id:row.id});
+    this.commonFind("{:U('CommonFindDetail/softwareInfo')}",'tableDataThree',{cus_id:row.id});
 
     row.condition = 'service';
-    this.$http.post("{:U('CommonFindDetail/complainInfo')}",{id:row.cus_id}).then(function(response){
+    this.$http.post("{:U('CommonFindDetail/complainInfo')}",{id:row.id}).then(function(response){
       this.tableDataFour = response.body;
     },function(response){
       this.$message.error("查询出错啦");
@@ -549,7 +506,7 @@
     } else {
       var  row = this.multipleSelection[0];
       this[FormName.getForm('addTrack')].name = row.name;
-      this[FormName.getForm('addTrack')].cus_id = row.cus_id;
+      this[FormName.getForm('addTrack')].cus_id = row.id;
       this[FormName.getForm('addTrack')].to_type = row.type;
       this.row=row;
       return row;
@@ -564,7 +521,7 @@
     } else {
       var  row = this.multipleSelection[0];
       this[FormName.getForm(x)].name = row.name;
-      this[FormName.getForm(x)].cus_id = row.cus_id;
+      this[FormName.getForm(x)].cus_id = row.id;
       this.complainForm.type = row.type;
       // this.complainForm.to_id = row.salesman_id;
       this.row=row;

@@ -70,10 +70,15 @@ class MakeOrderController extends CommonController {
         }
 
         //时间区间
-        $range = I("get.range");
+        /*$range = I("get.range");
         if ($range) {
             $dates = explode(" - ", $range);
             $this->M->where(array('buy_time'=>array(array('EGT', $dates[0]), array("ELT", $dates[1]))));
+        }*/
+        $start = I("get.start");
+        $end = I("get.end");
+        if ($start && $end) {
+            $this->M->where(array('buy_time'=>array(array('EGT', $start), array("ELT", $end))));
         }
 
         $type = I("get.type");

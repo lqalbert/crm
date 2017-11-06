@@ -158,22 +158,22 @@
                         
                         <el-table-column prop="semaster" label="客服主管" header-align="left" width="100"></el-table-column>
                         <el-table-column prop="semaster_time" label="分配给主管时间" header-align="center" width="140"></el-table-column>
-                        <el-table-column prop="disstaff_time" label="分配材料专员时间" header-align="center"  width="180"></el-table-column>
+                        <!-- <el-table-column prop="disstaff_time" label="分配材料专员时间" header-align="center"  width="180"></el-table-column> -->
                         <el-table-column prop="order_time" label="开单时间" header-align="left" width="130"></el-table-column>
                         <el-table-column prop="buy_time" label="客户成交时间" header-align="left" width="130"></el-table-column>
-                        <el-table-column prop="mphone" label="销售人员手机" header-align="left" width="100"></el-table-column>
+                        <el-table-column prop="mphone" label="销售人员手机" header-align="left" width="160"></el-table-column>
 
                         <el-table-column label="购买版本" header-align="center" prop="product_name" width="200" >
                         </el-table-column>
                         
                         <!-- <el-table-column label="付款金额" header-align="center" prop="pay_in" width="200" >
                         </el-table-column> -->
-                        <el-table-column label="付款方式" header-align="center" prop="buy_info" width="200" >
+                        <el-table-column label="付款方式" header-align="center" prop="pay_info" width="200" >
                         </el-table-column>
 
                         <el-table-column label="操作" width="240" header-align="center" >
                             <template scope="scope">
-                                <el-button size="small" type="info" @click="checkCustomer(scope.row.cus_id)">查看客户</el-button>
+                                <el-button size="small" type="info" @click="checkCustomer(scope.row.cus_id, scope.row.pay_info)">查看客户</el-button>
                                 <el-button v-show="scope.row.buttons.length==3" size="small" type="primary" @click="openOneStep(scope.row)">开单</el-button>
                                 <el-button size="small" type="info" v-show="scope.row.status == 1" @click="orderInfo(scope.row)">订单详情</el-button>
                             </template>
@@ -302,6 +302,8 @@
         group_id:"",
         user_id:"",
         range:"",
+        start:"",
+        end:"",
         semaster_id:"",
         datastaff_id:"{$uid}"
     }).setForm('order',{
@@ -338,7 +340,8 @@
         money_text:"",
         year_text:"",
         profession_text:"",
-        remark:"什么都没有"
+        remark:"什么都没有",
+        pay_info:""
     },true).setForm('oneStep',{
          account_id:"",
          semaster_id:null,
@@ -417,9 +420,10 @@
         this.accountForm.pdt_id = row.product_id;
         this.accountForm.buy_id = row.id
         this.openDialog('account');
-    }).setMethod('checkCustomer',function(id){
+    }).setMethod('checkCustomer',function(id,pay_info){
         this.$http.get(page.getCustomerInfoUrl, {params:{id:id}}).then(function(response){
             this.initObject(this.infoForm, response.body);
+            this.infoForm.pay_info = pay_info;
             this.openDialog('info');
         }, function(response){
             this.$message.error("出错了");
@@ -549,6 +553,9 @@
   }).setMethod('rangeChange', function(v){
     console.log(v);
     // this.searchForm.range = v;
+    var c = v.split(" - ");
+    this.searchForm.start = c[0];
+    this.searchForm.end = c[1];
   }).setVueHook('mounted', function(){
     var vmThis = this;
     //省份、城市
@@ -569,7 +576,7 @@
 
       }
   }).setMethod('loadRecords', function(id){
-     this.$http.get("{:U('talkRecords/getList')}", {params:{id:id}}).then(function(response){
+     this.$http.get("{:U('talkRecords/getList')}", {params:{id:id,all:1}}).then(function(response){
       this.talkRecords = response.body.list;
      }, function(response){
 

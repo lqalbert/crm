@@ -8,9 +8,21 @@ use Home\Model\RealInfoModel;
 use Home\Logic\CustomerLogic;
 use Home\Model\CustomerLogModel;
 use Home\Model\ProductModel;
+
+
+/*
+  如果一个客户有购买多个
+  这里会出现多个相同的客户记录
+  因为有购买时间 ，如果买多次 当然有多个购买时间
+  这算是需求设计的问题
+
+  关键在 customer_buy.cus_id = customers_basic.id 
+
+*/
+
 class ServiceSupervisorController extends CommonController{
 	// protected $table = "customers_basic";
-  protected $table = "CustomerBuy";
+  protected $table = "Customer";
 	protected $pageSize = 11;
 
  
@@ -21,18 +33,9 @@ class ServiceSupervisorController extends CommonController{
               'serviceMaster',
               'gold'
           );
-      //return $map[$this->getRoleEname()];
       return $map;
   }
 
-  // private function getRoleVal(){
-  //   foreach ($this->getRoleState() as $k => $v) {
-  //     if($this->getRoleEname() == $v){
-  //       $roleType = $k;
-  //     }
-  //   }
-  //   return $roleType;
-  // }
 
 	public function index(){
     $Products= D('Product')->where( array('status'=>array('NEQ', ProductModel::DELETE_STATUS)))->select();
@@ -50,12 +53,15 @@ class ServiceSupervisorController extends CommonController{
 
 
   public function getGenServiceMan(){
-    return D('User')->getGenService('user_id,realname');
+    $group_id = $this->getUserGroupId();
+    return D("User")->getGroupEmployee($group_id, 'user_id, realname');
+    // return D('User')->getGenService('user_id,realname');
   }
 
   public function getList(){
     $this->setQeuryCondition();
     $count = $this->M->count();
+
     $this->setQeuryCondition();
     $list = $this->M->page(I('get.p',0). ','. $this->pageSize)->select();
     foreach ($list as &$value) {
@@ -67,17 +73,19 @@ class ServiceSupervisorController extends CommonController{
       $value['realname'] = $sales['realname'];
       $value['mphone'] = $sales['mphone'];
 
+      $value['gen_name'] = M("user_info")->where(array('user_id'=>$value['gen_id']))->getField('realname');
+
     }
     $result = array('list'=>$list, 'count'=>$count);
     $this->ajaxReturn($result);
   }
 
-  private function setTableJoin(){
+  protected function setTableJoin(){
     $this->M->join("customers_basic on customers_buy.cus_id=customers_basic.id");
   }
 
-  private function setField(){
-    $this->M->field("customers_basic.name,gen_time,customers_basic.type,customers_basic.salesman_id,kf_time,province_name,city_name,sex,semaster_time,customers_buy.buy_time,customers_buy.cus_id");
+  protected function setField(){
+    $this->M->field("customers_basic.name,gen_time,gen_id,customers_basic.type,customers_basic.salesman_id,kf_time,province_name,city_name,sex,semaster_time,customers_buy.cus_id");
   }
 
 	/**
@@ -88,7 +96,6 @@ class ServiceSupervisorController extends CommonController{
 	public function setQeuryCondition() {
 	/*	$operator_id=session('account')['userInfo']['user_id'];
     $this->M->where(array('service_sup'=>'1','operator_id'=>$operator_id));*/
-    $this->setTableJoin();
     $gen = I('get.gen',0);
     if ($gen!=0) {
       if (I("get.gen_id")) {
@@ -106,38 +113,46 @@ class ServiceSupervisorController extends CommonController{
     }
     
     $contact = I('get.contact');
+    $ids = array();
     if ($contact) {
        $ids = M("customers_contacts")->where(array('qq|phone|weixin'=>array('LIKE', $val."%")))->getField("cus_id", true);
-       if ($ids) {
-          $this->M->where(array("customers_basic.id"=>array("in", $ids)));
-        } else {
-          $this->M->where(array("customers_basic.id"=>-1));
+       // if ($ids) {
+       //    $this->M->where(array("customers_basic.id"=>array("in", $ids)));
+       //  } else {
+       //    $this->M->where(array("customers_basic.id"=>-1));
+       //  }
+    }
+
+    //时间区间
+    $range = I("get.range");
+    if ($range) {
+        $dates = explode(" - ", $range);
+        // $this->M->where(array('buy_time'=>array(array('EGT', $dates[0]), array("ELT", $dates[1]))));  
+        $row = D("CustomerBuy")->where(array('buy_time'=>array(array('EGT', $dates[0]), array("ELT", $dates[1]))))->field("cus_id")->find();
+        if ($row) {
+          $ids = array_merge($ids, array_column($row, 'cus_id'));
         }
     }
 
-    if (isset($_GET['vt'])) {
-      $this->M->where(array('customers_basic.type'=>'VT'));
-    }
+    // if (isset($_GET['vt'])) {
+    //   $this->M->where(array('customers_basic.type'=>'VT'));
+    // }
 
-    $roleEname = $this->getRoleEname();
-    $map = $this->getRoleState();
-    // if(in_array($roleEname,$map)){
-    if($roleEname != RoleModel::SUP_SERVICE){
-      $this->M->where(array('customers_basic.semaster_id'=>array('GT',0)));
-    }else{
-      $this->M->where(array('customers_basic.semaster_id'=>session('uid')));
-    }
+    // $roleEname = $this->getRoleEname();
+    // $map = $this->getRoleState();
+    // // if(in_array($roleEname,$map)){
+    // if($roleEname != RoleModel::SUP_SERVICE){
+    //   $this->M->where(array('customers_basic.semaster_id'=>array('GT',0)));
+    // }else{
+    //   $this->M->where(array('customers_basic.semaster_id'=>session('uid')));
+    // }
 
-    $this->M->join("customers_contacts as cc on customers_basic.id = cc.cus_id and cc.is_main = 1 ");
+    $this->M->where(array('customers_basic.semaster_id'=>session('uid')));
+
+    
 
 
-     //时间区间
-      
-      $range = I("get.range");
-      if ($range) {
-          $dates = explode(" - ", $range);
-          $this->M->where(array('buy_time'=>array(array('EGT', $dates[0]), array("ELT", $dates[1]))));  
-      }
+    
 
       $user_id = I("get.user_id");
       $group_id = I("get.group_id");
@@ -163,6 +178,8 @@ class ServiceSupervisorController extends CommonController{
           }
       } 
 
+      // $this->M->group('customers_basic.id'); 
+
 	}
 
 
@@ -174,7 +191,7 @@ class ServiceSupervisorController extends CommonController{
     $user_id = I('post.user_id');
     $cus_ids = I("post.cus_ids");
     
-    $re  = $this->M->where(array('id'=>array('in', $cus_ids)))->data(array('gen_id'=>$user_id, 'gen_time'=>Date('Y-m-d H:i:s')))->save();
+    $re  = D('Customer')->where(array('id'=>array('in', $cus_ids)))->data(array('gen_id'=>$user_id, 'gen_time'=>Date('Y-m-d H:i:s')))->save();
     if($re!==false){
       /**
         * 生成弹窗消息

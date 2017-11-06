@@ -15,7 +15,7 @@
         width="180">
         <template scope="scope">
             <el-button size="small" @click="deleteRecords(scope.row.id,scope.$index)"   type="danger">删除</el-button>
-            <a v-bind:href=" '__ROOT__' + scope.row.path " target="_blank">下载</a>
+            <a v-bind:href=" '{:U('TalkRecords/download')}?id=' + scope.row.id " target="_blank">下载</a>
         </template>
       </el-table-column>
   </el-table>
