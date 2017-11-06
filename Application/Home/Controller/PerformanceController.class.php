@@ -101,7 +101,7 @@ class PerformanceController extends CommonController {
       $depWhere = " and department_id = $department_id";
     }
 
-    $sql = "select department_id as id, department_name as name, sum(order_num) as order_num,sum(sale_amount) as sale_amount , sum(self_amount) as self_amount, sum(spread_amount) as spread_amount
+    $sql = "select department_id as id, sum(self_num) as self_num,sum(spread_num) as spread_num,department_name as name, sum(order_num) as order_num,sum(sale_amount) as sale_amount , sum(self_amount) as self_amount, sum(spread_amount) as spread_amount
      from statistics_sale_achievement ".$this->dateWhere." $depWhere group by department_id ".$this->orderWhere;
      // var_dump($sql);
     $re = M()->cache(true,180)->query($sql);
@@ -121,7 +121,7 @@ class PerformanceController extends CommonController {
       $groupWhere = " and group_id = $group_id";
     }
 
-    $sql = "select group_id as id,department_id,department_name,concat(department_name,'-',group_name) as name, sum(order_num) as order_num,sum(sale_amount) as sale_amount  , sum(self_amount) as self_amount, sum(spread_amount) as spread_amount
+    $sql = "select group_id as id,self_num,spread_num,department_id,department_name,concat(department_name,'-',group_name) as name, sum(order_num) as order_num,sum(sale_amount) as sale_amount  , sum(self_amount) as self_amount, sum(spread_amount) as spread_amount
      from statistics_sale_achievement ".$this->dateWhere." $depWhere $groupWhere group by group_id ".$this->orderWhere;
     
     $re = M()->cache(true,180)->query($sql);
@@ -141,7 +141,7 @@ class PerformanceController extends CommonController {
       $groupWhere = " and saa.group_id = $group_id";
     }
 
-    $sql = "select saa.user_id as id,saa.department_id,saa.group_id,saa.department_name, saa.group_name ,
+    $sql = "select saa.user_id as id,self_num,spread_num,saa.department_id,saa.group_id,saa.department_name, saa.group_name ,
     concat(concat(saa.department_name,'-',saa.group_name),'-',ui.realname) as name,
     sum(saa.order_num) as order_num,sum(saa.sale_amount) as sale_amount , sum(self_amount) as self_amount, sum(spread_amount) as spread_amount from statistics_sale_achievement as saa 
     left join user_info as ui on ui.user_id=saa.user_id ".$this->dateWhere." $depWhere $groupWhere group by saa.user_id ".$this->orderWhere;

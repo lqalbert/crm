@@ -15,13 +15,13 @@
       <el-col :span="24">
         <el-form :inline="true" ref="searchForm" :model="searchForm">
           <el-form-item prop="dist">  
-            <el-date-picker v-model="searchForm.dist" type="daterange" style="max-width: 210px;width:210px;" size="small" placeholder="选择日期范围" :picker-options="pickerOptions" @change="DateChange"
-             :clearable="false" :editable="false">
+            <el-date-picker v-model="searchForm.dist" type="daterange" style="max-width: 210px;width:210px;" size="small" placeholder="选择日期范围" :picker-options="pickerOptions" @change="DateChange" 
+            :clearable="false" :editable="false">
             </el-date-picker>
           </el-form-item>
 
           <el-form-item>
-            <el-select size="small" style="width:120px;" v-model="searchForm.type" placeholder="查询类型" @change="saleQueryType">
+            <el-select size="small" style="width:120px;" v-model="searchForm.type" placeholder="查询类型" @change="spreadQueryType">
               <el-option label="按队员查询" value="user"></el-option>
               <el-option label="按团组查询" value="group"></el-option>
               <el-option label="按部门查询" value="department"></el-option>
@@ -30,28 +30,28 @@
           
           <el-form-item prop="dep_id">
             <el-tooltip content="选择某个部门后点击查询或者继续选择下属小组再查询" placement="bottom-start">
-              <el-select size="small" style="width:120px;" clearable filterable   v-model="searchForm.dep_id" @change="saleDepChange" placeholder="请选择部门">
-              <el-option label="销售一部" value="1"></el-option>
-              <el-option label="销售二部" value="2"></el-option>
-              <el-option label="销售三部" value="3"></el-option>
+              <el-select size="small" style="width:120px;" clearable filterable   v-model="searchForm.dep_id" @change="spreadDepChange" placeholder="请选择部门">
+              <el-option label="推广一部" value="1"></el-option>
+              <el-option label="推广二部" value="2"></el-option>
+              <el-option label="推广三部" value="3"></el-option>
               </el-select>
             </el-tooltip>
           </el-form-item>
 
           <el-form-item prop="group_id">
             <el-tooltip content="必须先选择部门方可选择团组后点击查询或者继续选择下属队员再查询" placement="bottom-start">
-              <el-select size="small" style="width:120px;" :disabled="saleCtrlSelect" clearable filterable  v-model="searchForm.group_id" @change="saleGroupChange" placeholder="请选择小组">
-              <el-option label="火箭一队" value="1"></el-option>
-              <el-option label="火箭二队" value="2"></el-option>
-              <el-option label="火箭三队" value="3"></el-option>
+              <el-select size="small" style="width:120px;" :disabled="spreadCtrlSelect" clearable filterable  v-model="searchForm.group_id" @change="spreadGroupChange" placeholder="请选择小组">
+              <el-option label="大炮一队" value="1"></el-option>
+              <el-option label="大炮二队" value="2"></el-option>
+              <el-option label="大炮三队" value="3"></el-option>
               </el-select>
             </el-tooltip>
           </el-form-item>
 
           <el-form-item>
             <el-button type="info" size="small" icon="search"  @click="loadDatalist" >查询</el-button>
-            <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
-              <el-button  size="small" @click="searchReset"  >重置</el-button>
+            <el-tooltip content="重新刷新数据" placement="right" style="margin-left:10px;">
+              <el-button  size="small" @click="searchReset" type="warning">重置</el-button>
             </el-tooltip>
             <el-tooltip content="点击刷新当前页面" placement="right"  style="margin-left:10px;">
               <el-button  size="small" type="danger" @click="refresh" >刷新</el-button>
@@ -61,43 +61,29 @@
       </el-col>
     </el-row>
     <el-row>
-      <el-col :span="24">
-        <el-table :data="dataList_bak" border v-loading="dataLoad"
+      <el-col :span="18">
+        <el-table :data="spreadDataList" border v-loading="dataLoad"
          element-loading-text="{:L('DATA_LOGIN')}" highlight-current-row
          empty-text="暂无统计数据！" ref="select" @sort-change="sortChange">
           
-          <el-table-column label="序号"  align="center" width="65" :formatter_bak="handleIndex" type="index"></el-table-column>
+          <el-table-column label="序号"  align="center" width="65" type="index"></el-table-column>
 
           <el-table-column prop="name" label="部门/小组/员工" header-align="center" width="200"></el-table-column>
 
-          <el-table-column sortable="custom" prop="self_lock" label="自锁个数" header-align="center"></el-table-column>
-          
-          <el-table-column sortable="custom" prop="self_lock_track" label="自锁跟踪个数" header-align="center">
+          <el-table-column sortable="custom" prop="track" label="锁定客户数" header-align="center">
           </el-table-column>
 
-          <el-table-column sortable="custom" prop="assign" label="分配个数" header-align="center">
-          </el-table-column>
-
-          <el-table-column sortable="custom" prop="assign_track" label="分配跟踪个数" header-align="center">
+          <el-table-column sortable="custom" prop="recommend" label="已推荐个数" header-align="center">
           </el-table-column>
 
           <el-table-column sortable="custom" prop="trade" label="成交个数" header-align="center">
           </el-table-column>
 
-          <el-table-column sortable="custom" prop="get_cus" label="索取个数" header-align="center">
-          </el-table-column>
-
-          <el-table-column prop="assign_track_per" label="推广分配跟踪率" header-align="center">
-          </el-table-column>
-
-          <el-table-column prop="assign_trade_per" label="推广分配成交率" header-align="center">
-          </el-table-column>
-
-        </el-table>
+        </el-table> 
       </el-col>
     </el-row>
     <el-row type="flex"  align="middle" class="row-bg" style="margin-top: 10px;">
-      <el-col :span="24">
+      <el-col :span="18">
 
         <div class="grid-content bg-purple-light pull-right">
           <!-- page -->
@@ -107,6 +93,7 @@
 
       </el-col>
     </el-row>
+
   </div>
 </div>
 </block>
@@ -114,18 +101,15 @@
     <script src="__PUBLIC__/js/calculate.js"></script>
 <script>
   window.defaultOption.setDatas({
-    saleCtrlSelect:false,
-    dataList_bak:[
-     {name:"张三1",self_lock:"100",self_lock_track:"100",assign:"100",assign_track:"100",trade:"100",get_cus:"100",assign_track_per:"100%",assign_trade_per:"100%"},
-     {name:"张三2",self_lock:"100",self_lock_track:"100",assign:"100",assign_track:"100",trade:"100",get_cus:"100",assign_track_per:"100%",assign_trade_per:"100%"},
-     {name:"张三3",self_lock:"100",self_lock_track:"100",assign:"100",assign_track:"100",trade:"100",get_cus:"100",assign_track_per:"100%",assign_trade_per:"100%"},
-     {name:"张三4",self_lock:"100",self_lock_track:"100",assign:"100",assign_track:"100",trade:"100",get_cus:"100",assign_track_per:"100%",assign_trade_per:"100%"},
-     {name:"张三5",self_lock:"100",self_lock_track:"100",assign:"100",assign_track:"100",trade:"100",get_cus:"100",assign_track_per:"100%",assign_trade_per:"100%"},
-     {name:"张三6",self_lock:"100",self_lock_track:"100",assign:"100",assign_track:"100",trade:"100",get_cus:"100",assign_track_per:"100%",assign_trade_per:"100%"},
-     {name:"张三7",self_lock:"100",self_lock_track:"100",assign:"100",assign_track:"100",trade:"100",get_cus:"100",assign_track_per:"100%",assign_trade_per:"100%"},
-     {name:"张三8",self_lock:"100",self_lock_track:"100",assign:"100",assign_track:"100",trade:"100",get_cus:"100",assign_track_per:"100%",assign_trade_per:"100%"},
-     {name:"张三9",self_lock:"100",self_lock_track:"100",assign:"100",assign_track:"100",trade:"100",get_cus:"100",assign_track_per:"100%",assign_trade_per:"100%"},
-     {name:"张三11",self_lock:"100",self_lock_track:"100",assign:"100",assign_track:"100",trade:"100",get_cus:"100",assign_track_per:"100%",assign_trade_per:"100%"},
+    spreadCtrlSelect:false,
+    spreadDataList:[
+      {name:"张三",track:"100",recommend:"100",trade:"100"},
+      {name:"张一",track:"110",recommend:"100",trade:"100"},
+      {name:"张二",track:"120",recommend:"100",trade:"100"},
+      {name:"张四",track:"100",recommend:"100",trade:"100"},
+      {name:"张五",track:"100",recommend:"100",trade:"100"},
+      {name:"张六",track:"100",recommend:"100",trade:"100"},
+      {name:"张七",track:"100",recommend:"100",trade:"100"},
     ],
     sortMap:{
       descending:'desc',
@@ -191,11 +175,11 @@
       delete this.searchForm.sort_order;
     }
     this.dataReload();
-  }).setMethod('saleQueryType',function(v){
-     this.saleCtrlSelect = v=="department" ? true : false;
-  }).setMethod('saleDepChange',function(v){
+  }).setMethod('spreadQueryType',function(v){
+    this.spreadCtrlSelect = v=="department" ? true : false;
+  }).setMethod('spreadDepChange',function(v){
 
-  }).setMethod('saleGroupChange',function(v){
+  }).setMethod('spreadGroupChange',function(v){
 
   });
 </script>

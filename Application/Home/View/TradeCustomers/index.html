@@ -47,6 +47,14 @@
             </el-tooltip>
           </el-form-item>
 
+          <el-form-item prop="cus_name">
+            <el-input size="small" v-model="searchForm.cus_name" placeholder="客户姓名"></el-input>
+          </el-form-item>
+
+          <el-form-item prop="cus_tell">
+            <el-input size="small" v-model="searchForm.cus_tell" placeholder="联系电话"></el-input>
+          </el-form-item>
+
           <el-form-item>
             <el-button type="info" size="small" icon="search"  @click="loadDatalist" >查询</el-button>
             <el-tooltip content="清空搜索框并刷新表格数据" placement="bottom-start" style="margin-left:10px;">
@@ -80,8 +88,8 @@
           <el-table-column sortable="custom" prop="cus_tell" label="联系电话" header-align="center">
           </el-table-column>
 
-          <el-table-column sortable="custom" prop="order_time" label="开单日期" align="center">
-          </el-table-column>
+          <!-- <el-table-column sortable="custom" prop="order_time" label="开单日期" align="center">
+          </el-table-column> -->
 
         </el-table>
       </el-col>
@@ -163,6 +171,8 @@
     type:'',
     dep_id:'',
     group_id:'',
+    cus_name:'',
+    cus_tell:''
   }).setVueHook('mounted',function(){
     this.searchForm.type   = 'department'; 
   }).setMethod('refresh',function(){
